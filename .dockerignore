@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+dist/
+**/dist/
+build/
+**/build/
+
+# Test coverage
+coverage/
+**/coverage/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.nyc_output/
+**/.nyc_output/
+
+# Playwright
+playwright-report/
+test-results/
+
+# Git
+.git/
+.gitignore
+
+# Documentation (if not needed in container)
+docs/
+*.md
+
+# Temporary files
+tmp/
+temp/
+*.tmp

@@ -1,0 +1,11 @@
+{
+  "name": "@nearbybazaar/types",
+  "private": true,
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo 'build types'",
+    "dev": "echo 'dev types'",
+    "clean": "echo 'clean types'"
+  }
+}

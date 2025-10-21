@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "module": "commonjs",
+    "lib": [
+      "ES2021",
+      "DOM"
+    ],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@nearbybazaar/lib": [
+        "packages/lib/src/index.ts"
+      ],
+      "@nearbybazaar/lib/*": [
+        "packages/lib/src/*"
+      ],
+      "@nearbybazaar/ui": [
+        "packages/ui/src/index.ts"
+      ],
+      "@nearbybazaar/ui/*": [
+        "packages/ui/src/*"
+      ],
+      "@routes/*": [
+        "apps/api/src/routes/*"
+      ],
+      "@middleware/*": [
+        "apps/api/src/middleware/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

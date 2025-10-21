@@ -1,0 +1,55 @@
+[
+    {
+        "id": "contact-us",
+        "name": "Contact Us",
+        "fields": [
+            {
+                "id": "name",
+                "type": "text",
+                "label": "Name",
+                "required": true
+            },
+            {
+                "id": "email",
+                "type": "text",
+                "label": "Email",
+                "required": true
+            },
+            {
+                "id": "message",
+                "type": "textarea",
+                "label": "Message",
+                "required": true
+            }
+        ]
+    },
+    {
+        "id": "booking",
+        "name": "Booking Form",
+        "fields": [
+            {
+                "id": "fullName",
+                "type": "text",
+                "label": "Full Name",
+                "required": true
+            },
+            {
+                "id": "date",
+                "type": "text",
+                "label": "Date",
+                "required": true
+            },
+            {
+                "id": "service",
+                "type": "select",
+                "label": "Service",
+                "options": [
+                    "Consultation",
+                    "Repair",
+                    "Installation"
+                ],
+                "required": true
+            }
+        ]
+    }
+]

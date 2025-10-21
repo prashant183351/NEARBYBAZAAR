@@ -1,0 +1,3 @@
+id,customer_name,customer_email,sku,quantity,total,created_at
+1,Alice,alice@example.com,SKU1,2,100,2025-10-19T10:00:00Z
+2,Bob,bob@example.com,SKU2,1,50,2025-10-19T11:00:00Z

@@ -1,0 +1,73 @@
+# Robots.txt for NearbyBazaar
+# Last updated: 2025-10-20
+
+# General Crawlers
+User-agent: *
+Allow: /
+Allow: /p/
+Allow: /s/
+Allow: /c/
+Allow: /store/
+Allow: /search
+Allow: /changelog
+
+# Disallow admin and vendor portals
+Disallow: /admin
+Disallow: /vendor
+Disallow: /api/
+
+# Disallow user-specific pages
+Disallow: /cart
+Disallow: /checkout
+Disallow: /account
+Disallow: /profile
+Disallow: /orders
+
+# Disallow forms and dynamic content
+Disallow: /inquire/
+Disallow: /book/
+Disallow: /*?*search=
+Disallow: /*?*filter=
+Disallow: /*?*page=
+
+# Crawl delay for politeness
+Crawl-delay: 1
+
+# Sitemaps
+Sitemap: https://nearbybazaar.com/sitemap.xml
+
+# Google-specific
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+Disallow: /vendor
+Crawl-delay: 0.5
+
+# Bing-specific
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Disallow: /vendor
+Crawl-delay: 1
+
+# Yandex
+User-agent: Yandex
+Allow: /
+Disallow: /admin
+Disallow: /vendor
+Crawl-delay: 2
+
+# Block bad bots
+User-agent: MJ12bot
+User-agent: AhrefsBot
+User-agent: SemrushBot
+User-agent: DotBot
+Disallow: /
+
+# Block AI scrapers (optional - uncomment if needed)
+# User-agent: GPTBot
+# User-agent: ChatGPT-User
+# User-agent: CCBot
+# User-agent: anthropic-ai
+# User-agent: Claude-Web
+# Disallow: /
