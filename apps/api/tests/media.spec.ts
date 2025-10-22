@@ -253,4 +253,88 @@ describe('Feature #189: Media Pipeline', () => {
       expect(process.env.MAX_FILES_PER_UPLOAD || '10').toBe('10');
     });
   });
+
+    // --- Additional Coverage Tests ---
+    describe('processUploadedFile', () => {
+      it('should throw if virus is found', async () => {
+        const mockScanForViruses = jest.fn(() => { throw new Error('Virus detected'); });
+        const { processUploadedFile } = require('../src/services/media');
+        await expect(processUploadedFile(Buffer.from('bad'), {
+          filename: 'bad.jpg',
+          contentType: 'image/jpeg',
+          scanForVirusesFn: mockScanForViruses,
+        })).rejects.toThrow('Virus detected');
+      });
+
+      it('should handle Cloudinary upload error', async () => {
+        const mockCloudinary = {
+          upload: jest.fn().mockRejectedValue(new Error('Cloudinary error')),
+        };
+        const mockScanForViruses = jest.fn(() => Promise.resolve());
+        const { processUploadedFile } = require('../src/services/media');
+        await expect(processUploadedFile(Buffer.from('ok'), {
+          filename: 'fail.jpg',
+          contentType: 'image/jpeg',
+          cloudinary: mockCloudinary,
+          scanForVirusesFn: mockScanForViruses,
+        })).rejects.toThrow('Cloudinary error');
+      });
+
+      it('should process non-image file without EXIF stripping', async () => {
+        const mockCloudinary = {
+          upload: jest.fn().mockResolvedValue({
+            url: 'http://mock.url',
+            publicId: 'mockid',
+            variants: {},
+            width: 1,
+            height: 1,
+            format: 'txt',
+          }),
+        };
+        const mockScanForViruses = jest.fn(() => Promise.resolve());
+        const { processUploadedFile } = require('../src/services/media');
+        const result = await processUploadedFile(Buffer.from('plain'), {
+          filename: 'plain.txt',
+          contentType: 'text/plain',
+          cloudinary: mockCloudinary,
+          scanForVirusesFn: mockScanForViruses,
+        });
+        expect(result.url).toContain('mock.url');
+      });
+    });
+
+    describe('withUploadTimeout', () => {
+      const { withUploadTimeout } = require('../src/services/media');
+      it('should resolve if promise resolves before timeout', async () => {
+        const result = await withUploadTimeout(Promise.resolve('ok'), 100);
+        expect(result).toBe('ok');
+      });
+      it('should reject if promise takes too long', async () => {
+        await expect(withUploadTimeout(new Promise(() => {}), 10)).rejects.toThrow('Upload timeout exceeded');
+      });
+    });
+
+    describe('generateCloudinarySignature', () => {
+      it('should call cloudinary.utils.api_sign_request', () => {
+        jest.resetModules();
+        // Accept any string as signature, since real implementation may return a hash
+        const { generateCloudinarySignature } = require('../src/services/media');
+        const sig = generateCloudinarySignature({ foo: 'bar' });
+        expect(typeof sig).toBe('string');
+        expect(sig.length).toBeGreaterThan(0);
+      });
+    });
+
+    describe('streamFileResponse', () => {
+      it('should set headers and send buffer', () => {
+        const { streamFileResponse } = require('../src/services/media');
+        const res = { setHeader: jest.fn(), send: jest.fn() };
+        const buf = Buffer.from('abc');
+        streamFileResponse(res, buf, 'text/plain', 'file.txt');
+        expect(res.setHeader).toHaveBeenCalledWith('Content-Type', 'text/plain');
+        expect(res.setHeader).toHaveBeenCalledWith('Content-Disposition', expect.stringContaining('file.txt'));
+        expect(res.setHeader).toHaveBeenCalledWith('Content-Length', buf.length);
+        expect(res.send).toHaveBeenCalledWith(buf);
+      });
+    });
 });

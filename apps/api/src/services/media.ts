@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 import { Response } from 'express';
 import sharp from 'sharp';
-import { cloudinaryStorage } from './storage/cloudinary';
+import { cloudinaryStorage as defaultCloudinaryStorage } from './storage/cloudinary';
 
 /**
  * Media Pipeline Service
@@ -197,12 +197,16 @@ export async function processUploadedFile(
     contentType: string;
     folder?: string;
     generateVariants?: boolean;
+    cloudinary?: typeof defaultCloudinaryStorage;
+    scanForVirusesFn?: typeof scanForViruses;
   },
 ): Promise<MediaProcessingResult> {
-  const { filename, contentType, folder = 'uploads' } = options;
+  const { filename, contentType, folder = 'uploads', cloudinary, scanForVirusesFn } = options;
+  const cloud = cloudinary || defaultCloudinaryStorage;
+  const scan = scanForVirusesFn || scanForViruses;
 
   // 1. Virus scan (throws on virus detection)
-  await scanForViruses(buffer);
+  await scan(buffer);
 
   // 2. Strip EXIF metadata
   let processedBuffer = buffer;
@@ -214,7 +218,7 @@ export async function processUploadedFile(
   }
 
   // 3. Upload to storage with variant generation
-  const uploadResult = await cloudinaryStorage.upload(processedBuffer, {
+  const uploadResult = await cloud.upload(processedBuffer, {
     folder,
     filename,
     contentType,
@@ -280,7 +284,7 @@ export function withUploadTimeout<T>(promise: Promise<T>, timeoutMs: number = 60
 /**
  * Generate Cloudinary signature for secure uploads
  */
-function generateCloudinarySignature(params: Record<string, any>): string {
+export function generateCloudinarySignature(params: Record<string, any>): string {
   const cloudinary = require('cloudinary').v2;
   return cloudinary.utils.api_sign_request(params, process.env.CLOUDINARY_API_SECRET);
 }
