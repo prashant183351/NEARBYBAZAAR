@@ -31,11 +31,11 @@ The Vendor Suspension & Escalation Engine is an automated system that monitors v
 
 ### Default Thresholds
 
-| Metric | Warning | Temp Suspension | Permanent Block |
-|--------|---------|-----------------|-----------------|
-| **Order Defect Rate (ODR)** | > 1% | > 2% | > 4% |
-| **Late Shipment Rate** | > 5% | > 10% | > 15% |
-| **Cancellation Rate** | > 3% | > 6% | > 10% |
+| Metric                      | Warning | Temp Suspension | Permanent Block |
+| --------------------------- | ------- | --------------- | --------------- |
+| **Order Defect Rate (ODR)** | > 1%    | > 2%            | > 4%            |
+| **Late Shipment Rate**      | > 5%    | > 10%           | > 15%           |
+| **Cancellation Rate**       | > 3%    | > 6%            | > 10%           |
 
 ### Metric Definitions
 
@@ -59,7 +59,7 @@ Metrics are calculated over a rolling 30-day window.
 ### 2. Temporary Suspension
 
 - **Trigger**: Any metric exceeds temp suspension threshold
-- **Effect**: 
+- **Effect**:
   - Vendor cannot accept new orders
   - Status set to `suspended`
   - Existing orders must be fulfilled
@@ -81,6 +81,7 @@ Metrics are calculated over a rolling 30-day window.
 ### Data Model
 
 **VendorAction Schema**:
+
 ```typescript
 {
   vendor: ObjectId,           // Reference to Vendor
@@ -108,6 +109,7 @@ Metrics are calculated over a rolling 30-day window.
 ### Services
 
 **`apps/api/src/services/vendorEscalation.ts`**:
+
 - `evaluateEscalation()`: Evaluate metrics against rules
 - `createVendorAction()`: Create and apply enforcement action
 - `overrideVendorAction()`: Admin override with reasoning
@@ -118,6 +120,7 @@ Metrics are calculated over a rolling 30-day window.
 ### Background Jobs
 
 **`apps/api/src/jobs/checkVendorReputation.ts`**:
+
 - Runs periodically (e.g., every hour)
 - Expires temporary suspensions first
 - Evaluates all active vendors
@@ -132,9 +135,11 @@ Metrics are calculated over a rolling 30-day window.
 ```
 GET /v1/vendor-actions/my-actions
 ```
+
 Get active actions for authenticated vendor.
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -156,9 +161,11 @@ Get active actions for authenticated vendor.
 ```
 GET /v1/vendor-actions/can-accept-orders
 ```
+
 Check if vendor can accept new orders.
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -175,9 +182,11 @@ Check if vendor can accept new orders.
 ```
 GET /v1/vendor-actions/pending
 ```
+
 Get all vendors requiring action.
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -199,9 +208,11 @@ Get all vendors requiring action.
 ```
 GET /v1/vendor-actions/vendor/:vendorId/history
 ```
+
 Get full escalation history for a vendor.
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -225,9 +236,11 @@ Get full escalation history for a vendor.
 ```
 POST /v1/vendor-actions/action/:actionId/override
 ```
+
 Override an active action (admin only).
 
 **Request**:
+
 ```json
 {
   "overrideReason": "Vendor has improved operations and resolved outstanding issues. Manual review confirmed compliance."
@@ -235,6 +248,7 @@ Override an active action (admin only).
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -248,9 +262,11 @@ Override an active action (admin only).
 ```
 POST /v1/vendor-actions/vendor/:vendorId/action
 ```
+
 Manually create a vendor action (admin only).
 
 **Request**:
+
 ```json
 {
   "actionType": "temp_suspend",
@@ -263,9 +279,11 @@ Manually create a vendor action (admin only).
 ```
 GET /v1/vendor-actions/rules
 ```
+
 Get current escalation rules.
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -345,6 +363,7 @@ npm test apps/api/src/services/vendorEscalation.test.ts
 ```
 
 Key test scenarios:
+
 - ✅ Evaluate escalation with different metric combinations
 - ✅ Create actions and update vendor status
 - ✅ Admin override restores vendor status
@@ -369,6 +388,7 @@ npm test apps/api/tests/routes/vendorActions.spec.ts
 ### Manual Testing
 
 1. **Create test vendor with poor metrics**:
+
    ```javascript
    // In MongoDB shell or seed script
    db.orders.insertMany([
@@ -379,12 +399,14 @@ npm test apps/api/tests/routes/vendorActions.spec.ts
    ```
 
 2. **Trigger background job**:
+
    ```bash
    # Via API or cron
    curl -X POST http://localhost:4000/admin/jobs/check-vendor-reputation
    ```
 
 3. **Verify action created**:
+
    ```bash
    curl http://localhost:4000/v1/vendor-actions/vendor/{vendorId}/history
    ```
@@ -404,12 +426,14 @@ npm test apps/api/tests/routes/vendorActions.spec.ts
 ### Issue: Actions not being created
 
 **Possible Causes**:
+
 - Background job not running
 - Metrics not calculated correctly
 - Thresholds too high
 - Duplicate action prevention triggered
 
 **Solutions**:
+
 1. Check job logs for errors
 2. Verify reputation metrics service is working
 3. Review ESCALATION_RULES configuration
@@ -418,11 +442,13 @@ npm test apps/api/tests/routes/vendorActions.spec.ts
 ### Issue: Vendor still able to accept orders despite suspension
 
 **Possible Causes**:
+
 - Order guard middleware not applied
 - Vendor status not updated
 - Cache not invalidated
 
 **Solutions**:
+
 1. Verify vendor status in database: `db.vendors.findOne({ _id: vendorId })`
 2. Check order creation endpoint has `canVendorAcceptOrders` guard
 3. Clear any caches (Redis, etc.)
@@ -430,11 +456,13 @@ npm test apps/api/tests/routes/vendorActions.spec.ts
 ### Issue: Temporary suspension not expiring
 
 **Possible Causes**:
+
 - Background job not running expiration logic
 - expiresAt date incorrect
 - Status not updated
 
 **Solutions**:
+
 1. Manually trigger expiration: call `expireSuspensions()` service
 2. Check expiresAt field: `db.vendorActions.find({ status: 'active', expiresAt: { $lt: new Date() } })`
 3. Review job logs for expiration attempts
@@ -442,11 +470,13 @@ npm test apps/api/tests/routes/vendorActions.spec.ts
 ### Issue: Admin override not working
 
 **Possible Causes**:
+
 - Authorization middleware blocking request
 - Action ID incorrect
 - Override reason too short
 
 **Solutions**:
+
 1. Verify admin role: `req.user.role === 'admin'`
 2. Check action exists and is active
 3. Ensure override reason meets minimum length (10 chars)
@@ -460,9 +490,9 @@ Edit `apps/api/src/services/vendorEscalation.ts`:
 ```typescript
 export const ESCALATION_RULES: EscalationRules = {
   orderDefectRate: {
-    warning: 0.01,      // 1%
-    tempSuspend: 0.02,  // 2%
-    permanentBlock: 0.04 // 4%
+    warning: 0.01, // 1%
+    tempSuspend: 0.02, // 2%
+    permanentBlock: 0.04, // 4%
   },
   // Adjust thresholds as needed
 };
@@ -486,13 +516,17 @@ Update the job schedule in your task scheduler:
 
 ```typescript
 // Example with BullMQ
-queue.add('check-vendor-reputation', {}, {
-  repeat: {
-    cron: '0 * * * *' // Every hour (default)
-    // cron: '0 */2 * * *' // Every 2 hours
-    // cron: '0 0 * * *'  // Daily at midnight
-  }
-});
+queue.add(
+  'check-vendor-reputation',
+  {},
+  {
+    repeat: {
+      cron: '0 * * * *', // Every hour (default)
+      // cron: '0 */2 * * *' // Every 2 hours
+      // cron: '0 0 * * *'  // Daily at midnight
+    },
+  },
+);
 ```
 
 ## Email Notifications (TODO)
@@ -513,6 +547,7 @@ Future implementation will include:
    - Remind suspended vendors of expiration date
 
 Template locations (to be created):
+
 - `apps/api/src/templates/emails/vendor-warning.html`
 - `apps/api/src/templates/emails/vendor-suspension.html`
 - `apps/api/src/templates/emails/vendor-block.html`
@@ -536,6 +571,7 @@ Template locations (to be created):
 ## Support
 
 For issues or questions:
+
 - **Technical Issues**: Create a ticket in the engineering system
 - **Policy Questions**: Contact the marketplace policy team
 - **Vendor Appeals**: Forward to vendor-support@nearbybazaar.com

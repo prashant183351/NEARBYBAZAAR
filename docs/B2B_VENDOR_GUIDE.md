@@ -25,6 +25,7 @@ Welcome to NearbyBazaar's B2B vendor portal! This guide will help you set up bul
 ### Why Sell B2B?
 
 **Benefits:**
+
 - **Higher Order Values**: Bulk orders typically 10-50x retail sales
 - **Predictable Revenue**: B2B customers order regularly
 - **Lower Marketing Costs**: Fewer customers, higher revenue per customer
@@ -32,6 +33,7 @@ Welcome to NearbyBazaar's B2B vendor portal! This guide will help you set up bul
 - **Bulk Shipping**: Lower per-unit shipping costs
 
 **Example:**
+
 ```
 Retail: 100 customers × ₹500 = ₹50,000
 B2B: 5 customers × ₹25,000 = ₹1,25,000 (same products)
@@ -51,6 +53,7 @@ B2B: 5 customers × ₹25,000 = ₹1,25,000 (same products)
 ### B2B Account Requirements
 
 To sell B2B, you must have:
+
 - ✅ Verified GSTIN
 - ✅ Complete business profile
 - ✅ Minimum 10 products listed
@@ -66,6 +69,7 @@ To sell B2B, you must have:
 Bulk pricing uses **quantity tiers** with automatic discounts:
 
 **Example: Your Product**
+
 ```
 Base Price: ₹100 per unit
 Tier 1 (100-499): ₹90 per unit (10% off)
@@ -74,6 +78,7 @@ Tier 3 (1000+): ₹70 per unit (30% off)
 ```
 
 **Buyer sees:**
+
 - 1 unit: ₹100
 - 100 units: ₹9,000 (₹90 each) - saves ₹1,000
 - 500 units: ₹40,000 (₹80 each) - saves ₹10,000
@@ -93,6 +98,7 @@ Tier 3 (1000+): ₹70 per unit (30% off)
 6. **Save** changes
 
 **Best Practice Tiers:**
+
 ```
 Tier 1: 10-20% MOQ of your typical stock
 Tier 2: 50% of stock (sweet spot for buyers)
@@ -122,6 +128,7 @@ For products with high MOQ (Minimum Order Quantity):
 5. **Save**
 
 **Example: Electronics Components Kit**
+
 ```
 Wholesale Only: Yes
 MOQ: 50 kits
@@ -138,21 +145,25 @@ Tiers:
 ### Pricing Strategies
 
 #### 1. Volume Discount Strategy
+
 - **Goal**: Move high inventory
 - **Tiers**: Aggressive (20-30% off)
 - **Best for**: Seasonal items, overstocked items
 
 #### 2. Margin Protection Strategy
+
 - **Goal**: Maintain profitability
 - **Tiers**: Conservative (10-15% off)
 - **Best for**: High-demand, low-margin items
 
 #### 3. Market Penetration Strategy
+
 - **Goal**: Acquire B2B customers
 - **Tiers**: Loss-leader pricing initially
 - **Best for**: New products, new to B2B
 
 #### 4. Dynamic Pricing
+
 - **Adjust tiers** based on:
   - Season (festive season: lower MOQ)
   - Competition (match or beat competitors)
@@ -163,12 +174,14 @@ Tiers:
 **Dashboard > B2B Analytics > Pricing Analysis**
 
 Track:
+
 - **Tier Utilization**: Which tiers buyers use most
 - **Average Discount Given**: Should be 15-25%
 - **Bulk vs Retail Mix**: Target 60-70% bulk revenue
 - **Cart Abandonment**: High = pricing not competitive
 
 **Optimization Tips:**
+
 - If Tier 1 underused: Lower MOQ
 - If Tier 3 overused: Add higher tier with deeper discount
 - If abandonment high: Check competitor pricing
@@ -180,6 +193,7 @@ Track:
 ### What is an RFQ?
 
 **Request for Quotation (RFQ)**: Buyer requests custom pricing for:
+
 - Quantities beyond standard tiers
 - Product customization
 - Special delivery/payment terms
@@ -188,11 +202,13 @@ Track:
 ### Receiving RFQs
 
 **Notifications:**
+
 - Email alert: "New RFQ for [Product Name]"
 - Dashboard notification badge
 - SMS (if enabled)
 
 **RFQ Details Include:**
+
 - Buyer company and industry
 - Product/specifications requested
 - Quantity needed
@@ -215,6 +231,7 @@ Track:
 #### Step 2: Calculate Your Quote
 
 **Pricing Formula:**
+
 ```
 Cost per Unit: ₹X
 Desired Margin: 20-30%
@@ -227,6 +244,7 @@ Then apply:
 ```
 
 **Example:**
+
 ```
 Product: Cotton T-Shirts (with logo printing)
 Quantity: 5,000 pieces
@@ -244,7 +262,7 @@ Total: ₹3,75,000
    - **Total Amount**: ₹3,75,000 (auto-calculated)
    - **Minimum Order Quantity**: 5,000 (from RFQ)
    - **Lead Time**: 15 days (production + delivery)
-   - **Payment Terms**: 
+   - **Payment Terms**:
      - Full Advance, OR
      - 30% Advance + 70% on Delivery, OR
      - Net 30 (if buyer has credit)
@@ -255,16 +273,19 @@ Total: ₹3,75,000
 #### Step 4: Negotiation (Optional)
 
 Buyer may counter-offer:
+
 - Lower price requested
 - Different payment terms
 - Modified specifications
 
 **Your Options:**
+
 - **Accept Counter-Offer**: Update quote and resubmit
 - **Reject**: Politely decline with reason
 - **Negotiate Further**: Propose middle ground
 
 **Negotiation Tips:**
+
 - Be flexible on payment terms (easier than price)
 - Offer volume incentives ("₹72/piece for 6,000+")
 - Suggest alternatives ("₹70/piece without custom packaging")
@@ -272,6 +293,7 @@ Buyer may counter-offer:
 #### Step 5: Quote Accepted
 
 When buyer accepts:
+
 - Order automatically created
 - You receive payment (based on agreed terms)
 - Fulfill order as per timeline
@@ -280,20 +302,24 @@ When buyer accepts:
 ### RFQ Best Practices
 
 **Response Time:**
+
 - Respond within **24 hours** (buyers compare multiple vendors)
 - Set auto-reply: "We've received your RFQ and will respond within 24 hours."
 
 **Competitive Pricing:**
+
 - Research market rates (check competitor listings)
 - Don't undercut too much (low price = low quality perception)
 - Justify premium pricing (quality, faster delivery, customization)
 
 **Clear Communication:**
+
 - Ask questions if requirements unclear
 - Provide samples/portfolio for custom work
 - Set realistic timelines (better to over-deliver than under-promise)
 
 **Professionalism:**
+
 - Use formal language in quotes
 - Include terms & conditions
 - Provide detailed breakdown (transparent pricing)
@@ -303,12 +329,14 @@ When buyer accepts:
 **Dashboard > B2B Analytics > RFQ Performance**
 
 Track:
+
 - **Response Rate**: % of RFQs you responded to
 - **Quote Acceptance Rate**: % of your quotes accepted
 - **Average Quote Value**: Higher = better quality RFQs
 - **Time to Response**: Faster = higher acceptance
 
 **Optimization:**
+
 - Response rate <70%: Enable more notifications
 - Acceptance rate <30%: Your pricing may be too high
 - Avg quote value low: Focus on high-value RFQs
@@ -320,12 +348,14 @@ Track:
 ### Why Offer Credit Terms?
 
 **Benefits:**
+
 - **Higher Order Values**: B2B buyers order more with credit
 - **Customer Loyalty**: Credit terms lock in repeat business
 - **Competitive Advantage**: Not all vendors offer credit
 - **Faster Sales Cycle**: No payment delay before shipment
 
 **Risk Mitigation:**
+
 - NearbyBazaar verifies all B2B buyer accounts
 - Credit limits set based on buyer's business profile
 - Platform guarantees payment (you get paid even if buyer defaults)
@@ -353,12 +383,14 @@ Track:
 ### How Credit Orders Work
 
 #### Buyer Perspective:
+
 1. Places order with credit terms (e.g., Net 30)
 2. No immediate payment required
 3. Credit is reserved from their limit
 4. Receives invoice with due date
 
 #### Vendor Perspective (You):
+
 1. Receive order notification
 2. **Platform pays you immediately** (within 24 hours)
 3. Ship order to buyer
@@ -366,6 +398,7 @@ Track:
 5. You're protected from buyer default
 
 **Example Timeline:**
+
 ```
 Day 1: Buyer orders ₹1,00,000 (Net 30)
 Day 2: You receive ₹97,000* in your account
@@ -377,24 +410,28 @@ Day 31: Platform collects ₹1,00,000 from buyer
 ### Payment Term Types
 
 #### 1. Full Advance
+
 - **Buyer pays**: 100% before shipment
 - **You receive**: Payment before you ship
 - **Risk**: None
 - **Use case**: New buyers, high-value items, custom orders
 
 #### 2. Partial Advance (30-70 common)
+
 - **Buyer pays**: 30% upfront, 70% on delivery
 - **You receive**: 30% immediately, 70% after delivery confirmation
 - **Risk**: Low (you shipped, so buyer has product)
 - **Use case**: Regular buyers, standard products
 
 #### 3. Net 30
+
 - **Buyer pays**: Full amount within 30 days
 - **You receive**: Full amount within 24 hours (platform advance)
 - **Risk**: None (platform guarantees)
 - **Use case**: Established buyers with good credit
 
 #### 4. Net 60
+
 - **Buyer pays**: Full amount within 60 days
 - **You receive**: Full amount within 24 hours (platform advance)
 - **Risk**: None (platform guarantees)
@@ -405,12 +442,14 @@ Day 31: Platform collects ₹1,00,000 from buyer
 **Dashboard > Orders > Credit Sales**
 
 View:
+
 - **Active credit orders**: Not yet paid by buyer
 - **Payment due dates**: When buyer needs to pay
 - **Overdue orders**: Buyer missed deadline (platform handles collection)
 - **Your payout status**: Track platform payments to you
 
 **Alerts:**
+
 - Green: Order paid by buyer
 - Yellow: Payment due soon (7 days)
 - Red: Payment overdue (platform collection in progress)
@@ -418,11 +457,13 @@ View:
 ### What if Buyer Defaults?
 
 **You're protected:**
+
 - Platform already paid you (within 24 hours of order)
 - Platform handles collection and any legal action
 - Your account unaffected
 
 **Platform actions on buyer:**
+
 - Late fees charged (2% per month)
 - Credit frozen until paid
 - Account suspended if 60+ days overdue
@@ -438,35 +479,42 @@ View:
 ```
 
 #### 1. Order Received
+
 - Notification sent (email/SMS/dashboard)
 - Review order details
 - Confirm inventory availability
 
 **Action:**
+
 - Click **"Accept Order"** (within 24 hours)
 - Or **"Cancel"** if cannot fulfill
 
 #### 2. Payment Confirmed
+
 - For advance payments: buyer paid
 - For credit terms: platform paid you
 - Proceed to prepare shipment
 
 #### 3. Ready to Ship
+
 - Pack order
 - Generate shipping label (or use your courier)
 - Mark **"Ready to Ship"**
 
 #### 4. Shipped
+
 - Enter tracking details
 - Buyer receives tracking link
 - Update estimated delivery date
 
 #### 5. Delivered
+
 - Courier confirms delivery
 - For partial advance: remaining payment released to you
 - Buyer can rate/review
 
 #### 6. Completed
+
 - Order closed
 - Funds settled to your account
 - Analytics updated
@@ -474,16 +522,19 @@ View:
 ### Bulk Order Considerations
 
 **Packaging:**
+
 - Use bulk packaging (pallets, cartons)
 - Label clearly with buyer's company name
 - Include packing list and invoice inside
 
 **Shipping:**
+
 - Bulk orders may require freight shipping (not courier)
 - Coordinate delivery date/time with buyer
 - Provide advance notice (24-48 hours)
 
 **Documentation:**
+
 - Commercial invoice (for customs if interstate)
 - Delivery challan
 - GST invoice (E-way bill if value >₹50,000)
@@ -492,14 +543,17 @@ View:
 ### Handling Issues
 
 #### Order Cancellation
+
 - **Before shipment**: Accept cancellation, refund if paid
 - **After shipment**: Per your cancellation policy
 
 #### Buyer Requests Changes
+
 - **Before shipment**: Update if feasible
 - **After shipment**: Cannot change, offer resolution
 
 #### Quality Disputes
+
 - Buyer claims defect/damage
 - **Step 1**: Request photos/video proof
 - **Step 2**: Offer resolution:
@@ -509,6 +563,7 @@ View:
 - **Step 3**: If unresolved, platform mediation
 
 #### Returns
+
 - Accept returns per your policy (e.g., 7 days)
 - Buyer ships back (or you arrange pickup)
 - Inspect returned items
@@ -531,11 +586,13 @@ View:
 ### Key Metrics Explained
 
 #### 1. Total Bulk Revenue
+
 - Total earnings from bulk orders
 - Compare to retail revenue
 - **Target**: 60-70% of total revenue from bulk
 
 **Example:**
+
 ```
 Bulk Revenue: ₹15,00,000 (45 orders)
 Retail Revenue: ₹8,00,000 (320 orders)
@@ -543,10 +600,12 @@ Bulk %: 65.2% ✅ (Good)
 ```
 
 #### 2. Bulk vs Retail Orders
+
 - Number of bulk vs retail transactions
 - Shows order efficiency
 
 **Example:**
+
 ```
 Bulk Orders: 45 (avg ₹33,333 each)
 Retail Orders: 320 (avg ₹2,500 each)
@@ -554,20 +613,24 @@ Efficiency: Bulk orders are 13x more efficient
 ```
 
 #### 3. Average Bulk Order Value
+
 - Average ₹ per bulk order
 - **Target**: ₹15,000 - ₹50,000
 
 **Interpretation:**
+
 - Too low (<₹10,000): Buyers not reaching good tiers
 - Just right (₹15-50K): Sweet spot
 - Too high (>₹1L): May intimidate small businesses
 
 #### 4. Top Segments
+
 - **Top Order Type**: Wholesale, RFQ, or Contract
 - **Top Industry**: Which buyer industries purchase most
 - **Top Region**: Geographic concentration
 
 **Use This To:**
+
 - Focus marketing on top industries
 - Stock inventory based on regional demand
 - Optimize pricing for popular segments
@@ -592,6 +655,7 @@ Efficiency: Bulk orders are 13x more efficient
 - **Growth Trends**: Which regions growing fastest
 
 **Use For:**
+
 - Targeted advertising (focus on high-sales regions)
 - Shipping optimization (warehouse near top cities)
 - Regional pricing (competitive in each market)
@@ -605,6 +669,7 @@ Efficiency: Bulk orders are 13x more efficient
 - **Repeat Purchase Rate**: Most loyal industries
 
 **Use For:**
+
 - Vertical marketing (industry-specific campaigns)
 - Product development (what each industry needs)
 - Relationship building (account managers for top industries)
@@ -622,6 +687,7 @@ Efficiency: Bulk orders are 13x more efficient
    - Revenue and margins
 
 **Use Exported Data For:**
+
 - Accounting reconciliation
 - Tax filing (GST returns)
 - Custom analytics (Excel pivot tables)
@@ -634,6 +700,7 @@ Efficiency: Bulk orders are 13x more efficient
 ### GST on B2B Sales
 
 **Requirements:**
+
 - You must have valid GSTIN
 - Buyer must have valid GSTIN
 - Invoice must show both GSTINs
@@ -641,6 +708,7 @@ Efficiency: Bulk orders are 13x more efficient
 ### Invoice Generation
 
 NearbyBazaar auto-generates GST invoices:
+
 - **Your GSTIN** (from profile)
 - **Buyer's GSTIN** (from their account)
 - **HSN/SAC codes** (from product settings)
@@ -648,6 +716,7 @@ NearbyBazaar auto-generates GST invoices:
 - **Invoice number**: Auto-sequential
 
 **Your Responsibility:**
+
 - Ensure GSTIN is correct in profile
 - Set correct HSN/SAC codes on products
 - Report invoices in GSTR-1 monthly return
@@ -655,12 +724,14 @@ NearbyBazaar auto-generates GST invoices:
 ### Tax Rates
 
 Common GST rates on products:
+
 - **5%**: Essential goods (food grains, etc.)
 - **12%**: Processed foods, some electronics
 - **18%**: Most products (default)
 - **28%**: Luxury items, automobiles
 
 **Set Tax Rate:**
+
 1. Edit product
 2. **"Tax Rate"** field: Select 5%, 12%, 18%, or 28%
 3. **"HSN Code"**: Enter 6-8 digit code
@@ -669,10 +740,12 @@ Common GST rates on products:
 ### Intrastate vs Interstate
 
 #### Intrastate (Same State)
+
 - **CGST** + **SGST** (split equally)
 - Example (18%): 9% CGST + 9% SGST
 
 #### Interstate (Different State)
+
 - **IGST** (integrated)
 - Example (18%): 18% IGST
 
@@ -681,6 +754,7 @@ Common GST rates on products:
 ### E-Way Bill
 
 Required for interstate shipments >₹50,000:
+
 1. Order ships to different state
 2. Value >₹50,000
 3. System prompts: "E-Way Bill Required"
@@ -692,12 +766,14 @@ Required for interstate shipments >₹50,000:
 ### Monthly GST Filing
 
 **Your Process:**
+
 1. **1st-10th of month**: Download all invoices from NearbyBazaar
 2. **By 11th**: File GSTR-1 (outward supplies)
 3. **By 20th**: File GSTR-3B (summary return)
 4. **Pay tax**: Based on GSTR-3B
 
 **NearbyBazaar Helps:**
+
 - Export all invoices with one click
 - Pre-formatted for GST returns
 - Auto-populated buyer GSTIN (they file GSTR-2)
@@ -705,6 +781,7 @@ Required for interstate shipments >₹50,000:
 ### Compliance Checklist
 
 Monthly:
+
 - ✅ Download all invoices (1st of month)
 - ✅ Reconcile sales with accounting software
 - ✅ File GSTR-1 (by 11th)
@@ -712,11 +789,13 @@ Monthly:
 - ✅ Pay tax (by 20th)
 
 Quarterly:
+
 - ✅ Review pricing (ensure competitive)
 - ✅ Check credit policies (any issues?)
 - ✅ Analyze top buyers (relationship health)
 
 Annually:
+
 - ✅ File GSTR-9 (annual return)
 - ✅ Audit financial statements
 - ✅ Plan inventory for next year
@@ -728,6 +807,7 @@ Annually:
 ### Pricing Optimization
 
 **Do:**
+
 - ✅ Research competitor pricing weekly
 - ✅ Test different tier structures (A/B testing)
 - ✅ Offer seasonal discounts (festive seasons)
@@ -735,6 +815,7 @@ Annually:
 - ✅ Use analytics to refine tiers monthly
 
 **Don't:**
+
 - ❌ Price below cost (even for bulk)
 - ❌ Have too many tiers (3-4 is ideal)
 - ❌ Change pricing too frequently (confuses buyers)
@@ -743,6 +824,7 @@ Annually:
 ### RFQ Management
 
 **Do:**
+
 - ✅ Respond within 24 hours (faster = higher acceptance)
 - ✅ Ask clarifying questions (avoid assumptions)
 - ✅ Provide samples/portfolio for custom work
@@ -750,6 +832,7 @@ Annually:
 - ✅ Follow up if no response after 3 days
 
 **Don't:**
+
 - ❌ Over-promise and under-deliver
 - ❌ Give unrealistic timelines
 - ❌ Ignore RFQs (even if you can't fulfill, respond politely)
@@ -758,6 +841,7 @@ Annually:
 ### Customer Relationships
 
 **Do:**
+
 - ✅ Thank buyers for orders (personal message)
 - ✅ Update on order status proactively
 - ✅ Offer volume discounts for repeat customers
@@ -765,6 +849,7 @@ Annually:
 - ✅ Resolve issues quickly (within 24 hours)
 
 **Don't:**
+
 - ❌ Go silent after receiving payment
 - ❌ Blame buyer for issues (always find solution)
 - ❌ Ignore negative reviews (respond professionally)
@@ -773,6 +858,7 @@ Annually:
 ### Inventory Management
 
 **For Bulk Sales:**
+
 - Maintain 2-3 months of inventory (bulk orders are larger)
 - Set stock alerts (low stock = lost bulk sales)
 - Communicate lead times clearly (don't promise if out of stock)
@@ -781,12 +867,14 @@ Annually:
 ### Credit Sales Safety
 
 **Do:**
+
 - ✅ Trust platform's buyer verification
 - ✅ Ship immediately after platform payment
 - ✅ Keep proof of delivery (tracking, signatures)
 - ✅ Monitor overdue orders (even though platform handles)
 
 **Don't:**
+
 - ❌ Delay shipment waiting for buyer payment (you already got paid)
 - ❌ Offer credit outside platform (no protection)
 - ❌ Ignore repeated cancellations from a buyer (report to platform)
@@ -794,12 +882,14 @@ Annually:
 ### Tax Compliance
 
 **Do:**
+
 - ✅ File GST returns on time (penalties are high)
 - ✅ Maintain 6 years of invoice records
 - ✅ Reconcile buyer GSTR-2 with your GSTR-1
 - ✅ Set aside tax payments (separate bank account)
 
 **Don't:**
+
 - ❌ Show incorrect GSTIN on invoices
 - ❌ Delay payment of collected tax
 - ❌ Misclassify products (wrong HSN = wrong tax rate)
@@ -909,4 +999,4 @@ A: Only if value >₹50,000. System will alert you.
 
 ---
 
-*Happy Selling! 🚀*
+_Happy Selling! 🚀_

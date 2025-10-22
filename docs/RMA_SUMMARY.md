@@ -7,6 +7,7 @@ Feature #145 (Return Merchandise Authorization) has been **stubbed out** for fut
 ## 📁 Files Created
 
 ### Backend Models
+
 - **`apps/api/src/models/Return.ts`**
   - Complete RMA data model with 21 status states
   - Support for dropship returns (vendor + supplier approval)
@@ -15,6 +16,7 @@ Feature #145 (Return Merchandise Authorization) has been **stubbed out** for fut
   - Full audit trail and timeline tracking
 
 ### Backend Routes (Stub)
+
 - **`apps/api/src/routes/returns.ts`**
   - 9 API endpoints with TODO comments
   - Customer endpoints: Create return, view status
@@ -23,6 +25,7 @@ Feature #145 (Return Merchandise Authorization) has been **stubbed out** for fut
   - Shared endpoints: Shipment tracking, cancellation
 
 ### Backend Services (Stub)
+
 - **`apps/api/src/services/rma.ts`**
   - 10+ helper functions with placeholder logic
   - Workflow management (status transitions)
@@ -32,6 +35,7 @@ Feature #145 (Return Merchandise Authorization) has been **stubbed out** for fut
   - Analytics and validation
 
 ### Frontend UI (Stub)
+
 - **`apps/vendor/pages/returns.tsx`**
   - Returns management dashboard
   - Dummy data demonstration
@@ -40,6 +44,7 @@ Feature #145 (Return Merchandise Authorization) has been **stubbed out** for fut
   - TODO list for full implementation
 
 ### Shared Types
+
 - **`packages/types/src/rma.ts`**
   - Shared TypeScript types
   - Status/reason enums
@@ -47,6 +52,7 @@ Feature #145 (Return Merchandise Authorization) has been **stubbed out** for fut
   - Reusable across frontend/backend
 
 ### Documentation
+
 - **`docs/RMA.md`**
   - Complete RMA system specification
   - Data model documentation
@@ -64,12 +70,14 @@ Feature #145 (Return Merchandise Authorization) has been **stubbed out** for fut
 The RMA system supports **21 different states** covering the complete lifecycle:
 
 ### Customer Journey
+
 1. **requested** → Customer initiates return
 2. **return_label_sent** → Label provided
 3. **shipped_back** → Item shipped
 4. **refunded** → Money returned
 
 ### Vendor/Supplier Journey
+
 1. **vendor_reviewing** → Vendor evaluates
 2. **vendor_approved/rejected** → Decision made
 3. **supplier_reviewing** (dropship only)
@@ -82,24 +90,29 @@ The RMA system supports **21 different states** covering the complete lifecycle:
 ## 🎯 Key Features Designed
 
 ### Multi-Party Coordination
+
 - **Customer** ↔ **Vendor** ↔ **Supplier** (dropship)
 - Separate approval workflows for each party
 - Communication trails (notes for each party)
 
 ### Complete Tracking
+
 - Return items with reasons and photos
 - Shipment tracking (carrier, tracking number)
 - Inspection results with evidence
 - Refund details and transaction IDs
 
 ### Flexible Refund Options
+
 - Original payment method
 - Store credit
 - Replacement item
 - Partial refund (restocking fees)
 
 ### Return Reasons
+
 8 predefined reasons:
+
 - Defective, Wrong item, Not as described
 - Changed mind, Damaged in shipping
 - Sizing issue, Quality issue, Arrived late
@@ -109,30 +122,35 @@ The RMA system supports **21 different states** covering the complete lifecycle:
 The documentation includes a **6-phase implementation plan**:
 
 ### Phase 1: Core Functionality
+
 - Order eligibility validation
 - Return policy per vendor
 - Email notifications
 - Integration with notification system
 
 ### Phase 2: Shipping Integration
+
 - Shiprocket/Delhivery integration
 - Pre-paid return labels
 - Automatic tracking
 - Cost calculation
 
 ### Phase 3: Refund Processing
+
 - Payment gateway integration (Razorpay/Stripe)
 - Refund to original payment
 - Store credit system
 - Partial refunds and restocking fees
 
 ### Phase 4: Inventory Management
+
 - Stock updates after inspection
 - Damaged inventory tracking
 - Return reason analytics
 - Supplier inventory sync
 
 ### Phase 5: UI Components
+
 - Customer return form and tracking
 - Vendor review dashboard
 - Inspection interface
@@ -140,6 +158,7 @@ The documentation includes a **6-phase implementation plan**:
 - Admin analytics
 
 ### Phase 6: Advanced Features
+
 - Automated approval (low-value items)
 - Instant refund for trusted customers
 - Return analytics dashboard
@@ -149,6 +168,7 @@ The documentation includes a **6-phase implementation plan**:
 ## 🧪 Testing Strategy
 
 Documented test requirements:
+
 - Unit tests for status transitions
 - Integration tests for end-to-end workflow
 - Edge cases (partial returns, concurrent updates)
@@ -157,6 +177,7 @@ Documented test requirements:
 ## 📊 Business Rules (To Define)
 
 The stub identifies key policy decisions needed:
+
 - Return window (30/60 days)
 - Refund policy (full/partial/store credit)
 - Shipping cost responsibility
@@ -166,6 +187,7 @@ The stub identifies key policy decisions needed:
 ## 🔗 Integration Points
 
 Designed to integrate with:
+
 - **Notifications** (Feature #144) - Status updates
 - **Compliance** (Feature #143) - Return policy acceptance
 - **Payment Gateway** - Refund processing
@@ -175,6 +197,7 @@ Designed to integrate with:
 ## 🚀 Next Steps
 
 When ready to implement:
+
 1. Define vendor return policies (config/settings)
 2. Integrate shipping provider API
 3. Implement payment gateway refunds
@@ -185,6 +208,7 @@ When ready to implement:
 ## ⚠️ Current Status
 
 **ALL CODE IS STUB/PLACEHOLDER**
+
 - Models are complete and ready to use
 - API endpoints return stub responses
 - Service functions have TODO comments

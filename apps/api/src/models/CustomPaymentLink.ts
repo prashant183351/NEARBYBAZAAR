@@ -9,13 +9,19 @@ export interface ICustomPaymentLink extends Document {
   updatedAt: Date;
 }
 
-const CustomPaymentLinkSchema: Schema = new Schema({
-  vendorId: { type: Schema.Types.ObjectId, ref: 'Vendor', required: true },
-  orderId: { type: Schema.Types.ObjectId, ref: 'Order', required: true },
-  amount: { type: Number, required: true },
-  status: { type: String, enum: ['PENDING', 'PAID', 'EXPIRED'], default: 'PENDING' },
-}, {
-  timestamps: true,
-});
+const CustomPaymentLinkSchema: Schema = new Schema(
+  {
+    vendorId: { type: Schema.Types.ObjectId, ref: 'Vendor', required: true },
+    orderId: { type: Schema.Types.ObjectId, ref: 'Order', required: true },
+    amount: { type: Number, required: true },
+    status: { type: String, enum: ['PENDING', 'PAID', 'EXPIRED'], default: 'PENDING' },
+  },
+  {
+    timestamps: true,
+  },
+);
 
-export const CustomPaymentLink = mongoose.model<ICustomPaymentLink>('CustomPaymentLink', CustomPaymentLinkSchema);
+export const CustomPaymentLink = mongoose.model<ICustomPaymentLink>(
+  'CustomPaymentLink',
+  CustomPaymentLinkSchema,
+);

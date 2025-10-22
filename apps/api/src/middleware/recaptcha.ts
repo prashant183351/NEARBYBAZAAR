@@ -17,7 +17,10 @@ export async function verifyRecaptcha(req: Request, res: Response, next: NextFun
   }
   // If fingerprint seen > 10 times in last hour, mark as suspicious
   if (fingerprint) {
-    const recent = await CaptchaLog.countDocuments({ fingerprint, timestamp: { $gt: Date.now() - 60 * 60 * 1000 } });
+    const recent = await CaptchaLog.countDocuments({
+      fingerprint,
+      timestamp: { $gt: Date.now() - 60 * 60 * 1000 },
+    });
     if (recent > 10) {
       await CaptchaLog.create({
         ip: req.ip,
@@ -46,11 +49,9 @@ export async function verifyRecaptcha(req: Request, res: Response, next: NextFun
     params.append('secret', RECAPTCHA_SECRET);
     params.append('response', token);
     if (req.ip) params.append('remoteip', req.ip);
-    const resp = await axios.post(
-      'https://www.google.com/recaptcha/api/siteverify',
-      params,
-      { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-    );
+    const resp = await axios.post('https://www.google.com/recaptcha/api/siteverify', params, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
     const { success, score, action } = resp.data;
     if (!success || score < MIN_SCORE) {
       await CaptchaLog.create({

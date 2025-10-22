@@ -19,7 +19,7 @@ jobs:
   test:
     name: API Tests (Dropshipping)
     runs-on: ubuntu-latest
-    
+
     # Service containers for MongoDB
     services:
       mongodb:
@@ -31,42 +31,42 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'pnpm'
-      
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      
+
       - name: Lint API code
         run: pnpm --filter @nearbybazaar/api lint
-      
+
       - name: Type check
         run: pnpm --filter @nearbybazaar/api type-check
-      
+
       - name: Run all API tests
         run: pnpm --filter @nearbybazaar/api test --coverage
         env:
           NODE_ENV: test
           MONGO_URL: mongodb://localhost:27017/test-dropship
-      
+
       - name: Check coverage thresholds
         run: |
           pnpm --filter @nearbybazaar/api test --coverage --coverageReporters=text-summary
           echo "✅ Coverage thresholds met"
-      
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
@@ -74,14 +74,13 @@ jobs:
           flags: api,dropship
           name: api-coverage
           fail_ci_if_error: true
-      
+
       - name: Generate coverage badge
         if: github.ref == 'refs/heads/main'
         uses: cicirello/jacoco-badge-generator@v2
         with:
           badges-directory: badges
-          coverage-file: ./apps/api/coverage/coverage-summary.json
-      
+
       - name: Comment PR with coverage
         if: github.event_name == 'pull_request'
         uses: romeovs/lcov-reporter-action@v0.3.1
@@ -94,49 +93,49 @@ jobs:
     name: Dropshipping CI Gate
     runs-on: ubuntu-latest
     needs: test
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'pnpm'
-      
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      
+
       - name: Service containers for MongoDB
         run: |
           docker run -d -p 27017:27017 mongo:7
           sleep 10  # Wait for MongoDB to be ready
-      
+
       - name: Run dropship tests specifically
         run: pnpm --filter @nearbybazaar/api test dropship.spec.ts --coverage
         env:
           NODE_ENV: test
           MONGO_URL: mongodb://localhost:27017/test-dropship
-      
+
       - name: Verify dropship coverage (90%+)
         run: |
           coverage_line=$(pnpm --filter @nearbybazaar/api test dropship.spec.ts --coverage --coverageReporters=text-summary 2>&1 | grep -E "Lines\s+:")
           coverage_pct=$(echo $coverage_line | sed 's/.*: \([0-9.]*\)%.*/\1/')
           echo "Dropship coverage: ${coverage_pct}%"
-          
+
           if (( $(echo "$coverage_pct < 90" | bc -l) )); then
             echo "❌ Dropship coverage is below 90% threshold"
             exit 1
           fi
-          
+
           echo "✅ Dropship coverage meets 90% threshold"
-      
+
       - name: CI Gate Passed
         run: |
           echo "✅ All dropshipping tests passed"
@@ -148,7 +147,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test, dropship-gate]
     if: failure()
-    
+
     steps:
       - name: Send notification
         run: |

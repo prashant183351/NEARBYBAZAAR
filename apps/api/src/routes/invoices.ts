@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { generateInvoice, getInvoiceByOrder, getInvoiceByNumber } from '../services/invoice/generator';
+import {
+  generateInvoice,
+  getInvoiceByOrder,
+  getInvoiceByNumber,
+} from '../services/invoice/generator';
 import { generateEInvoice, isEInvoicingRequired } from '../services/invoice/einvoice';
 import { generateGSTInvoicePDF } from '../services/invoice/pdf';
 import { Invoice } from '../models/Invoice';
@@ -13,24 +17,24 @@ const router = Router();
 router.post('/generate', async (req, res) => {
   try {
     const { orderId, sellerInfo } = req.body;
-    
+
     if (!orderId || !sellerInfo) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'orderId and sellerInfo are required' 
+      return res.status(400).json({
+        success: false,
+        error: 'orderId and sellerInfo are required',
       });
     }
-    
+
     // Generate invoice
     const invoice = await generateInvoice({ orderId, sellerInfo });
-    
+
     // Check if e-invoicing is required
     const needsEInvoice = isEInvoicingRequired(
       sellerInfo.gstin,
       invoice.buyer.gstin,
-      invoice.grandTotal
+      invoice.grandTotal,
     );
-    
+
     // Generate e-invoice if required
     if (needsEInvoice) {
       const eInvoiceRequest = {
@@ -39,7 +43,7 @@ router.post('/generate', async (req, res) => {
         sellerGstin: sellerInfo.gstin!,
         buyerGstin: invoice.buyer.gstin!,
         totalInvoiceValue: invoice.grandTotal,
-        lineItems: invoice.lineItems.map(item => ({
+        lineItems: invoice.lineItems.map((item) => ({
           description: item.description,
           hsnCode: item.hsnCode,
           quantity: item.quantity,
@@ -51,9 +55,9 @@ router.post('/generate', async (req, res) => {
           totalAmount: item.totalAmount,
         })),
       };
-      
+
       const eInvoiceResponse = await generateEInvoice(eInvoiceRequest);
-      
+
       if (eInvoiceResponse.success) {
         // Update invoice with IRN
         invoice.irn = eInvoiceResponse.irn;
@@ -63,7 +67,7 @@ router.post('/generate', async (req, res) => {
         await invoice.save();
       }
     }
-    
+
     res.json({ success: true, data: invoice });
   } catch (error: any) {
     res.status(400).json({ success: false, error: error.message });
@@ -77,11 +81,11 @@ router.post('/generate', async (req, res) => {
 router.get('/order/:orderId', async (req, res) => {
   try {
     const invoice = await getInvoiceByOrder(req.params.orderId);
-    
+
     if (!invoice) {
       return res.status(404).json({ success: false, error: 'Invoice not found' });
     }
-    
+
     res.json({ success: true, data: invoice });
   } catch (error: any) {
     res.status(400).json({ success: false, error: error.message });
@@ -95,11 +99,11 @@ router.get('/order/:orderId', async (req, res) => {
 router.get('/:invoiceNumber', async (req, res) => {
   try {
     const invoice = await getInvoiceByNumber(req.params.invoiceNumber);
-    
+
     if (!invoice) {
       return res.status(404).json({ success: false, error: 'Invoice not found' });
     }
-    
+
     res.json({ success: true, data: invoice });
   } catch (error: any) {
     res.status(400).json({ success: false, error: error.message });
@@ -113,22 +117,18 @@ router.get('/:invoiceNumber', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const { userId, status, page = 1, limit = 20 } = req.query;
-    
+
     const filter: any = {};
     if (userId) filter.userId = userId;
     if (status) filter.status = status;
-    
+
     const skip = (Number(page) - 1) * Number(limit);
-    
+
     const [invoices, total] = await Promise.all([
-      Invoice.find(filter)
-        .sort({ invoiceDate: -1 })
-        .skip(skip)
-        .limit(Number(limit))
-        .lean(),
+      Invoice.find(filter).sort({ invoiceDate: -1 }).skip(skip).limit(Number(limit)).lean(),
       Invoice.countDocuments(filter),
     ]);
-    
+
     res.json({
       success: true,
       data: invoices,
@@ -151,15 +151,18 @@ router.get('/', async (req, res) => {
 router.get('/:id/pdf', async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id);
-    
+
     if (!invoice) {
       return res.status(404).json({ success: false, error: 'Invoice not found' });
     }
-    
+
     const pdfBuffer = await generateGSTInvoicePDF(invoice);
-    
+
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="invoice-${invoice.invoiceNumber.replace('/', '-')}.pdf"`);
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="invoice-${invoice.invoiceNumber.replace('/', '-')}.pdf"`,
+    );
     res.send(pdfBuffer);
   } catch (error: any) {
     res.status(400).json({ success: false, error: error.message });
@@ -173,38 +176,38 @@ router.get('/:id/pdf', async (req, res) => {
 router.post('/:id/regenerate-irn', async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id);
-    
+
     if (!invoice) {
       return res.status(404).json({ success: false, error: 'Invoice not found' });
     }
-    
+
     if (invoice.irn) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Invoice already has an IRN. Cancel it first if regeneration is needed.' 
+      return res.status(400).json({
+        success: false,
+        error: 'Invoice already has an IRN. Cancel it first if regeneration is needed.',
       });
     }
-    
+
     const needsEInvoice = isEInvoicingRequired(
       invoice.seller.gstin,
       invoice.buyer.gstin,
-      invoice.grandTotal
+      invoice.grandTotal,
     );
-    
+
     if (!needsEInvoice) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'E-invoicing not required for this invoice' 
+      return res.status(400).json({
+        success: false,
+        error: 'E-invoicing not required for this invoice',
       });
     }
-    
+
     const eInvoiceRequest = {
       invoiceNumber: invoice.invoiceNumber,
       invoiceDate: invoice.invoiceDate.toISOString(),
       sellerGstin: invoice.seller.gstin!,
       buyerGstin: invoice.buyer.gstin!,
       totalInvoiceValue: invoice.grandTotal,
-      lineItems: invoice.lineItems.map(item => ({
+      lineItems: invoice.lineItems.map((item) => ({
         description: item.description,
         hsnCode: item.hsnCode,
         quantity: item.quantity,
@@ -216,16 +219,16 @@ router.post('/:id/regenerate-irn', async (req, res) => {
         totalAmount: item.totalAmount,
       })),
     };
-    
+
     const eInvoiceResponse = await generateEInvoice(eInvoiceRequest);
-    
+
     if (eInvoiceResponse.success) {
       invoice.irn = eInvoiceResponse.irn;
       invoice.ackNo = eInvoiceResponse.ackNo;
       invoice.ackDate = eInvoiceResponse.ackDate ? new Date(eInvoiceResponse.ackDate) : undefined;
       invoice.qrCode = eInvoiceResponse.signedQrCode;
       await invoice.save();
-      
+
       res.json({ success: true, data: invoice });
     } else {
       res.status(400).json({ success: false, error: eInvoiceResponse.error });

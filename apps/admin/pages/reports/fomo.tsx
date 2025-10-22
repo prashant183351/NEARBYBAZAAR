@@ -22,7 +22,7 @@ const FomoAnalyticsDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('/admin/api/analytics/fomo').then(r => {
+    axios.get('/admin/api/analytics/fomo').then((r) => {
       setData(r.data);
       setLoading(false);
     });
@@ -38,12 +38,24 @@ const FomoAnalyticsDashboard: React.FC = () => {
         <div className="bg-white rounded shadow p-6">
           <h2 className="font-semibold mb-2">Global Metrics</h2>
           <ul className="text-sm space-y-1">
-            <li><b>Products with FOMO:</b> {data.totalWithFomo}</li>
-            <li><b>Products without FOMO:</b> {data.totalWithoutFomo}</li>
-            <li><b>CTR (FOMO):</b> {(data.ctrWithFomo * 100).toFixed(2)}%</li>
-            <li><b>CTR (No FOMO):</b> {(data.ctrWithoutFomo * 100).toFixed(2)}%</li>
-            <li><b>Conversion Rate (FOMO):</b> {(data.conversionWithFomo * 100).toFixed(2)}%</li>
-            <li><b>Conversion Rate (No FOMO):</b> {(data.conversionWithoutFomo * 100).toFixed(2)}%</li>
+            <li>
+              <b>Products with FOMO:</b> {data.totalWithFomo}
+            </li>
+            <li>
+              <b>Products without FOMO:</b> {data.totalWithoutFomo}
+            </li>
+            <li>
+              <b>CTR (FOMO):</b> {(data.ctrWithFomo * 100).toFixed(2)}%
+            </li>
+            <li>
+              <b>CTR (No FOMO):</b> {(data.ctrWithoutFomo * 100).toFixed(2)}%
+            </li>
+            <li>
+              <b>Conversion Rate (FOMO):</b> {(data.conversionWithFomo * 100).toFixed(2)}%
+            </li>
+            <li>
+              <b>Conversion Rate (No FOMO):</b> {(data.conversionWithoutFomo * 100).toFixed(2)}%
+            </li>
           </ul>
         </div>
         <div className="bg-white rounded shadow p-6">
@@ -59,7 +71,7 @@ const FomoAnalyticsDashboard: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {data.byRegion.map(r => (
+              {data.byRegion.map((r) => (
                 <tr key={r.region} className="border-b last:border-0">
                   <td className="py-1">{r.region}</td>
                   <td className="text-center">{(r.ctrWithFomo * 100).toFixed(2)}%</td>
@@ -75,7 +87,9 @@ const FomoAnalyticsDashboard: React.FC = () => {
       <div className="bg-white rounded shadow p-6 mt-8">
         <h2 className="font-semibold mb-2">Interpretation</h2>
         <p className="text-sm text-gray-700">
-          This dashboard compares click-through and conversion rates for products with and without FOMO badges, globally and by region. Use these insights to optimize FOMO settings and marketing strategies.
+          This dashboard compares click-through and conversion rates for products with and without
+          FOMO badges, globally and by region. Use these insights to optimize FOMO settings and
+          marketing strategies.
         </p>
       </div>
     </div>

@@ -58,10 +58,10 @@ LOG_TESTS=1 pnpm test dropship.spec.ts
 
 ## 📊 Coverage Requirements
 
-| Area | Lines | Branches | Functions | Statements |
-|------|-------|----------|-----------|------------|
-| **Global API** | 80% | 70% | 70% | 80% |
-| **Dropship Services** | 90% | 80% | 90% | 90% |
+| Area                  | Lines | Branches | Functions | Statements |
+| --------------------- | ----- | -------- | --------- | ---------- |
+| **Global API**        | 80%   | 70%      | 70%       | 80%        |
+| **Dropship Services** | 90%   | 80%      | 90%       | 90%        |
 
 ## 🧪 Test Categories
 
@@ -85,6 +85,7 @@ MongooseServerSelectionError: connect ECONNREFUSED
 ```
 
 **Fix**: Start MongoDB
+
 ```bash
 docker start test-mongo
 # or
@@ -106,6 +107,7 @@ Jest: "global" coverage threshold for lines (80%) not met: 75%
 ```
 
 **Fix**: Add tests for uncovered code paths
+
 ```bash
 # See what's not covered
 pnpm test --coverage --verbose
@@ -143,10 +145,10 @@ describe('New Feature', () => {
     it('should do something', async () => {
         // Arrange
         const input = {...};
-        
+
         // Act
         const result = await functionUnderTest(input);
-        
+
         // Assert
         expect(result).toBeDefined();
         expect(result.property).toBe(expectedValue);
@@ -163,8 +165,8 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 // In test:
 mockedAxios.post.mockResolvedValueOnce({
-    status: 200,
-    data: { success: true }
+  status: 200,
+  data: { success: true },
 });
 ```
 

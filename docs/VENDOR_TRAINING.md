@@ -9,11 +9,13 @@
 ### Lesson 1.1: Why B2B Matters
 
 **📊 Key Statistics:**
+
 - Average B2B order value: **15x higher** than retail
 - B2B customer retention: **80%** vs 30% retail
 - B2B profit margins: **20-30%** vs 10-15% retail
 
 **💰 Revenue Comparison:**
+
 ```
 Retail Focus:
 - 100 customers
@@ -29,6 +31,7 @@ B2B Focus:
 ```
 
 **✅ Action Items:**
+
 1. [ ] Enable B2B features in dashboard
 2. [ ] Complete business profile (GSTIN, bank account)
 3. [ ] Set initial bulk pricing (use templates)
@@ -38,12 +41,14 @@ B2B Focus:
 ### Lesson 1.2: Setting Up Your Profile
 
 **Required Information:**
+
 - ✅ GSTIN (GST Identification Number)
 - ✅ Bank account details (for settlements)
 - ✅ Business type (manufacturer, trader, service provider)
 - ✅ Minimum 10 products listed
 
 **Steps:**
+
 1. Dashboard → Settings → B2B Configuration
 2. Enable "B2B Sales" toggle
 3. Fill in business details
@@ -52,6 +57,7 @@ B2B Focus:
 6. Save and wait for approval (24-48 hours)
 
 **🎯 Checklist:**
+
 ```
 [ ] GSTIN entered and verified
 [ ] Bank account linked
@@ -70,6 +76,7 @@ B2B Focus:
 **Concept:** Offer discounts based on quantity purchased.
 
 **Example Product:**
+
 ```
 Product: Premium Cotton T-Shirts
 Retail Price: ₹300 per piece
@@ -101,6 +108,7 @@ Your Revenue:
 3. **Click "Add Tier"**
 
 **Tier 1 (Starter Bulk):**
+
 ```
 Min Quantity: 50
 Price per Unit: ₹270
@@ -108,6 +116,7 @@ Discount %: 10%
 ```
 
 4. **Add Tier 2:**
+
 ```
 Min Quantity: 100
 Price per Unit: ₹240
@@ -115,6 +124,7 @@ Discount %: 20%
 ```
 
 5. **Add Tier 3:**
+
 ```
 Min Quantity: 200
 Price per Unit: ₹210
@@ -132,6 +142,7 @@ Discount %: 30%
 **Use Case:** Apply same tier structure to multiple products.
 
 **Conservative Template (Low Risk):**
+
 ```
 Tier 1: MOQ 25, 10% off
 Tier 2: MOQ 50, 15% off
@@ -139,6 +150,7 @@ Tier 3: MOQ 100, 20% off
 ```
 
 **Balanced Template (Recommended):**
+
 ```
 Tier 1: MOQ 50, 15% off
 Tier 2: MOQ 100, 20% off
@@ -146,6 +158,7 @@ Tier 3: MOQ 200, 25% off
 ```
 
 **Aggressive Template (High Volume):**
+
 ```
 Tier 1: MOQ 100, 20% off
 Tier 2: MOQ 250, 25% off
@@ -153,6 +166,7 @@ Tier 3: MOQ 500, 30% off
 ```
 
 **Application:**
+
 1. Dashboard → Products → Bulk Actions
 2. Select multiple products (checkbox)
 3. "Apply Pricing Template" → Choose template
@@ -163,18 +177,21 @@ Tier 3: MOQ 500, 30% off
 ### Lesson 2.4: Pricing Psychology
 
 **✅ DO:**
+
 - End prices with 9 or 0 (₹99, ₹150, not ₹102)
 - Show "You Save ₹X" prominently
 - Create urgency ("Limited stock for bulk orders")
 - Bundle complementary products
 
 **❌ DON'T:**
+
 - Price below cost (even for bulk)
 - Offer same discount to all tiers (no incentive to buy more)
 - Change pricing weekly (confuses buyers)
 - Ignore competitor pricing
 
 **🧠 Pricing Formula:**
+
 ```
 Cost per Unit: ₹X
 Desired Margin: 20-30%
@@ -202,12 +219,14 @@ Tier 3: ₹91 (30% off)
 **RFQ = Request for Quotation**
 
 Buyer submits custom requirements:
+
 - Large quantities (beyond standard tiers)
 - Product customization (logo, colors, specs)
 - Special delivery terms
 - Products not in your catalog
 
 **Why RFQs are Gold:**
+
 - Higher order values (avg ₹50,000 - ₹5,00,000)
 - Pre-qualified buyers (serious, not browsing)
 - Custom pricing (better margins)
@@ -218,6 +237,7 @@ Buyer submits custom requirements:
 ### Lesson 3.2: Reading an RFQ
 
 **Sample RFQ:**
+
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 📋 RFQ #12345
@@ -249,6 +269,7 @@ Buyer submits custom requirements:
 ```
 
 **What to Look For:**
+
 - ✅ Reasonable quantity (can you fulfill?)
 - ✅ Clear specifications (or can ask for clarification)
 - ✅ Target price (is it profitable?)
@@ -313,6 +334,7 @@ Best regards,
 ```
 
 **🎯 Response Checklist:**
+
 ```
 [ ] Responded within 24 hours
 [ ] Addressed all requirements
@@ -359,6 +381,7 @@ FINAL QUOTE: ₹85 per piece (₹4,25,000 total)
 ```
 
 **Margin Guidelines:**
+
 - Minimum acceptable: 15%
 - Sweet spot: 20-25%
 - Premium (if unique offering): 30%+
@@ -394,6 +417,7 @@ Which option works best for you?"
 **✅ Response:**
 "Expedited production is possible for an additional
 ₹15,000 rush fee (₹3 per piece). This covers:
+
 - Priority production scheduling
 - Express shipping
 
@@ -418,6 +442,7 @@ Alternatively, if you can do 50% advance + 50% Net
 Which option would you prefer?"
 
 **💡 Negotiation Principles:**
+
 1. Never say flat "no" - offer alternatives
 2. Be flexible on payment terms (easier than price)
 3. Bundle extras for volume increases
@@ -430,12 +455,14 @@ Which option would you prefer?"
 ### Lesson 4.1: How Credit Orders Work
 
 **Traditional (Risky):**
+
 ```
 You → Ship product → Wait 30 days → Hope buyer pays
 Risk: Buyer might not pay!
 ```
 
 **NearbyBazaar B2B (Safe):**
+
 ```
 Buyer → Places order → Platform pays YOU instantly →
 You ship → Platform collects from buyer later
@@ -443,6 +470,7 @@ Risk: ZERO! Platform guarantees payment.
 ```
 
 **Timeline Example:**
+
 ```
 Day 1: Buyer orders ₹1,00,000 (Net 30)
 Day 2: ₹97,000 deposited in your account*
@@ -457,6 +485,7 @@ Day 31: Platform collects ₹1,00,000 from buyer
 ### Lesson 4.2: Payment Term Types
 
 **Full Advance (No Credit):**
+
 ```
 Buyer pays: 100% before shipment
 You receive: 100% before shipment
@@ -465,6 +494,7 @@ Use for: New buyers, high-value items
 ```
 
 **Partial Advance (Most Common):**
+
 ```
 Example: 30-70 split
 Buyer pays: 30% upfront, 70% on delivery
@@ -474,6 +504,7 @@ Use for: Regular customers, standard orders
 ```
 
 **Net 30:**
+
 ```
 Buyer pays: Full amount within 30 days
 You receive: Full amount within 24 hours
@@ -482,6 +513,7 @@ Use for: Established B2B customers
 ```
 
 **Net 60:**
+
 ```
 Buyer pays: Full amount within 60 days
 You receive: Full amount within 24 hours
@@ -509,6 +541,7 @@ Use for: Large enterprises, high-value orders
 ```
 
 **Auto-Approve vs Manual:**
+
 - **Auto:** System approves if buyer has credit limit
 - **Manual:** You review each credit order (safer for new vendors)
 
@@ -521,6 +554,7 @@ Use for: Large enterprises, high-value orders
 **Dashboard → Orders → Credit Sales**
 
 **Order Status Colors:**
+
 ```
 🟢 Green: Buyer paid, all clear
 🟡 Yellow: Payment due soon (7 days)
@@ -528,6 +562,7 @@ Use for: Large enterprises, high-value orders
 ```
 
 **What to Monitor:**
+
 - Active credit orders (not yet paid by buyer)
 - Payment due dates
 - Your payout status (already received or pending)
@@ -563,15 +598,17 @@ Use for: Large enterprises, high-value orders
 **What These Mean:**
 
 **Bulk vs Retail Ratio:**
+
 - <40%: Not using bulk pricing enough
 - 40-60%: Good start
 - 60-80%: Excellent! Sweet spot
-- >80%: Maybe price retail too high?
+- > 80%: Maybe price retail too high?
 
 **Avg Bulk Order Value:**
+
 - <₹10,000: Tiers may be too low
 - ₹15-50K: Perfect range
-- >₹1,00,000: May scare small businesses
+- > ₹1,00,000: May scare small businesses
 
 ---
 
@@ -589,20 +626,23 @@ Use for: Large enterprises, high-value orders
    - What's the avg discount given?
 
 3. **Adjust Tiers:**
-   
+
    **If Tier 1 underused (too high MOQ):**
+
    ```
    Before: Tier 1 starts at 100 units
    After: Tier 1 starts at 50 units
    ```
 
    **If Tier 3 overused (too good a deal):**
+
    ```
    Before: Tier 3 = 30% off
    After: Add Tier 4 at 35% off, keep Tier 3 at 25%
    ```
 
    **If avg discount >25% (margins too thin):**
+
    ```
    Reduce all tier discounts by 5%
    ```
@@ -622,6 +662,7 @@ Use for: Large enterprises, high-value orders
 **Use Case:** Focus marketing on top regions.
 
 **Example Data:**
+
 ```
 ┌────────────┬────────┬────────────┐
 │ Region     │ Orders │ Revenue    │
@@ -633,6 +674,7 @@ Use for: Large enterprises, high-value orders
 ```
 
 **Action:**
+
 - Run ads targeting West region (highest revenue)
 - Consider warehouse near West for faster delivery
 - Investigate why South is low (marketing? shipping cost?)
@@ -642,6 +684,7 @@ Use for: Large enterprises, high-value orders
 ## Module 6: Best Practices Checklist
 
 ### Daily Tasks (5 minutes)
+
 ```
 [ ] Check for new orders
 [ ] Respond to any RFQs (within 24h)
@@ -650,6 +693,7 @@ Use for: Large enterprises, high-value orders
 ```
 
 ### Weekly Tasks (30 minutes)
+
 ```
 [ ] Review inventory levels (bulk orders deplete stock faster)
 [ ] Check pricing vs competitors
@@ -658,6 +702,7 @@ Use for: Large enterprises, high-value orders
 ```
 
 ### Monthly Tasks (2 hours)
+
 ```
 [ ] Review B2B analytics dashboard
 [ ] Adjust tier pricing based on data
@@ -671,6 +716,7 @@ Use for: Large enterprises, high-value orders
 ## Quick Reference Cards
 
 ### PRICING CHEAT SHEET
+
 ```
 Product Cost: ₹X
 
@@ -681,6 +727,7 @@ Tier 3 (MOQ 200): Retail - 30%
 ```
 
 ### RFQ RESPONSE TIME
+
 ```
 ⚡ 0-24 hours: Excellent (highest acceptance)
 ⏰ 24-48 hours: Good
@@ -689,6 +736,7 @@ Tier 3 (MOQ 200): Retail - 30%
 ```
 
 ### CREDIT TERMS SAFETY
+
 ```
 ✅ Full Advance: Zero risk
 ✅ Partial Advance: Low risk
@@ -701,21 +749,27 @@ Tier 3 (MOQ 200): Retail - 30%
 ## Troubleshooting
 
 ### Problem: No RFQs received
+
 **Solutions:**
+
 - Enable notifications (email/SMS)
 - List more products (>20 increases visibility)
 - Set competitive pricing
 - Complete product descriptions
 
 ### Problem: RFQs but low acceptance
+
 **Solutions:**
+
 - Respond faster (<24h)
 - Lower prices slightly (5-10%)
 - Offer multiple options (good, better, best)
 - Ask why if rejected (learn!)
 
 ### Problem: Low bulk order volume
+
 **Solutions:**
+
 - Lower Tier 1 MOQ (make it easier to enter)
 - Advertise bulk pricing in product title
 - Share success stories ("Company X saved ₹50K")
@@ -753,6 +807,7 @@ Tier 3 (MOQ 200): Retail - 30%
 ## Support
 
 **Questions?**
+
 - 📧 Email: vendor-support@nearbybazaar.com
 - 📞 Phone: +91-XXXX-XXXXXX
 - 💬 Chat: Dashboard bottom-right
@@ -762,4 +817,4 @@ Tier 3 (MOQ 200): Retail - 30%
 
 **Version**: 1.0 | **Last Updated**: October 2024
 
-*Go get those bulk orders! 🚀*
+_Go get those bulk orders! 🚀_

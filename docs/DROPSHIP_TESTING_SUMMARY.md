@@ -11,21 +11,17 @@ Comprehensive unit and integration tests for the dropshipping module to ensure c
 1. **`apps/api/tests/dropship.spec.ts`** (694 lines)
    - Main test suite with 37 comprehensive tests
    - Unit tests, integration tests, error handling, performance tests
-   
 2. **`apps/api/tests/setup.ts`** (95 lines)
    - Global Jest configuration
    - Test utilities and helpers
    - Mock setup
-   
 3. **`apps/api/tests/__mocks__/suppliers.ts`** (265 lines)
    - Mock supplier implementations (Realistic, Failing, Slow)
    - Mock supplier API server
    - Mock axios responses
-   
 4. **`docs/DROPSHIP_TESTING.md`** (450+ lines)
    - Comprehensive testing documentation
    - Running tests, CI integration, debugging guide
-   
 5. **`.github/workflows/api-tests-example.yml`** (130+ lines)
    - GitHub Actions CI workflow example
    - Dropship-specific CI gate
@@ -44,11 +40,13 @@ Comprehensive unit and integration tests for the dropshipping module to ensure c
 ### Test Categories
 
 #### 1. Supplier Lifecycle Tests (3 tests)
+
 - ✅ Create supplier with invited status by default
 - ✅ Transition supplier from invited → pending → active
 - ✅ Suspend active supplier
 
 #### 2. SKU Mapping Logic Tests (6 tests)
+
 - ✅ Create SKU mapping between supplier and platform
 - ✅ Enforce unique constraint on (supplier + supplierSku)
 - ✅ Find mapping by supplier and SKU
@@ -57,6 +55,7 @@ Comprehensive unit and integration tests for the dropshipping module to ensure c
 - ✅ Use SKU generator for new mappings
 
 #### 3. Margin Rule Tests (6 tests)
+
 - ✅ Create percent-based margin rule
 - ✅ Create fixed-amount margin rule
 - ✅ Calculate selling price with percent margin
@@ -65,6 +64,7 @@ Comprehensive unit and integration tests for the dropshipping module to ensure c
 - ✅ Find active margin rules and deactivate
 
 #### 4. Order Push Tests (5 tests)
+
 - ✅ Push order to supplier API successfully
 - ✅ Prevent duplicate order pushes (idempotency)
 - ✅ Handle supplier API errors gracefully
@@ -72,6 +72,7 @@ Comprehensive unit and integration tests for the dropshipping module to ensure c
 - ✅ Include timeout in API calls
 
 #### 5. Supplier Interface Tests (5 tests)
+
 - ✅ Register and retrieve supplier
 - ✅ Sync stock from supplier
 - ✅ Sync price from supplier
@@ -79,11 +80,13 @@ Comprehensive unit and integration tests for the dropshipping module to ensure c
 - ✅ Connect/disconnect from supplier
 
 #### 6. Integration Tests (3 tests)
+
 - ✅ End-to-end flow: Map SKU → Apply margin → Push order
 - ✅ Handle missing SKU mappings gracefully
 - ✅ Select most specific margin rule (category > supplier > vendor)
 
 #### 7. Error Handling Tests (6 tests)
+
 - ✅ Handle missing suppliers
 - ✅ Handle invalid margin rule values
 - ✅ Handle concurrent SKU mapping updates
@@ -92,6 +95,7 @@ Comprehensive unit and integration tests for the dropshipping module to ensure c
 - ✅ Handle bulk SKU mapping creation
 
 #### 8. Performance Tests (2 tests)
+
 - ✅ Efficiently query mappings with index
 - ✅ Handle pagination of margin rules
 
@@ -100,32 +104,42 @@ Comprehensive unit and integration tests for the dropshipping module to ensure c
 ## Mock Implementations
 
 ### 1. RealisticMockSupplier
+
 Simulates real supplier API behavior:
+
 - Connection management with state tracking
 - Stock/price sync with configurable inventory
 - API delays (50-100ms) to simulate network latency
 - Helper methods for test data setup
 
 ### 2. FailingMockSupplier
+
 Always fails for error testing:
+
 - Connection failures
 - Stock/price sync failures
 - SKU mapping failures
 
 ### 3. SlowMockSupplier
+
 Slow responses for timeout testing:
+
 - Configurable delay (default 5000ms)
 - Tests timeout handling
 
 ### 4. MockSupplierAPI
+
 Complete API server simulation:
+
 - Order recording and tracking
 - Stock/price management
 - Order acceptance/rejection
 - Comprehensive test helpers
 
 ### 5. Mocked axios
+
 External HTTP calls mocked with jest.mock:
+
 - Order push responses (accepted/rejected)
 - Network timeout simulation
 - Idempotency header validation
@@ -133,12 +147,14 @@ External HTTP calls mocked with jest.mock:
 ## Coverage Targets
 
 ### Global Coverage (All API Code)
+
 - Lines: 80%
 - Branches: 70%
 - Functions: 70%
 - Statements: 80%
 
 ### Dropship Services (Critical Path)
+
 - Lines: 90%
 - Branches: 80%
 - Functions: 90%
@@ -193,26 +209,31 @@ Include administrators: Yes
 ## Running Tests
 
 ### Run All Tests
+
 ```bash
 pnpm --filter @nearbybazaar/api test
 ```
 
 ### Run Dropship Tests Only
+
 ```bash
 pnpm --filter @nearbybazaar/api test dropship.spec.ts
 ```
 
 ### Run with Coverage
+
 ```bash
 pnpm --filter @nearbybazaar/api test --coverage
 ```
 
 ### Run in Watch Mode (Development)
+
 ```bash
 pnpm --filter @nearbybazaar/api test --watch
 ```
 
 ### Run with Verbose Output
+
 ```bash
 LOG_TESTS=1 pnpm --filter @nearbybazaar/api test
 ```
@@ -241,48 +262,56 @@ Global test utilities available in all tests:
 
 ```typescript
 // Generate random MongoDB ObjectId
-global.testUtils.randomObjectId()
+global.testUtils.randomObjectId();
 
 // Wait for specified milliseconds
-global.testUtils.wait(1000)
+global.testUtils.wait(1000);
 
 // Create mock supplier object
-global.testUtils.createMockSupplier()
+global.testUtils.createMockSupplier();
 
 // Create mock order object
-global.testUtils.createMockOrder({ total: 99.99 })
+global.testUtils.createMockOrder({ total: 99.99 });
 ```
 
 ## Key Testing Patterns
 
 ### 1. Database Cleanup
+
 Each test suite clears collections in `beforeEach` to ensure isolation:
+
 ```typescript
 beforeEach(async () => {
-    await Supplier.deleteMany({});
-    await SkuMapping.deleteMany({});
-    // ...
+  await Supplier.deleteMany({});
+  await SkuMapping.deleteMany({});
+  // ...
 });
 ```
 
 ### 2. Mock External APIs
+
 Axios is mocked to prevent real HTTP calls:
+
 ```typescript
 jest.mock('axios');
 mockedAxios.post.mockResolvedValueOnce({ status: 200, data: {...} });
 ```
 
 ### 3. Test Data Factories
+
 Reusable test data creation:
+
 ```typescript
 const testSupplier = await Supplier.create({
-    companyName: 'Test Supplier',
-    // ...
+  companyName: 'Test Supplier',
+  // ...
 });
 ```
 
 ### 4. Idempotency Testing
+
 Verify operations are idempotent:
+
 ```typescript
 const result1 = await pushOrderToSupplier(order, supplier);
 const result2 = await pushOrderToSupplier(order, supplier); // Same order
@@ -290,7 +319,9 @@ expect(result2.status).toBe('duplicate');
 ```
 
 ### 5. Error Path Testing
+
 Test both success and failure scenarios:
+
 ```typescript
 // Success
 mockedAxios.post.mockResolvedValueOnce({ status: 200 });
@@ -301,23 +332,27 @@ mockedAxios.post.mockRejectedValueOnce(new Error('Network timeout'));
 ## Next Steps
 
 ### Integration
+
 - [ ] Integrate with existing API routes
 - [ ] Add authentication/authorization tests
 - [ ] Test with real MongoDB instance in staging
 
 ### Enhancement
+
 - [ ] Add E2E tests with supplier sandbox APIs
 - [ ] Add load tests for bulk operations (1000+ SKUs)
 - [ ] Add mutation testing (Stryker.js)
 - [ ] Add API contract testing (Pact)
 
 ### CI/CD
+
 - [ ] Enable GitHub Actions workflow
 - [ ] Configure branch protection rules
 - [ ] Set up Codecov integration
 - [ ] Configure Slack/email notifications for failures
 
 ### Monitoring
+
 - [ ] Track test execution time trends
 - [ ] Monitor coverage trends
 - [ ] Set up flaky test detection
@@ -326,12 +361,14 @@ mockedAxios.post.mockRejectedValueOnce(new Error('Network timeout'));
 ## Dependencies
 
 ### Existing
+
 - `jest`: Test framework
 - `ts-jest`: TypeScript support for Jest
 - `mongoose`: MongoDB ODM (already used)
 - `axios`: HTTP client (already used, now mocked)
 
 ### New (if needed)
+
 - `@shelf/jest-mongodb`: In-memory MongoDB for faster tests (optional)
 - `supertest`: HTTP assertion library for API tests (optional)
 - `nock`: HTTP mocking (alternative to jest.mock(axios)) (optional)

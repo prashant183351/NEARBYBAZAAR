@@ -3,6 +3,7 @@
 ## For Backend Developers
 
 ### Step 1: Order Processing Integration
+
 When creating or updating orders, ensure reputation fields are populated:
 
 ```typescript
@@ -11,7 +12,7 @@ import { Order } from './models/Order';
 // When order is created
 const order = new Order({
   user: buyerId,
-  vendor: vendorId,  // ⚠️ REQUIRED for reputation tracking
+  vendor: vendorId, // ⚠️ REQUIRED for reputation tracking
   status: 'pending',
   expectedDispatchDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // 2 days
   // ... other fields
@@ -19,26 +20,24 @@ const order = new Order({
 
 // When order is shipped
 order.status = 'shipped';
-order.shippedAt = new Date();  // ⚠️ REQUIRED for late shipment tracking
+order.shippedAt = new Date(); // ⚠️ REQUIRED for late shipment tracking
 await order.save();
 
 // When order is cancelled by vendor
 order.status = 'cancelled';
-order.cancelledBy = 'vendor';  // ⚠️ REQUIRED for cancellation rate
+order.cancelledBy = 'vendor'; // ⚠️ REQUIRED for cancellation rate
 order.cancellationReason = 'out_of_stock';
 await order.save();
 
 // When dispute is raised
-order.hasDispute = true;  // ⚠️ REQUIRED for ODR calculation
+order.hasDispute = true; // ⚠️ REQUIRED for ODR calculation
 await order.save();
 ```
 
 ### Step 2: Import Reputation Service
+
 ```typescript
-import { 
-  getVendorReputationMetrics, 
-  evaluateVendorStanding 
-} from './services/reputationMetrics';
+import { getVendorReputationMetrics, evaluateVendorStanding } from './services/reputationMetrics';
 
 // Get metrics for a vendor
 const metrics = await getVendorReputationMetrics(vendorId, 30);
@@ -52,6 +51,7 @@ if (evaluation.action === 'suspend') {
 ```
 
 ### Step 3: Schedule Background Job
+
 ```typescript
 // Using BullMQ
 import { Queue } from 'bullmq';
@@ -59,9 +59,13 @@ import { checkVendorReputations } from './jobs/checkVendorReputation';
 
 const queue = new Queue('reputation');
 
-queue.add('daily-check', {}, {
-  repeat: { cron: '0 2 * * *' }  // 2 AM daily
-});
+queue.add(
+  'daily-check',
+  {},
+  {
+    repeat: { cron: '0 2 * * *' }, // 2 AM daily
+  },
+);
 
 queue.process('daily-check', async () => {
   await checkVendorReputations();
@@ -73,6 +77,7 @@ queue.process('daily-check', async () => {
 ## For Frontend Developers
 
 ### Step 1: Add Route to Vendor App
+
 ```typescript
 // apps/vendor/pages/dashboard/reputation.tsx already exists
 // Add link in navigation:
@@ -83,6 +88,7 @@ queue.process('daily-check', async () => {
 ```
 
 ### Step 2: Fetch Metrics in Component
+
 ```typescript
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -108,6 +114,7 @@ useEffect(() => {
 ```
 
 ### Step 3: Add Status Badge Component
+
 ```typescript
 const StatusBadge = ({ status }: { status: string }) => {
   const colors = {
@@ -116,10 +123,10 @@ const StatusBadge = ({ status }: { status: string }) => {
     needs_improvement: '#f59e0b',
     critical: '#ef4444'
   };
-  
+
   return (
-    <span style={{ 
-      backgroundColor: colors[status], 
+    <span style={{
+      backgroundColor: colors[status],
       color: 'white',
       padding: '4px 12px',
       borderRadius: '4px',
@@ -136,6 +143,7 @@ const StatusBadge = ({ status }: { status: string }) => {
 ## For Database Admins
 
 ### Required Indexes
+
 ```javascript
 // MongoDB indexes for performance
 db.orders.createIndex({ vendor: 1, createdAt: -1 });
@@ -145,18 +153,13 @@ db.orders.createIndex({ shippedAt: 1, expectedDispatchDate: 1 });
 ```
 
 ### Data Migration (if needed)
+
 ```javascript
 // If you have existing orders without vendor field
-db.orders.updateMany(
-  { vendor: { $exists: false } },
-  { $set: { vendor: null } }
-);
+db.orders.updateMany({ vendor: { $exists: false } }, { $set: { vendor: null } });
 
 // Set default values for new fields
-db.orders.updateMany(
-  { hasDispute: { $exists: false } },
-  { $set: { hasDispute: false } }
-);
+db.orders.updateMany({ hasDispute: { $exists: false } }, { $set: { hasDispute: false } });
 ```
 
 ---
@@ -164,6 +167,7 @@ db.orders.updateMany(
 ## For DevOps Engineers
 
 ### Environment Variables
+
 ```bash
 # .env
 ADMIN_EMAIL=admin@nearbybazaar.com  # For critical alerts
@@ -171,6 +175,7 @@ LOG_LEVEL=info                      # Logging level
 ```
 
 ### Monitoring & Alerts
+
 ```yaml
 # alerts.yml
 - name: HighCriticalVendorRate
@@ -185,6 +190,7 @@ LOG_LEVEL=info                      # Logging level
 ```
 
 ### Health Checks
+
 ```bash
 # Check reputation API
 curl -X GET http://localhost:3000/v1/reputation/vendor?days=30 \
@@ -203,6 +209,7 @@ curl -X POST http://localhost:3000/admin/jobs/trigger \
 ### Test Scenarios
 
 #### Scenario 1: Excellent Vendor
+
 ```
 Given vendor has 100 orders in last 30 days
   And 0 refunds, 0 returns, 0 disputes
@@ -216,6 +223,7 @@ Then status should be "excellent"
 ```
 
 #### Scenario 2: Critical Vendor
+
 ```
 Given vendor has 100 orders in last 30 days
   And 5 refunds, 2 returns, 1 dispute (8 defects)
@@ -229,6 +237,7 @@ Then status should be "critical"
 ```
 
 ### Automated Test Suite
+
 ```typescript
 describe('Reputation Metrics', () => {
   it('should calculate ODR correctly', async () => {
@@ -256,6 +265,7 @@ describe('Reputation Metrics', () => {
 ## Common Integration Patterns
 
 ### Pattern 1: Real-time Status Check
+
 ```typescript
 // Before allowing vendor action
 const evaluation = await evaluateVendorStanding(vendorId);
@@ -266,16 +276,18 @@ if (evaluation.action === 'suspend') {
 ```
 
 ### Pattern 2: Dashboard Widget
+
 ```typescript
 // Show mini reputation widget on vendor dashboard
 <ReputationWidget vendorId={vendorId} compact={true} />
 ```
 
 ### Pattern 3: Admin Alert System
+
 ```typescript
 // Daily digest of critical vendors
 const criticalVendors = await getAllVendorsReputationMetrics(30);
-const critical = criticalVendors.vendors.filter(v => v.status === 'critical');
+const critical = criticalVendors.vendors.filter((v) => v.status === 'critical');
 await sendAdminDigest(critical);
 ```
 
@@ -286,35 +298,42 @@ await sendAdminDigest(critical);
 If issues arise after deployment:
 
 ### Step 1: Disable Background Job
+
 ```typescript
 // Comment out or disable job
 // scheduler.remove('reputation-check');
 ```
 
 ### Step 2: Disable API Endpoints
+
 ```typescript
 // In routes/index.ts
 // router.use('/reputation', reputationRouter);  // Comment out
 ```
 
 ### Step 3: Hide UI Components
+
 ```typescript
 // In vendor navigation
 // Remove link to /dashboard/reputation
 ```
 
 ### Step 4: Database Rollback (if needed)
+
 ```javascript
 // Remove added fields
-db.orders.updateMany({}, { 
-  $unset: { 
-    hasDispute: "", 
-    shippedAt: "",
-    expectedDispatchDate: "",
-    cancelledBy: "",
-    cancellationReason: ""
-  }
-});
+db.orders.updateMany(
+  {},
+  {
+    $unset: {
+      hasDispute: '',
+      shippedAt: '',
+      expectedDispatchDate: '',
+      cancelledBy: '',
+      cancellationReason: '',
+    },
+  },
+);
 ```
 
 ---
@@ -322,11 +341,13 @@ db.orders.updateMany({}, {
 ## Performance Considerations
 
 ### Query Optimization
+
 - Use indexes on vendor + createdAt for fast filtering
 - Cache metrics for 5-10 minutes to reduce DB load
 - Use aggregation pipeline for admin dashboard
 
 ### Scalability
+
 - Current implementation handles up to ~1000 vendors
 - For larger scale, consider:
   - Pre-computed metrics stored in cache
@@ -334,6 +355,7 @@ db.orders.updateMany({}, {
   - Background worker pool for metric calculation
 
 ### Load Testing
+
 ```bash
 # Simulate 100 concurrent vendor requests
 ab -n 100 -c 10 -H "Authorization: Bearer $TOKEN" \

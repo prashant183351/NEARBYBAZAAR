@@ -18,14 +18,16 @@ export default function AdminDashboard() {
   React.useEffect(() => {
     setLoading(true);
     Promise.all([
-      fetch('/admin/api/admin-stats').then(r => r.json()),
-      fetch('/admin/api/kaizen-feed').then(r => r.json()),
-      fetch('/admin/api/notifications').then(r => r.json()),
-    ]).then(([stats, kaizen, notifs]) => {
-      setStats(stats);
-      setKaizenFeed(kaizen);
-      setNotifications(notifs);
-    }).finally(() => setLoading(false));
+      fetch('/admin/api/admin-stats').then((r) => r.json()),
+      fetch('/admin/api/kaizen-feed').then((r) => r.json()),
+      fetch('/admin/api/notifications').then((r) => r.json()),
+    ])
+      .then(([stats, kaizen, notifs]) => {
+        setStats(stats);
+        setKaizenFeed(kaizen);
+        setNotifications(notifs);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   // Refresh handler for Kaizen & Notifications Feed
@@ -68,12 +70,37 @@ export default function AdminDashboard() {
       </aside>
       {/* Main content */}
       <main className="flex-1 p-8">
-        <h1 className="text-2xl font-bold mb-6">{sections.find(s => s.key === active)?.label} Overview</h1>
+        <h1 className="text-2xl font-bold mb-6">
+          {sections.find((s) => s.key === active)?.label} Overview
+        </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
-          <KpiCard label="Vendors Onboarded" value={loading ? '...' : stats?.vendors?.total ?? '-'} sublabel={`Today: ${stats?.vendors?.today ?? '-'}`} color="border-blue-500" />
-          <KpiCard label="Orders Processed" value={loading ? '...' : stats?.orders?.total ?? '-'} sublabel={`Today: ${stats?.orders?.today ?? '-'}, This week: ${stats?.orders?.week ?? '-'}`} color="border-green-500" />
-          <KpiCard label="Disputes Pending" value={loading ? '...' : stats?.disputes?.pending ?? '-'} color="border-yellow-500" />
-          <KpiCard label="Revenue vs Sathi Cost" value={loading ? '...' : `₹${stats?.revenue?.week ?? '-'} / ₹${stats?.sathiCost?.week ?? '-'}`} sublabel="This week" color="border-purple-500" />
+          <KpiCard
+            label="Vendors Onboarded"
+            value={loading ? '...' : (stats?.vendors?.total ?? '-')}
+            sublabel={`Today: ${stats?.vendors?.today ?? '-'}`}
+            color="border-blue-500"
+          />
+          <KpiCard
+            label="Orders Processed"
+            value={loading ? '...' : (stats?.orders?.total ?? '-')}
+            sublabel={`Today: ${stats?.orders?.today ?? '-'}, This week: ${stats?.orders?.week ?? '-'}`}
+            color="border-green-500"
+          />
+          <KpiCard
+            label="Disputes Pending"
+            value={loading ? '...' : (stats?.disputes?.pending ?? '-')}
+            color="border-yellow-500"
+          />
+          <KpiCard
+            label="Revenue vs Sathi Cost"
+            value={
+              loading
+                ? '...'
+                : `₹${stats?.revenue?.week ?? '-'} / ₹${stats?.sathiCost?.week ?? '-'}`
+            }
+            sublabel="This week"
+            color="border-purple-500"
+          />
         </div>
 
         {/* Finance & Compliance Snapshot */}
@@ -89,17 +116,20 @@ export default function AdminDashboard() {
                   ['Commission Collected (This Month)', stats?.finance?.commissionMonth ?? '-'],
                   ['Payouts Made (This Month)', stats?.finance?.payoutsMonth ?? '-'],
                   ['Vendor Payouts Pending', stats?.finance?.payoutsPending ?? '-'],
-                  ['Sathi Incentives Paid (This Month)', stats?.finance?.sathiIncentivesMonth ?? '-'],
+                  [
+                    'Sathi Incentives Paid (This Month)',
+                    stats?.finance?.sathiIncentivesMonth ?? '-',
+                  ],
                   ['Vendors Pending GST Filing', stats?.compliance?.gstPending ?? '-'],
                   ['Vendors Pending TDS Filing', stats?.compliance?.tdsPending ?? '-'],
                   ['Vendors NDA Not Signed', stats?.compliance?.ndaPending ?? '-'],
                 ];
-                const csv = rows.map(r => r.join(',')).join('\n');
+                const csv = rows.map((r) => r.join(',')).join('\n');
                 const blob = new Blob([csv], { type: 'text/csv' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `finance_compliance_snapshot_${new Date().toISOString().slice(0,10)}.csv`;
+                a.download = `finance_compliance_snapshot_${new Date().toISOString().slice(0, 10)}.csv`;
                 document.body.appendChild(a);
                 a.click();
                 setTimeout(() => {
@@ -132,9 +162,21 @@ export default function AdminDashboard() {
           <div className="mt-6">
             <div className="font-semibold mb-2">Compliance Alerts</div>
             <ul className="list-disc pl-6 text-sm text-red-700">
-              <li>{(stats?.compliance?.gstPending ?? 0) > 0 ? `${stats?.compliance?.gstPending} vendors pending GST filing` : 'No vendors pending GST filing'}</li>
-              <li>{(stats?.compliance?.tdsPending ?? 0) > 0 ? `${stats?.compliance?.tdsPending} vendors pending TDS filing` : 'No vendors pending TDS filing'}</li>
-              <li>{(stats?.compliance?.ndaPending ?? 0) > 0 ? `${stats?.compliance?.ndaPending} vendors have not signed NDA` : 'All vendors have signed NDA'}</li>
+              <li>
+                {(stats?.compliance?.gstPending ?? 0) > 0
+                  ? `${stats?.compliance?.gstPending} vendors pending GST filing`
+                  : 'No vendors pending GST filing'}
+              </li>
+              <li>
+                {(stats?.compliance?.tdsPending ?? 0) > 0
+                  ? `${stats?.compliance?.tdsPending} vendors pending TDS filing`
+                  : 'No vendors pending TDS filing'}
+              </li>
+              <li>
+                {(stats?.compliance?.ndaPending ?? 0) > 0
+                  ? `${stats?.compliance?.ndaPending} vendors have not signed NDA`
+                  : 'All vendors have signed NDA'}
+              </li>
             </ul>
           </div>
         </section>
@@ -146,25 +188,51 @@ export default function AdminDashboard() {
             <button
               className="px-3 py-1 bg-gray-100 rounded text-sm hover:bg-gray-200"
               onClick={() => handleRefresh()}
-            >Refresh</button>
+            >
+              Refresh
+            </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Kaizen Suggestions Feed */}
             <div>
               <div className="font-semibold mb-2">Recent Kaizen Suggestions</div>
               <ul className="divide-y">
-                {(kaizenFeed?.items ?? []).length === 0 && <li className="text-gray-400 py-4">No recent suggestions.</li>}
+                {(kaizenFeed?.items ?? []).length === 0 && (
+                  <li className="text-gray-400 py-4">No recent suggestions.</li>
+                )}
                 {(kaizenFeed?.items ?? []).map((item: any) => (
-                  <li key={item.id} className="py-3 flex flex-col md:flex-row md:items-center md:justify-between">
+                  <li
+                    key={item.id}
+                    className="py-3 flex flex-col md:flex-row md:items-center md:justify-between"
+                  >
                     <div>
                       <div className="font-medium">{item.title}</div>
-                      <div className="text-xs text-gray-500 mb-1">By {item.ownerName} • {new Date(item.createdAt).toLocaleString()}</div>
+                      <div className="text-xs text-gray-500 mb-1">
+                        By {item.ownerName} • {new Date(item.createdAt).toLocaleString()}
+                      </div>
                       <div className="text-sm text-gray-700 line-clamp-2">{item.summary}</div>
                     </div>
                     <div className="flex gap-2 mt-2 md:mt-0">
-                      <button className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200" onClick={() => handleKaizenAction(item.id, 'approve')}>Approve</button>
-                      <button className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs hover:bg-red-200" onClick={() => handleKaizenAction(item.id, 'reject')}>Reject</button>
-                      <a href={`/admin/kaizen/${item.id}`} className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs hover:bg-blue-200" target="_blank" rel="noopener noreferrer">Details</a>
+                      <button
+                        className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200"
+                        onClick={() => handleKaizenAction(item.id, 'approve')}
+                      >
+                        Approve
+                      </button>
+                      <button
+                        className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs hover:bg-red-200"
+                        onClick={() => handleKaizenAction(item.id, 'reject')}
+                      >
+                        Reject
+                      </button>
+                      <a
+                        href={`/admin/kaizen/${item.id}`}
+                        className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs hover:bg-blue-200"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Details
+                      </a>
                     </div>
                   </li>
                 ))}
@@ -174,11 +242,15 @@ export default function AdminDashboard() {
             <div>
               <div className="font-semibold mb-2">System Notifications</div>
               <ul className="divide-y">
-                {(notifications?.items ?? []).length === 0 && <li className="text-gray-400 py-4">No notifications.</li>}
+                {(notifications?.items ?? []).length === 0 && (
+                  <li className="text-gray-400 py-4">No notifications.</li>
+                )}
                 {(notifications?.items ?? []).map((n: any) => (
                   <li key={n.id} className="py-3 flex flex-col">
                     <div className="font-medium text-sm">{n.message}</div>
-                    <div className="text-xs text-gray-500">{new Date(n.createdAt).toLocaleString()}</div>
+                    <div className="text-xs text-gray-500">
+                      {new Date(n.createdAt).toLocaleString()}
+                    </div>
                   </li>
                 ))}
               </ul>

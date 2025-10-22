@@ -75,23 +75,25 @@ The rate limiting system uses a **Redis-based sliding window algorithm** with th
 
 ### Rate Limit Tiers
 
-| User Type | Requests per Minute | Use Case |
-|-----------|---------------------|----------|
-| Anonymous | 100 | Public API access |
-| Authenticated | 300 | Logged-in users |
-| Admin | 1000 | Platform administrators |
-| Sensitive | 10 | Auth endpoints (signup/login) |
-| Strict | 5 | OTP request endpoints |
-| Generous | 500 | Public read-only endpoints |
+| User Type     | Requests per Minute | Use Case                      |
+| ------------- | ------------------- | ----------------------------- |
+| Anonymous     | 100                 | Public API access             |
+| Authenticated | 300                 | Logged-in users               |
+| Admin         | 1000                | Platform administrators       |
+| Sensitive     | 10                  | Auth endpoints (signup/login) |
+| Strict        | 5                   | OTP request endpoints         |
+| Generous      | 500                 | Public read-only endpoints    |
 
 ### Default Configuration
 
 **Global Adaptive Rate Limiting**:
+
 - Applied to all routes by default
 - Automatically adjusts based on `req.user.role`
 - Uses 1-minute sliding window
 
 **Implementation**:
+
 ```typescript
 import { rateLimit } from './middleware/rateLimit';
 app.use(rateLimit()); // Applies adaptive rate limiting globally
@@ -122,11 +124,15 @@ Create custom rate limits for specific routes:
 ```typescript
 import { rateLimit } from './middleware/rateLimit';
 
-router.post('/upload', rateLimit({
-  windowMs: 60000,      // 1 minute
-  maxRequests: 20,      // 20 requests per minute
-  keyPrefix: 'rl:upload',
-}), uploadController);
+router.post(
+  '/upload',
+  rateLimit({
+    windowMs: 60000, // 1 minute
+    maxRequests: 20, // 20 requests per minute
+    keyPrefix: 'rl:upload',
+  }),
+  uploadController,
+);
 ```
 
 ### Response Headers
@@ -184,6 +190,7 @@ console.log(status);
 ### Development/Test
 
 Rate limiting gracefully degrades when Redis is unavailable:
+
 - Requests are allowed (fail-open pattern)
 - No 429 errors thrown
 - Console warning logged
@@ -229,13 +236,13 @@ Rate limit data is stored in Redis using sorted sets:
 
 ### Attack Mitigation
 
-| Attack Type | Mitigation |
-|-------------|------------|
-| **Brute Force** | Strict limits (5-10 req/min) on auth endpoints |
-| **DDoS** | Global rate limits per IP + per user |
-| **Credential Stuffing** | Login endpoint limited to 10 req/min |
-| **OTP Spam** | OTP request limited to 5 req/min |
-| **API Abuse** | Sliding window prevents bursts; atomic counting prevents races |
+| Attack Type             | Mitigation                                                     |
+| ----------------------- | -------------------------------------------------------------- |
+| **Brute Force**         | Strict limits (5-10 req/min) on auth endpoints                 |
+| **DDoS**                | Global rate limits per IP + per user                           |
+| **Credential Stuffing** | Login endpoint limited to 10 req/min                           |
+| **OTP Spam**            | OTP request limited to 5 req/min                               |
+| **API Abuse**           | Sliding window prevents bursts; atomic counting prevents races |
 
 ## Testing
 
@@ -247,6 +254,7 @@ pnpm test cors.spec.ts
 ```
 
 **Coverage**:
+
 - Origin whitelisting
 - Wildcard mode
 - Blocked origins
@@ -261,6 +269,7 @@ pnpm test rateLimit.spec.ts
 ```
 
 **Coverage**:
+
 - Basic rate limiting
 - 429 responses
 - Adaptive limits by role
@@ -277,6 +286,7 @@ pnpm test rateLimit.spec.ts
 **Problem**: Browser shows CORS error despite whitelisted origin
 
 **Solutions**:
+
 1. Check `CORS_ALLOW_ORIGINS` includes exact origin (including protocol and port)
 2. Verify origin header matches exactly (no trailing slashes)
 3. Check for typos in environment variable
@@ -287,6 +297,7 @@ pnpm test rateLimit.spec.ts
 **Problem**: Legitimate users hitting rate limits
 
 **Solutions**:
+
 1. Increase limits for authenticated users vs anonymous
 2. Apply generous rate limits to public read endpoints
 3. Review specific endpoint usage patterns
@@ -295,6 +306,7 @@ pnpm test rateLimit.spec.ts
 **Problem**: Rate limiting not working
 
 **Solutions**:
+
 1. Verify Redis is running: `redis-cli ping` should return `PONG`
 2. Check `REDIS_URL` environment variable
 3. Review logs for Redis connection errors
@@ -354,16 +366,18 @@ LOG_LEVEL=error
 ### With JWT Authentication
 
 Rate limiting uses `req.user` from JWT middleware to:
+
 - Track authenticated users by ID
 - Apply role-based limits (admin gets higher limits)
 - Prevent IP rotation bypasses
 
 **Middleware Order**:
+
 ```typescript
-app.use(corsMiddleware);        // CORS first
-app.use(jwtMiddleware);         // JWT auth
-app.use(rateLimit());           // Rate limit (uses req.user)
-app.use('/v1', routes);         // Routes
+app.use(corsMiddleware); // CORS first
+app.use(jwtMiddleware); // JWT auth
+app.use(rateLimit()); // Rate limit (uses req.user)
+app.use('/v1', routes); // Routes
 ```
 
 ### With Audit Logging
@@ -378,7 +392,7 @@ if (currentCount > maxRequests) {
     action: 'RATE_LIMIT_EXCEEDED',
     user: req.user?.id,
     ip: req.ip,
-    metadata: { limit: maxRequests, current: currentCount }
+    metadata: { limit: maxRequests, current: currentCount },
   });
 }
 ```
@@ -386,6 +400,7 @@ if (currentCount > maxRequests) {
 ### With RBAC
 
 Rate limits respect user roles:
+
 - Admin: 10x higher limits
 - Vendor: Standard authenticated limits
 - Buyer: Standard authenticated limits
@@ -411,6 +426,7 @@ Potential improvements for future iterations:
 ## Support
 
 For issues or questions:
+
 1. Check logs: `tail -f logs/api.log | grep -i "rate\|cors"`
 2. Test Redis: `redis-cli ping`
 3. Verify environment: `echo $CORS_ALLOW_ORIGINS`

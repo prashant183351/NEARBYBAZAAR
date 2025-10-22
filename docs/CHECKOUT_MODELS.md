@@ -13,6 +13,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 **File**: `apps/api/src/models/Address.ts`
 
 **Key Features**:
+
 - Support for multiple address types (home, work, billing, shipping, other)
 - Phone number validation (10-digit format)
 - Pincode validation (6-digit format)
@@ -21,6 +22,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 - Full address virtual property for display
 
 **Schema Fields**:
+
 ```typescript
 {
   userId: ObjectId,           // User who owns this address
@@ -44,11 +46,13 @@ This document describes the five core domain models that power the NearbyBazaar 
 ```
 
 **Indexes**:
+
 - `userId` + `isDefault`
 - `pincode` + `city`
 - `city`, `state` (individual)
 
 **Methods**:
+
 - `isServiceable()`: Check if address is in serviceable area (stub)
 
 **Pre-save Hook**: Automatically unsets other default addresses when a new one is marked as default.
@@ -60,6 +64,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 **File**: `apps/api/src/models/Cart.ts`
 
 **Key Features**:
+
 - Support for both logged-in users and guest sessions
 - Automatic TTL (7 days expiration)
 - Auto-calculation of subtotal, discount, tax, and total
@@ -68,6 +73,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 - Address linking for checkout
 
 **Schema Fields**:
+
 ```typescript
 {
   userId?: ObjectId,          // User (optional for guest carts)
@@ -94,11 +100,13 @@ This document describes the five core domain models that power the NearbyBazaar 
 ```
 
 **Indexes**:
+
 - `userId` + `createdAt`
 - `sessionId` + `createdAt`
 - `expiresAt` (TTL index for auto-deletion)
 
 **Methods**:
+
 - `addItem(item)`: Add or update item in cart
 - `removeItem(itemId)`: Remove item from cart
 - `updateItemQuantity(itemId, quantity)`: Update item quantity
@@ -106,9 +114,11 @@ This document describes the five core domain models that power the NearbyBazaar 
 - `calculateTotals()`: Recalculate all pricing (called automatically)
 
 **Static Methods**:
+
 - `findOrCreate(userId, sessionId)`: Get existing cart or create new one
 
 **Virtuals**:
+
 - `itemCount`: Total number of items (sum of quantities)
 
 **Pre-save Hook**: Sets default expiry (7 days) and recalculates totals.
@@ -120,6 +130,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 **File**: `apps/api/src/models/Shipment.ts`
 
 **Key Features**:
+
 - ULID-based human-readable IDs
 - Multi-package support
 - Tracking event history with timeline
@@ -128,6 +139,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 - Carrier and tracking number management
 
 **Schema Fields**:
+
 ```typescript
 {
   shipmentId: string,         // ULID (26 characters)
@@ -172,7 +184,8 @@ This document describes the five core domain models that power the NearbyBazaar 
 }
 ```
 
-**Statuses**: 
+**Statuses**:
+
 - `pending`: Not yet shipped
 - `label_created`: Shipping label generated
 - `picked_up`: Carrier picked up package
@@ -184,6 +197,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 - `cancelled`: Shipment cancelled
 
 **Indexes**:
+
 - `shipmentId` (unique)
 - `orderId` + `status`
 - `vendorId` + `status` + `createdAt`
@@ -191,10 +205,12 @@ This document describes the five core domain models that power the NearbyBazaar 
 - `trackingNumber` + `carrier`
 
 **Methods**:
+
 - `addTrackingEvent(event)`: Add tracking event and update status
 - `updateStatus(status, description)`: Convenience method to update status
 
 **Virtuals**:
+
 - `isDelivered`: Check if status is delivered
 - `isInTransit`: Check if status is picked_up, in_transit, or out_for_delivery
 - `latestTracking`: Get most recent tracking event
@@ -208,6 +224,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 **File**: `apps/api/src/models/PaymentIntent.ts`
 
 **Key Features**:
+
 - ULID-based payment intent IDs
 - Multi-gateway support (PhonePe, Razorpay, Stripe, COD, Wallet)
 - Automatic expiry (15 minutes for pending intents)
@@ -216,6 +233,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 - Capture and cancellation workflows
 
 **Schema Fields**:
+
 ```typescript
 {
   paymentIntentId: string,    // ULID (26 characters)
@@ -255,6 +273,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 ```
 
 **Statuses**:
+
 - `pending`: Awaiting payment
 - `processing`: Payment in progress
 - `requires_action`: Needs user action (3DS, OTP, etc.)
@@ -266,6 +285,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 - `partially_refunded`: Partially refunded
 
 **Gateways**:
+
 - `phonepe`: PhonePe UPI payments
 - `razorpay`: Razorpay integration
 - `stripe`: Stripe integration
@@ -273,6 +293,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 - `wallet`: NearbyBazaar wallet
 
 **Indexes**:
+
 - `paymentIntentId` (unique)
 - `orderId` + `status`
 - `userId` + `createdAt`
@@ -281,6 +302,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 - `status` + `expiresAt`
 
 **Methods**:
+
 - `canCapture()`: Check if payment can be captured
 - `canRefund()`: Check if payment can be refunded
 - `capture(amount?)`: Capture authorized payment
@@ -288,6 +310,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 - `cancel()`: Cancel pending intent
 
 **Virtuals**:
+
 - `availableRefundAmount`: Amount available for refund
 - `isExpired`: Check if intent has expired
 
@@ -300,6 +323,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 **File**: `apps/api/src/models/StockReservation.ts`
 
 **Key Features**:
+
 - ULID-based reservation IDs
 - TTL-based auto-expiry (default 15 minutes)
 - Support for product variants
@@ -309,6 +333,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 - Active reservation tracking
 
 **Schema Fields**:
+
 ```typescript
 {
   reservationId: string,      // ULID (26 characters)
@@ -327,6 +352,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 ```
 
 **Statuses**:
+
 - `reserved`: Stock is held
 - `confirmed`: Reservation converted to order
 - `released`: Stock returned (manual release)
@@ -334,6 +360,7 @@ This document describes the five core domain models that power the NearbyBazaar 
 - `cancelled`: Reservation cancelled
 
 **Indexes**:
+
 - `reservationId` (unique)
 - `productId` + `variantId` + `status`
 - `userId` + `status` + `createdAt`
@@ -342,17 +369,20 @@ This document describes the five core domain models that power the NearbyBazaar 
 - `expiresAt` (TTL index for auto-expiry)
 
 **Methods**:
+
 - `confirm(orderId)`: Confirm reservation and link to order
 - `release()`: Manually release reservation
 - `extend(minutes)`: Extend expiry time
 - `isExpired()`: Check if reservation has expired
 
 **Static Methods**:
+
 - `reserveStock(productId, quantity, userId, options)`: Create new reservation
 - `releaseExpired()`: Batch release expired reservations (for cron job)
 - `getActiveReservations(productId, variantId?)`: Count active reservations for a product
 
 **Virtuals**:
+
 - `timeRemaining`: Seconds until expiry
 - `isActive`: Check if reservation is active (reserved + not expired)
 
@@ -424,6 +454,7 @@ Optionally create reverse Shipment for return
 ## Environment Variables
 
 No new environment variables required. Uses existing:
+
 - `MONGODB_URI`: Database connection
 - `LOG_LEVEL`: Logging verbosity
 
@@ -432,6 +463,7 @@ No new environment variables required. Uses existing:
 **Test File**: `apps/api/tests/checkout.spec.ts`
 
 **Coverage**: 22 tests covering:
+
 - Address validation and virtuals
 - Cart totals calculation
 - Shipment status transitions
@@ -440,6 +472,7 @@ No new environment variables required. Uses existing:
 - Integration scenario (full checkout flow)
 
 **Run Tests**:
+
 ```bash
 cd apps/api
 RUN_INTEGRATION=true pnpm test checkout.spec.ts
@@ -450,6 +483,7 @@ RUN_INTEGRATION=true pnpm test checkout.spec.ts
 ## Database Indexes
 
 All models include optimized indexes for common query patterns:
+
 - User lookups (userId indexes)
 - Status filtering (status indexes)
 - Date range queries (createdAt indexes)
@@ -489,6 +523,7 @@ All models include optimized indexes for common query patterns:
 ## API Examples
 
 ### Create Address
+
 ```typescript
 const address = await Address.create({
   userId: req.user._id,
@@ -500,11 +535,12 @@ const address = await Address.create({
   state: 'Maharashtra',
   pincode: '400001',
   country: 'IN',
-  isDefault: true
+  isDefault: true,
 });
 ```
 
 ### Add to Cart
+
 ```typescript
 let cart = await Cart.findOrCreate(req.user._id);
 await cart.addItem({
@@ -512,47 +548,46 @@ await cart.addItem({
   itemType: 'product',
   quantity: 2,
   price: 999,
-  tax: 179.82
+  tax: 179.82,
 });
 ```
 
 ### Reserve Stock
+
 ```typescript
-const reservation = await StockReservation.reserveStock(
-  productId,
-  quantity,
-  req.user._id,
-  {
-    variantId: 'size-M',
-    cartId: cart._id,
-    expiryMinutes: 15
-  }
-);
+const reservation = await StockReservation.reserveStock(productId, quantity, req.user._id, {
+  variantId: 'size-M',
+  cartId: cart._id,
+  expiryMinutes: 15,
+});
 ```
 
 ### Create Payment Intent
+
 ```typescript
 const payment = await PaymentIntent.create({
   orderId: order._id,
   userId: req.user._id,
   amount: cart.total,
   currency: 'INR',
-  gateway: PaymentGateway.PHONEPE
+  gateway: PaymentGateway.PHONEPE,
 });
 ```
 
 ### Track Shipment
+
 ```typescript
 await shipment.addTrackingEvent({
   status: ShipmentStatus.IN_TRANSIT,
   location: 'Mumbai Hub',
-  description: 'Package arrived at sorting facility'
+  description: 'Package arrived at sorting facility',
 });
 ```
 
 ## Maintenance
 
 ### Cleanup Expired Reservations (Cron Job)
+
 ```typescript
 // Run this every 5 minutes
 const released = await StockReservation.releaseExpired();
@@ -560,6 +595,7 @@ console.log(`Released ${released} expired reservations`);
 ```
 
 ### Monitor Active Reservations
+
 ```typescript
 const activeCount = await StockReservation.getActiveReservations(productId);
 const availableStock = product.stock - activeCount;

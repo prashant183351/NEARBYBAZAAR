@@ -9,6 +9,7 @@ NearbyBazaar implements a tamper-evident, blockchain-inspired audit log system t
 ### Hash Chaining
 
 Every audit log entry contains:
+
 - **`hash`**: SHA-256 hash of the entry's content
 - **`prevHash`**: Hash of the previous entry (forming a chain)
 - **Genesis entry**: First entry has `prevHash` of 64 zeros
@@ -18,11 +19,13 @@ This creates a tamper-evident chain where any modification breaks the integrity.
 ### Immutability Enforcement
 
 The audit log model enforces immutability through:
+
 1. **Pre-save hooks**: Prevent modifications to existing records
 2. **Pre-update hooks**: Block all update operations
 3. **Pre-delete hooks**: Prevent deletions
 
 Any attempt to tamper with logs will:
+
 - Fail at the application level (hooks)
 - Be detectable via chain verification even if bypassed
 
@@ -36,6 +39,7 @@ const result = await verifyAuditChain();
 ```
 
 Verification checks:
+
 1. **Hash integrity**: Recomputes each entry's hash and compares
 2. **Chain links**: Verifies each entry's `prevHash` matches previous entry's `hash`
 3. **Genesis**: Ensures first entry has correct initial hash
@@ -43,6 +47,7 @@ Verification checks:
 ### Daily Anchoring
 
 A scheduled job runs daily at 23:59 UTC to:
+
 1. Retrieve the latest audit hash
 2. Email it to platform admins
 3. Provide external proof of audit state
@@ -57,17 +62,18 @@ This creates timestamped checkpoints that can prove the audit log state at any p
 import { logAuditEvent } from '../models/ImmutableAudit';
 
 await logAuditEvent({
-    userId: 'user123',
-    action: 'login',
-    resource: 'auth',
-    resourceId: 'user123',
-    metadata: { ip: '1.2.3.4', userAgent: 'Mozilla/...' },
+  userId: 'user123',
+  action: 'login',
+  resource: 'auth',
+  resourceId: 'user123',
+  metadata: { ip: '1.2.3.4', userAgent: 'Mozilla/...' },
 });
 ```
 
 ### Critical Events to Log
 
 The system automatically logs:
+
 - **Authentication**: signup, login, logout, password resets
 - **Authorization**: role changes, permission grants
 - **Financial**: payouts, refunds, commission adjustments
@@ -137,6 +143,7 @@ MAIL_FROM=no-reply@nearbybazaar.com
 ## Testing
 
 Integration tests verify:
+
 1. Hash chain generation
 2. Immutability enforcement
 3. Tamper detection
@@ -191,12 +198,13 @@ This audit system supports:
 ```typescript
 const result = await verifyAuditChain();
 if (!result.valid) {
-    console.error(`Chain broken at: ${result.brokenAt}`);
-    console.error(result.message);
+  console.error(`Chain broken at: ${result.brokenAt}`);
+  console.error(result.message);
 }
 ```
 
 Possible causes:
+
 - Direct database modification
 - Bug in hash generation logic
 - Data corruption
@@ -204,6 +212,7 @@ Possible causes:
 ### Anchor Emails Not Sending
 
 Check:
+
 1. Redis connection (required for job queue)
 2. SMTP configuration
 3. `AUDIT_ANCHOR_ENABLED` env var
@@ -215,6 +224,7 @@ Check:
 By design! The audit log prevents deletions.
 
 For test cleanup:
+
 ```typescript
 // Bypass protection (tests only!)
 await AuditLog.collection.deleteMany({});
@@ -227,6 +237,7 @@ await AuditLog.collection.deleteMany({});
 Create a new audit log entry.
 
 **Parameters:**
+
 - `userId` (string): User performing the action
 - `action` (string): Action performed
 - `resource` (string): Resource affected
@@ -240,6 +251,7 @@ Create a new audit log entry.
 Verify the integrity of the audit chain.
 
 **Parameters:**
+
 - `startFromId?` (string): Optional starting point for verification
 
 **Returns:** `Promise<{ valid: boolean, brokenAt?: string, message: string }>`
@@ -263,15 +275,15 @@ Manually trigger an anchor email.
 ```typescript
 // After successful login
 await logAuditEvent({
-    userId: user.id,
-    action: 'login',
-    resource: 'auth',
-    resourceId: user.id,
-    metadata: {
-        ip: req.ip,
-        userAgent: req.headers['user-agent'],
-        timestamp: new Date(),
-    },
+  userId: user.id,
+  action: 'login',
+  resource: 'auth',
+  resourceId: user.id,
+  metadata: {
+    ip: req.ip,
+    userAgent: req.headers['user-agent'],
+    timestamp: new Date(),
+  },
 });
 ```
 
@@ -280,16 +292,16 @@ await logAuditEvent({
 ```typescript
 // When processing a payout
 await logAuditEvent({
-    userId: admin.id,
-    action: 'payout',
-    resource: 'payment',
-    resourceId: payout.id,
-    metadata: {
-        vendorId: vendor.id,
-        amount: payout.amount,
-        currency: 'INR',
-        transactionId: payout.transactionId,
-    },
+  userId: admin.id,
+  action: 'payout',
+  resource: 'payment',
+  resourceId: payout.id,
+  metadata: {
+    vendorId: vendor.id,
+    amount: payout.amount,
+    currency: 'INR',
+    transactionId: payout.transactionId,
+  },
 });
 ```
 
@@ -301,12 +313,12 @@ import { verifyAuditChain } from '../models/ImmutableAudit';
 
 const result = await verifyAuditChain();
 if (!result.valid) {
-    // Alert admins immediately
-    await sendAlert({
-        severity: 'CRITICAL',
-        message: `Audit chain integrity compromised: ${result.message}`,
-        brokenAt: result.brokenAt,
-    });
+  // Alert admins immediately
+  await sendAlert({
+    severity: 'CRITICAL',
+    message: `Audit chain integrity compromised: ${result.message}`,
+    brokenAt: result.brokenAt,
+  });
 }
 ```
 
@@ -324,6 +336,7 @@ If you have an existing mutable audit log:
 ## Future Enhancements
 
 Potential improvements:
+
 - **Merkle tree**: For efficient partial verification
 - **Blockchain integration**: For public anchoring (e.g., Ethereum)
 - **Distributed consensus**: Multi-node verification

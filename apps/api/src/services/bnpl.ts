@@ -10,7 +10,7 @@ export const initiateCreditCheck = async (buyerId: string, amount: number) => {
     const response = await axios.post(
       `${BNPL_API_BASE_URL}/credit-check`,
       { buyerId, amount },
-      { headers: { Authorization: `Bearer ${BNPL_API_KEY}` } }
+      { headers: { Authorization: `Bearer ${BNPL_API_KEY}` } },
     );
     return response.data;
   } catch (error) {
@@ -20,12 +20,17 @@ export const initiateCreditCheck = async (buyerId: string, amount: number) => {
 };
 
 // Function to create a BNPL order
-export const createBnplOrder = async (orderId: string, buyerId: string, amount: number, tenure: number) => {
+export const createBnplOrder = async (
+  orderId: string,
+  buyerId: string,
+  amount: number,
+  tenure: number,
+) => {
   try {
     const response = await axios.post(
       `${BNPL_API_BASE_URL}/create-order`,
       { orderId, buyerId, amount, tenure },
-      { headers: { Authorization: `Bearer ${BNPL_API_KEY}` } }
+      { headers: { Authorization: `Bearer ${BNPL_API_KEY}` } },
     );
     return response.data;
   } catch (error) {

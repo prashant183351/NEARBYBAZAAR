@@ -3,6 +3,7 @@
 ## 🚀 Quick Start
 
 ### Buyer: Apply for Credit
+
 ```bash
 POST /v1/credit/apply
 {
@@ -13,6 +14,7 @@ POST /v1/credit/apply
 ```
 
 ### Admin: Approve Credit
+
 ```bash
 POST /v1/credit/admin/approve
 {
@@ -25,6 +27,7 @@ POST /v1/credit/admin/approve
 ```
 
 ### Check Credit Availability
+
 ```bash
 POST /v1/credit/check
 {
@@ -34,6 +37,7 @@ POST /v1/credit/check
 ```
 
 ### Get Credit Summary
+
 ```bash
 GET /v1/credit/summary/{userId}
 ```
@@ -41,6 +45,7 @@ GET /v1/credit/summary/{userId}
 ## 💳 Payment Term Types
 
 ### 1. Full Advance
+
 ```json
 {
   "type": "full_advance"
@@ -49,6 +54,7 @@ GET /v1/credit/summary/{userId}
 ```
 
 ### 2. Partial Advance (30/70 Split)
+
 ```json
 {
   "type": "partial_advance",
@@ -58,6 +64,7 @@ GET /v1/credit/summary/{userId}
 ```
 
 ### 3. Net 30 (Credit)
+
 ```json
 {
   "type": "net_days",
@@ -68,6 +75,7 @@ GET /v1/credit/summary/{userId}
 ```
 
 ### 4. Cash on Delivery
+
 ```json
 {
   "type": "cod"
@@ -86,6 +94,7 @@ rejected
 ## 🎯 Key Metrics
 
 ### Credit Utilization
+
 ```
 Utilization = (outstandingAmount / creditLimit) × 100
 
@@ -95,6 +104,7 @@ Utilization = (outstandingAmount / creditLimit) × 100
 ```
 
 ### Payment Status
+
 - **unpaid**: No payment received
 - **partial**: Some payment received
 - **paid**: Fully paid
@@ -103,29 +113,32 @@ Utilization = (outstandingAmount / creditLimit) × 100
 ## 🔑 Key Endpoints
 
 ### Buyer Endpoints
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/v1/credit/apply` | Apply for credit |
-| GET | `/v1/credit/summary/:userId` | Get credit summary |
-| POST | `/v1/credit/check` | Check availability |
-| POST | `/v1/credit/payment` | Record payment |
+
+| Method | Endpoint                     | Description        |
+| ------ | ---------------------------- | ------------------ |
+| POST   | `/v1/credit/apply`           | Apply for credit   |
+| GET    | `/v1/credit/summary/:userId` | Get credit summary |
+| POST   | `/v1/credit/check`           | Check availability |
+| POST   | `/v1/credit/payment`         | Record payment     |
 
 ### Admin Endpoints
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/v1/credit/admin/applications` | List applications |
-| POST | `/v1/credit/admin/approve` | Approve credit |
-| POST | `/v1/credit/admin/reject` | Reject application |
-| PUT | `/v1/credit/admin/limit` | Update limit |
-| POST | `/v1/credit/admin/suspend` | Suspend credit |
-| POST | `/v1/credit/admin/mark-overdue` | Mark overdue (cron) |
+
+| Method | Endpoint                        | Description         |
+| ------ | ------------------------------- | ------------------- |
+| GET    | `/v1/credit/admin/applications` | List applications   |
+| POST   | `/v1/credit/admin/approve`      | Approve credit      |
+| POST   | `/v1/credit/admin/reject`       | Reject application  |
+| PUT    | `/v1/credit/admin/limit`        | Update limit        |
+| POST   | `/v1/credit/admin/suspend`      | Suspend credit      |
+| POST   | `/v1/credit/admin/mark-overdue` | Mark overdue (cron) |
 
 ### Payment Terms
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/v1/credit/terms` | List templates |
-| POST | `/v1/credit/admin/terms` | Create template |
-| GET | `/v1/credit/terms/:id` | Get by ID |
+
+| Method | Endpoint                 | Description     |
+| ------ | ------------------------ | --------------- |
+| GET    | `/v1/credit/terms`       | List templates  |
+| POST   | `/v1/credit/admin/terms` | Create template |
+| GET    | `/v1/credit/terms/:id`   | Get by ID       |
 
 ## 📝 Order Payment Terms Schema
 
@@ -147,22 +160,26 @@ Utilization = (outstandingAmount / creditLimit) × 100
 ## 🏗️ File Locations
 
 ### Backend
+
 - Models: `apps/api/src/models/CreditTerm.ts`
 - Service: `apps/api/src/services/creditLedger.ts`
 - Routes: `apps/api/src/routes/credit.ts`
 - Extended Order: `apps/api/src/models/Order.ts`
 
 ### Frontend
+
 - Admin UI: `apps/admin/pages/credit/approvals.tsx`
 - Buyer Dashboard: `apps/web/pages/b2b/credit.tsx`
 
 ### Documentation
+
 - Full Guide: `docs/PAYMENT_TERMS.md`
 - Quick Reference: `docs/PAYMENT_TERMS_QUICK_REFERENCE.md` (this file)
 
 ## 🔄 Common Workflows
 
 ### Credit Application → Order
+
 ```
 1. Buyer applies for credit
    POST /v1/credit/apply
@@ -184,6 +201,7 @@ Utilization = (outstandingAmount / creditLimit) × 100
 ```
 
 ### Handle Overdue Payment
+
 ```
 1. Cron runs daily
    POST /v1/credit/admin/mark-overdue
@@ -199,6 +217,7 @@ Utilization = (outstandingAmount / creditLimit) × 100
 ## 💡 Examples
 
 ### Example 1: Net 30 Order (₹200,000)
+
 ```typescript
 // Buyer has ₹500k credit limit, ₹500k available
 
@@ -227,12 +246,13 @@ allocateOrderCredit(userId, orderId, 200000)
 ```
 
 ### Example 2: 30/70 Split Order (₹100,000)
+
 ```typescript
 // 1. Calculate schedule
 calculatePaymentSchedule(100000, {
   type: 'partial_advance',
-  advancePercentage: 30
-})
+  advancePercentage: 30,
+});
 // → { advance: 30000, onDelivery: 70000 }
 
 // 2. Create order
@@ -240,19 +260,19 @@ Order.create({
   total: 100000,
   paymentTerms: {
     type: 'partial_advance',
-    advancePercentage: 30
+    advancePercentage: 30,
   },
   creditUsed: 70000,
   outstandingAmount: 70000,
-  paidAmount: 30000,        // Advance paid
-  paymentStatus: 'partial'
-})
+  paidAmount: 30000, // Advance paid
+  paymentStatus: 'partial',
+});
 
 // 3. Allocate credit (only ₹70k)
-allocateOrderCredit(userId, orderId, 70000)
+allocateOrderCredit(userId, orderId, 70000);
 
 // 4. On delivery, buyer pays ₹70k
-recordOrderPayment(userId, orderId, 70000)
+recordOrderPayment(userId, orderId, 70000);
 // → Outstanding: ₹0
 // → paymentStatus: 'paid'
 ```
@@ -260,14 +280,17 @@ recordOrderPayment(userId, orderId, 70000)
 ## ⚠️ Common Issues
 
 ### Issue: Insufficient Credit
+
 **Error**: "Insufficient credit. Available: ₹X, Required: ₹Y"
 **Fix**: Admin increases credit limit or buyer pays outstanding
 
 ### Issue: Payment Not Applied
+
 **Symptom**: Payment recorded but outstanding not reduced
 **Fix**: Check userId and orderId match; verify order has creditUsed > 0
 
 ### Issue: Can't Place Order
+
 **Error**: "Credit status: suspended"
 **Fix**: Admin reviews and reactivates credit (resolve overdue payments first)
 
@@ -296,6 +319,7 @@ recordOrderPayment(userId, orderId, 70000)
 ## 📞 Support
 
 **Common Questions**:
+
 - Q: How long does approval take?
   A: 2-3 business days (manual review)
 
@@ -310,6 +334,7 @@ recordOrderPayment(userId, orderId, 70000)
 ---
 
 **Quick Links**:
+
 - [Full Documentation](./PAYMENT_TERMS.md)
 - [B2B Buyer Accounts](./B2B_BUYER_ACCOUNTS.md)
 - [GST Invoicing](./GST_INVOICING.md)

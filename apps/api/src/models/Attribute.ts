@@ -15,14 +15,21 @@ export interface IAttribute extends Document {
   updatedAt: Date;
 }
 
-const AttributeSchema = new Schema<IAttribute>({
-  key: { type: String, required: true, trim: true, unique: true, index: true },
-  label: { type: String, required: true, trim: true },
-  slug: { type: String, required: true, unique: true, index: true },
-  type: { type: String, enum: ['string', 'number', 'boolean', 'enum', 'multiselect'], required: true },
-  values: [{ type: String }],
-  unit: { type: String },
-}, { timestamps: true });
+const AttributeSchema = new Schema<IAttribute>(
+  {
+    key: { type: String, required: true, trim: true, unique: true, index: true },
+    label: { type: String, required: true, trim: true },
+    slug: { type: String, required: true, unique: true, index: true },
+    type: {
+      type: String,
+      enum: ['string', 'number', 'boolean', 'enum', 'multiselect'],
+      required: true,
+    },
+    values: [{ type: String }],
+    unit: { type: String },
+  },
+  { timestamps: true },
+);
 
 AttributeSchema.pre('validate', function (next) {
   if (!this.slug) this.slug = generateSlug(this.key || this.label);

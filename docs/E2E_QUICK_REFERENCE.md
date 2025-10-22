@@ -85,17 +85,20 @@ test('should submit search form', async ({ page }) => {
 ### Best Practices
 
 1. **Use data-testid for stable selectors:**
+
    ```typescript
    await page.click('[data-testid="add-to-cart"]');
    ```
 
 2. **Wait for navigation:**
+
    ```typescript
    await page.click('a[href="/cart"]');
    await page.waitForLoadState('networkidle');
    ```
 
 3. **Check visibility before interaction:**
+
    ```typescript
    await expect(page.locator('[data-testid="button"]')).toBeVisible();
    await page.click('[data-testid="button"]');
@@ -104,8 +107,12 @@ test('should submit search form', async ({ page }) => {
 4. **Group related tests:**
    ```typescript
    test.describe('Product Search', () => {
-     test('filters by category', async ({ page }) => { /* ... */ });
-     test('sorts by price', async ({ page }) => { /* ... */ });
+     test('filters by category', async ({ page }) => {
+       /* ... */
+     });
+     test('sorts by price', async ({ page }) => {
+       /* ... */
+     });
    });
    ```
 
@@ -135,6 +142,7 @@ test('should submit search form', async ({ page }) => {
 ### Flaky tests
 
 **Solutions:**
+
 - Add explicit waits: `await page.waitForSelector('[data-testid="element"]')`
 - Use `waitForLoadState('networkidle')` after navigation
 - Increase timeout for slow operations: `test.setTimeout(60000)`
@@ -180,6 +188,7 @@ npx playwright show-trace trace.zip
 ## VS Code Extension
 
 Install the [Playwright Test for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright) extension for:
+
 - Run tests from editor
 - Debug with breakpoints
 - View test results inline

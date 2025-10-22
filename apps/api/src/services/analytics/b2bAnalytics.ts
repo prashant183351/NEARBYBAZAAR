@@ -97,7 +97,7 @@ export interface ExportData {
 export async function getVendorB2BSummary(
   vendorId: string,
   startDate?: Date,
-  endDate?: Date
+  endDate?: Date,
 ): Promise<VendorB2BSummary> {
   const start = startDate || subMonths(new Date(), 6);
   const end = endDate || new Date();
@@ -107,54 +107,58 @@ export async function getVendorB2BSummary(
     vendor: vendorId,
     createdAt: { $gte: start, $lte: end },
     deleted: false,
-    status: { $ne: 'cancelled' }
+    status: { $ne: 'cancelled' },
   }).populate('items.product');
 
   // Separate bulk and retail
-  const bulkOrders = orders.filter(o => o.isBulkOrder);
-  const retailOrders = orders.filter(o => !o.isBulkOrder);
+  const bulkOrders = orders.filter((o) => o.isBulkOrder);
+  const retailOrders = orders.filter((o) => !o.isBulkOrder);
 
   const totalBulkRevenue = bulkOrders.reduce((sum, o) => sum + o.total, 0);
   const totalRetailRevenue = retailOrders.reduce((sum, o) => sum + o.total, 0);
 
   const averageBulkOrderValue = bulkOrders.length > 0 ? totalBulkRevenue / bulkOrders.length : 0;
-  const averageRetailOrderValue = retailOrders.length > 0 ? totalRetailRevenue / retailOrders.length : 0;
+  const averageRetailOrderValue =
+    retailOrders.length > 0 ? totalRetailRevenue / retailOrders.length : 0;
 
   const totalRevenue = totalBulkRevenue + totalRetailRevenue;
   const bulkVsRetailRatio = totalRevenue > 0 ? (totalBulkRevenue / totalRevenue) * 100 : 0;
 
   // Find top bulk order type
   const bulkTypeCounts: Record<string, number> = {};
-  bulkOrders.forEach(o => {
+  bulkOrders.forEach((o) => {
     if (o.bulkOrderType) {
       bulkTypeCounts[o.bulkOrderType] = (bulkTypeCounts[o.bulkOrderType] || 0) + 1;
     }
   });
-  const topBulkOrderType = Object.keys(bulkTypeCounts).length > 0
-    ? Object.entries(bulkTypeCounts).sort((a, b) => b[1] - a[1])[0][0]
-    : null;
+  const topBulkOrderType =
+    Object.keys(bulkTypeCounts).length > 0
+      ? Object.entries(bulkTypeCounts).sort((a, b) => b[1] - a[1])[0][0]
+      : null;
 
   // Find top industry
   const industryCounts: Record<string, number> = {};
-  bulkOrders.forEach(o => {
+  bulkOrders.forEach((o) => {
     if (o.industry) {
       industryCounts[o.industry] = (industryCounts[o.industry] || 0) + 1;
     }
   });
-  const topIndustry = Object.keys(industryCounts).length > 0
-    ? Object.entries(industryCounts).sort((a, b) => b[1] - a[1])[0][0]
-    : null;
+  const topIndustry =
+    Object.keys(industryCounts).length > 0
+      ? Object.entries(industryCounts).sort((a, b) => b[1] - a[1])[0][0]
+      : null;
 
   // Find top region
   const regionCounts: Record<string, number> = {};
-  bulkOrders.forEach(o => {
+  bulkOrders.forEach((o) => {
     if (o.region) {
       regionCounts[o.region] = (regionCounts[o.region] || 0) + 1;
     }
   });
-  const topRegion = Object.keys(regionCounts).length > 0
-    ? Object.entries(regionCounts).sort((a, b) => b[1] - a[1])[0][0]
-    : null;
+  const topRegion =
+    Object.keys(regionCounts).length > 0
+      ? Object.entries(regionCounts).sort((a, b) => b[1] - a[1])[0][0]
+      : null;
 
   return {
     vendorId,
@@ -169,7 +173,7 @@ export async function getVendorB2BSummary(
     topIndustry,
     topRegion,
     periodStart: start,
-    periodEnd: end
+    periodEnd: end,
   };
 }
 
@@ -178,7 +182,7 @@ export async function getVendorB2BSummary(
  */
 export async function getAdminB2BBreakdown(
   startDate?: Date,
-  endDate?: Date
+  endDate?: Date,
 ): Promise<AdminB2BBreakdown> {
   const start = startDate || subMonths(new Date(), 6);
   const end = endDate || new Date();
@@ -188,15 +192,17 @@ export async function getAdminB2BBreakdown(
     isBulkOrder: true,
     createdAt: { $gte: start, $lte: end },
     deleted: false,
-    status: { $ne: 'cancelled' }
-  }).populate('user').populate('items.product');
+    status: { $ne: 'cancelled' },
+  })
+    .populate('user')
+    .populate('items.product');
 
   const totalBulkRevenue = bulkOrders.reduce((sum, o) => sum + o.total, 0);
   const averageBulkOrderValue = bulkOrders.length > 0 ? totalBulkRevenue / bulkOrders.length : 0;
 
   // Regional breakdown
-  const regionMap: Record<string, { orders: any[], revenue: number, industries: Set<string> }> = {};
-  bulkOrders.forEach(o => {
+  const regionMap: Record<string, { orders: any[]; revenue: number; industries: Set<string> }> = {};
+  bulkOrders.forEach((o) => {
     const region = o.region || 'Unknown';
     if (!regionMap[region]) {
       regionMap[region] = { orders: [], revenue: 0, industries: new Set() };
@@ -206,17 +212,19 @@ export async function getAdminB2BBreakdown(
     if (o.industry) regionMap[region].industries.add(o.industry);
   });
 
-  const byRegion: RegionalStats[] = Object.entries(regionMap).map(([region, data]) => ({
-    region,
-    orderCount: data.orders.length,
-    revenue: data.revenue,
-    averageOrderValue: data.revenue / data.orders.length,
-    topIndustries: Array.from(data.industries).slice(0, 3)
-  })).sort((a, b) => b.revenue - a.revenue);
+  const byRegion: RegionalStats[] = Object.entries(regionMap)
+    .map(([region, data]) => ({
+      region,
+      orderCount: data.orders.length,
+      revenue: data.revenue,
+      averageOrderValue: data.revenue / data.orders.length,
+      topIndustries: Array.from(data.industries).slice(0, 3),
+    }))
+    .sort((a, b) => b.revenue - a.revenue);
 
   // Industry breakdown
-  const industryMap: Record<string, { orders: any[], revenue: number, regions: Set<string> }> = {};
-  bulkOrders.forEach(o => {
+  const industryMap: Record<string, { orders: any[]; revenue: number; regions: Set<string> }> = {};
+  bulkOrders.forEach((o) => {
     const industry = o.industry || 'Unknown';
     if (!industryMap[industry]) {
       industryMap[industry] = { orders: [], revenue: 0, regions: new Set() };
@@ -226,17 +234,19 @@ export async function getAdminB2BBreakdown(
     if (o.region) industryMap[industry].regions.add(o.region);
   });
 
-  const byIndustry: IndustryStats[] = Object.entries(industryMap).map(([industry, data]) => ({
-    industry,
-    orderCount: data.orders.length,
-    revenue: data.revenue,
-    averageOrderValue: data.revenue / data.orders.length,
-    topRegions: Array.from(data.regions).slice(0, 3)
-  })).sort((a, b) => b.revenue - a.revenue);
+  const byIndustry: IndustryStats[] = Object.entries(industryMap)
+    .map(([industry, data]) => ({
+      industry,
+      orderCount: data.orders.length,
+      revenue: data.revenue,
+      averageOrderValue: data.revenue / data.orders.length,
+      topRegions: Array.from(data.regions).slice(0, 3),
+    }))
+    .sort((a, b) => b.revenue - a.revenue);
 
   // Bulk order type breakdown
-  const typeMap: Record<string, { orders: any[], revenue: number }> = {};
-  bulkOrders.forEach(o => {
+  const typeMap: Record<string, { orders: any[]; revenue: number }> = {};
+  bulkOrders.forEach((o) => {
     const type = o.bulkOrderType || 'custom';
     if (!typeMap[type]) {
       typeMap[type] = { orders: [], revenue: 0 };
@@ -245,12 +255,14 @@ export async function getAdminB2BBreakdown(
     typeMap[type].revenue += o.total;
   });
 
-  const byBulkOrderType: BulkTypeStats[] = Object.entries(typeMap).map(([type, data]) => ({
-    type,
-    orderCount: data.orders.length,
-    revenue: data.revenue,
-    averageOrderValue: data.revenue / data.orders.length
-  })).sort((a, b) => b.revenue - a.revenue);
+  const byBulkOrderType: BulkTypeStats[] = Object.entries(typeMap)
+    .map(([type, data]) => ({
+      type,
+      orderCount: data.orders.length,
+      revenue: data.revenue,
+      averageOrderValue: data.revenue / data.orders.length,
+    }))
+    .sort((a, b) => b.revenue - a.revenue);
 
   // Top vendors (simplified - assume vendor info in product or separate field)
   // For now, placeholder
@@ -262,13 +274,13 @@ export async function getAdminB2BBreakdown(
   for (let i = trendDays - 1; i >= 0; i--) {
     const dayStart = startOfDay(subDays(new Date(), i));
     const dayEnd = endOfDay(subDays(new Date(), i));
-    const dayOrders = bulkOrders.filter(o => 
-      o.createdAt && o.createdAt >= dayStart && o.createdAt <= dayEnd
+    const dayOrders = bulkOrders.filter(
+      (o) => o.createdAt && o.createdAt >= dayStart && o.createdAt <= dayEnd,
     );
     recentTrends.push({
       date: dayStart.toISOString().split('T')[0],
       orderCount: dayOrders.length,
-      revenue: dayOrders.reduce((sum, o) => sum + o.total, 0)
+      revenue: dayOrders.reduce((sum, o) => sum + o.total, 0),
     });
   }
 
@@ -282,7 +294,7 @@ export async function getAdminB2BBreakdown(
     topVendors,
     recentTrends,
     periodStart: start,
-    periodEnd: end
+    periodEnd: end,
   };
 }
 
@@ -292,7 +304,7 @@ export async function getAdminB2BBreakdown(
 export async function getVendorB2BExport(
   vendorId: string,
   startDate?: Date,
-  endDate?: Date
+  endDate?: Date,
 ): Promise<ExportData[]> {
   const start = startDate || subMonths(new Date(), 1);
   const end = endDate || new Date();
@@ -301,10 +313,12 @@ export async function getVendorB2BExport(
     vendor: vendorId,
     isBulkOrder: true,
     createdAt: { $gte: start, $lte: end },
-    deleted: false
-  }).populate('user').sort({ createdAt: -1 });
+    deleted: false,
+  })
+    .populate('user')
+    .sort({ createdAt: -1 });
 
-  return orders.map(o => {
+  return orders.map((o) => {
     const user = o.user as any;
     return {
       orderId: String(o._id),
@@ -321,7 +335,7 @@ export async function getVendorB2BExport(
       paidAmount: o.paidAmount,
       outstandingAmount: o.outstandingAmount,
       creditUsed: o.creditUsed,
-      dueDate: o.paymentTerms?.dueDate?.toISOString().split('T')[0]
+      dueDate: o.paymentTerms?.dueDate?.toISOString().split('T')[0],
     };
   });
 }
@@ -333,7 +347,7 @@ export async function getAdminB2BExport(
   startDate?: Date,
   endDate?: Date,
   region?: string,
-  industry?: string
+  industry?: string,
 ): Promise<ExportData[]> {
   const start = startDate || subMonths(new Date(), 1);
   const end = endDate || new Date();
@@ -341,17 +355,15 @@ export async function getAdminB2BExport(
   const filter: any = {
     isBulkOrder: true,
     createdAt: { $gte: start, $lte: end },
-    deleted: false
+    deleted: false,
   };
 
   if (region) filter.region = region;
   if (industry) filter.industry = industry;
 
-  const orders = await Order.find(filter)
-    .populate('user')
-    .sort({ createdAt: -1 });
+  const orders = await Order.find(filter).populate('user').sort({ createdAt: -1 });
 
-  return orders.map(o => {
+  return orders.map((o) => {
     const user = o.user as any;
     return {
       orderId: String(o._id),
@@ -368,7 +380,7 @@ export async function getAdminB2BExport(
       paidAmount: o.paidAmount,
       outstandingAmount: o.outstandingAmount,
       creditUsed: o.creditUsed,
-      dueDate: o.paymentTerms?.dueDate?.toISOString().split('T')[0]
+      dueDate: o.paymentTerms?.dueDate?.toISOString().split('T')[0],
     };
   });
 }
@@ -378,12 +390,24 @@ export async function getAdminB2BExport(
  */
 export function exportDataToCSV(data: ExportData[]): string {
   const headers = [
-    'Order ID', 'Date', 'Buyer Name', 'Company', 'Industry', 'Region',
-    'Order Type', 'Subtotal', 'Tax', 'Total', 'Payment Status',
-    'Paid Amount', 'Outstanding', 'Credit Used', 'Due Date'
+    'Order ID',
+    'Date',
+    'Buyer Name',
+    'Company',
+    'Industry',
+    'Region',
+    'Order Type',
+    'Subtotal',
+    'Tax',
+    'Total',
+    'Payment Status',
+    'Paid Amount',
+    'Outstanding',
+    'Credit Used',
+    'Due Date',
   ];
 
-  const rows = data.map(d => [
+  const rows = data.map((d) => [
     d.orderId,
     d.date,
     d.buyerName,
@@ -398,12 +422,10 @@ export function exportDataToCSV(data: ExportData[]): string {
     d.paidAmount.toFixed(2),
     d.outstandingAmount.toFixed(2),
     d.creditUsed.toFixed(2),
-    d.dueDate || ''
+    d.dueDate || '',
   ]);
 
-  const csvLines = [headers, ...rows].map(row => 
-    row.map(cell => `"${cell}"`).join(',')
-  );
+  const csvLines = [headers, ...rows].map((row) => row.map((cell) => `"${cell}"`).join(','));
 
   return csvLines.join('\n');
 }
@@ -413,29 +435,29 @@ export function exportDataToCSV(data: ExportData[]): string {
  */
 export async function getVendorB2BTrends(
   vendorId: string,
-  days: number = 30
+  days: number = 30,
 ): Promise<TrendData[]> {
   const trends: TrendData[] = [];
-  
+
   for (let i = days - 1; i >= 0; i--) {
     const dayStart = startOfDay(subDays(new Date(), i));
     const dayEnd = endOfDay(subDays(new Date(), i));
-    
+
     const orders = await Order.find({
       // Filter by vendor
       isBulkOrder: true,
       createdAt: { $gte: dayStart, $lte: dayEnd },
       deleted: false,
       status: { $ne: 'cancelled' },
-      vendor: vendorId
+      vendor: vendorId,
     });
-    
+
     trends.push({
       date: dayStart.toISOString().split('T')[0],
       orderCount: orders.length,
-      revenue: orders.reduce((sum, o) => sum + o.total, 0)
+      revenue: orders.reduce((sum, o) => sum + o.total, 0),
     });
   }
-  
+
   return trends;
 }

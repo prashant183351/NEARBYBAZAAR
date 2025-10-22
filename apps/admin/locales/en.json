@@ -1,6 +1,6 @@
 {
-    "dashboard": "Admin Dashboard",
-    "users": "Users",
-    "orders": "Orders",
-    "welcome": "Welcome, admin! This is your dashboard stub page."
+  "dashboard": "Admin Dashboard",
+  "users": "Users",
+  "orders": "Orders",
+  "welcome": "Welcome, admin! This is your dashboard stub page."
 }

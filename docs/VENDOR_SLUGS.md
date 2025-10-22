@@ -1,9 +1,11 @@
 ## Store Slug Implementation (Feature #111)
 
 ### Overview
+
 Each vendor now has a unique, URL-friendly slug generated from the vendor's name. The slug is maintained with collision handling and history tracking for future SEO redirects.
 
 ### Changes
+
 - **Vendor Model** (`apps/api/src/models/Vendor.ts`):
   - Added `slug` field (unique, indexed)
   - Added `slugHistory` array to track previous slugs
@@ -21,11 +23,12 @@ Each vendor now has a unique, URL-friendly slug generated from the vendor's name
   - Verifies slug history updates on name change
 
 ### Usage
+
 ```typescript
 const vendor = await Vendor.create({
   name: 'Cool Shop',
   email: 'shop@example.com',
-  owner: userId
+  owner: userId,
 });
 // vendor.slug => 'cool-shop'
 
@@ -36,5 +39,6 @@ await vendor.save();
 ```
 
 ### Future Work
+
 - Implement 301 redirects for old store slugs (SEO chunk)
 - Add slug-based vendor lookup routes

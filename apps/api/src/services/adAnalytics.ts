@@ -18,7 +18,7 @@ export const logImpression = async (adId: string, vendorId: string) => {
   await AdAnalytics.findOneAndUpdate(
     { adId, vendorId },
     { $inc: { impressions: 1 } },
-    { upsert: true, new: true }
+    { upsert: true, new: true },
   );
 };
 
@@ -27,7 +27,7 @@ export const logClick = async (adId: string, vendorId: string) => {
   await AdAnalytics.findOneAndUpdate(
     { adId, vendorId },
     { $inc: { clicks: 1 } },
-    { upsert: true, new: true }
+    { upsert: true, new: true },
   );
 };
 
@@ -36,7 +36,7 @@ export const logOrder = async (adId: string, vendorId: string, revenue: number) 
   await AdAnalytics.findOneAndUpdate(
     { adId, vendorId },
     { $inc: { orders: 1, revenue } },
-    { upsert: true, new: true }
+    { upsert: true, new: true },
   );
 };
 

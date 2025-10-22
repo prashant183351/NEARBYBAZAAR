@@ -26,6 +26,7 @@ Welcome to NearbyBazaar's B2B platform! This guide will help you leverage our bu
 ### What is a B2B Account?
 
 A B2B (Business-to-Business) account gives you access to:
+
 - **Bulk pricing discounts** (10-30% off retail prices)
 - **Credit terms** (Net 30/60, partial advance options)
 - **RFQ system** (request custom quotes from vendors)
@@ -55,6 +56,7 @@ A B2B (Business-to-Business) account gives you access to:
 ### Step 2: Verify Your Business
 
 You'll need to upload:
+
 - **GST Certificate** (PDF/JPG, max 5MB)
 - **PAN Card** (PDF/JPG, max 5MB)
 - **Company Registration** (optional, for higher credit limits)
@@ -69,6 +71,7 @@ You'll need to upload:
 ### Step 4: Apply for Credit (Optional)
 
 Once approved, apply for a credit line:
+
 1. Go to **Account > Credit Application**
 2. Fill in financial details:
    - Annual turnover
@@ -77,6 +80,7 @@ Once approved, apply for a credit line:
 3. Credit limit approval: 2-3 business days
 
 **Typical Credit Limits:**
+
 - Small businesses: ₹50,000 - ₹2,00,000
 - Medium businesses: ₹2,00,000 - ₹10,00,000
 - Large enterprises: ₹10,00,000+
@@ -106,6 +110,7 @@ Products with bulk pricing show **tiered discounts** based on quantity:
 ### Wholesale-Only Products
 
 Some products require minimum order quantities (MOQ):
+
 - Indicated by "Wholesale Only" badge
 - Example: Electronics Components Kit (MOQ: 50 units)
 - Cannot be added to cart if quantity < MOQ
@@ -128,6 +133,7 @@ Some products require minimum order quantities (MOQ):
 ### Method 2: RFQ (Custom Requirements)
 
 Use RFQs when you need:
+
 - Customization (logo printing, size variations)
 - Very large quantities (beyond standard tiers)
 - Special delivery terms
@@ -138,6 +144,7 @@ See [Submitting RFQs](#submitting-rfqs) section.
 ### Order Confirmation
 
 After placing order:
+
 - **Email confirmation** with order details
 - **GST invoice** (PDF) with company details
 - **Tracking updates** via email/SMS
@@ -150,6 +157,7 @@ After placing order:
 ### What is an RFQ?
 
 A **Request for Quotation (RFQ)** lets you request custom pricing from vendors for:
+
 - Bulk quantities beyond standard tiers
 - Customized products (branding, specifications)
 - Special delivery/payment terms
@@ -170,13 +178,14 @@ A **Request for Quotation (RFQ)** lets you request custom pricing from vendors f
    - **Special Requirements**: Customization, packaging, etc.
 
 **Example RFQ:**
+
 ```
 Product: Cotton T-Shirts
 Quantity: 5,000 pieces
 Target Price: ₹80-90 per piece
 Location: Mumbai, Maharashtra
 Needed By: 2024-12-15
-Requirements: Need custom logo printing on front. 
+Requirements: Need custom logo printing on front.
 Sizes: S(500), M(1500), L(2000), XL(800), XXL(200).
 Payment Terms: Net 30 preferred.
 ```
@@ -190,6 +199,7 @@ Payment Terms: Net 30 preferred.
 #### Step 3: Compare Quotes
 
 Each quote shows:
+
 - **Price per unit** and total cost
 - **Minimum order quantity**
 - **Delivery timeline** (lead time)
@@ -206,6 +216,7 @@ Each quote shows:
 #### Step 5: Complete Order
 
 Once you accept a quote:
+
 - Order is created automatically
 - Proceed to payment (based on agreed terms)
 - Track order like any other purchase
@@ -225,12 +236,14 @@ Once you accept a quote:
 ### Understanding Your Credit Account
 
 Once approved, you have:
+
 - **Credit Limit**: Maximum you can owe at any time
 - **Available Credit**: Current unused credit
 - **Outstanding Amount**: Total owed across all orders
 - **Credit Used**: Running total (resets when paid)
 
 **Example:**
+
 ```
 Credit Limit: ₹5,00,000
 Outstanding Amount: ₹2,00,000 (from 2 orders)
@@ -240,22 +253,26 @@ Available Credit: ₹3,00,000 (can place new orders)
 ### Payment Terms Options
 
 #### 1. Full Advance
+
 - Pay 100% before shipment
 - No credit used
 - Best for: Small orders, first-time vendors
 
 #### 2. Partial Advance (e.g., 30-70)
+
 - Pay 30% upfront, 70% on delivery
 - Uses credit for balance portion
 - Best for: Medium orders, trusted vendors
 
 #### 3. Net 30 / Net 60
+
 - Pay entire amount within 30/60 days
 - Full amount uses credit
 - Best for: Regular orders, established relationship
 - **Late fees**: 2% per month after due date
 
 #### 4. Cash on Delivery (COD)
+
 - Pay on delivery
 - No credit used
 - Limited availability (vendor discretion)
@@ -273,6 +290,7 @@ Available Credit: ₹3,00,000 (can place new orders)
 ### Tracking Outstanding Payments
 
 View in **Dashboard > Credit & Payments**:
+
 - **All active orders** with payment status
 - **Due dates** highlighted (7 days before due)
 - **Overdue orders** (red alert)
@@ -281,12 +299,14 @@ View in **Dashboard > Credit & Payments**:
 ### Making Payments
 
 #### Option 1: Pay Individual Order
+
 1. Go to **Order Details**
 2. Click **"Make Payment"**
 3. Pay via UPI/PhonePe/Net Banking
 4. Outstanding balance updates immediately
 
 #### Option 2: Pay Multiple Orders
+
 1. Go to **Credit Dashboard**
 2. Select multiple orders
 3. **"Pay Selected"** - pay in bulk
@@ -295,6 +315,7 @@ View in **Dashboard > Credit & Payments**:
 ### Automatic Payment Reminders
 
 You'll receive reminders:
+
 - **7 days before due date**: First reminder
 - **3 days before**: Second reminder
 - **1 day before**: Final reminder
@@ -308,6 +329,7 @@ You'll receive reminders:
 - **Account Suspension**: After 60 days overdue
 
 **Example:**
+
 ```
 Order: ₹1,00,000
 Due Date: Jan 31, 2024
@@ -377,16 +399,19 @@ Total Paid: ₹1,01,000
 ### Using Analytics for Business
 
 **Cost Optimization:**
+
 - Identify products to shift to bulk pricing
 - Find best vendors (price + reliability)
 - Track credit utilization
 
 **Budgeting:**
+
 - Forecast monthly spending
 - Plan large purchases
 - Monitor credit availability
 
 **Tax Planning:**
+
 - Annual GST summary
 - Input tax credit (ITC) tracking
 - Vendor-wise expense breakdown
@@ -398,6 +423,7 @@ Total Paid: ₹1,01,000
 ### GST-Compliant Invoices
 
 All B2B orders include proper GST invoices with:
+
 - **Your GSTIN** and company details
 - **Vendor's GSTIN**
 - **Tax breakdown**: CGST, SGST, or IGST
@@ -407,11 +433,13 @@ All B2B orders include proper GST invoices with:
 ### Understanding Tax Components
 
 #### Intrastate Sale (Same State)
+
 - **CGST**: 9% (goes to central government)
 - **SGST**: 9% (goes to state government)
 - **Total**: 18% (for most products)
 
 **Example:**
+
 ```
 Subtotal: ₹1,00,000
 CGST (9%): ₹9,000
@@ -420,9 +448,11 @@ Total: ₹1,18,000
 ```
 
 #### Interstate Sale (Different State)
+
 - **IGST**: 18% (integrated GST)
 
 **Example:**
+
 ```
 Subtotal: ₹1,00,000
 IGST (18%): ₹18,000
@@ -432,6 +462,7 @@ Total: ₹1,18,000
 ### Claiming Input Tax Credit (ITC)
 
 As a registered business, you can claim ITC:
+
 1. **Download invoices** from order history
 2. **Verify on GSTN portal** (auto-populated by vendors)
 3. **File GSTR-3B** monthly return
@@ -440,11 +471,13 @@ As a registered business, you can claim ITC:
 ### Invoice Management
 
 **Download Options:**
+
 - **Individual**: From order details page
 - **Bulk**: Export all invoices for a date range
 - **Email**: Sent automatically post-order
 
 **Storage:**
+
 - Keep digital copies for 6 years (GST law requirement)
 - Use our export feature for accounting software integration
 
@@ -595,4 +628,4 @@ A: Yes, download from Google Play / App Store with full B2B features.
 
 ---
 
-*Happy Bulk Buying! 🚀*
+_Happy Bulk Buying! 🚀_

@@ -26,6 +26,7 @@ pnpm generate:sdk
 This will update the SDK in this directory.
 
 ## Notes
+
 - The SDK uses the Fetch API (works in Node.js and browsers).
 - Auth: Pass JWT tokens via the `Api` constructor or per-request options.
 - See the generated `README.md` and types for full API details.

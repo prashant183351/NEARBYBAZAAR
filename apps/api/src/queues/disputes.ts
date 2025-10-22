@@ -1,6 +1,6 @@
 /**
  * Dispute SLA Queue
- * 
+ *
  * Uses BullMQ delayed jobs to auto-escalate disputes when vendor misses SLA.
  */
 import { Queue, Worker, JobsOptions } from 'bullmq';
@@ -43,7 +43,7 @@ if (shouldInitQueues) {
         });
       }
     },
-    { connection }
+    { connection },
   );
 }
 

@@ -15,13 +15,16 @@ const ABTestAdmin: React.FC = () => {
   });
 
   useEffect(() => {
-    axios.get('/api/admin/abtest').then(res => {
-      setTests(res.data.data);
-      setLoading(false);
-    }).catch(() => {
-      setError('Failed to load A/B tests');
-      setLoading(false);
-    });
+    axios
+      .get('/api/admin/abtest')
+      .then((res) => {
+        setTests(res.data.data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError('Failed to load A/B tests');
+        setLoading(false);
+      });
   }, []);
 
   const handleCreate = async (e: React.FormEvent) => {
@@ -48,11 +51,20 @@ const ABTestAdmin: React.FC = () => {
       <form onSubmit={handleCreate} className="mb-6 bg-gray-50 p-4 rounded shadow">
         <div className="mb-2">
           <label className="block font-semibold">Test Name</label>
-          <input className="border p-2 w-full" value={newTest.name} onChange={e => setNewTest({ ...newTest, name: e.target.value })} required />
+          <input
+            className="border p-2 w-full"
+            value={newTest.name}
+            onChange={(e) => setNewTest({ ...newTest, name: e.target.value })}
+            required
+          />
         </div>
         <div className="mb-2">
           <label className="block font-semibold">Feature</label>
-          <select className="border p-2 w-full" value={newTest.feature} onChange={e => setNewTest({ ...newTest, feature: e.target.value as any })}>
+          <select
+            className="border p-2 w-full"
+            value={newTest.feature}
+            onChange={(e) => setNewTest({ ...newTest, feature: e.target.value as any })}
+          >
             <option value="fomo">FOMO Badge</option>
             <option value="urgency">Urgency</option>
             <option value="badge">Badge</option>
@@ -61,16 +73,24 @@ const ABTestAdmin: React.FC = () => {
         </div>
         <div className="mb-2">
           <label className="block font-semibold">Scope</label>
-          <select className="border p-2 w-full" value={newTest.scope} onChange={e => setNewTest({ ...newTest, scope: e.target.value as any })}>
+          <select
+            className="border p-2 w-full"
+            value={newTest.scope}
+            onChange={(e) => setNewTest({ ...newTest, scope: e.target.value as any })}
+          >
             <option value="global">Global</option>
             <option value="category">Category</option>
             <option value="product">Product</option>
           </select>
         </div>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded" type="submit">Create Test</button>
+        <button className="bg-blue-600 text-white px-4 py-2 rounded" type="submit">
+          Create Test
+        </button>
         {error && <div className="text-red-600 mt-2">{error}</div>}
       </form>
-      {loading ? <div>Loading...</div> : (
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
         <table className="w-full border">
           <thead>
             <tr className="bg-gray-100">
@@ -86,7 +106,7 @@ const ABTestAdmin: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {tests.map(test => (
+            {tests.map((test) => (
               <tr key={test.name + test.startedAt}>
                 <td className="p-2">{test.name}</td>
                 <td className="p-2">{test.feature}</td>

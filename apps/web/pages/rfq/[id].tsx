@@ -13,22 +13,28 @@ export default function BuyerRFQDetail() {
 
   useEffect(() => {
     if (!id) return;
-    axios.get(`/api/rfq/${id}`).then(r => setRfq(r.data.data));
-    axios.get(`/api/rfq/${id}/quotes`).then(r => setQuotes(r.data.data || []));
+    axios.get(`/api/rfq/${id}`).then((r) => setRfq(r.data.data));
+    axios.get(`/api/rfq/${id}/quotes`).then((r) => setQuotes(r.data.data || []));
   }, [id]);
 
   const postMessage = async (quoteId: string) => {
     if (!message) return;
-    const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || (window as any).NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+    const siteKey =
+      process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || (window as any).NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
     // @ts-ignore
     if (!window.grecaptcha) {
       alert('reCAPTCHA not loaded');
       return;
     }
     // @ts-ignore
-  const token = await window.grecaptcha.execute(siteKey, { action: 'rfq_message' });
-  const fingerprint = getClientFingerprint();
-  await axios.post(`/api/rfq/quotes/${quoteId}/messages`, { message, authorType: 'buyer', recaptchaToken: token, fingerprint });
+    const token = await window.grecaptcha.execute(siteKey, { action: 'rfq_message' });
+    const fingerprint = getClientFingerprint();
+    await axios.post(`/api/rfq/quotes/${quoteId}/messages`, {
+      message,
+      authorType: 'buyer',
+      recaptchaToken: token,
+      fingerprint,
+    });
     setMessage('');
   };
 
@@ -53,18 +59,33 @@ export default function BuyerRFQDetail() {
       <div>
         <h2 className="text-lg font-semibold mb-2">Quotes</h2>
         <ul className="space-y-2">
-          {quotes.map(q => (
+          {quotes.map((q) => (
             <li key={q._id} className="border rounded p-3">
               <div>Vendor: {q.vendor?.name || q.vendor}</div>
-              <div>Price: 	{q.unitPrice}</div>
+              <div>Price: {q.unitPrice}</div>
               <div>MOQ: {q.minOrderQty || '-'}</div>
               <div>Lead Time: {q.leadTimeDays || '-'} days</div>
               <div>Status: {q.status}</div>
               <div className="mt-2 flex gap-2">
-                <input className="border p-2 flex-1" placeholder="Message to vendor" value={message} onChange={e => setMessage(e.target.value)} />
-                <button className="bg-gray-700 text-white px-3 py-2 rounded" onClick={() => postMessage(q._id)}>Send</button>
+                <input
+                  className="border p-2 flex-1"
+                  placeholder="Message to vendor"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                />
+                <button
+                  className="bg-gray-700 text-white px-3 py-2 rounded"
+                  onClick={() => postMessage(q._id)}
+                >
+                  Send
+                </button>
                 {q.status !== 'accepted' && (
-                  <button className="bg-green-600 text-white px-3 py-2 rounded" onClick={() => accept(q._id)}>Accept</button>
+                  <button
+                    className="bg-green-600 text-white px-3 py-2 rounded"
+                    onClick={() => accept(q._id)}
+                  >
+                    Accept
+                  </button>
                 )}
               </div>
             </li>

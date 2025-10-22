@@ -1,15 +1,15 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface SyncStateType extends Document {
-    vendorId: string;
-    lastSyncAt: Date;
-    lastRecordId?: string;
+  vendorId: string;
+  lastSyncAt: Date;
+  lastRecordId?: string;
 }
 
 const SyncStateSchema = new Schema<SyncStateType>({
-    vendorId: { type: String, required: true, unique: true, index: true },
-    lastSyncAt: { type: Date, default: null },
-    lastRecordId: { type: String, default: null },
+  vendorId: { type: String, required: true, unique: true, index: true },
+  lastSyncAt: { type: Date, default: null },
+  lastRecordId: { type: String, default: null },
 });
 
 export const SyncState = mongoose.model<SyncStateType>('SyncState', SyncStateSchema);

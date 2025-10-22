@@ -1,6 +1,6 @@
 /**
  * Feature #181: Pricing Engine Tests
- * 
+ *
  * CRITICAL TEST REQUIREMENTS (from spec):
  * - Test stacking rules and exclusion (some coupons not combinable with others)
  * - Test tiered pricing for bulk purchases
@@ -155,8 +155,10 @@ describe('Feature #181: Pricing Engine', () => {
       // Only the higher-priority non-stackable coupon should apply
       expect(result.appliedDiscounts).toHaveLength(1);
       expect(result.appliedDiscounts[0].ruleType).toBe('coupon');
-      expect(result.warnings).toContain('Rule "Electronics Sale" cannot be stacked with other discounts');
-      
+      expect(result.warnings).toContain(
+        'Rule "Electronics Sale" cannot be stacked with other discounts',
+      );
+
       // Cart total: ₹21,000
       // Only 20% coupon applied: ₹4,200 off
       expect(result.discountTotal).toBe(4200);
@@ -229,8 +231,8 @@ describe('Feature #181: Pricing Engine', () => {
       // Rule1 and Rule2 should apply (whitelist match)
       // Rule3 should be rejected (not in stackableWith)
       expect(result.appliedDiscounts).toHaveLength(2);
-      expect(result.appliedDiscounts.map(d => d.ruleName)).toContain('Category Discount');
-      expect(result.appliedDiscounts.map(d => d.ruleName)).toContain('Brand Loyalty');
+      expect(result.appliedDiscounts.map((d) => d.ruleName)).toContain('Category Discount');
+      expect(result.appliedDiscounts.map((d) => d.ruleName)).toContain('Brand Loyalty');
       expect(result.warnings).toContain('Rule "Other Promo" can only stack with specific rules');
     });
   });
@@ -351,9 +353,7 @@ describe('Feature #181: Pricing Engine', () => {
         stackable: false,
         discount: {
           type: 'tiered',
-          tiers: [
-            { minQuantity: 10, discountPercentage: 10 },
-          ],
+          tiers: [{ minQuantity: 10, discountPercentage: 10 }],
         },
         applicableTo: { type: 'all' },
         usageLimits: { currentUsageTotal: 0 },
@@ -404,7 +404,7 @@ describe('Feature #181: Pricing Engine', () => {
       // Cart total: ₹21,000
       // 10% discount: ₹2,100
       expect(result.appliedDiscounts).toHaveLength(1);
-      
+
       const explanation = result.appliedDiscounts[0].explanation;
       expect(explanation).toContain('Applied Coupon SAVE10');
       expect(explanation).toContain('10%');
@@ -455,13 +455,13 @@ describe('Feature #181: Pricing Engine', () => {
 
       // Format breakdown
       const lines = PricingEngine.formatBreakdown(result);
-      
+
       expect(lines[0]).toContain('Subtotal: ₹21000.00');
-      expect(lines.some(line => line.includes('Discounts:'))).toBe(true);
-      expect(lines.some(line => line.includes('Summer Sale'))).toBe(true);
-      expect(lines.some(line => line.includes('Applied Coupon FIRST100'))).toBe(true);
-      expect(lines.some(line => line.includes('Total Savings:'))).toBe(true);
-      expect(lines.some(line => line.includes('Total: ₹'))).toBe(true);
+      expect(lines.some((line) => line.includes('Discounts:'))).toBe(true);
+      expect(lines.some((line) => line.includes('Summer Sale'))).toBe(true);
+      expect(lines.some((line) => line.includes('Applied Coupon FIRST100'))).toBe(true);
+      expect(lines.some((line) => line.includes('Total Savings:'))).toBe(true);
+      expect(lines.some((line) => line.includes('Total: ₹'))).toBe(true);
     });
   });
 

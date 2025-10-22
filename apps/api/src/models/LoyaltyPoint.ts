@@ -39,7 +39,7 @@ LoyaltyPointSchema.methods.awardPoints = async function (
   action: 'purchase' | 'review' | 'referral' | 'custom',
   refId: Types.ObjectId | undefined,
   points: number,
-  meta: Record<string, any> = {}
+  meta: Record<string, any> = {},
 ) {
   this.points += points;
   this.history.push({ action, refId, points, date: new Date(), meta });

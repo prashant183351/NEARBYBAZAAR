@@ -1,8 +1,8 @@
 /**
  * Buy Box Service Tests - Feature #183
- * 
+ *
  * Tests for buy box scoring algorithm, caching, and admin overrides
- * 
+ *
  * Test Coverage:
  * - Scoring algorithm (price, vendor rating, SLA, cancellation, stock)
  * - Tie-breaking logic
@@ -180,7 +180,7 @@ describe('Buy Box Service - Cancellation Rate Scoring', () => {
   });
 
   it('should give 90 to 10% cancellation rate', () => {
-    const score = calculateCancellationScore(0.10);
+    const score = calculateCancellationScore(0.1);
     expect(score).toBe(90);
   });
 });
@@ -301,10 +301,7 @@ describe('Buy Box Service - Buy Box Calculation', () => {
       _id: new Types.ObjectId(),
     });
 
-    (ProductOffer.findActiveOffers as jest.Mock).mockResolvedValue([
-      cheapOffer,
-      expensiveOffer,
-    ]);
+    (ProductOffer.findActiveOffers as jest.Mock).mockResolvedValue([cheapOffer, expensiveOffer]);
 
     const productId = new Types.ObjectId();
     const result = await calculateBuyBox(productId);
@@ -330,16 +327,14 @@ describe('Buy Box Service - Buy Box Calculation', () => {
       _id: new Types.ObjectId(),
     });
 
-    (ProductOffer.findActiveOffers as jest.Mock).mockResolvedValue([
-      cheapOffer,
-      premiumOffer,
-    ]);
+    (ProductOffer.findActiveOffers as jest.Mock).mockResolvedValue([cheapOffer, premiumOffer]);
 
     // Mock vendor metrics: cheap vendor has 3.0 rating, premium has 5.0
-    jest.spyOn(require('../src/services/buyBox'), 'fetchVendorMetrics')
+    jest
+      .spyOn(require('../src/services/buyBox'), 'fetchVendorMetrics')
       .mockImplementation(async (vendorId: any) => {
         if (vendorId.toString() === '111111111111111111111111') {
-          return createMockVendorMetrics({ rating: 3.0, cancellationRate: 0.10 });
+          return createMockVendorMetrics({ rating: 3.0, cancellationRate: 0.1 });
         }
         return createMockVendorMetrics({ rating: 5.0, cancellationRate: 0.01 });
       });
@@ -351,8 +346,8 @@ describe('Buy Box Service - Buy Box Calculation', () => {
     expect(result!.allScores.length).toBe(2);
 
     // Both should have scores calculated
-    const cheapScore = result!.allScores.find(s => s.offerId.equals(cheapOffer._id));
-    const premiumScore = result!.allScores.find(s => s.offerId.equals(premiumOffer._id));
+    const cheapScore = result!.allScores.find((s) => s.offerId.equals(cheapOffer._id));
+    const premiumScore = result!.allScores.find((s) => s.offerId.equals(premiumOffer._id));
 
     expect(cheapScore).toBeDefined();
     expect(premiumScore).toBeDefined();
@@ -379,19 +374,17 @@ describe('Buy Box Service - Buy Box Calculation', () => {
       _id: new Types.ObjectId(),
     });
 
-    (ProductOffer.findActiveOffers as jest.Mock).mockResolvedValue([
-      bargainOffer,
-      premiumOffer,
-    ]);
+    (ProductOffer.findActiveOffers as jest.Mock).mockResolvedValue([bargainOffer, premiumOffer]);
 
     // Bargain: 1.5 rating, 20% cancellation
     // Premium: 5.0 rating, 0% cancellation
-    jest.spyOn(require('../src/services/buyBox'), 'fetchVendorMetrics')
+    jest
+      .spyOn(require('../src/services/buyBox'), 'fetchVendorMetrics')
       .mockImplementation(async (vendorId: any) => {
         if (vendorId.toString() === '111111111111111111111111') {
           return createMockVendorMetrics({
             rating: 1.5,
-            cancellationRate: 0.20,
+            cancellationRate: 0.2,
             totalReviews: 50,
           });
         }
@@ -407,18 +400,18 @@ describe('Buy Box Service - Buy Box Calculation', () => {
 
     expect(result).not.toBeNull();
 
-    const bargainScore = result!.allScores.find(s => s.offerId.equals(bargainOffer._id));
-    const premiumScore = result!.allScores.find(s => s.offerId.equals(premiumOffer._id));
+    const bargainScore = result!.allScores.find((s) => s.offerId.equals(bargainOffer._id));
+    const premiumScore = result!.allScores.find((s) => s.offerId.equals(premiumOffer._id));
 
     // Bargain gets full price points (100 * 0.40 = 40)
     // But loses heavily on rating (30 * 0.25 = 7.5) and cancellation (80 * 0.10 = 8)
     // Premium gets 0 price points but 100 on rating (25) and cancellation (10)
-    
+
     // This test validates the algorithm makes a reasonable choice
     // Both should have meaningful scores
     expect(bargainScore!.score).toBeGreaterThan(0);
     expect(premiumScore!.score).toBeGreaterThan(0);
-    
+
     // Log for manual inspection
     console.log('Extreme scenario scores:', {
       bargain: bargainScore!.score,
@@ -442,7 +435,8 @@ describe('Buy Box Service - Buy Box Calculation', () => {
     (ProductOffer.findActiveOffers as jest.Mock).mockResolvedValue([offer1, offer2]);
 
     // Both vendors identical except review count
-    jest.spyOn(require('../src/services/buyBox'), 'fetchVendorMetrics')
+    jest
+      .spyOn(require('../src/services/buyBox'), 'fetchVendorMetrics')
       .mockImplementation(async (vendorId: any) => {
         if (vendorId.toString() === '111111111111111111111111') {
           return createMockVendorMetrics({ rating: 4.5, totalReviews: 50 });
@@ -454,7 +448,7 @@ describe('Buy Box Service - Buy Box Calculation', () => {
     const result = await calculateBuyBox(productId);
 
     expect(result).not.toBeNull();
-    
+
     // Vendor with more reviews should win tie (offer2 has 500 reviews)
     expect(result!.winnerId).toEqual(offer2._id);
   });
@@ -491,12 +485,16 @@ describe('Buy Box Service - Buy Box Calculation', () => {
     expect(result!.allScores.length).toBe(3);
 
     // FBA (fastest) should score highest on delivery SLA
-    const fbaScore = result!.allScores.find(s => s.offerId.equals(fbaOffer._id));
-    const fbmScore = result!.allScores.find(s => s.offerId.equals(fbmOffer._id));
-    const dropshipScore = result!.allScores.find(s => s.offerId.equals(dropshipOffer._id));
+    const fbaScore = result!.allScores.find((s) => s.offerId.equals(fbaOffer._id));
+    const fbmScore = result!.allScores.find((s) => s.offerId.equals(fbmOffer._id));
+    const dropshipScore = result!.allScores.find((s) => s.offerId.equals(dropshipOffer._id));
 
-    expect(fbaScore!.breakdown.deliverySLAScore).toBeGreaterThan(fbmScore!.breakdown.deliverySLAScore);
-    expect(fbmScore!.breakdown.deliverySLAScore).toBeGreaterThan(dropshipScore!.breakdown.deliverySLAScore);
+    expect(fbaScore!.breakdown.deliverySLAScore).toBeGreaterThan(
+      fbmScore!.breakdown.deliverySLAScore,
+    );
+    expect(fbmScore!.breakdown.deliverySLAScore).toBeGreaterThan(
+      dropshipScore!.breakdown.deliverySLAScore,
+    );
   });
 });
 
@@ -613,19 +611,15 @@ describe('Buy Box Service - Edge Cases', () => {
     const offer2 = createMockOffer({ _id: new Types.ObjectId() });
     const offer3 = createMockOffer({ _id: new Types.ObjectId() });
 
-    (ProductOffer.findActiveOffers as jest.Mock).mockResolvedValue([
-      offer1,
-      offer2,
-      offer3,
-    ]);
+    (ProductOffer.findActiveOffers as jest.Mock).mockResolvedValue([offer1, offer2, offer3]);
 
     const result = await calculateBuyBox(new Types.ObjectId());
 
     expect(result).not.toBeNull();
     expect(result!.allScores.length).toBe(3);
-    
+
     // All should have identical or very close scores
-    const scores = result!.allScores.map(s => s.score);
+    const scores = result!.allScores.map((s) => s.score);
     const maxScore = Math.max(...scores);
     const minScore = Math.min(...scores);
     expect(maxScore - minScore).toBeLessThan(1); // Difference < 1 point

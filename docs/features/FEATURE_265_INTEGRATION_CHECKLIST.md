@@ -5,6 +5,7 @@
 ### Phase 1: Code Integration (Week 1)
 
 #### Authentication & Authorization
+
 - [ ] **Enable Auth Middleware** (Priority: CRITICAL)
   - File: `apps/api/src/routes/vendorActions.ts`
   - Action: Uncomment `authenticate` middleware on all routes
@@ -13,6 +14,7 @@
   - Test: Verify 403 response with non-admin token on admin routes
 
 #### Order Guards
+
 - [ ] **Integrate Order Acceptance Guard** (Priority: CRITICAL)
   - Files: Order creation endpoints (apps/api/src/controllers/orders.ts, etc.)
   - Action: Add `canVendorAcceptOrders()` check before order creation
@@ -20,9 +22,9 @@
     ```typescript
     const eligibility = await canVendorAcceptOrders(vendorId);
     if (!eligibility.canAccept) {
-      return res.status(403).json({ 
-        success: false, 
-        error: eligibility.reason 
+      return res.status(403).json({
+        success: false,
+        error: eligibility.reason,
       });
     }
     ```
@@ -31,15 +33,20 @@
   - Test: Verify active vendor can create orders
 
 #### Background Job Scheduling
+
 - [ ] **Schedule Reputation Check Job** (Priority: CRITICAL)
   - File: Job scheduler configuration (likely `apps/api/src/queues/index.ts`)
   - Action: Add recurring job for `checkVendorReputation`
   - Recommended frequency: Every hour (`0 * * * *`)
   - Code:
     ```typescript
-    queue.add('check-vendor-reputation', {}, {
-      repeat: { cron: '0 * * * *' }
-    });
+    queue.add(
+      'check-vendor-reputation',
+      {},
+      {
+        repeat: { cron: '0 * * * *' },
+      },
+    );
     ```
   - Test: Verify job runs on schedule
   - Test: Verify job logs show correct behavior
@@ -48,6 +55,7 @@
 ### Phase 2: Email Notifications (Week 1)
 
 #### Email Service Integration
+
 - [ ] **Warning Email Template** (Priority: HIGH)
   - File: `apps/api/src/templates/emails/vendor-warning.html`
   - Content: Include metrics, improvement tips, link to actions page
@@ -69,6 +77,7 @@
   - Variables: date, actionsSummary, vendorLinks
 
 #### Email Triggers
+
 - [ ] **Integrate Email Sending in createVendorAction()** (Priority: HIGH)
   - File: `apps/api/src/services/vendorEscalation.ts`
   - Action: Uncomment/implement email queue jobs
@@ -78,7 +87,7 @@
     await emailQueue.add('vendor-action-notification', {
       vendorId: action.vendor,
       actionType: action.actionType,
-      actionId: action._id
+      actionId: action._id,
     });
     ```
   - Test: Verify emails sent for each action type
@@ -93,6 +102,7 @@
 ### Phase 3: Testing (Week 2)
 
 #### Unit Tests
+
 - [ ] **Escalation Service Tests**
   - File: Create `apps/api/tests/services/vendorEscalation.test.ts`
   - Tests:
@@ -127,6 +137,7 @@
   - Coverage target: >80%
 
 #### Integration Tests
+
 - [ ] **End-to-End Action Flow**
   - Scenario 1: Warning → Suspension → Block
     - [ ] Create vendor with poor metrics
@@ -134,13 +145,11 @@
     - [ ] Worsen metrics, trigger job, verify suspension
     - [ ] Worsen metrics, trigger job, verify block
     - [ ] Verify vendor status updated at each step
-  
   - Scenario 2: Admin Override
     - [ ] Create suspended vendor
     - [ ] Admin overrides with reasoning
     - [ ] Verify vendor restored to active
     - [ ] Verify action marked as overridden
-  
   - Scenario 3: Auto-Expiration
     - [ ] Create suspended vendor with expiresAt in past
     - [ ] Trigger job
@@ -154,6 +163,7 @@
   - [ ] Error message explains restriction
 
 #### UI Tests (Playwright)
+
 - [ ] **Admin UI Tests**
   - File: Create `apps/admin/tests/vendors/actions.spec.ts`
   - Tests:
@@ -174,6 +184,7 @@
 ### Phase 4: Performance & Security (Week 2)
 
 #### Performance Testing
+
 - [ ] **Load Test Background Job** (Priority: HIGH)
   - Tool: Use k6 or similar
   - Scenario: 10,000 vendors, evaluate all
@@ -195,6 +206,7 @@
   - Verify: Query times <50ms
 
 #### Security Review
+
 - [ ] **Input Validation** (Priority: CRITICAL)
   - [ ] Override reason minimum length enforced
   - [ ] Action IDs validated (ObjectId format)
@@ -221,18 +233,19 @@
 ### Phase 5: Documentation & Training (Week 3)
 
 #### Internal Documentation
+
 - [x] Comprehensive guide (`docs/VENDOR_ESCALATION.md`)
 - [x] Quick reference (`docs/VENDOR_ESCALATION_QUICK_REFERENCE.md`)
 - [x] Implementation summary (`docs/features/FEATURE_265_IMPLEMENTATION_SUMMARY.md`)
 - [ ] **Troubleshooting Runbook** (Priority: MEDIUM)
   - Create: `docs/runbooks/VENDOR_ESCALATION_TROUBLESHOOTING.md`
   - Include: Common issues, resolution steps, emergency procedures
-  
 - [ ] **Operational Procedures** (Priority: MEDIUM)
   - Create: `docs/procedures/VENDOR_ESCALATION_OPS.md`
   - Include: Daily checks, weekly reports, escalation procedures
 
 #### User-Facing Documentation
+
 - [ ] **Vendor Help Article** (Priority: HIGH)
   - Title: "Understanding Account Actions and Performance Metrics"
   - Content: What actions mean, how to improve, appeal process
@@ -244,6 +257,7 @@
   - Location: Internal wiki / training portal
 
 #### Team Training
+
 - [ ] **Engineering Team** (Priority: MEDIUM)
   - Schedule: Training session on system architecture
   - Duration: 1 hour
@@ -264,6 +278,7 @@
 ### Phase 6: Monitoring & Alerts (Week 3)
 
 #### Application Monitoring
+
 - [ ] **Background Job Monitoring** (Priority: CRITICAL)
   - Alert: Job failure (any run)
   - Alert: Job duration >10 minutes
@@ -281,6 +296,7 @@
   - Dashboard: Actions per day by type, override rate
 
 #### Business Metrics Dashboard
+
 - [ ] **Vendor Performance Dashboard** (Priority: MEDIUM)
   - Metrics:
     - Total actions created (today, week, month)
@@ -301,6 +317,7 @@
 ### Phase 7: Deployment (Week 3-4)
 
 #### Staging Deployment
+
 - [ ] **Deploy to Staging** (Priority: CRITICAL)
   - [ ] Deploy code changes
   - [ ] Run database migrations (add status to vendors)
@@ -319,6 +336,7 @@
   - [ ] Verify logs contain expected entries
 
 #### Production Deployment
+
 - [ ] **Pre-Deployment** (Priority: CRITICAL)
   - [ ] QA sign-off on staging
   - [ ] Security review completed
@@ -346,6 +364,7 @@
   - [ ] Document any issues
 
 #### Phased Rollout (Optional)
+
 - [ ] **Phase 1: Shadow Mode** (Week 1)
   - Actions created but NOT enforced (no status updates)
   - Monitor action creation rate
@@ -366,6 +385,7 @@
 ### Phase 8: Post-Launch (Ongoing)
 
 #### Week 1 Post-Launch
+
 - [ ] Daily review of actions created
 - [ ] Daily review of override requests
 - [ ] Collect vendor feedback
@@ -373,12 +393,14 @@
 - [ ] Address any bugs immediately
 
 #### Week 2-4 Post-Launch
+
 - [ ] Weekly review of key metrics
 - [ ] Identify patterns in actions/overrides
 - [ ] Plan improvements based on feedback
 - [ ] Document lessons learned
 
 #### Monthly Review
+
 - [ ] Review escalation effectiveness
 - [ ] Analyze vendor improvement rates
 - [ ] Assess business impact (GMV, churn)
@@ -390,27 +412,32 @@
 ## Sign-Off Checklist
 
 ### Code Review
-- [ ] Backend code reviewed by: _________________
-- [ ] Frontend code reviewed by: _________________
-- [ ] Tests reviewed by: _________________
+
+- [ ] Backend code reviewed by: ********\_********
+- [ ] Frontend code reviewed by: ********\_********
+- [ ] Tests reviewed by: ********\_********
 
 ### Functional Review
-- [ ] Product Manager approval: _________________
-- [ ] QA approval: _________________
+
+- [ ] Product Manager approval: ********\_********
+- [ ] QA approval: ********\_********
 
 ### Security & Compliance
-- [ ] Security review completed: _________________
-- [ ] Compliance review (if needed): _________________
+
+- [ ] Security review completed: ********\_********
+- [ ] Compliance review (if needed): ********\_********
 
 ### Operations
-- [ ] DevOps approval: _________________
-- [ ] Monitoring configured: _________________
-- [ ] Runbooks reviewed: _________________
+
+- [ ] DevOps approval: ********\_********
+- [ ] Monitoring configured: ********\_********
+- [ ] Runbooks reviewed: ********\_********
 
 ### Deployment Approval
-- [ ] Engineering Lead: _________________
-- [ ] Product Lead: _________________
-- [ ] CTO/VP Engineering: _________________
+
+- [ ] Engineering Lead: ********\_********
+- [ ] Product Lead: ********\_********
+- [ ] CTO/VP Engineering: ********\_********
 
 ---
 
@@ -419,24 +446,24 @@
 If critical issues arise post-deployment:
 
 1. **Disable Background Job**
+
    ```bash
    # Stop creating new actions
    # Via admin panel or job scheduler
    ```
 
 2. **Restore All Suspended/Blocked Vendors** (if needed)
+
    ```javascript
-   await Vendor.updateMany(
-     { status: { $in: ['suspended', 'blocked'] } },
-     { status: 'active' }
-   );
+   await Vendor.updateMany({ status: { $in: ['suspended', 'blocked'] } }, { status: 'active' });
    ```
 
 3. **Mark All Active Actions as Overridden**
+
    ```javascript
    await VendorAction.updateMany(
      { status: 'active' },
-     { status: 'overridden', overrideReason: 'Emergency rollback due to [issue]' }
+     { status: 'overridden', overrideReason: 'Emergency rollback due to [issue]' },
    );
    ```
 
@@ -452,11 +479,11 @@ If critical issues arise post-deployment:
 
 ## Contact List
 
-**Engineering Lead**: _________________  
-**Product Manager**: _________________  
-**DevOps On-Call**: _________________  
-**Security Team**: _________________  
-**Support Lead**: _________________  
+**Engineering Lead**: ********\_********  
+**Product Manager**: ********\_********  
+**DevOps On-Call**: ********\_********  
+**Security Team**: ********\_********  
+**Support Lead**: ********\_********
 
 ---
 
@@ -464,4 +491,3 @@ If critical issues arise post-deployment:
 **Last Updated**: January 20, 2025  
 **Version**: 1.0  
 **Owner**: Platform Engineering Team
-

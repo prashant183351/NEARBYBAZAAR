@@ -21,9 +21,11 @@ Feature #182 implements a **multi-seller marketplace** where multiple vendors ca
 ## Files Created
 
 ### 1. ProductOffer Model
+
 **Path**: `apps/api/src/models/ProductOffer.ts` (510 lines)
 
 Complete Mongoose schema with:
+
 - **Pricing fields**: `price`, `compareAtPrice`, savings calculation
 - **Inventory fields**: `stock`, `lowStockThreshold`, atomic updates
 - **Shipping terms**: `sla`, `shippingCharge`, `handlingTime`, `freeShippingThreshold`
@@ -33,6 +35,7 @@ Complete Mongoose schema with:
 - **Performance metrics**: `sellerRating`, `totalSales`, `cancellationRate`, `lateShipmentRate`
 
 **Key Features**:
+
 - 6 database indexes for optimal query performance
 - 3 virtual properties (savings, savingsPercent, totalDeliveryTime)
 - 4 instance methods (isAvailable, hasLowStock, updateStock, canFulfill)
@@ -41,9 +44,11 @@ Complete Mongoose schema with:
 - Auto-unpause when stock replenished
 
 ### 2. Offers Controller
+
 **Path**: `apps/api/src/controllers/offers.ts` (625 lines)
 
 Complete CRUD operations with business logic:
+
 - **Create**: Validate product exists, check inventory, enforce uniqueness
 - **Update**: Ownership validation, partial updates supported
 - **Delete**: Soft delete (marks inactive)
@@ -52,15 +57,18 @@ Complete CRUD operations with business logic:
 - **Pause/Resume**: Toggle pause status manually
 
 **Validation**:
+
 - No negative price or stock
 - Stock doesn't exceed vendor inventory (placeholder for integration)
 - Ownership checks on all mutations
 - Active offer requirements (valid price, available stock)
 
 ### 3. Offers Routes
+
 **Path**: `apps/api/src/routes/offers.ts` (95 lines)
 
 RESTful API routes:
+
 ```
 Public Routes:
   GET /api/offers/product/:productId  - View all active offers for product
@@ -82,11 +90,13 @@ Admin Routes (TODO):
 ```
 
 ### 4. Test Suite
+
 **Path**: `apps/api/tests/offers.spec.ts` (618 lines)
 
 **Test Results**: 36/36 PASSING (100%)
 
 **Test Categories**:
+
 1. **CRITICAL: Uniqueness Constraint** (3 tests)
    - Enforce one offer per vendor per product ✅
    - Allow different vendors for same product ✅
@@ -148,15 +158,15 @@ ProductOffer {
   // Core References
   productId: ObjectId       // Reference to Product
   vendorId: ObjectId        // Reference to Vendor
-  
+
   // Pricing
   price: number             // Vendor's price
   compareAtPrice?: number   // Original price (for savings)
-  
+
   // Inventory
   stock: number             // Available quantity
   lowStockThreshold: number // Alert threshold (default: 5)
-  
+
   // Shipping
   shippingTerms: {
     sla: number                      // Delivery days
@@ -164,22 +174,22 @@ ProductOffer {
     handlingTime: number             // Processing days
     freeShippingThreshold?: number   // Free if cart > X
   }
-  
+
   // Fulfillment
   fulfillmentMethod: 'FBM' | 'FBA' | 'dropship'
   condition: 'new' | 'refurbished' | 'used-like-new' | 'used-good' | 'used-acceptable'
   conditionNotes?: string
-  
+
   // Status
   isActive: boolean         // Visible to buyers
   isPaused: boolean         // Temporarily unavailable
-  
+
   // Performance (for Buy Box scoring - Feature #183)
   sellerRating?: number
   totalSales?: number
   cancellationRate?: number
   lateShipmentRate?: number
-  
+
   // Metadata
   createdAt: Date
   updatedAt: Date
@@ -191,16 +201,12 @@ ProductOffer {
 
 1. **unique_product_vendor_offer**: `{ productId: 1, vendorId: 1 }` (unique)
    - Enforces one offer per vendor per product
-   
 2. **active_offers_by_product**: `{ productId: 1, isActive: 1, isPaused: 1 }`
    - Optimizes "More Buying Options" queries
-   
 3. **vendor_active_offers**: `{ vendorId: 1, isActive: 1 }`
    - Optimizes vendor dashboard queries
-   
 4. **low_stock_alerts**: `{ vendorId: 1, stock: 1 }`
    - Optimizes low stock alert queries
-   
 5. **buy_box_scoring**: `{ productId: 1, isActive: 1, sellerRating: -1, price: 1 }`
    - Optimizes Buy Box algorithm (Feature #183)
    - Sorts by rating DESC, price ASC
@@ -227,14 +233,14 @@ const offer = await ProductOffer.create({
   productId: '507f1f77bcf86cd799439011',
   vendorId: req.user.vendorId,
   price: 999,
-  compareAtPrice: 1299,  // Show 23% savings
+  compareAtPrice: 1299, // Show 23% savings
   stock: 100,
   lowStockThreshold: 10,
   shippingTerms: {
-    sla: 2,                         // 2-day delivery
-    shippingCharge: 50,             // ₹50 flat
-    handlingTime: 1,                // 1-day processing
-    freeShippingThreshold: 500,     // Free if cart > ₹500
+    sla: 2, // 2-day delivery
+    shippingCharge: 50, // ₹50 flat
+    handlingTime: 1, // 1-day processing
+    freeShippingThreshold: 500, // Free if cart > ₹500
   },
   fulfillmentMethod: 'FBM',
   condition: 'new',
@@ -271,14 +277,14 @@ offers.forEach((offer, index) => {
 ```typescript
 // Reserve stock for an order (atomic operation)
 try {
-  await offer.updateStock(-5);  // Subtract 5 units
+  await offer.updateStock(-5); // Subtract 5 units
   console.log(`Stock updated: ${offer.stock} remaining`);
 } catch (error) {
   console.error('Insufficient stock!');
 }
 
 // Replenish stock
-await offer.updateStock(50);  // Add 50 units
+await offer.updateStock(50); // Add 50 units
 console.log(`Stock replenished: ${offer.stock} total`);
 ```
 
@@ -293,7 +299,7 @@ const lowStockOffers = await ProductOffer.find({
   stock: { $gt: 0 },
 }).populate('productId', 'name sku');
 
-lowStockOffers.forEach(offer => {
+lowStockOffers.forEach((offer) => {
   console.log(`⚠️ LOW STOCK: ${offer.productId.name} - Only ${offer.stock} left!`);
 });
 ```
@@ -333,12 +339,12 @@ const { data: offers } = await response.json();
 
 ### Query Performance
 
-| Query | Index Used | Complexity | Typical Response Time |
-|-------|-----------|------------|----------------------|
-| Find offers by product | `active_offers_by_product` | O(log n) | <10ms |
-| Find vendor's offers | `vendor_active_offers` | O(log n) | <10ms |
-| Low stock alerts | `low_stock_alerts` | O(log n) | <15ms |
-| Check offer uniqueness | `unique_product_vendor_offer` | O(1) | <5ms |
+| Query                  | Index Used                    | Complexity | Typical Response Time |
+| ---------------------- | ----------------------------- | ---------- | --------------------- |
+| Find offers by product | `active_offers_by_product`    | O(log n)   | <10ms                 |
+| Find vendor's offers   | `vendor_active_offers`        | O(log n)   | <10ms                 |
+| Low stock alerts       | `low_stock_alerts`            | O(log n)   | <15ms                 |
+| Check offer uniqueness | `unique_product_vendor_offer` | O(1)       | <5ms                  |
 
 ### Atomic Operations
 
@@ -464,9 +470,9 @@ db.createCollection('productoffers', {
         price: { bsonType: 'number', minimum: 0 },
         stock: { bsonType: 'number', minimum: 0 },
         // ... other validations
-      }
-    }
-  }
+      },
+    },
+  },
 });
 ```
 
@@ -476,12 +482,12 @@ db.createCollection('productoffers', {
 // Create all indexes (already defined in model)
 db.productoffers.createIndex(
   { productId: 1, vendorId: 1 },
-  { unique: true, name: 'unique_product_vendor_offer' }
+  { unique: true, name: 'unique_product_vendor_offer' },
 );
 
 db.productoffers.createIndex(
   { productId: 1, isActive: 1, isPaused: 1 },
-  { name: 'active_offers_by_product' }
+  { name: 'active_offers_by_product' },
 );
 
 // ... create remaining 3 indexes
@@ -502,7 +508,7 @@ for (const product of products) {
     price: product.price,
     stock: product.stock || 0,
     shippingTerms: {
-      sla: 2,  // Default values
+      sla: 2, // Default values
       shippingCharge: 50,
       handlingTime: 1,
     },
@@ -516,20 +522,24 @@ for (const product of products) {
 ## Future Work (Related Features)
 
 ### Feature #183: Buy Box Service
+
 - Implement scoring algorithm using offer metrics
 - Determine which vendor wins "default" buy button
 - Weight factors: price, rating, shipping speed, cancellation rate
 
 ### Feature #184: Vendor KYC & Payouts
+
 - Verify KYC before allowing offers
 - Track sales per offer for payout calculation
 - Commission deductions per offer
 
 ### Feature #185: Reviews Moderation
+
 - Allow buyers to review specific offers (not just products)
 - Track performance metrics based on offer-specific reviews
 
 ### Feature #186: Dispute Management
+
 - Handle disputes at offer level
 - Track which offer caused the issue
 - Impact seller metrics (cancellation rate, etc.)
@@ -543,6 +553,7 @@ for (const product of products) {
 **Cause**: Vendor trying to create second offer for same product
 
 **Solution**: Check for existing offer first or use update instead
+
 ```typescript
 const existing = await ProductOffer.findVendorOffer(productId, vendorId);
 if (existing) {
@@ -558,6 +569,7 @@ if (existing) {
 **Cause**: Atomic stock update failed (stock would go negative)
 
 **Solution**: Check available stock before attempting update
+
 ```typescript
 if (offer.canFulfill(requestedQuantity)) {
   await offer.updateStock(-requestedQuantity);
@@ -571,6 +583,7 @@ if (offer.canFulfill(requestedQuantity)) {
 **Problem**: Created offer doesn't appear in "More Buying Options"
 
 **Debug checklist**:
+
 1. Check `isActive === true`
 2. Check `isPaused === false`
 3. Check `stock > 0`
@@ -581,10 +594,10 @@ if (offer.canFulfill(requestedQuantity)) {
 // Debug query
 const offer = await ProductOffer.findById(offerId);
 console.log({
-  isActive: offer.isActive,       // Should be true
-  isPaused: offer.isPaused,       // Should be false
-  stock: offer.stock,             // Should be > 0
-  isAvailable: offer.isAvailable() // Should be true
+  isActive: offer.isActive, // Should be true
+  isPaused: offer.isPaused, // Should be false
+  stock: offer.stock, // Should be > 0
+  isAvailable: offer.isAvailable(), // Should be true
 });
 ```
 

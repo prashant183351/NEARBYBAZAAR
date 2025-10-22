@@ -35,6 +35,7 @@ docker stats nearbybazaar-mongodb nearbybazaar-redis
 ## Connection Info
 
 ### MongoDB
+
 - **URL**: `mongodb://admin:password123@localhost:27017/nearbybazaar?authSource=admin`
 - **Port**: 27017
 - **Username**: admin
@@ -42,11 +43,13 @@ docker stats nearbybazaar-mongodb nearbybazaar-redis
 - **Database**: nearbybazaar
 
 ### Redis
+
 - **URL**: `redis://:redispass123@localhost:6379`
 - **Port**: 6379
 - **Password**: redispass123
 
 ### Web UIs (Optional)
+
 ```powershell
 # Start with UIs
 docker-compose --profile ui up -d
@@ -104,16 +107,19 @@ docker system prune
 ## Common Issues
 
 **Port conflict**: Change port in docker-compose.yml
+
 ```yaml
-ports: ["27018:27017"]  # Use 27018 instead
+ports: ['27018:27017'] # Use 27018 instead
 ```
 
 **Connection refused**: Wait for services
+
 ```powershell
 node scripts/wait-for-services.js
 ```
 
 **Data loss**: Don't use `-v` flag
+
 ```powershell
 docker-compose down     # Good - keeps data
 docker-compose down -v  # Bad - deletes data!
@@ -122,6 +128,7 @@ docker-compose down -v  # Bad - deletes data!
 ## Environment Variables
 
 Add to `.env`:
+
 ```env
 MONGODB_URI=mongodb://admin:password123@localhost:27017/nearbybazaar?authSource=admin
 REDIS_URL=redis://:redispass123@localhost:6379

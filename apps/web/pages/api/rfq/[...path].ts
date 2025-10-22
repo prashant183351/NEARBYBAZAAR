@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:4000/v1/rfq';
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:4000/v1/rfq';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const segments = (req.query.path as string[] | undefined) || [];
@@ -28,6 +29,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.status(405).end('Method Not Allowed');
     }
   } catch (e: any) {
-    res.status(e?.response?.status || 500).json({ success: false, error: e.message, details: e?.response?.data });
+    res
+      .status(e?.response?.status || 500)
+      .json({ success: false, error: e.message, details: e?.response?.data });
   }
 }

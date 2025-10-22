@@ -26,7 +26,10 @@ const ScheduledTaskSchema = new Schema<IScheduledTask>({
   catchUp: { type: Boolean, default: true },
 });
 
-export const ScheduledTask: Model<IScheduledTask> = model<IScheduledTask>('ScheduledTask', ScheduledTaskSchema);
+export const ScheduledTask: Model<IScheduledTask> = model<IScheduledTask>(
+  'ScheduledTask',
+  ScheduledTaskSchema,
+);
 
 // Stub for cron-parser
 const cronParser = {

@@ -14,7 +14,9 @@ const INDEX = 'products';
 async function getEmbedding(text: string): Promise<number[]> {
   // TODO: Call external embedding API (OpenAI/HuggingFace) for the text
   // For now, return a dummy vector
-  return Array(384).fill(0).map((_, i) => Math.sin(i + text.length));
+  return Array(384)
+    .fill(0)
+    .map((_, i) => Math.sin(i + text.length));
 }
 
 // Index a product with vector embeddings (multi-lingual)

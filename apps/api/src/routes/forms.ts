@@ -14,8 +14,8 @@ const router = Router();
  *         description: List of forms
  */
 router.get('/', requireAuth('read', 'admin'), async (_req: Request, res: Response) => {
-    const forms = await Form.find({ deleted: false });
-    res.json({ forms });
+  const forms = await Form.find({ deleted: false });
+  res.json({ forms });
 });
 
 /**
@@ -34,8 +34,8 @@ router.get('/', requireAuth('read', 'admin'), async (_req: Request, res: Respons
  *         description: Form created
  */
 router.post('/', requireAuth('create', 'admin'), async (req: Request, res: Response) => {
-    const form = await Form.create(req.body);
-    res.status(201).json({ form });
+  const form = await Form.create(req.body);
+  res.status(201).json({ form });
 });
 
 /**
@@ -60,9 +60,9 @@ router.post('/', requireAuth('create', 'admin'), async (req: Request, res: Respo
  *         description: Form updated
  */
 router.put('/:id', requireAuth('update', 'admin'), async (req, res) => {
-    const form = await Form.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!form) return res.status(404).json({ error: 'Not found' });
-    res.json({ form });
+  const form = await Form.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  if (!form) return res.status(404).json({ error: 'Not found' });
+  res.json({ form });
 });
 
 /**
@@ -81,9 +81,9 @@ router.put('/:id', requireAuth('update', 'admin'), async (req, res) => {
  *         description: Form deleted
  */
 router.delete('/:id', requireAuth('delete', 'admin'), async (req, res) => {
-    const form = await Form.findByIdAndUpdate(req.params.id, { deleted: true }, { new: true });
-    if (!form) return res.status(404).json({ error: 'Not found' });
-    res.json({ form });
+  const form = await Form.findByIdAndUpdate(req.params.id, { deleted: true }, { new: true });
+  if (!form) return res.status(404).json({ error: 'Not found' });
+  res.json({ form });
 });
 
 export default router;

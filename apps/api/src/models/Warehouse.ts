@@ -67,7 +67,7 @@ const warehouseSchema = new Schema<IWarehouse>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Indexes for common queries
@@ -88,8 +88,7 @@ warehouseSchema.methods.isOperating = function (date?: Date): boolean {
   // Simple time check (assumes same timezone)
   const currentTime = checkDate.toTimeString().substring(0, 5); // HH:MM
   return (
-    currentTime >= this.operatingHours.openTime &&
-    currentTime <= this.operatingHours.closeTime
+    currentTime >= this.operatingHours.openTime && currentTime <= this.operatingHours.closeTime
   );
 };
 

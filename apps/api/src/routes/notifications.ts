@@ -11,33 +11,33 @@ const router = Router();
  * Get notifications for current user.
  */
 router.get('/', async (req, res) => {
-    try {
-        // @ts-ignore
-        const { userId, userType } = req.user;
+  try {
+    // @ts-ignore
+    const { userId, userType } = req.user;
 
-        if (!userId || !userType) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        const { page = 1, limit = 20, unreadOnly = 'false' } = req.query;
-        const filter: any = { userId: new Types.ObjectId(userId), userType };
-
-        if (unreadOnly === 'true') {
-            filter.read = false;
-        }
-
-        const notifications = await NotificationModel.find(filter)
-            .sort({ createdAt: -1 })
-            .limit(Number(limit))
-            .skip((Number(page) - 1) * Number(limit));
-
-        const total = await NotificationModel.countDocuments(filter);
-        const unreadCount = await getUnreadCount(new Types.ObjectId(userId), userType);
-
-        res.json({ notifications, total, unreadCount, page: Number(page), limit: Number(limit) });
-    } catch (error: any) {
-        res.status(500).json({ error: error.message });
+    if (!userId || !userType) {
+      return res.status(401).json({ error: 'Unauthorized' });
     }
+
+    const { page = 1, limit = 20, unreadOnly = 'false' } = req.query;
+    const filter: any = { userId: new Types.ObjectId(userId), userType };
+
+    if (unreadOnly === 'true') {
+      filter.read = false;
+    }
+
+    const notifications = await NotificationModel.find(filter)
+      .sort({ createdAt: -1 })
+      .limit(Number(limit))
+      .skip((Number(page) - 1) * Number(limit));
+
+    const total = await NotificationModel.countDocuments(filter);
+    const unreadCount = await getUnreadCount(new Types.ObjectId(userId), userType);
+
+    res.json({ notifications, total, unreadCount, page: Number(page), limit: Number(limit) });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 /**
@@ -45,12 +45,12 @@ router.get('/', async (req, res) => {
  * Mark a notification as read.
  */
 router.put('/:id/read', async (req, res) => {
-    try {
-        await markAsRead(new Types.ObjectId(req.params.id));
-        res.json({ success: true });
-    } catch (error: any) {
-        res.status(500).json({ error: error.message });
-    }
+  try {
+    await markAsRead(new Types.ObjectId(req.params.id));
+    res.json({ success: true });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 /**
@@ -58,19 +58,19 @@ router.put('/:id/read', async (req, res) => {
  * Mark all notifications as read.
  */
 router.put('/read-all', async (req, res) => {
-    try {
-        // @ts-ignore
-        const { userId, userType } = req.user;
+  try {
+    // @ts-ignore
+    const { userId, userType } = req.user;
 
-        if (!userId || !userType) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        await markAllAsRead(new Types.ObjectId(userId), userType);
-        res.json({ success: true });
-    } catch (error: any) {
-        res.status(500).json({ error: error.message });
+    if (!userId || !userType) {
+      return res.status(401).json({ error: 'Unauthorized' });
     }
+
+    await markAllAsRead(new Types.ObjectId(userId), userType);
+    res.json({ success: true });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 /**
@@ -78,23 +78,23 @@ router.put('/read-all', async (req, res) => {
  * Get notification preferences for current user.
  */
 router.get('/preferences', async (req, res) => {
-    try {
-        // @ts-ignore
-        const { userId, userType } = req.user;
+  try {
+    // @ts-ignore
+    const { userId, userType } = req.user;
 
-        if (!userId || !userType) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        const preferences = await NotificationPreferenceModel.find({
-            userId: new Types.ObjectId(userId),
-            userType,
-        });
-
-        res.json({ preferences });
-    } catch (error: any) {
-        res.status(500).json({ error: error.message });
+    if (!userId || !userType) {
+      return res.status(401).json({ error: 'Unauthorized' });
     }
+
+    const preferences = await NotificationPreferenceModel.find({
+      userId: new Types.ObjectId(userId),
+      userType,
+    });
+
+    res.json({ preferences });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 /**
@@ -102,36 +102,36 @@ router.get('/preferences', async (req, res) => {
  * Update notification preference for a specific type.
  */
 router.put('/preferences/:type', async (req, res) => {
-    try {
-        // @ts-ignore
-        const { userId, userType } = req.user;
+  try {
+    // @ts-ignore
+    const { userId, userType } = req.user;
 
-        if (!userId || !userType) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        const { channels, enabled, aggregateEnabled, aggregateIntervalMinutes } = req.body;
-
-        const preference = await NotificationPreferenceModel.findOneAndUpdate(
-            {
-                userId: new Types.ObjectId(userId),
-                userType,
-                notificationType: req.params.type,
-            },
-            {
-                channels,
-                enabled,
-                aggregateEnabled,
-                aggregateIntervalMinutes,
-                updatedAt: new Date(),
-            },
-            { new: true, upsert: true }
-        );
-
-        res.json({ preference });
-    } catch (error: any) {
-        res.status(500).json({ error: error.message });
+    if (!userId || !userType) {
+      return res.status(401).json({ error: 'Unauthorized' });
     }
+
+    const { channels, enabled, aggregateEnabled, aggregateIntervalMinutes } = req.body;
+
+    const preference = await NotificationPreferenceModel.findOneAndUpdate(
+      {
+        userId: new Types.ObjectId(userId),
+        userType,
+        notificationType: req.params.type,
+      },
+      {
+        channels,
+        enabled,
+        aggregateEnabled,
+        aggregateIntervalMinutes,
+        updatedAt: new Date(),
+      },
+      { new: true, upsert: true },
+    );
+
+    res.json({ preference });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 export default router;

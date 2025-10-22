@@ -7,6 +7,7 @@ This document describes the JSON-LD structured data implementation for NearbyBaz
 ## Implementation Status
 
 ✅ **Completed:**
+
 - JSON-LD utility library (`packages/lib/src/jsonld.ts`)
 - Product schema integration (product detail pages)
 - Service schema integration (service detail pages)
@@ -22,10 +23,12 @@ This document describes the JSON-LD structured data implementation for NearbyBaz
 Used for: Product detail pages (`/p/[slug]`)
 
 **Required Fields:**
+
 - `name` (string): Product name
 - `price` (number): Price in smallest currency unit (e.g., INR paisa)
 
 **Optional Fields:**
+
 - `description` (string): Product description
 - `sku` (string): Stock keeping unit
 - `brand` (string): Brand name
@@ -71,12 +74,14 @@ const productSchema = generateProductSchema({
 Used for: Service detail pages (`/s/[slug]`)
 
 **Required Fields:**
+
 - `name` (string): Service name
 - `provider` (object): Service provider
   - `name` (string): Provider name
   - `url` (string, optional): Provider URL
 
 **Optional Fields:**
+
 - `description` (string): Service description
 - `areaServed` (string): Geographic area (e.g., "Mumbai, Navi Mumbai")
 - `offers` (object): Pricing information
@@ -116,9 +121,11 @@ const serviceSchema = generateServiceSchema({
 Used for: Vendor store pages (`/store/[slug]`)
 
 **Required Fields:**
+
 - `name` (string): Business name
 
 **Optional Fields:**
+
 - `description` (string): Business description
 - `url` (string): Business URL
 - `telephone` (string): Phone number
@@ -157,7 +164,7 @@ const businessSchema = generateLocalBusinessSchema({
     addressCountry: 'IN',
   },
   geo: {
-    latitude: 19.0760,
+    latitude: 19.076,
     longitude: 72.8777,
   },
   priceRange: '₹₹₹',
@@ -174,9 +181,11 @@ const businessSchema = generateLocalBusinessSchema({
 Used for: General organization/company pages
 
 **Required Fields:**
+
 - `name` (string): Organization name
 
 **Optional Fields:**
+
 - `description` (string): Organization description
 - `url` (string): Website URL
 - `logo` (string): Logo URL
@@ -192,7 +201,7 @@ import { generateOrganizationSchema } from '@nearbybazaar/lib/jsonld';
 
 const orgSchema = generateOrganizationSchema({
   name: 'NearbyBazaar',
-  description: 'India\'s hyperlocal e-commerce platform',
+  description: "India's hyperlocal e-commerce platform",
   url: 'https://nearbybazaar.com',
   logo: 'https://nearbybazaar.com/logo.png',
   email: 'support@nearbybazaar.com',
@@ -274,6 +283,7 @@ if (errors.length > 0) {
 ### 1. Google Rich Results Test
 
 Use Google's official testing tool:
+
 1. Visit: https://search.google.com/test/rich-results
 2. Enter your page URL or paste the HTML
 3. Review any errors or warnings
@@ -282,6 +292,7 @@ Use Google's official testing tool:
 ### 2. Schema Markup Validator
 
 Use schema.org's validator:
+
 1. Visit: https://validator.schema.org/
 2. Paste your JSON-LD code
 3. Review validation results
@@ -303,33 +314,41 @@ Inspect the rendered page and look for `<script type="application/ld+json">` tag
 ## Best Practices
 
 ### 1. Currency Formatting
+
 Always use INR for Indian prices:
+
 ```typescript
 price: 999,           // ₹999
 priceCurrency: 'INR'
 ```
 
 ### 2. Availability Status
+
 Use proper schema.org values:
+
 - `'InStock'` → Products available now
 - `'OutOfStock'` → Temporarily unavailable
 - `'PreOrder'` → Available for pre-order
 - `'Discontinued'` → No longer available
 
 ### 3. Image URLs
+
 - Use absolute URLs (https://)
 - Prefer high-resolution images (minimum 1200x800px)
 - Use proper alt text elsewhere
 - Consider multiple images for better results
 
 ### 4. Ratings
+
 - Only include `aggregateRating` if you have real user reviews
 - `ratingValue` should be the average (e.g., 4.5)
 - `reviewCount` must match actual review count
 - Don't fake ratings - search engines can detect this
 
 ### 5. Geographic Data
+
 For LocalBusiness, include:
+
 - Full address for better local SEO
 - Accurate geo coordinates
 - Local phone number format (+91 for India)
@@ -367,14 +386,16 @@ generateProductSchema({
   name: 'Product',
   price: 100,
   priceCurrency: 'INR',
-  availability: 'InStock'
+  availability: 'InStock',
 });
 
 // Correct: Real ratings or omit if none
-aggregateRating: productReviews.length > 0 ? {
-  ratingValue: calculateAverage(productReviews),
-  reviewCount: productReviews.length,
-} : undefined
+aggregateRating: productReviews.length > 0
+  ? {
+      ratingValue: calculateAverage(productReviews),
+      reviewCount: productReviews.length,
+    }
+  : undefined;
 ```
 
 ## Troubleshooting
@@ -416,6 +437,7 @@ import type { ProductSchemaInput } from '@nearbybazaar/lib/jsonld';
 ## SEO Impact
 
 Implementing proper JSON-LD can result in:
+
 - ⭐ Star ratings in search results
 - 💰 Price display in search results
 - 📍 Local business information panels
@@ -425,6 +447,7 @@ Implementing proper JSON-LD can result in:
 ## Future Enhancements
 
 Potential additions in future phases:
+
 - FAQ schema
 - BreadcrumbList schema
 - Review schema (individual reviews)

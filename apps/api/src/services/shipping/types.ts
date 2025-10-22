@@ -72,17 +72,17 @@ export type TrackShipmentResponse = {
  */
 export interface ShippingAdapter {
   name: string;
-  
+
   /**
    * Get rate quotes for shipping
    */
   rateQuote(request: RateQuoteRequest): Promise<RateQuoteResponse[]>;
-  
+
   /**
    * Create shipping label and book courier
    */
   createLabel(request: CreateLabelRequest): Promise<CreateLabelResponse>;
-  
+
   /**
    * Track shipment status
    */

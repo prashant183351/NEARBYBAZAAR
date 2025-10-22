@@ -45,7 +45,7 @@ router.patch('/custom-payment-links/:id', async (req: Request, res: Response) =>
     const paymentLink = await CustomPaymentLink.findByIdAndUpdate(
       req.params.id,
       { status },
-      { new: true }
+      { new: true },
     );
 
     if (!paymentLink) {

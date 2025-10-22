@@ -1,10 +1,13 @@
 # Return Merchandise Authorization (RMA) System - STUB
 
 ## ⚠️ Status: Planning/Stub Phase
+
 This is a **stub implementation** for the RMA (Return Merchandise Authorization) system. The data models and API structure are defined, but full business logic, integrations, and workflows are **not yet implemented**.
 
 ## Overview
+
 The RMA system handles the complex multi-party workflow for product returns in a dropshipping scenario, involving:
+
 - **Customer**: Initiates return request
 - **Vendor**: Reviews and approves/rejects
 - **Supplier**: Reviews dropship returns (optional)
@@ -21,17 +24,17 @@ The RMA system handles the complex multi-party workflow for product returns in a
   customerId: ObjectId,
   vendorId: ObjectId,
   supplierId?: ObjectId,          // For dropship orders
-  
+
   items: ReturnItem[],            // Items being returned
   status: ReturnStatus,           // Current state
   isDropship: boolean,
-  
+
   // Communication
   customerNotes?: string,
   vendorNotes?: string,
   supplierNotes?: string,
   internalNotes?: string,         // Private notes
-  
+
   // Shipment tracking
   returnShipment?: {
     carrier?: string,
@@ -40,7 +43,7 @@ The RMA system handles the complex multi-party workflow for product returns in a
     labelUrl?: string,
     labelCost?: number,
   },
-  
+
   // Inspection results
   inspection?: {
     inspectedBy: ObjectId,
@@ -50,7 +53,7 @@ The RMA system handles the complex multi-party workflow for product returns in a
     notes?: string,
     images?: string[],
   },
-  
+
   // Refund details
   refund?: {
     method: RefundMethod,
@@ -58,7 +61,7 @@ The RMA system handles the complex multi-party workflow for product returns in a
     transactionId?: string,
     processedAt?: Date,
   },
-  
+
   // Timestamps
   requestedAt: Date,
   expectedResolutionDate?: Date,
@@ -148,9 +151,11 @@ All endpoints in `apps/api/src/routes/returns.ts` are **stubs** with TODO commen
 ### Customer Endpoints
 
 #### POST /api/returns
+
 Create a return request.
 
 **Request:**
+
 ```json
 {
   "orderId": "...",
@@ -168,17 +173,21 @@ Create a return request.
 ```
 
 #### GET /api/returns
+
 List customer's returns.
 
 #### GET /api/returns/:id
+
 Get return details.
 
 ### Vendor Endpoints
 
 #### PUT /api/returns/:id/vendor-review
+
 Approve or reject return.
 
 **Request:**
+
 ```json
 {
   "approved": true,
@@ -187,9 +196,11 @@ Approve or reject return.
 ```
 
 #### PUT /api/returns/:id/inspection
+
 Record inspection results.
 
 **Request:**
+
 ```json
 {
   "passed": true,
@@ -199,13 +210,15 @@ Record inspection results.
 ```
 
 #### PUT /api/returns/:id/refund
+
 Process refund.
 
 **Request:**
+
 ```json
 {
   "method": "original_payment",
-  "amount": 1499.00,
+  "amount": 1499.0,
   "notes": "Full refund issued"
 }
 ```
@@ -213,14 +226,17 @@ Process refund.
 ### Supplier Endpoints (Dropship)
 
 #### PUT /api/returns/:id/supplier-review
+
 Supplier approval for dropship returns.
 
 ### Shared Endpoints
 
 #### PUT /api/returns/:id/shipment
+
 Update return shipment tracking.
 
 **Request:**
+
 ```json
 {
   "carrier": "BlueDart",
@@ -230,6 +246,7 @@ Update return shipment tracking.
 ```
 
 #### PUT /api/returns/:id/cancel
+
 Cancel return request.
 
 ## Service Functions (Stub)
@@ -240,29 +257,29 @@ All service functions in `apps/api/src/services/rma.ts` are **stubs** with place
 
 ```typescript
 // Check eligibility
-isItemEligibleForReturn(orderId, productId)
+isItemEligibleForReturn(orderId, productId);
 
 // Workflow management
-getNextStatus(currentStatus, isDropship, action)
+getNextStatus(currentStatus, isDropship, action);
 
 // Notifications
-notifyReturnStatusChange(returnId, oldStatus, newStatus)
+notifyReturnStatusChange(returnId, oldStatus, newStatus);
 
 // Shipping
-generateReturnLabel(returnId)
+generateReturnLabel(returnId);
 
 // Refunds
-processRefund(returnId, amount, method)
-calculateRefundAmount(originalAmount, shippingCost, restockingFee)
+processRefund(returnId, amount, method);
+calculateRefundAmount(originalAmount, shippingCost, restockingFee);
 
 // Inventory
-updateInventoryAfterReturn(returnId, inspectionPassed)
+updateInventoryAfterReturn(returnId, inspectionPassed);
 
 // Analytics
-getReturnStatistics(vendorId, supplierId, dateRange)
+getReturnStatistics(vendorId, supplierId, dateRange);
 
 // Validation
-validateReturnRequest(orderId, items)
+validateReturnRequest(orderId, items);
 ```
 
 ## Workflows
@@ -272,22 +289,22 @@ validateReturnRequest(orderId, items)
 ```
 1. Customer initiates return
    └─► Status: requested
-   
+
 2. Vendor reviews and approves
    └─► Status: vendor_approved → return_label_sent
    └─► Generate return shipping label
    └─► Email label to customer
-   
+
 3. Customer ships item back
    └─► Status: shipped_back
    └─► Customer enters tracking info
-   
+
 4. Vendor receives item
    └─► Status: received_by_vendor → inspecting
-   
+
 5. Vendor inspects item
    └─► Status: inspection_passed or inspection_failed
-   
+
 6. If passed, process refund
    └─► Status: refund_processing → refunded
    └─► Process payment gateway refund
@@ -300,21 +317,21 @@ validateReturnRequest(orderId, items)
 ```
 1. Customer initiates return
    └─► Status: requested
-   
+
 2. Vendor reviews and forwards to supplier
    └─► Status: vendor_approved → supplier_reviewing
    └─► Notify supplier
-   
+
 3. Supplier reviews and approves
    └─► Status: supplier_approved → return_label_sent
    └─► Generate return label (ship to supplier)
-   
+
 4. Customer ships to supplier
    └─► Status: shipped_back → received_by_supplier
-   
+
 5. Supplier inspects and notifies vendor
    └─► Status: inspection_passed
-   
+
 6. Vendor processes refund
    └─► Status: refund_processing → refunded
 ```
@@ -322,6 +339,7 @@ validateReturnRequest(orderId, items)
 ## TODO: Implementation Checklist
 
 ### Phase 1: Core Functionality
+
 - [ ] Validate order eligibility (return window, policy)
 - [ ] Implement return policy per vendor
 - [ ] Auto-generate unique RMA numbers
@@ -329,6 +347,7 @@ validateReturnRequest(orderId, items)
 - [ ] Integrate with notification system (Feature #144)
 
 ### Phase 2: Shipping Integration
+
 - [ ] Integrate with shipping provider (Shiprocket/Delhivery)
 - [ ] Generate pre-paid return labels
 - [ ] Automatically track return shipments
@@ -336,6 +355,7 @@ validateReturnRequest(orderId, items)
 - [ ] Determine who pays (customer/vendor/supplier)
 
 ### Phase 3: Refund Processing
+
 - [ ] Integrate with payment gateway (Razorpay/Stripe)
 - [ ] Process refunds to original payment method
 - [ ] Implement store credit system
@@ -344,6 +364,7 @@ validateReturnRequest(orderId, items)
 - [ ] Apply vendor-specific return policies
 
 ### Phase 4: Inventory Management
+
 - [ ] Update stock after inspection
 - [ ] Handle damaged/defective inventory
 - [ ] Track return reasons for analytics
@@ -351,6 +372,7 @@ validateReturnRequest(orderId, items)
 - [ ] Sync with supplier inventory (dropship)
 
 ### Phase 5: UI Components
+
 - [ ] Customer: Return request form
 - [ ] Customer: Track return status
 - [ ] Vendor: Return review dashboard
@@ -359,6 +381,7 @@ validateReturnRequest(orderId, items)
 - [ ] Admin: Return analytics
 
 ### Phase 6: Advanced Features
+
 - [ ] Automated return approval (low-value items)
 - [ ] Instant refund for trusted customers
 - [ ] Return analytics dashboard
@@ -369,18 +392,21 @@ validateReturnRequest(orderId, items)
 ## Testing Strategy
 
 ### Unit Tests
+
 - [ ] Status transition validation
 - [ ] Refund calculation logic
 - [ ] Eligibility checks
 - [ ] RMA number generation
 
 ### Integration Tests
+
 - [ ] End-to-end return workflow
 - [ ] Multi-party notification flow
 - [ ] Payment gateway refund
 - [ ] Shipping label generation
 
 ### Edge Cases
+
 - [ ] Multiple items partial return
 - [ ] Return after partial fulfillment
 - [ ] Concurrent inspection results
@@ -390,21 +416,25 @@ validateReturnRequest(orderId, items)
 ## Business Rules (To Define)
 
 ### Return Window
+
 - Standard: 30 days from delivery
 - Extended: 60 days (for certain categories)
 - No returns: Perishables, custom items
 
 ### Refund Policy
+
 - Full refund: Within 14 days
 - Partial refund: 15-30 days (10% restocking fee)
 - Store credit only: After 30 days
 
 ### Shipping Costs
+
 - Free return shipping: Defective items
 - Customer pays: Changed mind, sizing
 - Vendor pays: Wrong item, damaged
 
 ### Inspection Criteria
+
 - Unopened packaging: Full refund
 - Opened but unused: Full refund
 - Used/damaged: Partial or no refund
@@ -422,24 +452,29 @@ validateReturnRequest(orderId, items)
 ## Integration Points
 
 ### Payment Gateway
+
 - Razorpay/Stripe refund API
 - Store credit/wallet balance
 
 ### Shipping Provider
+
 - Return label generation
 - Tracking webhooks
 - Cost calculation
 
 ### Inventory System
+
 - Stock updates after returns
 - Damaged inventory tracking
 
 ### Notification System (Feature #144)
+
 - Email notifications
 - In-app alerts
 - SMS updates
 
 ### Compliance System (Feature #143)
+
 - Return policy acceptance
 - Terms for returns
 

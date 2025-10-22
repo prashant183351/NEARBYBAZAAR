@@ -8,12 +8,15 @@ export interface InvoiceSequenceDoc extends Document {
   updatedAt: Date;
 }
 
-const InvoiceSequenceSchema = new Schema<InvoiceSequenceDoc>({
-  vendorId: { type: Schema.Types.ObjectId, ref: 'Vendor', index: true },
-  fy: { type: String, required: true, index: true },
-  current: { type: Number, default: 0 },
-  prefix: { type: String },
-}, { timestamps: { createdAt: false, updatedAt: true } });
+const InvoiceSequenceSchema = new Schema<InvoiceSequenceDoc>(
+  {
+    vendorId: { type: Schema.Types.ObjectId, ref: 'Vendor', index: true },
+    fy: { type: String, required: true, index: true },
+    current: { type: Number, default: 0 },
+    prefix: { type: String },
+  },
+  { timestamps: { createdAt: false, updatedAt: true } },
+);
 
 InvoiceSequenceSchema.index({ vendorId: 1, fy: 1 }, { unique: true });
 

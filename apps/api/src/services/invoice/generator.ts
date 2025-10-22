@@ -23,7 +23,7 @@ function getCurrentFinancialYear(): string {
   const now = new Date();
   const year = now.getFullYear();
   const month = now.getMonth() + 1; // 1-12
-  
+
   if (month >= 4) {
     // April onwards: FY is current year to next year
     return `${year}-${(year + 1).toString().slice(2)}`;
@@ -40,13 +40,13 @@ function getCurrentFinancialYear(): string {
 async function generateInvoiceNumber(): Promise<string> {
   const fy = getCurrentFinancialYear();
   const prefix = `${fy}/`;
-  
+
   // Find the last invoice for this FY
   const lastInvoice = await Invoice.findOne({ financialYear: fy })
     .sort({ invoiceNumber: -1 })
     .select('invoiceNumber')
     .lean();
-  
+
   let seq = 1;
   if (lastInvoice && lastInvoice.invoiceNumber) {
     const parts = lastInvoice.invoiceNumber.split('/');
@@ -54,7 +54,7 @@ async function generateInvoiceNumber(): Promise<string> {
       seq = parseInt(parts[1], 10) + 1;
     }
   }
-  
+
   return `${prefix}${seq.toString().padStart(5, '0')}`;
 }
 
@@ -67,11 +67,11 @@ function calculateGST(
   taxableAmount: number,
   gstRate: number,
   buyerState: string,
-  sellerState: string
+  sellerState: string,
 ) {
   const totalGST = (taxableAmount * gstRate) / 100;
   const isInterState = buyerState.toLowerCase() !== sellerState.toLowerCase();
-  
+
   if (isInterState) {
     return {
       cgst: 0,
@@ -95,57 +95,57 @@ function calculateGST(
  */
 export async function generateInvoice(options: InvoiceGenerationOptions) {
   const { orderId, sellerInfo } = options;
-  
+
   // Fetch order with populated user and products
   const order = await Order.findById(orderId).populate('user').lean();
   if (!order) throw new Error('Order not found');
-  
+
   const user = await User.findById(order.user).lean();
   if (!user) throw new Error('User not found');
-  
+
   // Check if invoice already exists
   const existing = await Invoice.findOne({ orderId }).lean();
   if (existing) {
     throw new Error('Invoice already generated for this order');
   }
-  
+
   // Generate invoice number
   const invoiceNumber = await generateInvoiceNumber();
   const financialYear = getCurrentFinancialYear();
-  
+
   // Buyer details
   const buyer = {
-    name: user.isBusiness ? (user.businessProfile?.companyName || user.name) : user.name,
+    name: user.isBusiness ? user.businessProfile?.companyName || user.name : user.name,
     gstin: user.businessProfile?.gstin,
     pan: user.businessProfile?.pan,
     address: user.businessProfile?.address || '',
     state: user.businessProfile?.address ? 'Unknown' : 'Unknown', // TODO: Extract from address
     stateCode: undefined,
   };
-  
+
   // Process line items
   const lineItems = [];
   let subtotal = 0;
   let cgstTotal = 0;
   let sgstTotal = 0;
   let igstTotal = 0;
-  
+
   for (const item of order.items) {
     const product = await Product.findById(item.product).lean();
     if (!product) continue;
-    
+
     const taxableAmount = item.price * item.quantity;
     const gstRate = 18; // Default GST rate (TODO: get from product category)
-    
+
     const gstBreakdown = calculateGST(
       taxableAmount,
       gstRate,
       buyer.state || 'Unknown',
-      sellerInfo.state
+      sellerInfo.state,
     );
-    
+
     const totalAmount = taxableAmount + gstBreakdown.cgst + gstBreakdown.sgst + gstBreakdown.igst;
-    
+
     lineItems.push({
       description: product.name || 'Product',
       hsnCode: (product as any).hsnCode || undefined,
@@ -155,16 +155,16 @@ export async function generateInvoice(options: InvoiceGenerationOptions) {
       gstBreakdown,
       totalAmount,
     });
-    
+
     subtotal += taxableAmount;
     cgstTotal += gstBreakdown.cgst;
     sgstTotal += gstBreakdown.sgst;
     igstTotal += gstBreakdown.igst;
   }
-  
+
   const totalTax = cgstTotal + sgstTotal + igstTotal;
   const grandTotal = subtotal + totalTax;
-  
+
   // Create invoice
   const invoice = new Invoice({
     invoiceNumber,
@@ -184,9 +184,9 @@ export async function generateInvoice(options: InvoiceGenerationOptions) {
     status: 'generated',
     paymentTerms: user.isBusiness ? 'Net 30' : 'Immediate',
   });
-  
+
   await invoice.save();
-  
+
   return invoice;
 }
 

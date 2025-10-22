@@ -42,7 +42,12 @@ export default function ProductEdit3DModel() {
       {error && <div style={{ color: 'red' }}>{error}</div>}
       {modelUrl && (
         <div>
-          <p>3D Model uploaded! URL: <a href={modelUrl} target="_blank" rel="noopener noreferrer">{modelUrl}</a></p>
+          <p>
+            3D Model uploaded! URL:{' '}
+            <a href={modelUrl} target="_blank" rel="noopener noreferrer">
+              {modelUrl}
+            </a>
+          </p>
         </div>
       )}
     </div>

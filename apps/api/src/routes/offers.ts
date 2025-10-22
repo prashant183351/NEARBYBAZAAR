@@ -1,7 +1,7 @@
 /**
  * ProductOffer Routes
  * Feature #182 - Multi-seller marketplace
- * 
+ *
  * Routes for managing product offers:
  * - Public: View active offers for products
  * - Vendor: Manage own offers (CRUD)

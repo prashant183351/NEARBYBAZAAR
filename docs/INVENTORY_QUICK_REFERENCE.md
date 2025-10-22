@@ -3,6 +3,7 @@
 ## Feature #180: Multi-warehouse + Stock Reservations
 
 **Quick Links**:
+
 - [Full Implementation Summary](./FEATURE_180_SUMMARY.md)
 - [Test Suite](../apps/api/tests/inventory.race.spec.ts)
 
@@ -22,7 +23,7 @@ const reservation = await StockReservation.schema.statics.createReservation({
   quantity: 2,
   userId: req.user.id,
   cartId: req.session.cartId,
-  expiresInMinutes: 15  // Default
+  expiresInMinutes: 15, // Default
 });
 ```
 
@@ -63,8 +64,9 @@ await StockReservation.schema.statics.releaseReservation(reservationId);
 ```
 
 **Atomic Methods**:
+
 - `reserveStock(productId, warehouseId, qty)` - Move available → reserved
-- `releaseReservation(...)` - Move reserved → available  
+- `releaseReservation(...)` - Move reserved → available
 - `commitReservation(...)` - Decrease reserved & total (shipped)
 - `addStock(...)` - Add new inventory
 - `getTotalAvailable(productId)` - Sum across warehouses
@@ -89,6 +91,7 @@ await StockReservation.schema.statics.releaseReservation(reservationId);
 ```
 
 **Static Methods**:
+
 - `createReservation({ productId, warehouseId, qty, ... })` - Atomic reserve
 - `commitReservation(id)` - Finalize (after payment)
 - `releaseReservation(id)` - Cancel/expire
@@ -115,6 +118,7 @@ await StockReservation.schema.statics.releaseReservation(reservationId);
 ```
 
 **Methods**:
+
 - `isOperating(date?)` - Check if active and within hours
 
 ---
@@ -124,24 +128,26 @@ await StockReservation.schema.statics.releaseReservation(reservationId);
 ### How It Works
 
 **MongoDB Atomic Update Pattern**:
+
 ```typescript
 // BEFORE update, filter checks: available >= requested
 await StockItem.findOneAndUpdate(
   {
     productId,
     warehouseId,
-    'quantity.available': { $gte: qty }  // ← CRITICAL
+    'quantity.available': { $gte: qty }, // ← CRITICAL
   },
   {
     $inc: {
       'quantity.available': -qty,
-      'quantity.reserved': qty
-    }
-  }
+      'quantity.reserved': qty,
+    },
+  },
 );
 ```
 
 **If two users reserve last item simultaneously**:
+
 1. User A: Filter matches → Update succeeds ✅
 2. User B: Filter fails (available now 0) → Returns null → Error thrown ❌
 
@@ -162,6 +168,7 @@ available ────────────> reserved
 ```
 
 **Transitions**:
+
 - **Reserve**: available → reserved (checkout started)
 - **Commit**: reserved → [shipped] (payment success, total decreased)
 - **Release**: reserved → available (cart abandoned, payment failed)
@@ -175,6 +182,7 @@ available ────────────> reserved
 **Auto-cleanup**: BullMQ job runs every 5 minutes
 
 **Flow**:
+
 1. User reserves stock at 10:00 → expiresAt = 10:15
 2. User doesn't checkout by 10:15
 3. Cleanup job runs at 10:20
@@ -182,6 +190,7 @@ available ────────────> reserved
 5. Calls `releaseReservation()` → stock returned to available
 
 **Manual trigger** (for testing):
+
 ```typescript
 import { triggerReservationCleanup } from '../jobs/reservationCleanup';
 await triggerReservationCleanup();
@@ -206,7 +215,7 @@ console.log(`Available across all warehouses: ${total}`);
 const warehouseId = await StockItem.schema.statics.findBestWarehouse(
   productId,
   quantity,
-  buyerPincode  // Optional: prefer nearby
+  buyerPincode, // Optional: prefer nearby
 );
 
 if (!warehouseId) {
@@ -215,6 +224,7 @@ if (!warehouseId) {
 ```
 
 **Selection Criteria**:
+
 1. Warehouse has `available >= quantity`
 2. If pincode provided: sort by distance (closest first)
 3. Else: sort by capacity (largest first)
@@ -252,6 +262,7 @@ pnpm test inventory.race.spec.ts
 **Status**: ✅ 12/12 tests passing
 
 **Key Tests**:
+
 - Atomic operation pattern verification
 - Stock state transition logic
 - Multi-warehouse isolation
@@ -272,7 +283,7 @@ const reservation = await StockReservation.schema.statics.createReservation({
   sku: item.sku,
   quantity: item.quantity,
   userId: req.user.id,
-  cartId: req.session.cartId
+  cartId: req.session.cartId,
 });
 
 // 2. Redirect to payment
@@ -297,22 +308,13 @@ await StockReservation.schema.statics.releaseCartReservations(cartId);
 ```typescript
 import { StockItem } from '../models/StockItem';
 
-await StockItem.schema.statics.addStock(
-  productId,
-  warehouseId,
-  quantity,
-  sku
-);
+await StockItem.schema.statics.addStock(productId, warehouseId, quantity, sku);
 ```
 
 ### Pattern 4: Mark Damaged Stock
 
 ```typescript
-await StockItem.schema.statics.markDamaged(
-  productId,
-  warehouseId,
-  damagedQuantity
-);
+await StockItem.schema.statics.markDamaged(productId, warehouseId, damagedQuantity);
 ```
 
 ---
@@ -324,6 +326,7 @@ await StockItem.schema.statics.markDamaged(
 **Cleanup Job**: Runs every 5 min, processes all expired reservations
 
 **Indexes**:
+
 - `productId + warehouseId` (unique) - Fast stock lookups
 - `status + expiresAt` - Fast cleanup queries
 - TTL on `createdAt` - Auto-delete old reservations after 7 days
@@ -346,6 +349,7 @@ await StockItem.schema.statics.markDamaged(
 **Diagnosis**: Cleanup job not running or failed
 
 **Fix**:
+
 ```bash
 # Check BullMQ queue status
 GET /admin/queues/reservation-cleanup

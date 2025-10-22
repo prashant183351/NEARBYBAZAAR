@@ -5,7 +5,10 @@ const router = Router();
 
 // GET /v1/slug/resolve/:type/:slug -> 301 to latest public URL if mapping exists
 router.get('/resolve/:type/:slug', async (req, res) => {
-  const { type, slug } = req.params as { type: 'product' | 'service' | 'classified' | 'vendor' | string; slug: string };
+  const { type, slug } = req.params as {
+    type: 'product' | 'service' | 'classified' | 'vendor' | string;
+    slug: string;
+  };
   if (!['product', 'service', 'classified', 'vendor'].includes(type)) {
     return res.status(400).json({ error: 'Invalid type' });
   }

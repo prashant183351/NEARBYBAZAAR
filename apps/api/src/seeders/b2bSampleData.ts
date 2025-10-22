@@ -23,7 +23,7 @@ export async function seedPaymentTerms() {
       lateFeePercentage: 0,
       minOrderValue: 0,
       requiresApproval: false,
-      isActive: true
+      isActive: true,
     },
     {
       name: '30% Advance, 70% on Delivery',
@@ -33,7 +33,7 @@ export async function seedPaymentTerms() {
       lateFeePercentage: 2,
       minOrderValue: 10000,
       requiresApproval: false,
-      isActive: true
+      isActive: true,
     },
     {
       name: 'Net 30',
@@ -44,7 +44,7 @@ export async function seedPaymentTerms() {
       lateFeePercentage: 2,
       minOrderValue: 25000,
       requiresApproval: true,
-      isActive: true
+      isActive: true,
     },
     {
       name: 'Net 60',
@@ -55,7 +55,7 @@ export async function seedPaymentTerms() {
       lateFeePercentage: 2,
       minOrderValue: 50000,
       requiresApproval: true,
-      isActive: true
+      isActive: true,
     },
     {
       name: 'Cash on Delivery',
@@ -65,16 +65,15 @@ export async function seedPaymentTerms() {
       lateFeePercentage: 0,
       minOrderValue: 0,
       requiresApproval: false,
-      isActive: true
-    }
+      isActive: true,
+    },
   ];
 
   for (const template of templates) {
-    await PaymentTermTemplate.findOneAndUpdate(
-      { name: template.name },
-      template,
-      { upsert: true, new: true }
-    );
+    await PaymentTermTemplate.findOneAndUpdate({ name: template.name }, template, {
+      upsert: true,
+      new: true,
+    });
   }
 
   console.log(`✓ Seeded ${templates.length} payment term templates`);
@@ -101,10 +100,10 @@ export async function seedB2BBuyers() {
         city: 'Delhi',
         state: 'Delhi',
         pincode: '110001',
-        country: 'India'
+        country: 'India',
       },
       isBusinessAccount: true,
-      role: 'buyer'
+      role: 'buyer',
     },
     {
       email: 'priya@sharmaretail.com',
@@ -120,10 +119,10 @@ export async function seedB2BBuyers() {
         city: 'Mumbai',
         state: 'Maharashtra',
         pincode: '400001',
-        country: 'India'
+        country: 'India',
       },
       isBusinessAccount: true,
-      role: 'buyer'
+      role: 'buyer',
     },
     {
       email: 'amit@techservices.com',
@@ -139,11 +138,11 @@ export async function seedB2BBuyers() {
         city: 'Ahmedabad',
         state: 'Gujarat',
         pincode: '380001',
-        country: 'India'
+        country: 'India',
       },
       isBusinessAccount: true,
-      role: 'buyer'
-    }
+      role: 'buyer',
+    },
   ];
 
   const createdBuyers = [];
@@ -171,129 +170,133 @@ export async function seedB2BProducts() {
     {
       name: 'Industrial Steel Pipes (Grade A)',
       slug: 'industrial-steel-pipes-grade-a',
-      description: 'High-quality steel pipes for industrial use. Available in bulk quantities with tiered pricing.',
+      description:
+        'High-quality steel pipes for industrial use. Available in bulk quantities with tiered pricing.',
       category: 'industrial-supplies',
       sku: 'ISP-GA-001',
-      
+
       // Retail pricing
       price: 150,
       currency: 'INR',
       stock: 5000,
       minOrderQty: 1,
-      
+
       // Wholesale/Bulk pricing tiers
       wholesalePricing: [
         { minQty: 100, price: 135, discount: 10 },
         { minQty: 500, price: 120, discount: 20 },
-        { minQty: 1000, price: 105, discount: 30 }
+        { minQty: 1000, price: 105, discount: 30 },
       ],
-      
+
       // B2B flags
       availableForWholesale: true,
       wholesaleOnly: false,
-      
+
       specifications: {
         material: 'Steel',
         grade: 'A',
         length: '6 meters',
         diameter: '2 inches',
-        weight: '5 kg/piece'
+        weight: '5 kg/piece',
       },
-      
+
       tags: ['industrial', 'steel', 'pipes', 'wholesale', 'bulk'],
-      isActive: true
+      isActive: true,
     },
     {
       name: 'Cotton T-Shirts (Bulk Pack - 100 pcs)',
       slug: 'cotton-tshirts-bulk-pack',
-      description: 'Plain cotton t-shirts in assorted sizes. Ideal for retail stores, events, and corporate gifting.',
+      description:
+        'Plain cotton t-shirts in assorted sizes. Ideal for retail stores, events, and corporate gifting.',
       category: 'apparel',
       sku: 'CTB-100-001',
-      
+
       price: 15000, // ₹150 per piece
       currency: 'INR',
       stock: 200, // 200 packs
       minOrderQty: 1, // 1 pack = 100 pieces
-      
+
       wholesalePricing: [
-        { minQty: 5, price: 13500, discount: 10 },  // 5 packs = 500 pieces
+        { minQty: 5, price: 13500, discount: 10 }, // 5 packs = 500 pieces
         { minQty: 10, price: 12000, discount: 20 }, // 10 packs = 1000 pieces
-        { minQty: 20, price: 10500, discount: 30 }  // 20 packs = 2000 pieces
+        { minQty: 20, price: 10500, discount: 30 }, // 20 packs = 2000 pieces
       ],
-      
+
       availableForWholesale: true,
       wholesaleOnly: false,
-      
+
       specifications: {
         material: '100% Cotton',
         sizes: 'S, M, L, XL, XXL (20 pcs each)',
         colors: 'White, Black (50 pcs each)',
-        gsm: '180 GSM'
+        gsm: '180 GSM',
       },
-      
+
       tags: ['apparel', 'tshirts', 'cotton', 'bulk', 'wholesale'],
-      isActive: true
+      isActive: true,
     },
     {
       name: 'Electronics Components Kit (Wholesale Only)',
       slug: 'electronics-components-kit-wholesale',
-      description: 'Comprehensive kit with resistors, capacitors, LEDs, and more. Minimum order: 50 kits.',
+      description:
+        'Comprehensive kit with resistors, capacitors, LEDs, and more. Minimum order: 50 kits.',
       category: 'electronics',
       sku: 'ECK-W-001',
-      
+
       price: 2500,
       currency: 'INR',
       stock: 1000,
       minOrderQty: 50, // Wholesale minimum
-      
+
       wholesalePricing: [
         { minQty: 50, price: 2250, discount: 10 },
         { minQty: 100, price: 2000, discount: 20 },
-        { minQty: 200, price: 1750, discount: 30 }
+        { minQty: 200, price: 1750, discount: 30 },
       ],
-      
+
       availableForWholesale: true,
       wholesaleOnly: true, // Cannot be purchased at retail
-      
+
       specifications: {
         components: '500+ pieces',
         categories: 'Resistors, Capacitors, LEDs, Transistors, ICs',
-        packaging: 'Organized storage box'
+        packaging: 'Organized storage box',
       },
-      
+
       tags: ['electronics', 'components', 'wholesale-only', 'bulk'],
-      isActive: true
+      isActive: true,
     },
     {
       name: 'Office Furniture Set (Bulk Order)',
       slug: 'office-furniture-set-bulk',
-      description: 'Complete office furniture set including desk, chair, and storage. Bulk orders for corporate offices.',
+      description:
+        'Complete office furniture set including desk, chair, and storage. Bulk orders for corporate offices.',
       category: 'furniture',
       sku: 'OFS-B-001',
-      
+
       price: 25000,
       currency: 'INR',
       stock: 500,
       minOrderQty: 10, // Minimum 10 sets
-      
+
       wholesalePricing: [
         { minQty: 10, price: 22500, discount: 10 },
         { minQty: 25, price: 20000, discount: 20 },
-        { minQty: 50, price: 17500, discount: 30 }
+        { minQty: 50, price: 17500, discount: 30 },
       ],
-      
+
       availableForWholesale: true,
       wholesaleOnly: false,
-      
+
       specifications: {
         includes: 'Desk (4x2 ft), Ergonomic Chair, Mobile Pedestal',
         material: 'Engineered Wood, Metal Frame',
-        warranty: '2 years'
+        warranty: '2 years',
       },
-      
+
       tags: ['furniture', 'office', 'corporate', 'bulk'],
-      isActive: true
-    }
+      isActive: true,
+    },
   ];
 
   const createdProducts = [];
@@ -319,7 +322,7 @@ export async function seedSampleRFQs(buyers: any[], products: any[]) {
 
   // Note: RFQ model needs to be created if not exists
   // For now, we'll create placeholder data structure
-  
+
   const rfqs = [
     {
       buyerId: buyers[0]._id,
@@ -327,22 +330,23 @@ export async function seedSampleRFQs(buyers: any[], products: any[]) {
       buyerCompany: buyers[0].companyName,
       buyerEmail: buyers[0].email,
       buyerPhone: buyers[0].phone,
-      
+
       productId: products[0]._id,
       productName: products[0].name,
       productSku: products[0].sku,
-      
+
       quantity: 500,
       targetPrice: 120, // Looking for ₹120 per piece
       deliveryLocation: 'Delhi, India',
       neededBy: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
-      
-      requirements: 'Need 500 steel pipes for construction project. Looking for best price with 30-day payment terms.',
+
+      requirements:
+        'Need 500 steel pipes for construction project. Looking for best price with 30-day payment terms.',
       industry: 'manufacturing',
       region: 'north',
-      
+
       status: 'open',
-      createdAt: new Date()
+      createdAt: new Date(),
     },
     {
       buyerId: buyers[1]._id,
@@ -350,23 +354,24 @@ export async function seedSampleRFQs(buyers: any[], products: any[]) {
       buyerCompany: buyers[1].companyName,
       buyerEmail: buyers[1].email,
       buyerPhone: buyers[1].phone,
-      
+
       productId: products[1]._id,
       productName: products[1].name,
       productSku: products[1].sku,
-      
+
       quantity: 20, // 20 packs = 2000 pieces
       targetPrice: 11000, // Looking for ₹11,000 per pack
       deliveryLocation: 'Mumbai, India',
       neededBy: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000),
-      
-      requirements: 'Need 2000 cotton t-shirts for retail chain. Require customization with our logo. Net 30 payment terms preferred.',
+
+      requirements:
+        'Need 2000 cotton t-shirts for retail chain. Require customization with our logo. Net 30 payment terms preferred.',
       industry: 'retail',
       region: 'west',
-      
+
       status: 'open',
-      createdAt: new Date()
-    }
+      createdAt: new Date(),
+    },
   ];
 
   console.log(`✓ Created ${rfqs.length} sample RFQs (data structure only)`);
@@ -395,7 +400,7 @@ export async function seedBuyerCredit(buyers: any[]) {
       creditScore: 750,
       riskLevel: 'low',
       status: 'approved',
-      notes: 'Established manufacturing company with good payment history'
+      notes: 'Established manufacturing company with good payment history',
     },
     {
       userId: buyers[1]._id,
@@ -410,16 +415,15 @@ export async function seedBuyerCredit(buyers: any[]) {
       creditScore: 720,
       riskLevel: 'low',
       status: 'approved',
-      notes: 'Growing retail chain with multiple stores'
-    }
+      notes: 'Growing retail chain with multiple stores',
+    },
   ];
 
   for (const credit of credits) {
-    await BuyerCredit.findOneAndUpdate(
-      { userId: credit.userId },
-      credit,
-      { upsert: true, new: true }
-    );
+    await BuyerCredit.findOneAndUpdate({ userId: credit.userId }, credit, {
+      upsert: true,
+      new: true,
+    });
   }
 
   console.log(`✓ Seeded ${credits.length} buyer credit accounts`);
@@ -439,34 +443,34 @@ export async function seedBulkOrders(buyers: any[], products: any[]) {
           product: products[0]._id,
           quantity: 500,
           price: 120, // Tier 2 pricing
-          total: 60000
-        }
+          total: 60000,
+        },
       ],
       subtotal: 60000,
       tax: 10800, // 18% GST
       total: 70800,
       currency: 'INR',
-      
+
       // B2B flags
       isBulkOrder: true,
       bulkOrderType: 'wholesale',
       businessAccount: true,
       industry: 'manufacturing',
       region: 'north',
-      
+
       // Payment terms
       paymentTerms: {
         type: 'net_days',
         netDays: 30,
-        dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       },
       creditUsed: 70800,
       outstandingAmount: 70800,
       paidAmount: 0,
       paymentStatus: 'unpaid',
-      
+
       status: 'confirmed',
-      createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) // 5 days ago
+      createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
     },
     {
       user: buyers[1]._id,
@@ -475,32 +479,32 @@ export async function seedBulkOrders(buyers: any[], products: any[]) {
           product: products[1]._id,
           quantity: 10,
           price: 12000, // Tier 2 pricing
-          total: 120000
-        }
+          total: 120000,
+        },
       ],
       subtotal: 120000,
       tax: 21600, // 18% GST
       total: 141600,
       currency: 'INR',
-      
+
       isBulkOrder: true,
       bulkOrderType: 'wholesale',
       businessAccount: true,
       industry: 'retail',
       region: 'west',
-      
+
       paymentTerms: {
         type: 'partial_advance',
         advancePercentage: 30,
-        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       },
       creditUsed: 0,
       outstandingAmount: 99120, // 70% balance
       paidAmount: 42480, // 30% advance
       paymentStatus: 'partial',
-      
+
       status: 'confirmed',
-      createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000) // 3 days ago
+      createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
     },
     {
       user: buyers[2]._id,
@@ -509,31 +513,31 @@ export async function seedBulkOrders(buyers: any[], products: any[]) {
           product: products[2]._id,
           quantity: 100,
           price: 2000, // Tier 2 pricing
-          total: 200000
-        }
+          total: 200000,
+        },
       ],
       subtotal: 200000,
       tax: 36000,
       total: 236000,
       currency: 'INR',
-      
+
       isBulkOrder: true,
       bulkOrderType: 'contract',
       businessAccount: true,
       industry: 'services',
       region: 'west',
-      
+
       paymentTerms: {
-        type: 'full_advance'
+        type: 'full_advance',
       },
       creditUsed: 0,
       outstandingAmount: 0,
       paidAmount: 236000,
       paymentStatus: 'paid',
-      
+
       status: 'completed',
-      createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) // 10 days ago
-    }
+      createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000), // 10 days ago
+    },
   ];
 
   for (const order of orders) {
@@ -564,7 +568,6 @@ export async function seedB2BData() {
     console.log('  - amit@techservices.com (Services)');
     console.log('\nSample products with tiered pricing available in catalog');
     console.log('Sample RFQs and bulk orders created for analytics\n');
-
   } catch (error) {
     console.error('Error seeding B2B data:', error);
     throw error;
@@ -575,8 +578,9 @@ export async function seedB2BData() {
 if (require.main === module) {
   // Import DB connection
   const mongoose = require('mongoose');
-  
-  mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/nearbybazaar')
+
+  mongoose
+    .connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/nearbybazaar')
     .then(async () => {
       await seedB2BData();
       await mongoose.disconnect();

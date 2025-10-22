@@ -59,10 +59,16 @@ export async function getCourierQuotes(req: BiddingRequest): Promise<CourierQuot
   return results.sort((a, b) => a.cost - b.cost); // sort by cost ascending
 }
 
-export function selectBestCourier(quotes: CourierQuote[], criteria: 'cost' | 'speed' = 'cost'): CourierQuote | null {
+export function selectBestCourier(
+  quotes: CourierQuote[],
+  criteria: 'cost' | 'speed' = 'cost',
+): CourierQuote | null {
   if (!quotes.length) return null;
   if (criteria === 'speed') {
-    return quotes.reduce((best, q) => (q.estimatedDeliveryDays < best.estimatedDeliveryDays ? q : best), quotes[0]);
+    return quotes.reduce(
+      (best, q) => (q.estimatedDeliveryDays < best.estimatedDeliveryDays ? q : best),
+      quotes[0],
+    );
   }
   // Default: lowest cost
   return quotes[0];

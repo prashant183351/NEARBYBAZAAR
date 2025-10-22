@@ -3,6 +3,7 @@
 ## ✅ Completed - October 20, 2025
 
 ### Overview
+
 Implemented a comprehensive seller reputation tracking system with three key performance metrics: Order Defect Rate (ODR), Late Shipment Rate, and Cancellation Rate. The system automatically calculates metrics, evaluates vendor standing, and triggers appropriate actions.
 
 ---
@@ -10,6 +11,7 @@ Implemented a comprehensive seller reputation tracking system with three key per
 ## 📁 Files Created
 
 ### Backend Services
+
 1. **`apps/api/src/services/reputationMetrics.ts`** (365 lines)
    - Core reputation calculation engine
    - Functions: `calculateODR()`, `calculateLateShipmentRate()`, `calculateCancellationRate()`
@@ -31,6 +33,7 @@ Implemented a comprehensive seller reputation tracking system with three key per
    - Admin notifications for suspension recommendations
 
 ### Frontend Dashboards
+
 5. **`apps/vendor/pages/dashboard/reputation.tsx`** (185 lines)
    - Vendor performance scorecard UI
    - Color-coded metric cards
@@ -44,6 +47,7 @@ Implemented a comprehensive seller reputation tracking system with three key per
    - Action buttons for problematic vendors
 
 ### Data Models
+
 7. **`apps/api/src/models/RecommendationLog.ts`** (11 lines)
    - Tracking model for recommendation events
 
@@ -61,11 +65,13 @@ Implemented a comprehensive seller reputation tracking system with three key per
    - Extended status enum: added 'shipped', 'delivered', 'refunded', 'returned'
 
 ### Routing
+
 10. **Updated `apps/api/src/routes/index.ts`**
     - Integrated reputation router
     - Added to main API routing structure
 
 ### Documentation
+
 11. **`docs/REPUTATION_METRICS.md`** (400+ lines)
     - Complete feature documentation
     - API reference with examples
@@ -84,6 +90,7 @@ Implemented a comprehensive seller reputation tracking system with three key per
 ## 🎯 Key Features
 
 ### Metrics Tracked
+
 1. **Order Defect Rate (ODR)**
    - Formula: `(refunds + returns + disputes) / total_orders × 100`
    - Thresholds: Excellent < 0.5% | Good < 1% | Warning < 2% | Critical ≥ 3%
@@ -97,12 +104,14 @@ Implemented a comprehensive seller reputation tracking system with three key per
    - Thresholds: Excellent < 1% | Good < 2.5% | Warning < 5% | Critical ≥ 7.5%
 
 ### Status Levels
+
 - **Excellent**: All metrics in optimal range
 - **Good**: Acceptable performance
 - **Needs Improvement**: Warning thresholds exceeded → automated email
 - **Critical**: Critical thresholds exceeded → admin review + potential suspension
 
 ### Automated Actions
+
 - Warning emails for "needs improvement" status
 - Critical alerts for vendors at risk
 - Admin notifications for suspension recommendations
@@ -128,6 +137,7 @@ GET /v1/reputation/evaluate/{vendorId}
 ## 🎨 UI Components
 
 ### Vendor Dashboard Features
+
 - Real-time metric calculation
 - Color-coded status indicators
 - Visual metric cards with threshold explanations
@@ -136,6 +146,7 @@ GET /v1/reputation/evaluate/{vendorId}
 - Critical/warning alerts
 
 ### Admin Dashboard Features
+
 - Summary statistics (critical/needs improvement/good/excellent counts)
 - Interactive filtering (click summary cards to filter)
 - Sortable vendor table
@@ -146,6 +157,7 @@ GET /v1/reputation/evaluate/{vendorId}
 ---
 
 ## 🧪 Testing Status
+
 - ✅ TypeScript compilation successful
 - ✅ All imports resolved
 - ✅ Linting passes
@@ -158,21 +170,30 @@ GET /v1/reputation/evaluate/{vendorId}
 ## 📋 Integration Requirements
 
 ### Background Job Scheduling
+
 Add to cron scheduler or BullMQ:
+
 ```typescript
 import { checkVendorReputations } from './jobs/checkVendorReputation';
 
 // Run daily at 2 AM
-queue.add('check-vendor-reputation', {}, {
-  repeat: { cron: '0 2 * * *' }
-});
+queue.add(
+  'check-vendor-reputation',
+  {},
+  {
+    repeat: { cron: '0 2 * * *' },
+  },
+);
 ```
 
 ### Email Service
+
 Update email placeholders in `checkVendorReputation.ts` when email service is ready.
 
 ### Order Tracking
+
 Ensure these fields are populated when processing orders:
+
 - `shippedAt` (when order ships)
 - `expectedDispatchDate` (when order created)
 - `cancelledBy` (if order cancelled)
@@ -207,6 +228,7 @@ Ensure these fields are populated when processing orders:
 ## 🎓 Usage Examples
 
 ### Vendor Checking Their Metrics
+
 ```typescript
 // Frontend call
 const response = await axios.get('/api/reputation/vendor?days=30');
@@ -214,12 +236,14 @@ console.log(response.data.data.status); // 'good'
 ```
 
 ### Admin Reviewing All Vendors
+
 ```typescript
 const response = await axios.get('/api/reputation/admin?days=90');
 const critical = response.data.data.summary.critical; // 5
 ```
 
 ### Background Job Execution
+
 ```typescript
 const results = await checkVendorReputations();
 // { totalChecked: 100, warningsSent: 15, suspensionsTriggered: 5 }
@@ -230,6 +254,7 @@ const results = await checkVendorReputations();
 ## ✨ Impact
 
 This feature enables:
+
 - **Buyers**: More confidence in vendor reliability
 - **Vendors**: Clear performance goals and self-improvement tools
 - **Platform**: Automated quality control and marketplace trust

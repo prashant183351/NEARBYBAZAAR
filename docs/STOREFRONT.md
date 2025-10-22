@@ -1,9 +1,11 @@
 ## Vendor Storefront (Feature #112)
 
 ### Overview
+
 The vendor storefront is a public-facing page that displays all products, services, and classifieds for a specific vendor. It includes SSR rendering, pagination, and SEO optimization.
 
 ### Features
+
 - **Dynamic Routing**: Access stores via `/store/{vendor-slug}`
 - **Tabbed Interface**: Switch between products, services, and classifieds
 - **Pagination**: Navigate through vendor items with Previous/Next controls
@@ -12,6 +14,7 @@ The vendor storefront is a public-facing page that displays all products, servic
 - **Fallback Data**: Sample data shown when API is unavailable
 
 ### File Structure
+
 ```
 apps/web/
 ├── pages/
@@ -37,12 +40,14 @@ apps/api/
 ### API Endpoints
 
 #### Get Vendor by Slug
+
 ```
 GET /v1/vendors/slug/:slug
 Response: { _id, name, slug, email, logoUrl, planTier, description }
 ```
 
 #### List Items by Vendor
+
 ```
 GET /v1/products?vendor=:vendorId&page=1&limit=12
 GET /v1/services?vendor=:vendorId&page=1&limit=12
@@ -57,23 +62,28 @@ Response: {
 ### Usage Example
 
 Access a vendor's store:
+
 ```
 https://nearbybazaar.com/store/cool-shop
 ```
 
 Navigate to different tabs:
+
 ```
 /store/cool-shop?tab=services
 /store/cool-shop?tab=classifieds
 ```
 
 Pagination:
+
 ```
 /store/cool-shop?tab=products&page=2
 ```
 
 ### SEO Implementation
+
 Each store page includes:
+
 - **Title**: `{Vendor Name} - Storefront | NearbyBazaar`
 - **Description**: Vendor description or default message
 - **Open Graph Tags**: Vendor name, description, logo
@@ -83,6 +93,7 @@ Each store page includes:
 ### Component Props
 
 **StoreHeader**
+
 ```typescript
 {
   name: string;
@@ -93,6 +104,7 @@ Each store page includes:
 ```
 
 **ItemGrid**
+
 ```typescript
 {
   items: Array<{
@@ -109,6 +121,7 @@ Each store page includes:
 ```
 
 ### Future Enhancements
+
 - Real-time inventory updates
 - Filtering and sorting options
 - Vendor contact/inquiry form

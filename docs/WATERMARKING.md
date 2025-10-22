@@ -7,6 +7,7 @@ This document describes the watermarking approach used in NearbyBazaar for image
 ## Overview
 
 Watermarking is enforced for classified images to prevent unauthorized reuse and ensure authenticity. The process includes:
+
 - **Client-side watermarking**: Overlaying a visible watermark and embedding a digital signature before upload.
 - **Server-side verification**: Checking for the presence and validity of the watermark signature during upload.
 
@@ -31,17 +32,17 @@ flowchart TD
 ## Watermarking Steps
 
 1. **Client-side**
-    - User selects or drags image(s) into uploader.
-    - Watermark text/graphics are overlaid using HTMLCanvas.
-    - A digital signature (hash) is embedded in the watermark region.
-    - User previews the watermarked image before upload.
+   - User selects or drags image(s) into uploader.
+   - Watermark text/graphics are overlaid using HTMLCanvas.
+   - A digital signature (hash) is embedded in the watermark region.
+   - User previews the watermarked image before upload.
 2. **Upload**
-    - Image is sent to the server via API.
+   - Image is sent to the server via API.
 3. **Server-side**
-    - Server extracts the watermark region (e.g. bottom-right corner).
-    - Signature is read (OCR or pixel pattern).
-    - Server recomputes expected signature and compares.
-    - If valid, image is accepted; otherwise, rejected with a friendly error.
+   - Server extracts the watermark region (e.g. bottom-right corner).
+   - Signature is read (OCR or pixel pattern).
+   - Server recomputes expected signature and compares.
+   - If valid, image is accepted; otherwise, rejected with a friendly error.
 
 ---
 

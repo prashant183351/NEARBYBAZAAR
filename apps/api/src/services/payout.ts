@@ -1,9 +1,9 @@
 /**
  * Payout Service
- * 
+ *
  * Manages vendor payout calculations and processing.
  * Ensures KYC verification before payouts.
- * 
+ *
  * Payout Calculation:
  * Net Payout = Gross Sales - Commission - Refunds + Adjustments
  */
@@ -48,7 +48,7 @@ export interface IPayoutCalculation {
 
 /**
  * Calculate payout for vendor for a given period
- * 
+ *
  * @param vendorId - Vendor ObjectId
  * @param periodStart - Start of payout period
  * @param periodEnd - End of payout period
@@ -57,11 +57,11 @@ export interface IPayoutCalculation {
 export async function calculatePayoutForVendor(
   vendorId: Types.ObjectId,
   periodStart: Date,
-  periodEnd: Date
+  periodEnd: Date,
 ): Promise<IPayoutCalculation> {
   // TODO: In production, fetch actual orders from Order model
   // For now, return stub data
-  
+
   // Simulated calculation (replace with actual Order aggregation)
   const lineItems: IPayoutLineItem[] = [
     // Example line item
@@ -76,12 +76,12 @@ export async function calculatePayoutForVendor(
     //   netAmount: 900,
     // },
   ];
-  
+
   const grossAmount = lineItems.reduce((sum, item) => sum + item.orderTotal, 0);
   const totalCommission = lineItems.reduce((sum, item) => sum + item.commission, 0);
   const totalRefunds = lineItems.reduce((sum, item) => sum + item.refundAmount, 0);
   const netAmount = grossAmount - totalCommission - totalRefunds;
-  
+
   return {
     vendorId,
     periodStart,
@@ -97,7 +97,7 @@ export async function calculatePayoutForVendor(
 
 /**
  * Create a payout for vendor
- * 
+ *
  * @param vendorId - Vendor ObjectId
  * @param calculation - Payout calculation result
  * @param method - Payment method
@@ -106,28 +106,32 @@ export async function calculatePayoutForVendor(
 export async function createPayout(
   vendorId: Types.ObjectId,
   calculation: IPayoutCalculation,
-  method: PayoutMethod = PayoutMethod.BANK_TRANSFER
+  method: PayoutMethod = PayoutMethod.BANK_TRANSFER,
 ): Promise<IPayout> {
   // Verify KYC status
   const isKYCVerified = await verifyKYCForPayouts(vendorId);
-  
+
   if (!isKYCVerified) {
     throw new Error('Cannot create payout: Vendor KYC not verified');
   }
-  
+
   // Validate minimum payout amount
   if (calculation.netAmount < MIN_PAYOUT_AMOUNT) {
-    throw new Error(`Payout amount ₹${calculation.netAmount} is below minimum ₹${MIN_PAYOUT_AMOUNT}`);
+    throw new Error(
+      `Payout amount ₹${calculation.netAmount} is below minimum ₹${MIN_PAYOUT_AMOUNT}`,
+    );
   }
-  
+
   // Validate maximum payout amount (anti-fraud)
   if (calculation.netAmount > MAX_PAYOUT_AMOUNT) {
-    throw new Error(`Payout amount ₹${calculation.netAmount} exceeds maximum ₹${MAX_PAYOUT_AMOUNT}. Manual review required.`);
+    throw new Error(
+      `Payout amount ₹${calculation.netAmount} exceeds maximum ₹${MAX_PAYOUT_AMOUNT}. Manual review required.`,
+    );
   }
-  
+
   // Generate unique payout number
   const payoutNumber = await (Payout as any).generatePayoutNumber();
-  
+
   // Create payout
   const payout = new Payout({
     vendorId,
@@ -152,9 +156,9 @@ export async function createPayout(
     isKYCVerified: true,
     requiresManualReview: calculation.netAmount > 500000, // ₹5L+ requires review
   });
-  
+
   await payout.save();
-  
+
   return payout;
 }
 
@@ -176,25 +180,22 @@ export async function getPayoutsForVendor(
     status?: PayoutStatus;
     limit?: number;
     skip?: number;
-  }
+  },
 ): Promise<{ payouts: IPayout[]; total: number }> {
   const query: any = { vendorId };
-  
+
   if (filters?.status) {
     query.status = filters.status;
   }
-  
+
   const limit = filters?.limit || 20;
   const skip = filters?.skip || 0;
-  
+
   const [payouts, total] = await Promise.all([
-    Payout.find(query)
-      .sort({ createdAt: -1 })
-      .limit(limit)
-      .skip(skip),
+    Payout.find(query).sort({ createdAt: -1 }).limit(limit).skip(skip),
     Payout.countDocuments(query),
   ]);
-  
+
   return { payouts, total };
 }
 
@@ -210,15 +211,15 @@ export async function getAllPayouts(filters?: {
   skip?: number;
 }): Promise<{ payouts: IPayout[]; total: number }> {
   const query: any = {};
-  
+
   if (filters?.status) {
     query.status = filters.status;
   }
-  
+
   if (filters?.vendorId) {
     query.vendorId = filters.vendorId;
   }
-  
+
   if (filters?.startDate || filters?.endDate) {
     query.createdAt = {};
     if (filters.startDate) {
@@ -228,10 +229,10 @@ export async function getAllPayouts(filters?: {
       query.createdAt.$lte = filters.endDate;
     }
   }
-  
+
   const limit = filters?.limit || 50;
   const skip = filters?.skip || 0;
-  
+
   const [payouts, total] = await Promise.all([
     Payout.find(query)
       .populate('vendorId', 'name email storeName')
@@ -240,7 +241,7 @@ export async function getAllPayouts(filters?: {
       .skip(skip),
     Payout.countDocuments(query),
   ]);
-  
+
   return { payouts, total };
 }
 
@@ -249,7 +250,7 @@ export async function getAllPayouts(filters?: {
  */
 export async function getPayoutSummary(vendorId?: Types.ObjectId): Promise<IPayoutSummary> {
   const matchStage: any = vendorId ? { vendorId } : {};
-  
+
   const [statusCounts, amountAgg] = await Promise.all([
     Payout.aggregate([
       { $match: matchStage },
@@ -270,7 +271,7 @@ export async function getPayoutSummary(vendorId?: Types.ObjectId): Promise<IPayo
       },
     ]),
   ]);
-  
+
   const summary: IPayoutSummary = {
     totalPayouts: 0,
     pending: 0,
@@ -280,10 +281,10 @@ export async function getPayoutSummary(vendorId?: Types.ObjectId): Promise<IPayo
     totalPendingAmount: 0,
     totalCompletedAmount: 0,
   };
-  
+
   for (const item of statusCounts) {
     summary.totalPayouts += item.count;
-    
+
     switch (item._id) {
       case PayoutStatus.PENDING:
         summary.pending = item.count;
@@ -299,7 +300,7 @@ export async function getPayoutSummary(vendorId?: Types.ObjectId): Promise<IPayo
         break;
     }
   }
-  
+
   for (const item of amountAgg) {
     if (item._id === PayoutStatus.PENDING) {
       summary.totalPendingAmount = item.totalAmount;
@@ -307,13 +308,13 @@ export async function getPayoutSummary(vendorId?: Types.ObjectId): Promise<IPayo
       summary.totalCompletedAmount = item.totalAmount;
     }
   }
-  
+
   return summary;
 }
 
 /**
  * Process a payout (admin operation)
- * 
+ *
  * @param payoutId - Payout ObjectId
  * @param adminId - Admin user processing the payout
  * @param transactionId - Bank/UPI transaction ID
@@ -322,60 +323,57 @@ export async function getPayoutSummary(vendorId?: Types.ObjectId): Promise<IPayo
 export async function processPayout(
   payoutId: Types.ObjectId,
   adminId: Types.ObjectId,
-  transactionId: string
+  transactionId: string,
 ): Promise<IPayout> {
   const payout = await Payout.findById(payoutId);
-  
+
   if (!payout) {
     throw new Error('Payout not found');
   }
-  
+
   await payout.process(adminId, transactionId);
-  
+
   return payout;
 }
 
 /**
  * Mark payout as completed
- * 
+ *
  * @param payoutId - Payout ObjectId
  * @param transactionDate - Date payment was completed
  * @returns Updated payout
  */
 export async function completePayout(
   payoutId: Types.ObjectId,
-  transactionDate: Date
+  transactionDate: Date,
 ): Promise<IPayout> {
   const payout = await Payout.findById(payoutId);
-  
+
   if (!payout) {
     throw new Error('Payout not found');
   }
-  
+
   await payout.markCompleted(transactionDate);
-  
+
   return payout;
 }
 
 /**
  * Mark payout as failed
- * 
+ *
  * @param payoutId - Payout ObjectId
  * @param reason - Failure reason
  * @returns Updated payout
  */
-export async function failPayout(
-  payoutId: Types.ObjectId,
-  reason: string
-): Promise<IPayout> {
+export async function failPayout(payoutId: Types.ObjectId, reason: string): Promise<IPayout> {
   const payout = await Payout.findById(payoutId);
-  
+
   if (!payout) {
     throw new Error('Payout not found');
   }
-  
+
   await payout.markFailed(reason);
-  
+
   return payout;
 }
 
@@ -419,49 +417,54 @@ export async function getVendorTotalEarnings(vendorId: Types.ObjectId): Promise<
       },
     },
   ]);
-  
+
   return result.length > 0 ? result[0].totalEarnings : 0;
 }
 
 /**
  * Schedule automatic payouts (cron job helper)
- * 
+ *
  * Creates payouts for all eligible vendors for the given period.
  * Only creates payouts if net amount >= minimum threshold.
  */
 export async function scheduleAutomaticPayouts(
   periodStart: Date,
-  periodEnd: Date
+  periodEnd: Date,
 ): Promise<{ created: number; skipped: number; errors: string[] }> {
   const results = {
     created: 0,
     skipped: 0,
     errors: [] as string[],
   };
-  
+
   // TODO: Get all active vendors with KYC verified
   // For now, return empty results
-  
-  console.log(`[Payout Service] Automatic payout scheduling stub for period ${periodStart} to ${periodEnd}`);
-  
+
+  console.log(
+    `[Payout Service] Automatic payout scheduling stub for period ${periodStart} to ${periodEnd}`,
+  );
+
   return results;
 }
 
 /**
  * Validate payout can be processed
  */
-export function validatePayoutProcessing(payout: IPayout): { canProcess: boolean; reason?: string } {
+export function validatePayoutProcessing(payout: IPayout): {
+  canProcess: boolean;
+  reason?: string;
+} {
   if (!payout.isKYCVerified) {
     return { canProcess: false, reason: 'KYC not verified' };
   }
-  
+
   if (payout.status !== PayoutStatus.PENDING) {
     return { canProcess: false, reason: `Invalid status: ${payout.status}` };
   }
-  
+
   if (payout.netAmount <= 0) {
     return { canProcess: false, reason: 'Net amount must be positive' };
   }
-  
+
   return { canProcess: true };
 }

@@ -21,7 +21,7 @@ router.get('/vendor/returns', async (req, res) => {
 router.patch('/vendor/returns/:returnId/approve', async (req, res) => {
   try {
     const { returnId } = req.params;
-  await Return.findByIdAndUpdate(returnId, { status: 'vendor_approved' });
+    await Return.findByIdAndUpdate(returnId, { status: 'vendor_approved' });
     res.json({ success: true });
   } catch (err) {
     logger.error('Approve return error', err);

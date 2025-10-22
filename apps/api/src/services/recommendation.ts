@@ -7,16 +7,22 @@ import { PipelineStage } from 'mongoose';
 export async function getUserRecommendations(userId: string, limit = 10) {
   // 1. Find products this user has purchased
   const userOrders = await Order.find({ user: userId }).lean();
-  const userProductIds = new Set(userOrders.flatMap(o => o.items.map(i => (i.product || '').toString())));
+  const userProductIds = new Set(
+    userOrders.flatMap((o) => o.items.map((i) => (i.product || '').toString())),
+  );
 
   // 2. Find other users who bought the same products
-  const otherOrders = await Order.find({ 'items.productId': { $in: Array.from(userProductIds) }, user: { $ne: userId } }).lean();
-  const otherUserIds = Array.from(new Set(otherOrders.map(o => o.user.toString())));
+  const otherOrders = await Order.find({
+    'items.productId': { $in: Array.from(userProductIds) },
+    user: { $ne: userId },
+  }).lean();
+  const otherUserIds = Array.from(new Set(otherOrders.map((o) => o.user.toString())));
 
   // 3. Find products those users bought (excluding already bought by this user)
   const recOrders = await Order.find({ user: { $in: otherUserIds } }).lean();
-  const recProductIds = recOrders.flatMap(o => o.items.map(i => (i.product || '').toString()))
-    .filter(pid => !userProductIds.has(pid));
+  const recProductIds = recOrders
+    .flatMap((o) => o.items.map((i) => (i.product || '').toString()))
+    .filter((pid) => !userProductIds.has(pid));
 
   // 4. Count frequency and return top N
   const freq: Record<string, number> = {};
@@ -37,7 +43,7 @@ export async function getFrequentlyBoughtTogether(productId: string, limit = 10)
   const otherProductIds: string[] = [];
   for (const order of orders) {
     for (const item of order.items) {
-  const pid = item.product.toString();
+      const pid = item.product.toString();
       if (pid !== productId) otherProductIds.push(pid);
     }
   }
@@ -56,13 +62,13 @@ export async function getCustomersAlsoViewed(productId: string, limit = 10) {
   // Assume we have a View model (not shown) or use orders as proxy
   // Find users who bought/viewed this product
   const orders = await Order.find({ 'items.productId': productId }).lean();
-  const userIds = Array.from(new Set(orders.map(o => o.user.toString())));
+  const userIds = Array.from(new Set(orders.map((o) => o.user.toString())));
   // Find other products those users bought/viewed
   const otherOrders = await Order.find({ user: { $in: userIds } }).lean();
   const viewedProductIds: string[] = [];
   for (const order of otherOrders) {
     for (const item of order.items) {
-  const pid = (item.product || '').toString();
+      const pid = (item.product || '').toString();
       if (pid !== productId) viewedProductIds.push(pid);
     }
   }
@@ -80,7 +86,7 @@ export async function getCustomersAlsoViewed(productId: string, limit = 10) {
 export async function getTrendingProducts(limit = 10) {
   const pipeline: PipelineStage[] = [
     { $unwind: '$items' },
-  { $group: { _id: '$items.product', count: { $sum: 1 } } },
+    { $group: { _id: '$items.product', count: { $sum: 1 } } },
     { $sort: { count: -1 } },
     { $limit: limit },
     { $lookup: { from: 'products', localField: '_id', foreignField: '_id', as: 'product' } },
@@ -95,7 +101,7 @@ export async function getVendorTrendingProducts(vendorId: string, limit = 10) {
   const pipeline: PipelineStage[] = [
     { $unwind: '$items' },
     { $match: { 'items.vendorId': vendorId } },
-  { $group: { _id: '$items.product', count: { $sum: 1 } } },
+    { $group: { _id: '$items.product', count: { $sum: 1 } } },
     { $sort: { count: -1 } },
     { $limit: limit },
     { $lookup: { from: 'products', localField: '_id', foreignField: '_id', as: 'product' } },

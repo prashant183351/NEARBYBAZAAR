@@ -33,7 +33,7 @@ export async function awardPoints({
       },
       $set: { lastEarned: new Date() },
     },
-    { upsert: true, new: true }
+    { upsert: true, new: true },
   );
   await checkAndUpgradeTier(loyalty);
   await checkAndAwardBadges(loyalty, action);
@@ -57,7 +57,10 @@ export async function checkAndUpgradeTier(loyalty: any) {
 
 export async function checkAndAwardBadges(loyalty: any, action: LoyaltyAction) {
   // Example: award "First Purchase" badge
-  if (action === 'purchase' && loyalty.history.filter((h: any) => h.action === 'purchase').length === 1) {
+  if (
+    action === 'purchase' &&
+    loyalty.history.filter((h: any) => h.action === 'purchase').length === 1
+  ) {
     const badge = await LoyaltyBadgeModel.findOne({ name: 'First Purchase' });
     if (badge && !loyalty.badges.includes(badge.name)) {
       loyalty.badges.push(badge.name);
@@ -73,7 +76,7 @@ export async function updateStreak(loyalty: any) {
   const months = new Set(
     loyalty.history
       .filter((h: any) => h.action === 'purchase')
-      .map((h: any) => `${h.date.getFullYear()}-${h.date.getMonth()}`)
+      .map((h: any) => `${h.date.getFullYear()}-${h.date.getMonth()}`),
   );
   loyalty.streak = months.size;
 }
@@ -87,12 +90,27 @@ export async function redeemPoints({ userId, points }: { userId: Types.ObjectId;
   const loyalty = await LoyaltyPointModel.findOne({ userId });
   if (!loyalty || loyalty.points < points) throw new Error('Not enough points');
   loyalty.points -= points;
-  loyalty.history.push({ action: 'custom', points: -points, date: new Date(), meta: { type: 'redeem' } });
+  loyalty.history.push({
+    action: 'custom',
+    points: -points,
+    date: new Date(),
+    meta: { type: 'redeem' },
+  });
   await loyalty.save();
   return loyalty;
 }
 
-export async function vendorAwardPoints({ vendorId, userId, points, meta }: { vendorId: Types.ObjectId; userId: Types.ObjectId; points: number; meta?: Record<string, any> }) {
+export async function vendorAwardPoints({
+  vendorId,
+  userId,
+  points,
+  meta,
+}: {
+  vendorId: Types.ObjectId;
+  userId: Types.ObjectId;
+  points: number;
+  meta?: Record<string, any>;
+}) {
   // For vendor-triggered rewards (e.g. in-store event)
   return awardPoints({ userId, action: 'custom', points, meta: { ...meta, vendorId } });
 }

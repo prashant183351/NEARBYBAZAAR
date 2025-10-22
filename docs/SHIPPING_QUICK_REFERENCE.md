@@ -1,9 +1,11 @@
 # Shipping Integrations - Quick Reference
 
 ## Overview
+
 The shipping module provides a pluggable adapter pattern for integrating with multiple courier services. Currently supports Shiprocket and Delhivery with standardized interfaces for rate quotes, label creation, and shipment tracking.
 
 ## Features
+
 - **Shiprocket Integration**: Full API support for India's leading shipping aggregator
 - **Delhivery Integration**: Direct courier API integration
 - **Pluggable Architecture**: Easy to add new shipping providers
@@ -14,6 +16,7 @@ The shipping module provides a pluggable adapter pattern for integrating with mu
 ## API Reference
 
 ### Get Shipping Adapter
+
 ```typescript
 import { getShippingAdapter } from '@/services/shipping';
 
@@ -26,6 +29,7 @@ const delhivery = getShippingAdapter('delhivery');
 ```
 
 ### Rate Quote
+
 ```typescript
 const quotes = await adapter.rateQuote({
   origin: { pincode: '110001', country: 'India' },
@@ -45,6 +49,7 @@ const quotes = await adapter.rateQuote({
 ```
 
 ### Create Shipping Label
+
 ```typescript
 const label = await adapter.createLabel({
   orderId: 'ORD-12345',
@@ -81,6 +86,7 @@ const label = await adapter.createLabel({
 ```
 
 ### Track Shipment
+
 ```typescript
 const tracking = await adapter.trackShipment({
   awbCode: 'AWB123456789',
@@ -106,6 +112,7 @@ const tracking = await adapter.trackShipment({
 ## Environment Configuration
 
 ### Required Variables
+
 ```bash
 # Default provider (shiprocket or delhivery)
 SHIPPING_PROVIDER=shiprocket
@@ -123,6 +130,7 @@ DELHIVERY_BASE_URL=https://track.delhivery.com/api
 ## Adapter Details
 
 ### Shiprocket
+
 - **Authentication**: Email/password → Bearer token (cached for ~9 days)
 - **Rate Quotes**: `/courier/serviceability` endpoint
 - **Label Creation**: Two-step process (adhoc order + AWB assignment)
@@ -130,6 +138,7 @@ DELHIVERY_BASE_URL=https://track.delhivery.com/api
 - **Status Codes**: Numeric (1-7) mapped to standard enum
 
 ### Delhivery
+
 - **Authentication**: Token-based (API key in header)
 - **Rate Quotes**: `/kinko/v1/invoice/charges` endpoint
 - **Label Creation**: Waybill fetch + `/cmu/create.json` endpoint
@@ -139,21 +148,22 @@ DELHIVERY_BASE_URL=https://track.delhivery.com/api
 ## Extending with New Providers
 
 1. **Create Adapter Class**:
+
 ```typescript
 // src/services/shipping/newprovider.ts
 import { ShippingAdapter, RateQuoteRequest, ... } from './types';
 
 export class NewProviderAdapter implements ShippingAdapter {
   name = 'NewProvider';
-  
+
   async rateQuote(request: RateQuoteRequest): Promise<RateQuoteResponse[]> {
     // Implementation
   }
-  
+
   async createLabel(request: CreateLabelRequest): Promise<CreateLabelResponse> {
     // Implementation
   }
-  
+
   async trackShipment(request: TrackShipmentRequest): Promise<TrackShipmentResponse> {
     // Implementation
   }
@@ -161,6 +171,7 @@ export class NewProviderAdapter implements ShippingAdapter {
 ```
 
 2. **Register in Factory**:
+
 ```typescript
 // src/services/shipping/index.ts
 import { NewProviderAdapter } from './newprovider';
@@ -173,11 +184,13 @@ const adapters = {
 ```
 
 3. **Add Environment Variables**:
+
 ```bash
 NEWPROVIDER_API_KEY=...
 ```
 
 4. **Write Tests**:
+
 ```typescript
 // tests/shipping.adapters.spec.ts
 describe('NewProvider Adapter', () => {
@@ -190,12 +203,14 @@ describe('NewProvider Adapter', () => {
 ## Testing
 
 Run shipping adapter tests:
+
 ```bash
 cd apps/api
 pnpm test -- --runTestsByPath tests/shipping.adapters.spec.ts
 ```
 
 All 14 tests should pass:
+
 - Shiprocket: Token caching, rate quotes, label creation, tracking, status mapping
 - Delhivery: Rate quotes, label creation, tracking, missing data handling
 - Factory: Default provider, explicit selection, env var usage, error handling
@@ -203,6 +218,7 @@ All 14 tests should pass:
 ## Status Mapping
 
 Standardized shipment statuses across all providers:
+
 - `pending`: Order created, not yet picked up
 - `in_transit`: Package in transit to destination
 - `out_for_delivery`: Out for delivery (last mile)
@@ -215,6 +231,7 @@ Provider-specific codes are automatically mapped to these standard statuses.
 ## Common Patterns
 
 ### Error Handling
+
 ```typescript
 try {
   const quotes = await adapter.rateQuote(request);
@@ -225,6 +242,7 @@ try {
 ```
 
 ### Conditional Provider Selection
+
 ```typescript
 // Use different provider based on location or other criteria
 const provider = destPincode.startsWith('11') ? 'delhivery' : 'shiprocket';
@@ -232,6 +250,7 @@ const adapter = getShippingAdapter(provider);
 ```
 
 ### Custom Adapter for Testing
+
 ```typescript
 import { registerShippingAdapter } from '@/services/shipping';
 
@@ -254,6 +273,7 @@ registerShippingAdapter('shiprocket', mockAdapter);
 5. **Analytics**: Track shipping costs, delivery times, success rates per provider
 
 ## Related Documentation
+
 - Feature #179: Shipping Integrations (chunk implementation)
 - Dropshipping Module: `docs/DROPSHIP_QUICK_REFERENCE.md`
 - Order & Checkout: Feature #175

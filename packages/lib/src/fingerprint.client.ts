@@ -15,7 +15,7 @@ export function getBrowserFingerprint(): string {
   const raw = `${ua}|${lang}|${platform}|${canvasHash}`;
   let hash = 0;
   for (let i = 0; i < raw.length; i++) {
-    hash = ((hash << 5) - hash) + raw.charCodeAt(i);
+    hash = (hash << 5) - hash + raw.charCodeAt(i);
     hash |= 0;
   }
   return `fp_${Math.abs(hash)}`;

@@ -3,6 +3,7 @@
 ## 🚀 Quick Start
 
 ### Generate Invoice for Order
+
 ```bash
 POST /v1/invoices/generate
 Content-Type: application/json
@@ -21,16 +22,19 @@ Content-Type: application/json
 ```
 
 ### Download Invoice PDF
+
 ```bash
 GET /v1/invoices/{invoiceId}/pdf
 ```
 
 ### Get Invoice by Order
+
 ```bash
 GET /v1/invoices/order/{orderId}
 ```
 
 ## 📋 Invoice Number Format
+
 - **Pattern**: `{FY}/{SEQUENCE}`
 - **Example**: `2024-25/00001`
 - **Financial Year**: April to March
@@ -39,6 +43,7 @@ GET /v1/invoices/order/{orderId}
 ## 💰 GST Calculation
 
 ### Intra-State (Same State)
+
 ```
 Product Price: ₹10,000
 GST Rate: 18%
@@ -50,6 +55,7 @@ Grand Total: ₹11,800
 ```
 
 ### Inter-State (Different States)
+
 ```
 Product Price: ₹10,000
 GST Rate: 18%
@@ -62,11 +68,13 @@ Grand Total: ₹11,800
 ## 🔐 E-Invoice Requirements
 
 ### When E-Invoicing is Required
+
 - ✅ Both seller and buyer have GSTIN
 - ✅ Seller turnover > ₹5 crore (or as per GST rules)
 - ✅ B2B transaction
 
 ### E-Invoice Process
+
 1. Generate invoice → System creates record
 2. Check eligibility → Both have GSTIN?
 3. Call GSTN API → Get IRN
@@ -79,7 +87,7 @@ Grand Total: ₹11,800
 {
   invoiceNumber: "2024-25/00001",      // Unique, sequential
   financialYear: "2024-25",            // FY period
-  
+
   seller: {
     name: string,
     gstin: string,                     // 15-char GSTIN
@@ -88,7 +96,7 @@ Grand Total: ₹11,800
     state: string,
     stateCode: string                  // 2-digit code
   },
-  
+
   buyer: {
     name: string,
     gstin?: string,                    // Required for B2B e-invoice
@@ -97,7 +105,7 @@ Grand Total: ₹11,800
     state?: string,
     stateCode?: string
   },
-  
+
   lineItems: [{
     description: string,
     hsnCode: string,                   // HSN for goods, SAC for services
@@ -112,7 +120,7 @@ Grand Total: ₹11,800
     },
     totalAmount: number
   }],
-  
+
   // Totals
   subtotal: number,
   cgstTotal: number,
@@ -120,16 +128,16 @@ Grand Total: ₹11,800
   igstTotal: number,
   totalTax: number,
   grandTotal: number,
-  
+
   // E-Invoice
   irn?: string,                        // From GSTN
   ackNo?: string,
   ackDate?: Date,
   qrCode?: string,
-  
+
   // Status
   status: 'draft' | 'generated' | 'sent' | 'paid' | 'cancelled',
-  
+
   // References
   orderId: ObjectId,
   userId: ObjectId
@@ -153,6 +161,7 @@ NODE_ENV=development  # Uses mock IRN
 ## 📁 File Locations
 
 ### Backend
+
 - Model: `apps/api/src/models/Invoice.ts`
 - Generator: `apps/api/src/services/invoice/generator.ts`
 - E-Invoice: `apps/api/src/services/invoice/einvoice.ts`
@@ -160,12 +169,14 @@ NODE_ENV=development  # Uses mock IRN
 - Routes: `apps/api/src/routes/invoices.ts`
 
 ### Documentation
+
 - Full Guide: `docs/GST_INVOICING.md`
 - Quick Reference: `docs/GST_INVOICING_QUICK_REFERENCE.md` (this file)
 
 ## 🧪 Testing
 
 ### 1. Test Invoice Generation
+
 ```bash
 curl -X POST http://localhost:4000/v1/invoices/generate \
   -H "Content-Type: application/json" \
@@ -181,6 +192,7 @@ curl -X POST http://localhost:4000/v1/invoices/generate \
 ```
 
 ### 2. Verify Invoice
+
 ```bash
 # By order ID
 curl http://localhost:4000/v1/invoices/order/ORDER_ID
@@ -190,6 +202,7 @@ curl http://localhost:4000/v1/invoices/2024-25%2F00001
 ```
 
 ### 3. Download PDF
+
 ```bash
 curl http://localhost:4000/v1/invoices/INVOICE_ID/pdf -o test-invoice.pdf
 ```
@@ -197,18 +210,23 @@ curl http://localhost:4000/v1/invoices/INVOICE_ID/pdf -o test-invoice.pdf
 ## ⚠️ Common Issues
 
 ### Issue: Duplicate Invoice Error
+
 **Solution**: Each order can only have one invoice. Check if invoice already exists.
 
 ### Issue: E-Invoice Generation Fails
+
 **Solution**: Invoice is still created without IRN. Use `/regenerate-irn` endpoint to retry.
 
 ### Issue: Wrong GST Calculation
+
 **Solution**: Verify buyer and seller states. Same state = CGST+SGST, different = IGST.
 
 ### Issue: Missing HSN Code
+
 **Solution**: Ensure products have HSN/SAC codes assigned in the product model.
 
 ### Issue: Invoice Number Not Sequential
+
 **Solution**: System uses atomic counters. Check if multiple servers are running without shared DB.
 
 ## 📊 Status Workflow
@@ -223,12 +241,14 @@ draft → generated → sent → paid → cancelled
 ## 🔍 Quick Debugging
 
 ### Check Invoice Exists
+
 ```javascript
 const invoice = await Invoice.findOne({ orderId: 'ORDER_ID' });
 console.log(invoice ? 'Found' : 'Not found');
 ```
 
 ### Check E-Invoice Status
+
 ```javascript
 const invoice = await Invoice.findById('INVOICE_ID');
 console.log('IRN:', invoice.irn || 'Not generated');
@@ -236,6 +256,7 @@ console.log('Status:', invoice.status);
 ```
 
 ### Force E-Invoice Regeneration
+
 ```bash
 POST /v1/invoices/{invoiceId}/regenerate-irn
 ```
@@ -243,10 +264,12 @@ POST /v1/invoices/{invoiceId}/regenerate-irn
 ## 📞 Getting Help
 
 ### For GST Compliance
+
 - GST Portal: https://www.gst.gov.in/
 - Consult your CA or tax advisor
 
 ### For Technical Issues
+
 1. Check logs: `apps/api/logs/`
 2. Review error messages from GSTN API
 3. Verify environment configuration
@@ -255,17 +278,20 @@ POST /v1/invoices/{invoiceId}/regenerate-irn
 ## 🎯 Next Steps
 
 ### Immediate
+
 - [ ] Test invoice generation with sample order
 - [ ] Verify PDF rendering
 - [ ] Check GST calculations
 
 ### Short-term
+
 - [ ] Register with GSP for e-invoicing
 - [ ] Set up production credentials
 - [ ] Build admin UI for invoice management
 - [ ] Create buyer invoice view
 
 ### Long-term
+
 - [ ] Auto-generate on order confirmation
 - [ ] Email invoices to buyers
 - [ ] Add credit/debit note support
@@ -274,6 +300,7 @@ POST /v1/invoices/{invoiceId}/regenerate-irn
 ---
 
 **Quick Links**:
+
 - [Full Documentation](./GST_INVOICING.md)
 - [B2B Accounts](./B2B_BUYER_ACCOUNTS.md)
 - [API Reference](./API_REFERENCE.md)

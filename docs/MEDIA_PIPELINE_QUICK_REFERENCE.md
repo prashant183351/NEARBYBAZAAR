@@ -15,17 +15,21 @@ Complete implementation of secure media upload pipeline with virus scanning, EXI
 ## API Endpoints
 
 ### POST /v1/media/upload
+
 Direct file upload with full security pipeline.
 
 **Headers:**
+
 - `Content-Type: multipart/form-data`
 
 **Form Fields:**
+
 - `file`: File to upload (required)
 - `alt`: Alt text for accessibility (required)
 - `folder`: Custom folder path (optional, default: 'uploads')
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -52,6 +56,7 @@ Direct file upload with full security pipeline.
 ```
 
 **Error Responses:**
+
 - `400`: Missing file or alt text
 - `403`: Virus detected
 - `408`: Upload timeout (>60s)
@@ -60,9 +65,11 @@ Direct file upload with full security pipeline.
 - `500`: Processing error
 
 ### POST /v1/media/presigned
+
 Generate presigned URL for direct client upload to Cloudinary.
 
 **Request:**
+
 ```json
 {
   "filename": "photo.jpg",
@@ -73,6 +80,7 @@ Generate presigned URL for direct client upload to Cloudinary.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -91,11 +99,13 @@ Generate presigned URL for direct client upload to Cloudinary.
 ### 1. Virus Scanning
 
 **EICAR Detection** (Always Active):
+
 ```typescript
 const eicarSignature = 'X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*';
 ```
 
 **ClamAV Integration** (Production):
+
 ```bash
 # Install ClamAV
 sudo apt-get install clamav clamav-daemon
@@ -110,6 +120,7 @@ CLAMAV_PORT=3310
 ```
 
 **Test Virus Detection:**
+
 ```bash
 # Create EICAR test file
 echo 'X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*' > eicar.txt
@@ -121,12 +132,14 @@ curl -F "file=@eicar.txt" -F "alt=test" http://localhost:4000/v1/media/upload
 ### 2. EXIF Metadata Stripping
 
 Removes privacy-sensitive data:
+
 - **GPS coordinates** (location tracking)
 - **Camera make/model** (device fingerprinting)
 - **Timestamps** (when photo was taken)
 - **Orientation** (applied as rotation before stripping)
 
 **What's Preserved:**
+
 - Image dimensions
 - Format (JPEG, PNG, etc.)
 - Visual quality
@@ -134,21 +147,25 @@ Removes privacy-sensitive data:
 ### 3. DoS Protection
 
 **File Size Limits:**
+
 ```env
 MAX_UPLOAD_SIZE_MB=10  # Default: 10MB per file
 ```
 
 **File Count Limits:**
+
 ```env
 MAX_FILES_PER_UPLOAD=10  # Default: 10 files per request
 ```
 
 **Upload Timeout:**
+
 - Default: 60 seconds
 - Returns HTTP 408 on timeout
 - Prevents resource exhaustion
 
 **Allowed File Types:**
+
 - Images: `jpeg`, `jpg`, `png`, `webp`, `gif`
 - Documents: `pdf`
 - Videos: `mp4`
@@ -249,6 +266,7 @@ pnpm test media.spec.ts --coverage
 ```
 
 **Test Cases:**
+
 - ✓ EICAR virus detection (explicit requirement)
 - ✓ Clean file scanning
 - ✓ Virus scan disable toggle
@@ -262,15 +280,18 @@ pnpm test media.spec.ts --coverage
 ## Files Modified/Created
 
 ### New Files
+
 - `apps/api/src/services/media.ts` - Core media pipeline service
 - `apps/api/src/middleware/upload.ts` - Multer upload middleware
 - `apps/api/tests/media.spec.ts` - Comprehensive test suite (21 tests)
 
 ### Modified Files
+
 - `apps/api/src/controllers/media.ts` - Added uploadMedia, getPresignedUpload endpoints
 - `apps/api/src/routes/media.ts` - Added /upload and /presigned routes
 
 ### Existing Integration
+
 - `apps/api/src/services/storage/cloudinary.ts` - Cloudinary adapter with variants
 - `apps/api/src/models/Media.ts` - Media document model
 
@@ -327,6 +348,7 @@ sudo crontab -e
 - **Total Pipeline**: ~200-300ms (including Cloudinary upload)
 
 **Optimization Tips:**
+
 - Use presigned uploads for large files (offload to client)
 - Enable Redis caching for frequently accessed media
 - Configure Cloudinary eager transformations for common sizes

@@ -25,7 +25,10 @@ export function getShippingAdapter(provider?: ShippingProvider): ShippingAdapter
 /**
  * Register a custom adapter (for testing or plugins)
  */
-export function registerShippingAdapter(provider: ShippingProvider, adapter: ShippingAdapter): void {
+export function registerShippingAdapter(
+  provider: ShippingProvider,
+  adapter: ShippingAdapter,
+): void {
   adapters[provider] = adapter;
 }
 

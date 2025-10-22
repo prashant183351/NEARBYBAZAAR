@@ -1,10 +1,197 @@
+export interface ProductSchema {
+  '@context': string;
+  '@type': 'Product';
+  name: string;
+  description?: string;
+  image?: string[];
+  brand?: { '@type': 'Brand'; name: string };
+  sku?: string;
+  url?: string;
+  offers?: {
+    '@type': 'Offer';
+    price: string;
+    priceCurrency: string;
+    availability: string;
+    url?: string;
+    seller?: {
+      '@type': 'Organization';
+      name: string;
+      url?: string;
+    };
+  };
+  aggregateRating?: {
+    '@type': 'AggregateRating';
+    ratingValue: string;
+    reviewCount: number;
+    bestRating: string;
+    worstRating: string;
+  };
+}
 /**
  * JSON-LD Schema.org Structured Data Utilities
- * 
+ *
  * Generate valid JSON-LD for rich search results in Google, Bing, and other search engines.
  * Supports: Product, Service, LocalBusiness, Organization schemas.
  */
 
+export interface ProductSchemaInput {
+  name: string;
+  description?: string;
+  image?: string | string[];
+  brand?: string;
+  sku?: string;
+  price: number;
+  priceCurrency?: string;
+  availability?: 'InStock' | 'OutOfStock' | 'PreOrder' | 'Discontinued';
+  url?: string;
+  seller?: {
+    name: string;
+    url?: string;
+  };
+  aggregateRating?: {
+    ratingValue: number;
+    reviewCount: number;
+  };
+}
+
+export interface ServiceSchemaInput {
+  name: string;
+  description?: string;
+  provider: {
+    name: string;
+    url?: string;
+  };
+  areaServed?: string;
+  offers?: {
+    price: number;
+    priceCurrency?: string;
+  };
+  image?: string | string[];
+  url?: string;
+  aggregateRating?: {
+    ratingValue: number;
+    reviewCount: number;
+  };
+}
+// Top-level schema interfaces
+export interface ProductSchema {
+  '@context': string;
+  '@type': 'Product';
+  name: string;
+  description?: string;
+  image?: string[];
+  brand?: { '@type': 'Brand'; name: string };
+  sku?: string;
+  url?: string;
+  offers?: {
+    '@type': 'Offer';
+    price: string;
+    priceCurrency: string;
+    availability: string;
+    url?: string;
+    seller?: {
+      '@type': 'Organization';
+      name: string;
+      url?: string;
+    };
+  };
+  aggregateRating?: {
+    '@type': 'AggregateRating';
+    ratingValue: string;
+    reviewCount: number;
+    bestRating: string;
+    worstRating: string;
+  };
+}
+
+export interface ServiceSchema {
+  '@context': string;
+  '@type': 'Service';
+  name: string;
+  description?: string;
+  provider: {
+    '@type': 'Organization';
+    name: string;
+    url?: string;
+  };
+  areaServed?: string;
+  offers?: {
+    '@type': 'Offer';
+    price: string;
+    priceCurrency: string;
+  };
+  image?: string[];
+  url?: string;
+  aggregateRating?: {
+    '@type': 'AggregateRating';
+    ratingValue: string;
+    reviewCount: number;
+    bestRating: string;
+    worstRating: string;
+  };
+}
+
+export interface LocalBusinessSchema {
+  '@context': string;
+  '@type': 'LocalBusiness';
+  name: string;
+  description?: string;
+  image?: string[];
+  url?: string;
+  telephone?: string;
+  email?: string;
+  address?: {
+    '@type': 'PostalAddress';
+    streetAddress?: string;
+    addressLocality?: string;
+    addressRegion?: string;
+    postalCode?: string;
+    addressCountry?: string;
+  };
+  geo?: {
+    '@type': 'GeoCoordinates';
+    latitude: number;
+    longitude: number;
+  };
+  priceRange?: string;
+  aggregateRating?: {
+    '@type': 'AggregateRating';
+    ratingValue: string;
+    reviewCount: number;
+    bestRating: string;
+    worstRating: string;
+  };
+  openingHoursSpecification?: Array<{
+    '@type': 'OpeningHoursSpecification';
+    dayOfWeek: string;
+    opens: string;
+    closes: string;
+  }>;
+}
+
+export interface OrganizationSchema {
+  '@context': string;
+  '@type': 'Organization';
+  name: string;
+  description?: string;
+  url?: string;
+  logo?: string;
+  email?: string;
+  telephone?: string;
+  address?: {
+    '@type': 'PostalAddress';
+    streetAddress?: string;
+    addressLocality?: string;
+    addressRegion?: string;
+    postalCode?: string;
+    addressCountry?: string;
+  };
+  sameAs?: string[];
+}
+// ...existing code...
+
+// Top-level schema interfaces
+// Input interfaces for schema generators
 export interface ProductSchemaInput {
   name: string;
   description?: string;
@@ -63,12 +250,12 @@ export interface LocalBusinessSchemaInput {
     latitude: number;
     longitude: number;
   };
-  priceRange?: string; // e.g., "₹₹"
+  priceRange?: string;
   aggregateRating?: {
     ratingValue: number;
     reviewCount: number;
   };
-  openingHours?: string[]; // e.g., ["Mo-Fr 09:00-18:00"]
+  openingHours?: string[];
 }
 
 export interface OrganizationSchemaInput {
@@ -85,64 +272,109 @@ export interface OrganizationSchemaInput {
     postalCode?: string;
     addressCountry?: string;
   };
-  sameAs?: string[]; // social media URLs
+  sameAs?: string[];
+}
+export interface ProductSchema {
+  '@context': string;
+  '@type': 'Product';
+  name: string;
+  description?: string;
+  image?: string[];
+  brand?: { '@type': 'Brand'; name: string };
+  sku?: string;
+  url?: string;
+  offers?: {
+    '@type': 'Offer';
+    price: string;
+    priceCurrency: string;
+    availability: string;
+    url?: string;
+    seller?: {
+      '@type': 'Organization';
+      name: string;
+      url?: string;
+    };
+  };
+  aggregateRating?: {
+    '@type': 'AggregateRating';
+    ratingValue: string;
+    reviewCount: number;
+    bestRating: string;
+    worstRating: string;
+  };
 }
 
-/**
- * Generate Product schema for e-commerce items
- */
-export function generateProductSchema(input: ProductSchemaInput): Record<string, any> {
-  const schema: Record<string, any> = {
-    '@context': 'https://schema.org',
-    '@type': 'Product',
-    name: input.name,
+export interface ServiceSchema {
+  '@context': string;
+  '@type': 'Service';
+  name: string;
+  description?: string;
+  provider: {
+    '@type': 'Organization';
+    name: string;
+    url?: string;
   };
-
-  if (input.description) schema.description = input.description;
-  if (input.image) {
-    schema.image = Array.isArray(input.image) ? input.image : [input.image];
-  }
-  if (input.brand) schema.brand = { '@type': 'Brand', name: input.brand };
-  if (input.sku) schema.sku = input.sku;
-  if (input.url) schema.url = input.url;
-
-  // Offers (price and availability)
-  schema.offers = {
-    '@type': 'Offer',
-    price: input.price.toFixed(2),
-    priceCurrency: input.priceCurrency || 'INR',
-    availability: `https://schema.org/${input.availability || 'InStock'}`,
+  areaServed?: string;
+  offers?: {
+    '@type': 'Offer';
+    price: string;
+    priceCurrency: string;
   };
-
-  if (input.url) schema.offers.url = input.url;
-
-  if (input.seller) {
-    schema.offers.seller = {
-      '@type': 'Organization',
-      name: input.seller.name,
-    };
-    if (input.seller.url) schema.offers.seller.url = input.seller.url;
-  }
-
-  // Aggregate rating (if available)
-  if (input.aggregateRating && input.aggregateRating.reviewCount > 0) {
-    schema.aggregateRating = {
-      '@type': 'AggregateRating',
-      ratingValue: input.aggregateRating.ratingValue.toFixed(1),
-      reviewCount: input.aggregateRating.reviewCount,
-      bestRating: '5',
-      worstRating: '1',
-    };
-  }
-
-  return schema;
+  image?: string[];
+  url?: string;
+  aggregateRating?: {
+    '@type': 'AggregateRating';
+    ratingValue: string;
+    reviewCount: number;
+    bestRating: string;
+    worstRating: string;
+  };
 }
+
+export interface LocalBusinessSchema {
+  '@context': string;
+  '@type': 'LocalBusiness';
+  name: string;
+  description?: string;
+  image?: string[];
+  url?: string;
+  telephone?: string;
+  email?: string;
+  address?: {
+    '@type': 'PostalAddress';
+    streetAddress?: string;
+    addressLocality?: string;
+    addressRegion?: string;
+    postalCode?: string;
+    addressCountry?: string;
+  };
+  geo?: {
+    '@type': 'GeoCoordinates';
+    latitude: number;
+    longitude: number;
+  };
+  priceRange?: string;
+  aggregateRating?: {
+    '@type': 'AggregateRating';
+    ratingValue: string;
+    reviewCount: number;
+    bestRating: string;
+    worstRating: string;
+  };
+  openingHoursSpecification?: Array<{
+    '@type': 'OpeningHoursSpecification';
+    dayOfWeek: string;
+    opens: string;
+    closes: string;
+  }>;
+}
+
 
 /**
  * Generate Service schema for service offerings
  */
-export function generateServiceSchema(input: ServiceSchemaInput): Record<string, any> {
-  const schema: Record<string, any> = {
+export function generateServiceSchema(input: ServiceSchemaInput): ServiceSchema {
+  const schema: ServiceSchema = {
     '@context': 'https://schema.org',
     '@type': 'Service',
     name: input.name,
@@ -187,8 +419,8 @@ export function generateServiceSchema(input: ServiceSchemaInput): Record<string,
 /**
  * Generate LocalBusiness schema for store pages
  */
-export function generateLocalBusinessSchema(input: LocalBusinessSchemaInput): Record<string, any> {
-  const schema: Record<string, any> = {
+export function generateLocalBusinessSchema(input: LocalBusinessSchemaInput): LocalBusinessSchema {
+  const schema: LocalBusinessSchema = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     name: input.name,
@@ -211,7 +443,8 @@ export function generateLocalBusinessSchema(input: LocalBusinessSchemaInput): Re
       '@type': 'PostalAddress',
     };
     if (input.address.streetAddress) schema.address.streetAddress = input.address.streetAddress;
-    if (input.address.addressLocality) schema.address.addressLocality = input.address.addressLocality;
+    if (input.address.addressLocality)
+      schema.address.addressLocality = input.address.addressLocality;
     if (input.address.addressRegion) schema.address.addressRegion = input.address.addressRegion;
     if (input.address.postalCode) schema.address.postalCode = input.address.postalCode;
     if (input.address.addressCountry) schema.address.addressCountry = input.address.addressCountry;
@@ -228,7 +461,7 @@ export function generateLocalBusinessSchema(input: LocalBusinessSchemaInput): Re
 
   // Opening hours
   if (input.openingHours && input.openingHours.length > 0) {
-    schema.openingHoursSpecification = input.openingHours.map(hours => ({
+  schema.openingHoursSpecification = input.openingHours.map((hours: string) => ({
       '@type': 'OpeningHoursSpecification',
       dayOfWeek: hours.split(' ')[0], // e.g., "Mo-Fr"
       opens: hours.split(' ')[1]?.split('-')[0], // e.g., "09:00"
@@ -253,8 +486,8 @@ export function generateLocalBusinessSchema(input: LocalBusinessSchemaInput): Re
 /**
  * Generate Organization schema (more generic than LocalBusiness)
  */
-export function generateOrganizationSchema(input: OrganizationSchemaInput): Record<string, any> {
-  const schema: Record<string, any> = {
+export function generateOrganizationSchema(input: OrganizationSchemaInput): OrganizationSchema {
+  const schema: OrganizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: input.name,
@@ -272,7 +505,8 @@ export function generateOrganizationSchema(input: OrganizationSchemaInput): Reco
       '@type': 'PostalAddress',
     };
     if (input.address.streetAddress) schema.address.streetAddress = input.address.streetAddress;
-    if (input.address.addressLocality) schema.address.addressLocality = input.address.addressLocality;
+    if (input.address.addressLocality)
+      schema.address.addressLocality = input.address.addressLocality;
     if (input.address.addressRegion) schema.address.addressRegion = input.address.addressRegion;
     if (input.address.postalCode) schema.address.postalCode = input.address.postalCode;
     if (input.address.addressCountry) schema.address.addressCountry = input.address.addressCountry;
@@ -289,7 +523,7 @@ export function generateOrganizationSchema(input: OrganizationSchemaInput): Reco
 /**
  * Convert JSON-LD object to HTML script tag string
  */
-export function jsonLdToScriptTag(jsonLd: Record<string, any>): string {
+export function jsonLdToScriptTag(jsonLd: object): string {
   return `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`;
 }
 

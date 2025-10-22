@@ -1,6 +1,7 @@
 # Dropshipping API Endpoints
 
 ## Overview
+
 RESTful API endpoints for the dropshipping module with Zod validation and RBAC protection.
 
 **Base Path:** `/api/dropship`
@@ -8,6 +9,7 @@ RESTful API endpoints for the dropshipping module with Zod validation and RBAC p
 **Authentication:** All endpoints require authentication via middleware that sets `req.user`.
 
 **RBAC Rules:**
+
 - **Vendors**: Can only access/modify their own resources
 - **Admins**: Can access/modify all resources
 - **Suppliers**: (Future) Can access assigned resources
@@ -17,11 +19,13 @@ RESTful API endpoints for the dropshipping module with Zod validation and RBAC p
 ### Module Overview
 
 #### GET /api/dropship
+
 Get dropship module overview and statistics.
 
 **Auth:** Vendor, Admin
 
 **Response:**
+
 ```json
 {
   "stats": {
@@ -48,11 +52,13 @@ Get dropship module overview and statistics.
 ## Suppliers (`/api/dropship/suppliers`)
 
 ### POST /api/dropship/suppliers
+
 Create a new supplier.
 
 **Auth:** Vendor, Admin
 
 **Request Body:**
+
 ```json
 {
   "companyName": "Acme Corp",
@@ -84,6 +90,7 @@ Create a new supplier.
 ```
 
 **Response:** `201 Created`
+
 ```json
 {
   "supplier": {
@@ -97,17 +104,20 @@ Create a new supplier.
 ```
 
 ### GET /api/dropship/suppliers
+
 List suppliers with filtering and pagination.
 
 **Auth:** Vendor, Admin
 
 **Query Parameters:**
+
 - `page` (number, default: 1)
 - `limit` (number, default: 20)
 - `status` (string): Filter by status
 - `search` (string): Search by company name, contact, or email
 
 **Response:**
+
 ```json
 {
   "suppliers": [...],
@@ -119,11 +129,13 @@ List suppliers with filtering and pagination.
 ```
 
 ### GET /api/dropship/suppliers/:id
+
 Get supplier details.
 
 **Auth:** Vendor (own only), Admin
 
 **Response:**
+
 ```json
 {
   "supplier": {
@@ -135,6 +147,7 @@ Get supplier details.
 ```
 
 ### PUT /api/dropship/suppliers/:id
+
 Update supplier details.
 
 **Auth:** Vendor (own only), Admin
@@ -142,6 +155,7 @@ Update supplier details.
 **Request Body:** Same as POST, all fields optional
 
 **Response:**
+
 ```json
 {
   "supplier": { ... }
@@ -149,11 +163,13 @@ Update supplier details.
 ```
 
 ### PUT /api/dropship/suppliers/:id/status
+
 Update supplier status (approval/rejection).
 
 **Auth:** Admin (for active/suspended), Vendor (for other statuses)
 
 **Request Body:**
+
 ```json
 {
   "status": "active"
@@ -161,6 +177,7 @@ Update supplier status (approval/rejection).
 ```
 
 **Response:**
+
 ```json
 {
   "supplier": { ... }
@@ -168,11 +185,13 @@ Update supplier status (approval/rejection).
 ```
 
 ### DELETE /api/dropship/suppliers/:id
+
 Deactivate a supplier (soft delete).
 
 **Auth:** Vendor (own only), Admin
 
 **Response:**
+
 ```json
 {
   "message": "Supplier deactivated successfully"
@@ -180,11 +199,13 @@ Deactivate a supplier (soft delete).
 ```
 
 ### GET /api/dropship/suppliers/:id/stats
+
 Get supplier statistics.
 
 **Auth:** Vendor (own only), Admin
 
 **Response:**
+
 ```json
 {
   "stats": {
@@ -203,11 +224,13 @@ Get supplier statistics.
 ## SKU Mappings (`/api/dropship/mappings`)
 
 ### POST /api/dropship/mappings
+
 Create a new SKU mapping.
 
 **Auth:** Vendor, Admin
 
 **Request Body:**
+
 ```json
 {
   "supplierId": "...",
@@ -224,6 +247,7 @@ Create a new SKU mapping.
 ```
 
 **Response:** `201 Created`
+
 ```json
 {
   "mapping": {
@@ -240,11 +264,13 @@ Create a new SKU mapping.
 **Error:** `409 Conflict` if mapping already exists
 
 ### POST /api/dropship/mappings/bulk
+
 Create multiple SKU mappings at once.
 
 **Auth:** Vendor, Admin
 
 **Request Body:**
+
 ```json
 {
   "supplierId": "...",
@@ -264,6 +290,7 @@ Create multiple SKU mappings at once.
 ```
 
 **Response:** `201 Created`
+
 ```json
 {
   "created": [...],
@@ -277,11 +304,13 @@ Create multiple SKU mappings at once.
 ```
 
 ### GET /api/dropship/mappings
+
 List SKU mappings with filtering.
 
 **Auth:** Vendor (own only), Admin
 
 **Query Parameters:**
+
 - `page` (number, default: 1)
 - `limit` (number, default: 20)
 - `supplierId` (string): Filter by supplier
@@ -289,6 +318,7 @@ List SKU mappings with filtering.
 - `search` (string): Search by SKU
 
 **Response:**
+
 ```json
 {
   "mappings": [...],
@@ -300,11 +330,13 @@ List SKU mappings with filtering.
 ```
 
 ### GET /api/dropship/mappings/:id
+
 Get mapping details.
 
 **Auth:** Vendor (own only), Admin
 
 **Response:**
+
 ```json
 {
   "mapping": { ... }
@@ -312,6 +344,7 @@ Get mapping details.
 ```
 
 ### PUT /api/dropship/mappings/:id
+
 Update an existing SKU mapping.
 
 **Auth:** Vendor (own only), Admin
@@ -319,6 +352,7 @@ Update an existing SKU mapping.
 **Request Body:** Same as POST (except supplierId, supplierSku), all fields optional
 
 **Response:**
+
 ```json
 {
   "mapping": { ... }
@@ -326,11 +360,13 @@ Update an existing SKU mapping.
 ```
 
 ### DELETE /api/dropship/mappings/:id
+
 Deactivate a SKU mapping.
 
 **Auth:** Vendor (own only), Admin
 
 **Response:**
+
 ```json
 {
   "message": "Mapping deactivated successfully"
@@ -338,14 +374,17 @@ Deactivate a SKU mapping.
 ```
 
 ### GET /api/dropship/mappings/resolve/:supplierSku
+
 Resolve a supplier SKU to internal SKU.
 
 **Auth:** Vendor, Admin
 
 **Query Parameters:**
+
 - `supplierId` (string, required): Supplier ID
 
 **Response:**
+
 ```json
 {
   "mapping": {
@@ -364,14 +403,16 @@ Resolve a supplier SKU to internal SKU.
 ## Margin Rules (`/api/dropship/margin-rules`)
 
 ### POST /api/dropship/margin-rules
+
 Create a new margin rule.
 
 **Auth:** Vendor, Admin
 
 **Request Body:**
+
 ```json
 {
-  "supplierId": "...",  // OR
+  "supplierId": "...", // OR
   "category": "electronics",
   "marginType": "percent",
   "value": 20
@@ -381,6 +422,7 @@ Create a new margin rule.
 **Validation:** Either `supplierId` or `category` must be provided.
 
 **Response:** `201 Created`
+
 ```json
 {
   "rule": {
@@ -396,16 +438,19 @@ Create a new margin rule.
 **Error:** `409 Conflict` if rule already exists for same criteria
 
 ### GET /api/dropship/margin-rules
+
 List margin rules.
 
 **Auth:** Vendor (own only), Admin
 
 **Query Parameters:**
+
 - `supplierId` (string): Filter by supplier
 - `category` (string): Filter by category
 - `active` (string, default: 'true'): 'true', 'false', or 'all'
 
 **Response:**
+
 ```json
 {
   "rules": [...]
@@ -413,11 +458,13 @@ List margin rules.
 ```
 
 ### GET /api/dropship/margin-rules/:id
+
 Get margin rule details.
 
 **Auth:** Vendor (own only), Admin
 
 **Response:**
+
 ```json
 {
   "rule": { ... }
@@ -425,6 +472,7 @@ Get margin rule details.
 ```
 
 ### PUT /api/dropship/margin-rules/:id
+
 Update a margin rule.
 
 **Auth:** Vendor (own only), Admin
@@ -432,6 +480,7 @@ Update a margin rule.
 **Request Body:** Same as POST, all fields optional
 
 **Response:**
+
 ```json
 {
   "rule": { ... }
@@ -439,11 +488,13 @@ Update a margin rule.
 ```
 
 ### DELETE /api/dropship/margin-rules/:id
+
 Deactivate a margin rule.
 
 **Auth:** Vendor (own only), Admin
 
 **Response:**
+
 ```json
 {
   "message": "Margin rule deactivated successfully"
@@ -451,11 +502,13 @@ Deactivate a margin rule.
 ```
 
 ### POST /api/dropship/margin-rules/calculate
+
 Calculate price with margin applied.
 
 **Auth:** Vendor, Admin
 
 **Request Body:**
+
 ```json
 {
   "cost": 100,
@@ -465,6 +518,7 @@ Calculate price with margin applied.
 ```
 
 **Response:**
+
 ```json
 {
   "cost": 100,
@@ -474,7 +528,8 @@ Calculate price with margin applied.
 }
 ```
 
-**Logic:** 
+**Logic:**
+
 - First tries to find rule by `supplierId`
 - Then tries to find rule by `category`
 - If no rule found, returns cost as-is
@@ -484,19 +539,22 @@ Calculate price with margin applied.
 ## Sync Management (`/api/dropship/sync`)
 
 ### POST /api/dropship/sync/trigger
+
 Manually trigger a supplier sync job.
 
 **Auth:** Vendor, Admin
 
 **Request Body:**
+
 ```json
 {
   "supplierId": "...",
-  "syncType": "full"  // or "delta", "prices_only", "stock_only"
+  "syncType": "full" // or "delta", "prices_only", "stock_only"
 }
 ```
 
 **Response:** `202 Accepted`
+
 ```json
 {
   "message": "Sync job queued successfully",
@@ -507,15 +565,17 @@ Manually trigger a supplier sync job.
 ```
 
 ### GET /api/dropship/sync/status/:jobId
+
 Get status of a sync job.
 
 **Auth:** Vendor, Admin
 
 **Response:**
+
 ```json
 {
   "jobId": "sync-1729410000000",
-  "status": "completed",  // or "queued", "running", "failed"
+  "status": "completed", // or "queued", "running", "failed"
   "progress": 100,
   "stats": {
     "productsProcessed": 150,
@@ -527,16 +587,19 @@ Get status of a sync job.
 ```
 
 ### GET /api/dropship/sync/history
+
 Get sync history.
 
 **Auth:** Vendor, Admin
 
 **Query Parameters:**
+
 - `supplierId` (string, required for vendors)
 - `page` (number, default: 1)
 - `limit` (number, default: 20)
 
 **Response:**
+
 ```json
 {
   "history": [...],
@@ -547,11 +610,13 @@ Get sync history.
 ```
 
 ### GET /api/dropship/sync/schedule/:supplierId
+
 Get sync schedule for a supplier.
 
 **Auth:** Vendor (own only), Admin
 
 **Response:**
+
 ```json
 {
   "supplierId": "...",
@@ -563,19 +628,22 @@ Get sync schedule for a supplier.
 ```
 
 ### PUT /api/dropship/sync/schedule/:supplierId
+
 Update sync schedule.
 
 **Auth:** Vendor (own only), Admin
 
 **Request Body:**
+
 ```json
 {
-  "schedule": "0 */4 * * *",  // Cron expression
+  "schedule": "0 */4 * * *", // Cron expression
   "enabled": true
 }
 ```
 
 **Response:**
+
 ```json
 {
   "supplierId": "...",
@@ -592,6 +660,7 @@ Update sync schedule.
 All endpoints use consistent error responses:
 
 ### 400 Bad Request (Validation Error)
+
 ```json
 {
   "error": "Validation failed",
@@ -605,6 +674,7 @@ All endpoints use consistent error responses:
 ```
 
 ### 401 Unauthorized
+
 ```json
 {
   "error": "Unauthorized"
@@ -612,6 +682,7 @@ All endpoints use consistent error responses:
 ```
 
 ### 403 Forbidden
+
 ```json
 {
   "error": "Forbidden: Insufficient permissions"
@@ -627,6 +698,7 @@ or
 ```
 
 ### 404 Not Found
+
 ```json
 {
   "error": "Supplier not found"
@@ -634,6 +706,7 @@ or
 ```
 
 ### 409 Conflict
+
 ```json
 {
   "error": "Mapping already exists",
@@ -643,6 +716,7 @@ or
 ```
 
 ### 500 Internal Server Error
+
 ```json
 {
   "error": "Error message"
@@ -653,21 +727,21 @@ or
 
 ## RBAC Summary
 
-| Endpoint | Vendor | Admin | Supplier |
-|----------|--------|-------|----------|
-| POST /suppliers | ✓ (own) | ✓ | ✗ |
-| GET /suppliers | ✓ (own) | ✓ | ✗ |
-| PUT /suppliers/:id | ✓ (own) | ✓ | ✗ |
-| PUT /suppliers/:id/status | ✗* | ✓ | ✗ |
-| DELETE /suppliers/:id | ✓ (own) | ✓ | ✗ |
-| POST /mappings | ✓ (own) | ✓ | ✗ |
-| GET /mappings | ✓ (own) | ✓ | ✗ |
-| PUT /mappings/:id | ✓ (own) | ✓ | ✗ |
-| DELETE /mappings/:id | ✓ (own) | ✓ | ✗ |
-| POST /margin-rules | ✓ (own) | ✓ | ✗ |
-| GET /margin-rules | ✓ (own) | ✓ | ✗ |
-| POST /sync/trigger | ✓ (own) | ✓ | ✗ |
-| GET /sync/status | ✓ | ✓ | ✗ |
+| Endpoint                  | Vendor  | Admin | Supplier |
+| ------------------------- | ------- | ----- | -------- |
+| POST /suppliers           | ✓ (own) | ✓     | ✗        |
+| GET /suppliers            | ✓ (own) | ✓     | ✗        |
+| PUT /suppliers/:id        | ✓ (own) | ✓     | ✗        |
+| PUT /suppliers/:id/status | ✗\*     | ✓     | ✗        |
+| DELETE /suppliers/:id     | ✓ (own) | ✓     | ✗        |
+| POST /mappings            | ✓ (own) | ✓     | ✗        |
+| GET /mappings             | ✓ (own) | ✓     | ✗        |
+| PUT /mappings/:id         | ✓ (own) | ✓     | ✗        |
+| DELETE /mappings/:id      | ✓ (own) | ✓     | ✗        |
+| POST /margin-rules        | ✓ (own) | ✓     | ✗        |
+| GET /margin-rules         | ✓ (own) | ✓     | ✗        |
+| POST /sync/trigger        | ✓ (own) | ✓     | ✗        |
+| GET /sync/status          | ✓       | ✓     | ✗        |
 
 \* Vendors can set other statuses, but only admins can set 'active' or 'suspended'
 

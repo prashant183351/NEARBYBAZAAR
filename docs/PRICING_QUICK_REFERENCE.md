@@ -19,29 +19,29 @@ console.log(PricingEngine.formatBreakdown(result));
 
 ### Rule Types
 
-| Type | Description | Example |
-|------|-------------|---------|
-| `coupon` | Code-based discount | "SAVE10" gives 10% off |
-| `promotion` | Auto-apply discount | All electronics 15% off |
-| `tiered` | Bulk pricing | Buy 50+: ₹120/unit (was ₹150) |
-| `bundle` | Product bundles | Buy X, get Y free (future) |
+| Type        | Description         | Example                       |
+| ----------- | ------------------- | ----------------------------- |
+| `coupon`    | Code-based discount | "SAVE10" gives 10% off        |
+| `promotion` | Auto-apply discount | All electronics 15% off       |
+| `tiered`    | Bulk pricing        | Buy 50+: ₹120/unit (was ₹150) |
+| `bundle`    | Product bundles     | Buy X, get Y free (future)    |
 
 ### Discount Types
 
-| Type | Format | Example |
-|------|--------|---------|
-| `percentage` | `0-100` | `{ type: 'percentage', value: 15 }` → 15% off |
-| `fixed` | Amount in ₹ | `{ type: 'fixed', value: 500 }` → ₹500 off |
-| `tiered` | Quantity ranges | See [Tiered Pricing](#tiered-pricing) |
+| Type         | Format          | Example                                       |
+| ------------ | --------------- | --------------------------------------------- |
+| `percentage` | `0-100`         | `{ type: 'percentage', value: 15 }` → 15% off |
+| `fixed`      | Amount in ₹     | `{ type: 'fixed', value: 500 }` → ₹500 off    |
+| `tiered`     | Quantity ranges | See [Tiered Pricing](#tiered-pricing)         |
 
 ### Rule Status
 
-| Status | Meaning | Auto-Transitions |
-|--------|---------|------------------|
-| `active` | Currently valid | → `expired` when `validUntil` passed |
-| `inactive` | Manually disabled | None |
-| `scheduled` | Waiting to start | → `active` when `validFrom` reached |
-| `expired` | Past validity date | None |
+| Status      | Meaning            | Auto-Transitions                     |
+| ----------- | ------------------ | ------------------------------------ |
+| `active`    | Currently valid    | → `expired` when `validUntil` passed |
+| `inactive`  | Manually disabled  | None                                 |
+| `scheduled` | Waiting to start   | → `active` when `validFrom` reached  |
+| `expired`   | Past validity date | None                                 |
 
 ## 🎯 Common Patterns
 
@@ -59,8 +59,8 @@ const coupon = await PricingRule.create({
   applicableTo: { type: 'all' },
   usageLimits: {
     currentUsageTotal: 0,
-    maxUsageTotal: 1000,  // Max 1000 uses
-    minCartValue: 500,     // Min ₹500 cart
+    maxUsageTotal: 1000, // Max 1000 uses
+    minCartValue: 500, // Min ₹500 cart
   },
   validFrom: new Date(),
   validUntil: new Date('2025-12-31'),
@@ -87,7 +87,7 @@ const promo = await PricingRule.create({
   usageLimits: { currentUsageTotal: 0 },
   validFrom: new Date(),
   validUntil: new Date('2025-06-30'),
-  excludeDiscountedItems: true,  // Don't stack with sale items
+  excludeDiscountedItems: true, // Don't stack with sale items
   excludeSaleItems: false,
   isVendorRule: false,
 });
@@ -101,7 +101,7 @@ const bulkDiscount = await PricingRule.create({
   type: 'tiered',
   status: 'active',
   priority: 60,
-  stackable: false,  // Exclusive
+  stackable: false, // Exclusive
   discount: {
     type: 'tiered',
     tiers: [
@@ -128,14 +128,14 @@ const exclusive = await PricingRule.create({
   type: 'coupon',
   code: 'BIG5K',
   status: 'active',
-  priority: 100,  // Highest priority
-  stackable: false,  // Cannot combine!
+  priority: 100, // Highest priority
+  stackable: false, // Cannot combine!
   discount: { type: 'fixed', value: 5000 },
   applicableTo: { type: 'all' },
   usageLimits: {
     currentUsageTotal: 0,
     maxUsageTotal: 50,
-    minCartValue: 50000,  // Min ₹50k cart
+    minCartValue: 50000, // Min ₹50k cart
     maxDiscountAmount: 5000,
   },
   validFrom: new Date(),
@@ -160,7 +160,7 @@ const rule1 = await PricingRule.create({
   status: 'active',
   priority: 50,
   stackable: true,
-  stackableWith: [rule2Id],  // ONLY with Rule 2!
+  stackableWith: [rule2Id], // ONLY with Rule 2!
   discount: { type: 'percentage', value: 10 },
   applicableTo: { type: 'all' },
   usageLimits: { currentUsageTotal: 0 },
@@ -179,7 +179,7 @@ const rule2 = await PricingRule.create({
   status: 'active',
   priority: 40,
   stackable: true,
-  stackableWith: [rule1Id],  // Mutual whitelist
+  stackableWith: [rule1Id], // Mutual whitelist
   discount: { type: 'fixed', value: 300 },
   applicableTo: { type: 'all' },
   usageLimits: { currentUsageTotal: 0 },
@@ -217,15 +217,11 @@ const promos = await PricingRule.findActivePromotions();
 ### Find Applicable Rules for Cart
 
 ```typescript
-const productIds = items.map(i => i.productId);
-const categoryIds = items.map(i => i.categoryId).filter(Boolean);
-const vendorIds = items.map(i => i.vendorId).filter(Boolean);
+const productIds = items.map((i) => i.productId);
+const categoryIds = items.map((i) => i.categoryId).filter(Boolean);
+const vendorIds = items.map((i) => i.vendorId).filter(Boolean);
 
-const rules = await PricingRule.findApplicableRules(
-  productIds,
-  categoryIds,
-  vendorIds
-);
+const rules = await PricingRule.findApplicableRules(productIds, categoryIds, vendorIds);
 // Returns: Active rules matching any product/category/vendor in cart
 ```
 
@@ -273,11 +269,7 @@ const result = await PricingEngine.evaluateCart(
 ### Validate Coupon (Without Applying)
 
 ```typescript
-const validation = await PricingEngine.validateCoupon(
-  'SAVE10',
-  cartTotal,
-  userId
-);
+const validation = await PricingEngine.validateCoupon('SAVE10', cartTotal, userId);
 
 if (!validation.valid) {
   console.error(validation.message);
@@ -285,7 +277,7 @@ if (!validation.valid) {
 } else {
   console.log(validation.message);
   // "Valid: Get 10% off your order"
-  console.log(validation.rule);  // Full rule object
+  console.log(validation.rule); // Full rule object
 }
 ```
 
@@ -297,13 +289,13 @@ const lines = PricingEngine.formatBreakdown(result);
 console.log(lines.join('\n'));
 // Output:
 // Subtotal: ₹21,000.00
-// 
+//
 // Discounts:
 //   Platform Sale: 10% off (-₹2,100)
 //   Applied Coupon SAVE10 (-₹500)
-// 
+//
 // Total Savings: -₹2,600.00
-// 
+//
 // Total: ₹18,400.00
 ```
 
@@ -318,9 +310,9 @@ interface CartItem {
   vendorId?: ObjectId;
   quantity: number;
   unitPrice: number;
-  originalTotal: number;  // quantity * unitPrice
-  isDiscounted?: boolean;  // Already on sale?
-  isSaleItem?: boolean;    // Part of clearance?
+  originalTotal: number; // quantity * unitPrice
+  isDiscounted?: boolean; // Already on sale?
+  isSaleItem?: boolean; // Part of clearance?
 }
 ```
 
@@ -350,13 +342,13 @@ interface CartItem {
 
 ## 🚨 Error Messages
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| "Coupon code X not found or expired" | Invalid code or past validUntil | Check code spelling, check date range |
-| "Coupon code X has reached usage limit" | maxUsageTotal exceeded | Increase limit or create new coupon |
-| "Coupon X requires minimum cart value of ₹Y" | Cart total < minCartValue | Add more items or reduce min requirement |
-| "Rule X cannot be stacked with other discounts" | Non-stackable rule conflict | Remove conflicting rule or change stackable flag |
-| "Rule X can only stack with specific rules" | Not in stackableWith whitelist | Add rule ID to whitelist or remove restriction |
+| Error                                           | Cause                           | Solution                                         |
+| ----------------------------------------------- | ------------------------------- | ------------------------------------------------ |
+| "Coupon code X not found or expired"            | Invalid code or past validUntil | Check code spelling, check date range            |
+| "Coupon code X has reached usage limit"         | maxUsageTotal exceeded          | Increase limit or create new coupon              |
+| "Coupon X requires minimum cart value of ₹Y"    | Cart total < minCartValue       | Add more items or reduce min requirement         |
+| "Rule X cannot be stacked with other discounts" | Non-stackable rule conflict     | Remove conflicting rule or change stackable flag |
+| "Rule X can only stack with specific rules"     | Not in stackableWith whitelist  | Add rule ID to whitelist or remove restriction   |
 
 ## 📈 Performance Tips
 
@@ -380,7 +372,7 @@ await PricingRule.find({ validFrom: { $lte: now }, validUntil: { $gte: now } });
 const cachedPromos = await cache.get('active_promotions');
 if (!cachedPromos) {
   const promos = await PricingRule.findActivePromotions();
-  await cache.set('active_promotions', promos, 300);  // 5 min TTL
+  await cache.set('active_promotions', promos, 300); // 5 min TTL
   return promos;
 }
 return cachedPromos;
@@ -391,12 +383,12 @@ return cachedPromos;
 ```typescript
 // GOOD: Validate all coupons in parallel
 const validations = await Promise.all(
-  couponCodes.map(code => PricingEngine.validateCoupon(code, cartTotal))
+  couponCodes.map((code) => PricingEngine.validateCoupon(code, cartTotal)),
 );
 
 // BAD: Sequential validation
 for (const code of couponCodes) {
-  await PricingEngine.validateCoupon(code, cartTotal);  // Slower
+  await PricingEngine.validateCoupon(code, cartTotal); // Slower
 }
 ```
 
@@ -422,27 +414,30 @@ const createTestRule = (overrides = {}) => ({
   ...overrides,
 });
 
-const rule = await PricingRule.create(createTestRule({
-  name: 'Custom Test',
-  discount: { type: 'fixed', value: 500 },
-}));
+const rule = await PricingRule.create(
+  createTestRule({
+    name: 'Custom Test',
+    discount: { type: 'fixed', value: 500 },
+  }),
+);
 ```
 
 ### Mock Cart Items
 
 ```typescript
-const mockCartItems = (count = 2) => Array.from({ length: count }, (_, i) => ({
-  productId: new Types.ObjectId(),
-  sku: `PROD-${i + 1}`,
-  name: `Product ${i + 1}`,
-  categoryId: new Types.ObjectId(),
-  vendorId: new Types.ObjectId(),
-  quantity: 1,
-  unitPrice: 1000,
-  originalTotal: 1000,
-}));
+const mockCartItems = (count = 2) =>
+  Array.from({ length: count }, (_, i) => ({
+    productId: new Types.ObjectId(),
+    sku: `PROD-${i + 1}`,
+    name: `Product ${i + 1}`,
+    categoryId: new Types.ObjectId(),
+    vendorId: new Types.ObjectId(),
+    quantity: 1,
+    unitPrice: 1000,
+    originalTotal: 1000,
+  }));
 
-const items = mockCartItems(5);  // 5 items, ₹5,000 total
+const items = mockCartItems(5); // 5 items, ₹5,000 total
 ```
 
 ## 📚 Related Documentation
@@ -463,16 +458,16 @@ router.post('/cart/calculate', async (req, res) => {
   try {
     const { items, couponCodes } = req.body;
     const userId = req.user?.id;
-    
+
     const result = await PricingEngine.evaluateCart(items, couponCodes, userId);
-    
+
     if (result.errors.length > 0) {
       return res.status(400).json({
         success: false,
         errors: result.errors,
       });
     }
-    
+
     res.json({
       success: true,
       data: {
@@ -497,20 +492,20 @@ import { useState } from 'react';
 function CartSummary({ items }) {
   const [result, setResult] = useState(null);
   const [coupon, setCoupon] = useState('');
-  
+
   const applyPricing = async () => {
     const response = await fetch('/api/cart/calculate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ items, couponCodes: coupon ? [coupon] : [] }),
     });
-    
+
     const data = await response.json();
     if (data.success) {
       setResult(data.data);
     }
   };
-  
+
   return (
     <div>
       <input
@@ -519,7 +514,7 @@ function CartSummary({ items }) {
         placeholder="Coupon code"
       />
       <button onClick={applyPricing}>Apply</button>
-      
+
       {result && (
         <div>
           <p>Subtotal: ₹{result.originalTotal.toFixed(2)}</p>

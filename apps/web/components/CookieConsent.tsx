@@ -16,9 +16,21 @@ export default function CookieConsent() {
 
   if (!visible) return null;
   return (
-    <div style={{ position: 'fixed', bottom: 0, width: '100%', background: '#222', color: '#fff', padding: 16, zIndex: 1000 }}>
+    <div
+      style={{
+        position: 'fixed',
+        bottom: 0,
+        width: '100%',
+        background: '#222',
+        color: '#fff',
+        padding: 16,
+        zIndex: 1000,
+      }}
+    >
       <span>This site uses cookies to enhance your experience. See our privacy policy.</span>
-      <button style={{ marginLeft: 16 }} onClick={accept}>Accept</button>
+      <button style={{ marginLeft: 16 }} onClick={accept}>
+        Accept
+      </button>
     </div>
   );
 }

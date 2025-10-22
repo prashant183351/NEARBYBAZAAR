@@ -4,7 +4,9 @@ import { PaymentIntent } from '../src/models/PaymentIntent';
 import { CommissionLedger } from '../src/models/CommissionLedger';
 import { AuditLog } from '../src/models/AuditLog';
 
-jest.mock('../src/models/RefundPolicy', () => ({ RefundPolicy: { findOne: jest.fn().mockResolvedValue({ active: true, daysWindow: 30 }) } }));
+jest.mock('../src/models/RefundPolicy', () => ({
+  RefundPolicy: { findOne: jest.fn().mockResolvedValue({ active: true, daysWindow: 30 }) },
+}));
 
 describe('Refunds & partial refunds', () => {
   const mockRes = () => {
@@ -24,23 +26,28 @@ describe('Refunds & partial refunds', () => {
       save: jest.fn().mockResolvedValue(true),
       createdAt: new Date(),
     };
-  jest.spyOn(Order, 'findById').mockResolvedValue(order);
+    jest.spyOn(Order, 'findById').mockResolvedValue(order);
 
     const pi: any = { status: 'succeeded', refund: jest.fn().mockResolvedValue(true) };
-  jest.spyOn(PaymentIntent, 'findOne').mockResolvedValue(pi);
+    jest.spyOn(PaymentIntent, 'findOne').mockResolvedValue(pi);
 
     const ledgerCreate = jest.fn().mockResolvedValue(true);
-  jest.spyOn(CommissionLedger, 'create').mockImplementation(ledgerCreate as any);
-  jest.spyOn(AuditLog, 'create').mockResolvedValue({} as any);
+    jest.spyOn(CommissionLedger, 'create').mockImplementation(ledgerCreate as any);
+    jest.spyOn(AuditLog, 'create').mockResolvedValue({} as any);
 
-    const req: any = { body: { orderId, refundAmount: 200, lineItemId: lineId }, user: { id: 'u1' } };
+    const req: any = {
+      body: { orderId, refundAmount: 200, lineItemId: lineId },
+      user: { id: 'u1' },
+    };
     const res = mockRes();
 
     await refundOrder(req, res as any);
 
     // Rs. 400 line; refund 200 => 50% refund => reverse 50% of 40 = 20
     expect(order.items[0].commission).toBe(20);
-    expect(ledgerCreate).toHaveBeenCalledWith(expect.objectContaining({ orderId, lineItemId: lineId, amount: -20 }));
+    expect(ledgerCreate).toHaveBeenCalledWith(
+      expect.objectContaining({ orderId, lineItemId: lineId, amount: -20 }),
+    );
     expect(pi.refund).toHaveBeenCalledWith(200, undefined);
     expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ success: true }));
   });

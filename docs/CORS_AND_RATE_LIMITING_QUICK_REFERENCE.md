@@ -13,14 +13,14 @@ REDIS_URL=redis://localhost:6379
 
 ## Rate Limit Tiers
 
-| Tier | Limit | Usage |
-|------|-------|-------|
-| Anonymous | 100/min | Default for unauthenticated |
-| Authenticated | 300/min | Logged-in users |
-| Admin | 1000/min | Platform administrators |
-| Sensitive | 10/min | Auth endpoints |
-| Strict | 5/min | OTP endpoints |
-| Generous | 500/min | Public read endpoints |
+| Tier          | Limit    | Usage                       |
+| ------------- | -------- | --------------------------- |
+| Anonymous     | 100/min  | Default for unauthenticated |
+| Authenticated | 300/min  | Logged-in users             |
+| Admin         | 1000/min | Platform administrators     |
+| Sensitive     | 10/min   | Auth endpoints              |
+| Strict        | 5/min    | OTP endpoints               |
+| Generous      | 500/min  | Public read endpoints       |
 
 ## Quick Usage
 
@@ -40,7 +40,7 @@ import { rateLimiters } from './middleware/rateLimit';
 // Sensitive endpoints (10 req/min)
 router.post('/signup', rateLimiters.sensitive, handler);
 
-// Strict endpoints (5 req/min)  
+// Strict endpoints (5 req/min)
 router.post('/otp/request', rateLimiters.strict, handler);
 
 // Generous endpoints (500 req/min)
@@ -50,11 +50,15 @@ router.get('/products', rateLimiters.generous, handler);
 ### Custom Rate Limit
 
 ```typescript
-router.post('/upload', rateLimit({
-  windowMs: 60000,      // 1 minute
-  maxRequests: 20,      // 20 requests
-  keyPrefix: 'rl:upload',
-}), handler);
+router.post(
+  '/upload',
+  rateLimit({
+    windowMs: 60000, // 1 minute
+    maxRequests: 20, // 20 requests
+    keyPrefix: 'rl:upload',
+  }),
+  handler,
+);
 ```
 
 ## Response Headers
@@ -92,8 +96,8 @@ curl -H "Origin: https://evil.com" http://localhost:3000/test
 
 ```bash
 # Burst test (send 101 requests rapidly)
-for i in {1..101}; do 
-  curl http://localhost:3000/test; 
+for i in {1..101}; do
+  curl http://localhost:3000/test;
 done
 
 # Should see 429 after 100 requests
@@ -102,17 +106,20 @@ done
 ## Common Issues
 
 ### CORS Not Working
+
 - ✅ Check `CORS_ALLOW_ORIGINS` env var
 - ✅ Include protocol (https://) and exact domain
 - ✅ Restart server after env changes
 
 ### Rate Limit Not Enforcing
+
 - ✅ Verify Redis is running: `redis-cli ping`
 - ✅ Check `REDIS_URL` env var
 - ✅ Ensure JWT middleware runs before rate limiter
 - ✅ Review logs for Redis errors
 
 ### Legitimate Users Rate Limited
+
 - ✅ Increase limit for authenticated users
 - ✅ Use `rateLimiters.generous` for public reads
 - ✅ Apply custom limits to specific routes
@@ -147,6 +154,7 @@ pnpm test
 ## Fail-Open Behavior
 
 If Redis is unavailable:
+
 - ✅ Requests are allowed (no 429 errors)
 - ⚠️ Monitor logs for Redis connection issues
 - 🔴 Fix Redis ASAP in production

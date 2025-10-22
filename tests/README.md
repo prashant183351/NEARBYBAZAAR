@@ -18,11 +18,13 @@ tests/
 ### Unit & Integration Tests (Jest)
 
 Located within each package:
+
 - `apps/api/tests/` - API unit and integration tests
 - `packages/lib/__tests__/` - Library utility tests
 - `apps/web/tests/` - Web component tests (future)
 
 **Run:**
+
 ```bash
 pnpm test                    # All unit tests
 pnpm --filter @nearbybazaar/api test    # API tests only
@@ -34,6 +36,7 @@ pnpm --filter @nearbybazaar/lib test    # Lib tests only
 Located in `tests/e2e/` - Cross-application integration tests.
 
 **Run:**
+
 ```bash
 # Requires dev servers running first
 pnpm dev                     # Terminal 1
@@ -72,18 +75,21 @@ npx playwright test --project=web-chromium
 ## Test Guidelines
 
 ### Unit Tests
+
 - Fast and isolated
 - No external dependencies
 - Mock external services
 - Focus on single function/component
 
 ### Integration Tests
+
 - Test interaction between modules
 - May use in-memory database
 - Test API endpoints
 - Verify data flows
 
 ### E2E Tests
+
 - Test complete user flows
 - Use real browser (Chromium)
 - Test across applications
@@ -133,11 +139,13 @@ pnpm test
 ## CI/CD
 
 Tests run automatically on:
+
 - Pull requests
 - Main branch commits
 - Before deployments
 
 **CI Commands:**
+
 ```bash
 pnpm test:ci               # Unit tests (serial, with coverage)
 pnpm test:e2e             # E2E tests (requires server setup)
@@ -146,16 +154,19 @@ pnpm test:e2e             # E2E tests (requires server setup)
 ## Troubleshooting
 
 ### Tests fail locally but pass in CI
+
 - Check Node version matches CI
 - Ensure dependencies are up to date: `pnpm install`
 - Clear caches: `pnpm clean && pnpm install`
 
 ### E2E tests timeout
+
 - Verify dev servers are running: `pnpm dev`
 - Check ports are not in use
 - Increase timeout in `playwright.config.ts`
 
 ### Database tests fail
+
 - Check MongoDB is running
 - Verify `.env` has correct `MONGODB_URI`
 - Ensure test database is clean
@@ -181,6 +192,7 @@ pnpm test:e2e             # E2E tests (requires server setup)
 ## Contributing
 
 When adding new features:
+
 1. Write unit tests for new functions
 2. Add integration tests for API endpoints
 3. Add E2E tests for new user flows

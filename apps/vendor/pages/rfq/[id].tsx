@@ -7,12 +7,18 @@ export default function VendorRFQDetail() {
   const { id } = router.query as { id?: string };
   const [rfq, setRfq] = useState<any>();
   const [quotes, setQuotes] = useState<any[]>([]);
-  const [form, setForm] = useState({ unitPrice: '', minOrderQty: '', leadTimeDays: '', validUntil: '', notes: '' });
+  const [form, setForm] = useState({
+    unitPrice: '',
+    minOrderQty: '',
+    leadTimeDays: '',
+    validUntil: '',
+    notes: '',
+  });
 
   useEffect(() => {
     if (!id) return;
-    axios.get(`/api/rfq/${id}`).then(r => setRfq(r.data.data));
-    axios.get(`/api/rfq/${id}/quotes`).then(r => setQuotes(r.data.data || []));
+    axios.get(`/api/rfq/${id}`).then((r) => setRfq(r.data.data));
+    axios.get(`/api/rfq/${id}/quotes`).then((r) => setQuotes(r.data.data || []));
   }, [id]);
 
   const submitQuote = async (e: React.FormEvent) => {
@@ -39,31 +45,55 @@ export default function VendorRFQDetail() {
       <form onSubmit={submitQuote} className="border rounded p-4 space-y-3">
         <div>
           <label className="block text-sm font-semibold">Unit Price (₹)</label>
-          <input className="border p-2 w-60" value={form.unitPrice} onChange={e => setForm({ ...form, unitPrice: e.target.value })} required />
+          <input
+            className="border p-2 w-60"
+            value={form.unitPrice}
+            onChange={(e) => setForm({ ...form, unitPrice: e.target.value })}
+            required
+          />
         </div>
         <div>
           <label className="block text-sm font-semibold">Minimum Order Qty</label>
-          <input className="border p-2 w-60" value={form.minOrderQty} onChange={e => setForm({ ...form, minOrderQty: e.target.value })} />
+          <input
+            className="border p-2 w-60"
+            value={form.minOrderQty}
+            onChange={(e) => setForm({ ...form, minOrderQty: e.target.value })}
+          />
         </div>
         <div>
           <label className="block text-sm font-semibold">Lead Time (days)</label>
-          <input className="border p-2 w-60" value={form.leadTimeDays} onChange={e => setForm({ ...form, leadTimeDays: e.target.value })} />
+          <input
+            className="border p-2 w-60"
+            value={form.leadTimeDays}
+            onChange={(e) => setForm({ ...form, leadTimeDays: e.target.value })}
+          />
         </div>
         <div>
           <label className="block text-sm font-semibold">Valid Until</label>
-          <input type="date" className="border p-2 w-60" value={form.validUntil} onChange={e => setForm({ ...form, validUntil: e.target.value })} />
+          <input
+            type="date"
+            className="border p-2 w-60"
+            value={form.validUntil}
+            onChange={(e) => setForm({ ...form, validUntil: e.target.value })}
+          />
         </div>
         <div>
           <label className="block text-sm font-semibold">Notes</label>
-          <textarea className="border p-2 w-full" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} />
+          <textarea
+            className="border p-2 w-full"
+            value={form.notes}
+            onChange={(e) => setForm({ ...form, notes: e.target.value })}
+          />
         </div>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded" type="submit">Submit Quote</button>
+        <button className="bg-blue-600 text-white px-4 py-2 rounded" type="submit">
+          Submit Quote
+        </button>
       </form>
 
       <div>
         <h2 className="text-lg font-semibold mb-2">Quotes</h2>
         <ul className="space-y-2">
-          {quotes.map(q => (
+          {quotes.map((q) => (
             <li key={q._id} className="border rounded p-3">
               <div>Vendor: {q.vendor?.name || q.vendor}</div>
               <div>Price: ₹{q.unitPrice}</div>

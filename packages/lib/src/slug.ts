@@ -6,9 +6,9 @@ export function generateSlug(text: string): string {
     .toLowerCase()
     .normalize('NFKD')
     .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-    .replace(/[^a-z0-9]+/g, '-')      // Replace non-alphanum with dash
-    .replace(/^-+|-+$/g, '')          // Trim leading/trailing dashes
-    .replace(/--+/g, '-');            // Collapse multiple dashes
+    .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanum with dash
+    .replace(/^-+|-+$/g, '') // Trim leading/trailing dashes
+    .replace(/--+/g, '-'); // Collapse multiple dashes
 }
 
 // Optionally, add a function to ensure uniqueness (append counter if needed)
@@ -33,7 +33,11 @@ export function dedupeSlug(base: string, existing: Set<string>): string {
 }
 
 // Slug history updater for test compatibility
-export function updateSlugHistory(oldSlug: string, history: string[], newSlug: string): { slug: string; slugHistory: string[] } {
+export function updateSlugHistory(
+  oldSlug: string,
+  history: string[],
+  newSlug: string,
+): { slug: string; slugHistory: string[] } {
   if (oldSlug !== newSlug && !history.includes(oldSlug)) {
     return { slug: newSlug, slugHistory: [...history, oldSlug] };
   }

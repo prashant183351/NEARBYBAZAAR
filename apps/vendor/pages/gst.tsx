@@ -29,8 +29,12 @@ export default function VendorGSTCompliance() {
     <div>
       <h2>GST Compliance & Invoice Download</h2>
       <p>
-        Download all your invoices for GST filing. For e-invoice auto-upload, ensure your GSTIN is updated in your profile.
-        For more info, see <a href="https://www.gst.gov.in/" target="_blank" rel="noopener noreferrer">GSTN Portal</a>.
+        Download all your invoices for GST filing. For e-invoice auto-upload, ensure your GSTIN is
+        updated in your profile. For more info, see{' '}
+        <a href="https://www.gst.gov.in/" target="_blank" rel="noopener noreferrer">
+          GSTN Portal
+        </a>
+        .
       </p>
       <button onClick={handleDownload} disabled={downloading}>
         {downloading ? 'Preparing...' : 'Download All Invoices (ZIP)'}

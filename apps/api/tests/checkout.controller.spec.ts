@@ -1,4 +1,10 @@
-import { AddToCartBody, SetAddressBody, ShippingBody, PayBody, ConfirmBody } from '../src/controllers/checkout';
+import {
+  AddToCartBody,
+  SetAddressBody,
+  ShippingBody,
+  PayBody,
+  ConfirmBody,
+} from '../src/controllers/checkout';
 
 describe('Checkout controller schemas', () => {
   it('parses AddToCartBody', () => {
@@ -37,7 +43,10 @@ describe('Checkout controller schemas', () => {
   });
 
   it('parses ConfirmBody', () => {
-    const d = ConfirmBody.parse({ paymentIntentId: '01J8ZQJ7F3YYYYYYYYYYYYYY', simulateSuccess: true });
+    const d = ConfirmBody.parse({
+      paymentIntentId: '01J8ZQJ7F3YYYYYYYYYYYYYY',
+      simulateSuccess: true,
+    });
     expect(d.simulateSuccess).toBe(true);
   });
 });

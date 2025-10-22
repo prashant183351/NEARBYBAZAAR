@@ -17,12 +17,12 @@ const RATES: GSTRate[] = [
 ];
 
 export function getRateByHSN(hsn: string): number | null {
-  const found = RATES.find(r => r.type === 'HSN' && r.code === hsn);
+  const found = RATES.find((r) => r.type === 'HSN' && r.code === hsn);
   return found ? found.rate : null;
 }
 
 export function getRateBySAC(sac: string): number | null {
-  const found = RATES.find(r => r.type === 'SAC' && r.code === sac);
+  const found = RATES.find((r) => r.type === 'SAC' && r.code === sac);
   return found ? found.rate : null;
 }
 

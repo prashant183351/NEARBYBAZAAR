@@ -1,14 +1,14 @@
 /**
  * ProductOffer Model
  * Feature #182 - Multi-seller marketplace
- * 
+ *
  * Allows multiple vendors to offer the same product with different:
  * - Pricing
  * - Stock levels
  * - Shipping terms (SLA)
  * - Product condition (new/refurbished/used)
  * - Fulfillment method (FBM/FBA/dropship)
- * 
+ *
  * Enforces business rules:
  * - One offer per vendor per product (unique compound index)
  * - No negative prices or stock
@@ -36,38 +36,38 @@ interface IShippingTerms {
 export interface IProductOffer extends Document {
   productId: Types.ObjectId; // Reference to Product
   vendorId: Types.ObjectId; // Reference to Vendor
-  
+
   // Pricing
   price: number; // Vendor's price for this product (can differ from base product price)
   compareAtPrice?: number; // Original price (for showing savings)
-  
+
   // Inventory
   stock: number; // Available stock for this offer
   lowStockThreshold: number; // Alert when stock falls below this
-  
+
   // Shipping & Fulfillment
   shippingTerms: IShippingTerms;
   fulfillmentMethod: 'FBM' | 'FBA' | 'dropship'; // Fulfilled By Merchant/Amazon/Dropship
-  
+
   // Product Condition
   condition: 'new' | 'refurbished' | 'used-like-new' | 'used-good' | 'used-acceptable';
   conditionNotes?: string; // Optional details about condition
-  
+
   // Offer Status
   isActive: boolean; // Can buyers see/purchase this offer?
   isPaused: boolean; // Temporarily paused by vendor
-  
+
   // Performance Metrics (for Buy Box scoring later)
   sellerRating?: number; // Vendor's rating (0-5)
   totalSales?: number; // Number of units sold via this offer
   cancellationRate?: number; // % of orders cancelled
   lateShipmentRate?: number; // % of orders shipped late
-  
+
   // Metadata
   createdAt: Date;
   updatedAt: Date;
   lastStockUpdate?: Date;
-  
+
   // Instance Methods
   isAvailable(): boolean;
   hasLowStock(): boolean;
@@ -84,35 +84,38 @@ interface IProductOfferModel extends Model<IProductOffer> {
   findActiveOffers(productId: Types.ObjectId | string): Promise<IProductOffer[]>;
   findVendorOffer(
     productId: Types.ObjectId | string,
-    vendorId: Types.ObjectId | string
+    vendorId: Types.ObjectId | string,
   ): Promise<IProductOffer | null>;
 }
 
 // ==================== SCHEMA ====================
 
-const shippingTermsSchema = new Schema({
-  sla: {
-    type: Number,
-    required: true,
-    min: [0, 'SLA cannot be negative'],
-    max: [30, 'SLA cannot exceed 30 days'],
+const shippingTermsSchema = new Schema(
+  {
+    sla: {
+      type: Number,
+      required: true,
+      min: [0, 'SLA cannot be negative'],
+      max: [30, 'SLA cannot exceed 30 days'],
+    },
+    freeShippingThreshold: {
+      type: Number,
+      min: [0, 'Free shipping threshold cannot be negative'],
+    },
+    shippingCharge: {
+      type: Number,
+      required: true,
+      min: [0, 'Shipping charge cannot be negative'],
+    },
+    handlingTime: {
+      type: Number,
+      required: true,
+      min: [1, 'Handling time must be at least 1 day'],
+      max: [7, 'Handling time cannot exceed 7 days'],
+    },
   },
-  freeShippingThreshold: {
-    type: Number,
-    min: [0, 'Free shipping threshold cannot be negative'],
-  },
-  shippingCharge: {
-    type: Number,
-    required: true,
-    min: [0, 'Shipping charge cannot be negative'],
-  },
-  handlingTime: {
-    type: Number,
-    required: true,
-    min: [1, 'Handling time must be at least 1 day'],
-    max: [7, 'Handling time cannot exceed 7 days'],
-  },
-}, { _id: false });
+  { _id: false },
+);
 
 const productOfferSchema = new Schema<IProductOffer, IProductOfferModel>(
   {
@@ -128,14 +131,14 @@ const productOfferSchema = new Schema<IProductOffer, IProductOfferModel>(
       required: [true, 'Vendor ID is required'],
       index: true,
     },
-    
+
     // Pricing
     price: {
       type: Number,
       required: [true, 'Price is required'],
       min: [0, 'Price cannot be negative'],
       validate: {
-        validator: function(value: number) {
+        validator: function (value: number) {
           return value > 0;
         },
         message: 'Price must be greater than zero',
@@ -145,14 +148,14 @@ const productOfferSchema = new Schema<IProductOffer, IProductOfferModel>(
       type: Number,
       min: [0, 'Compare-at price cannot be negative'],
       validate: {
-        validator: function(this: IProductOffer, value?: number) {
+        validator: function (this: IProductOffer, value?: number) {
           if (value === undefined) return true;
           return value >= this.price;
         },
         message: 'Compare-at price must be greater than or equal to offer price',
       },
     },
-    
+
     // Inventory
     stock: {
       type: Number,
@@ -165,7 +168,7 @@ const productOfferSchema = new Schema<IProductOffer, IProductOfferModel>(
       default: 5,
       min: [0, 'Low stock threshold cannot be negative'],
     },
-    
+
     // Shipping & Fulfillment
     shippingTerms: {
       type: shippingTermsSchema,
@@ -180,7 +183,7 @@ const productOfferSchema = new Schema<IProductOffer, IProductOfferModel>(
       required: [true, 'Fulfillment method is required'],
       default: 'FBM',
     },
-    
+
     // Product Condition
     condition: {
       type: String,
@@ -196,7 +199,7 @@ const productOfferSchema = new Schema<IProductOffer, IProductOfferModel>(
       maxlength: [500, 'Condition notes cannot exceed 500 characters'],
       trim: true,
     },
-    
+
     // Offer Status
     isActive: {
       type: Boolean,
@@ -207,7 +210,7 @@ const productOfferSchema = new Schema<IProductOffer, IProductOfferModel>(
       type: Boolean,
       default: false,
     },
-    
+
     // Performance Metrics
     sellerRating: {
       type: Number,
@@ -229,7 +232,7 @@ const productOfferSchema = new Schema<IProductOffer, IProductOfferModel>(
       min: [0, 'Late shipment rate cannot be negative'],
       max: [100, 'Late shipment rate cannot exceed 100%'],
     },
-    
+
     // Metadata
     lastStockUpdate: {
       type: Date,
@@ -239,7 +242,7 @@ const productOfferSchema = new Schema<IProductOffer, IProductOfferModel>(
     timestamps: true, // Adds createdAt, updatedAt
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  }
+  },
 );
 
 // ==================== INDEXES ====================
@@ -247,37 +250,31 @@ const productOfferSchema = new Schema<IProductOffer, IProductOfferModel>(
 // Unique constraint: One offer per vendor per product
 productOfferSchema.index(
   { productId: 1, vendorId: 1 },
-  { unique: true, name: 'unique_product_vendor_offer' }
+  { unique: true, name: 'unique_product_vendor_offer' },
 );
 
 // Composite index for finding active offers by product
 productOfferSchema.index(
   { productId: 1, isActive: 1, isPaused: 1 },
-  { name: 'active_offers_by_product' }
+  { name: 'active_offers_by_product' },
 );
 
 // Index for vendor dashboard queries
-productOfferSchema.index(
-  { vendorId: 1, isActive: 1 },
-  { name: 'vendor_active_offers' }
-);
+productOfferSchema.index({ vendorId: 1, isActive: 1 }, { name: 'vendor_active_offers' });
 
 // Index for low stock alerts
-productOfferSchema.index(
-  { vendorId: 1, stock: 1 },
-  { name: 'low_stock_alerts' }
-);
+productOfferSchema.index({ vendorId: 1, stock: 1 }, { name: 'low_stock_alerts' });
 
 // Index for performance-based queries (Buy Box scoring)
 productOfferSchema.index(
   { productId: 1, isActive: 1, sellerRating: -1, price: 1 },
-  { name: 'buy_box_scoring' }
+  { name: 'buy_box_scoring' },
 );
 
 // ==================== VIRTUALS ====================
 
 // Savings amount if compareAtPrice is set
-productOfferSchema.virtual('savings').get(function(this: IProductOffer) {
+productOfferSchema.virtual('savings').get(function (this: IProductOffer) {
   if (this.compareAtPrice && this.compareAtPrice > this.price) {
     return this.compareAtPrice - this.price;
   }
@@ -285,7 +282,7 @@ productOfferSchema.virtual('savings').get(function(this: IProductOffer) {
 });
 
 // Savings percentage
-productOfferSchema.virtual('savingsPercent').get(function(this: IProductOffer) {
+productOfferSchema.virtual('savingsPercent').get(function (this: IProductOffer) {
   if (this.compareAtPrice && this.compareAtPrice > this.price) {
     return Math.round(((this.compareAtPrice - this.price) / this.compareAtPrice) * 100);
   }
@@ -293,7 +290,7 @@ productOfferSchema.virtual('savingsPercent').get(function(this: IProductOffer) {
 });
 
 // Total delivery time (handling + shipping)
-productOfferSchema.virtual('totalDeliveryTime').get(function(this: IProductOffer) {
+productOfferSchema.virtual('totalDeliveryTime').get(function (this: IProductOffer) {
   return this.shippingTerms.handlingTime + this.shippingTerms.sla;
 });
 
@@ -302,14 +299,14 @@ productOfferSchema.virtual('totalDeliveryTime').get(function(this: IProductOffer
 /**
  * Check if offer is available for purchase
  */
-productOfferSchema.methods.isAvailable = function(this: IProductOffer): boolean {
+productOfferSchema.methods.isAvailable = function (this: IProductOffer): boolean {
   return this.isActive && !this.isPaused && this.stock > 0;
 };
 
 /**
  * Check if stock is below threshold
  */
-productOfferSchema.methods.hasLowStock = function(this: IProductOffer): boolean {
+productOfferSchema.methods.hasLowStock = function (this: IProductOffer): boolean {
   return this.stock <= this.lowStockThreshold && this.stock > 0;
 };
 
@@ -317,9 +314,9 @@ productOfferSchema.methods.hasLowStock = function(this: IProductOffer): boolean 
  * Update stock atomically (prevent race conditions)
  * @param quantity - Amount to add (positive) or subtract (negative)
  */
-productOfferSchema.methods.updateStock = async function(
+productOfferSchema.methods.updateStock = async function (
   this: IProductOffer,
-  quantity: number
+  quantity: number,
 ): Promise<void> {
   const result = await ProductOffer.findOneAndUpdate(
     { _id: this._id, stock: { $gte: -quantity } }, // Ensure stock won't go negative
@@ -327,7 +324,7 @@ productOfferSchema.methods.updateStock = async function(
       $inc: { stock: quantity },
       $set: { lastStockUpdate: new Date() },
     },
-    { new: true }
+    { new: true },
   );
 
   if (!result) {
@@ -342,9 +339,9 @@ productOfferSchema.methods.updateStock = async function(
 /**
  * Check if this offer can fulfill a requested quantity
  */
-productOfferSchema.methods.canFulfill = function(
+productOfferSchema.methods.canFulfill = function (
   this: IProductOffer,
-  requestedQuantity: number
+  requestedQuantity: number,
 ): boolean {
   return this.isAvailable() && this.stock >= requestedQuantity;
 };
@@ -354,9 +351,9 @@ productOfferSchema.methods.canFulfill = function(
 /**
  * Find all offers for a specific product
  */
-productOfferSchema.statics.findByProduct = function(
+productOfferSchema.statics.findByProduct = function (
   this: IProductOfferModel,
-  productId: Types.ObjectId | string
+  productId: Types.ObjectId | string,
 ): Promise<IProductOffer[]> {
   return this.find({ productId })
     .populate('vendorId', 'name slug logo rating')
@@ -367,9 +364,9 @@ productOfferSchema.statics.findByProduct = function(
 /**
  * Find all offers by a specific vendor
  */
-productOfferSchema.statics.findByVendor = function(
+productOfferSchema.statics.findByVendor = function (
   this: IProductOfferModel,
-  vendorId: Types.ObjectId | string
+  vendorId: Types.ObjectId | string,
 ): Promise<IProductOffer[]> {
   return this.find({ vendorId })
     .populate('productId', 'name slug images')
@@ -380,9 +377,9 @@ productOfferSchema.statics.findByVendor = function(
 /**
  * Find active offers for a product (for "More Buying Options" UI)
  */
-productOfferSchema.statics.findActiveOffers = function(
+productOfferSchema.statics.findActiveOffers = function (
   this: IProductOfferModel,
-  productId: Types.ObjectId | string
+  productId: Types.ObjectId | string,
 ): Promise<IProductOffer[]> {
   return this.find({
     productId,
@@ -398,10 +395,10 @@ productOfferSchema.statics.findActiveOffers = function(
 /**
  * Find a specific vendor's offer for a product
  */
-productOfferSchema.statics.findVendorOffer = function(
+productOfferSchema.statics.findVendorOffer = function (
   this: IProductOfferModel,
   productId: Types.ObjectId | string,
-  vendorId: Types.ObjectId | string
+  vendorId: Types.ObjectId | string,
 ): Promise<IProductOffer | null> {
   return this.findOne({ productId, vendorId })
     .populate('productId', 'name slug')
@@ -414,7 +411,7 @@ productOfferSchema.statics.findVendorOffer = function(
 /**
  * Validation before saving
  */
-productOfferSchema.pre('save', function(this: IProductOffer, next) {
+productOfferSchema.pre('save', function (this: IProductOffer, next) {
   // If offer is active, ensure it has valid pricing
   if (this.isActive && this.price <= 0) {
     return next(new Error('Active offers must have a valid price greater than zero'));
@@ -438,7 +435,7 @@ productOfferSchema.pre('save', function(this: IProductOffer, next) {
 /**
  * Update lastStockUpdate timestamp when stock changes
  */
-productOfferSchema.pre('save', function(this: IProductOffer, next) {
+productOfferSchema.pre('save', function (this: IProductOffer, next) {
   if (this.isModified('stock')) {
     this.lastStockUpdate = new Date();
   }
@@ -449,5 +446,5 @@ productOfferSchema.pre('save', function(this: IProductOffer, next) {
 
 export const ProductOffer = model<IProductOffer, IProductOfferModel>(
   'ProductOffer',
-  productOfferSchema
+  productOfferSchema,
 );

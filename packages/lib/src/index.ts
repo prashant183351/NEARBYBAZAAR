@@ -1,4 +1,4 @@
-export * from './fingerprint.client';
+// export * from './fingerprint.client'; // Only import in browser/client code
 export * from './sku';
 export * from './slug';
 export * from './seo';

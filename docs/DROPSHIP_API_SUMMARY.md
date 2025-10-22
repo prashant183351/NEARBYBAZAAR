@@ -54,6 +54,7 @@ Comprehensive RESTful API endpoints for the dropshipping module with Zod validat
 All endpoints implement strict role-based access control:
 
 ### Vendor Permissions
+
 - ✅ Can only access their own resources
 - ✅ Can create/read/update/delete own suppliers
 - ✅ Can create/read/update/delete own SKU mappings
@@ -63,19 +64,23 @@ All endpoints implement strict role-based access control:
 - ❌ Cannot approve suppliers (admin only)
 
 ### Admin Permissions
+
 - ✅ Can access all resources
 - ✅ Can create resources for any vendor
 - ✅ Can approve/suspend suppliers
 - ✅ Full CRUD on all entities
 
 ### Supplier Permissions (Future)
+
 - 📋 Placeholder for future implementation
 - Will have read access to assigned mappings/orders
 
 ## ✨ Key Features
 
 ### 1. Zod Validation
+
 All request bodies are validated using Zod schemas:
+
 ```typescript
 const createSupplierSchema = z.object({
   companyName: z.string().min(1),
@@ -85,12 +90,15 @@ const createSupplierSchema = z.object({
 ```
 
 Benefits:
+
 - Type-safe validation
 - Clear error messages
 - Automatic TypeScript inference
 
 ### 2. RBAC Guards
+
 Every endpoint checks user permissions:
+
 ```typescript
 // Vendors can only see their own suppliers
 if (userType === 'vendor') {
@@ -101,6 +109,7 @@ if (userType === 'vendor') {
 ```
 
 ### 3. Consistent Error Responses
+
 - 400: Validation errors with details
 - 401: Unauthorized (no auth)
 - 403: Forbidden (insufficient permissions)
@@ -109,11 +118,13 @@ if (userType === 'vendor') {
 - 500: Internal server error
 
 ### 4. Pagination Support
+
 ```typescript
 ?page=1&limit=20
 ```
 
 Returns:
+
 ```json
 {
   "items": [...],
@@ -125,24 +136,26 @@ Returns:
 ```
 
 ### 5. Filtering & Search
+
 - Status filtering: `?status=active`
 - Supplier filtering: `?supplierId=...`
 - Search: `?search=acme`
 
 ## 📊 Endpoint Summary
 
-| Module | Endpoints | Features |
-|--------|-----------|----------|
-| **Suppliers** | 7 | CRUD, Status, Stats |
-| **Mappings** | 7 | CRUD, Bulk, Resolve |
-| **Margin Rules** | 6 | CRUD, Calculate |
-| **Sync** | 5 | Trigger, Status, History, Schedule |
-| **Overview** | 1 | Module stats |
-| **Total** | **26** | **All validated + RBAC** |
+| Module           | Endpoints | Features                           |
+| ---------------- | --------- | ---------------------------------- |
+| **Suppliers**    | 7         | CRUD, Status, Stats                |
+| **Mappings**     | 7         | CRUD, Bulk, Resolve                |
+| **Margin Rules** | 6         | CRUD, Calculate                    |
+| **Sync**         | 5         | Trigger, Status, History, Schedule |
+| **Overview**     | 1         | Module stats                       |
+| **Total**        | **26**    | **All validated + RBAC**           |
 
 ## 🎯 Endpoint Breakdown
 
 ### Suppliers (`/api/dropship/suppliers`)
+
 1. `POST /` - Create supplier
 2. `GET /` - List suppliers (paginated, filtered)
 3. `GET /:id` - Get supplier details
@@ -152,6 +165,7 @@ Returns:
 7. `GET /:id/stats` - Get supplier statistics
 
 ### SKU Mappings (`/api/dropship/mappings`)
+
 1. `POST /` - Create mapping
 2. `POST /bulk` - Bulk create mappings
 3. `GET /` - List mappings (paginated, filtered)
@@ -161,6 +175,7 @@ Returns:
 7. `GET /resolve/:supplierSku` - Resolve SKU
 
 ### Margin Rules (`/api/dropship/margin-rules`)
+
 1. `POST /` - Create margin rule
 2. `GET /` - List margin rules
 3. `GET /:id` - Get margin rule details
@@ -169,6 +184,7 @@ Returns:
 6. `POST /calculate` - Calculate price with margin
 
 ### Sync Management (`/api/dropship/sync`)
+
 1. `POST /trigger` - Trigger manual sync
 2. `GET /status/:jobId` - Get sync job status
 3. `GET /history` - Get sync history
@@ -182,6 +198,7 @@ Returns:
 - **express**: Routing
 
 Installed:
+
 ```bash
 pnpm --filter @nearbybazaar/api add zod
 ```
@@ -189,13 +206,17 @@ pnpm --filter @nearbybazaar/api add zod
 ## 📝 TODO: Integration Points
 
 ### 1. Model Updates
+
 Some endpoints reference fields not in current models:
+
 - Supplier model needs: `vendorId`, `apiEndpoint`, `apiKey`, `lastSyncAt`
 - SkuMapping model needs: `vendorId`, `productId`, `status`
 - Need to update existing models or create new ones
 
 ### 2. Authentication Middleware
+
 Endpoints assume `req.user` is set by auth middleware:
+
 ```typescript
 // @ts-ignore
 const { userId, userType } = req.user;
@@ -204,20 +225,26 @@ const { userId, userType } = req.user;
 TODO: Implement auth middleware
 
 ### 3. BullMQ Integration
+
 Sync endpoints need job queue integration:
+
 ```typescript
 // TODO: Add sync job to BullMQ queue
 // TODO: Query job status from BullMQ
 ```
 
 ### 4. Statistics Aggregation
+
 Stats endpoints have placeholder logic:
+
 ```typescript
 // TODO: Aggregate statistics from orders, products, etc.
 ```
 
 ### 5. OpenAPI Spec
+
 Generate OpenAPI 3.0 specification:
+
 ```bash
 # TODO: Generate openapi/dropship.yaml
 ```
@@ -225,6 +252,7 @@ Generate OpenAPI 3.0 specification:
 ## ✅ Validation Examples
 
 ### Success (201 Created)
+
 ```json
 {
   "supplier": {
@@ -236,6 +264,7 @@ Generate OpenAPI 3.0 specification:
 ```
 
 ### Validation Error (400)
+
 ```json
 {
   "error": "Validation failed",
@@ -249,6 +278,7 @@ Generate OpenAPI 3.0 specification:
 ```
 
 ### Authorization Error (403)
+
 ```json
 {
   "error": "Forbidden: Access denied"
@@ -256,6 +286,7 @@ Generate OpenAPI 3.0 specification:
 ```
 
 ### Conflict (409)
+
 ```json
 {
   "error": "Mapping already exists",
@@ -289,6 +320,7 @@ Generate OpenAPI 3.0 specification:
 ## 🎉 Summary
 
 Feature #146 is **fully implemented** with:
+
 - ✅ 26 REST endpoints
 - ✅ Zod validation on all inputs
 - ✅ RBAC on all endpoints

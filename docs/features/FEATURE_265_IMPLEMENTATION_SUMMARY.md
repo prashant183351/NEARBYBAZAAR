@@ -92,6 +92,7 @@ Implemented a comprehensive automated vendor enforcement system that monitors pe
 ## Key Features Implemented
 
 ### 1. Automated Enforcement ✅
+
 - Background job evaluates all active vendors against configurable rules
 - Creates actions automatically when thresholds exceeded
 - Updates vendor status (active → suspended → blocked)
@@ -99,11 +100,13 @@ Implemented a comprehensive automated vendor enforcement system that monitors pe
 - Logs all decisions with full context
 
 ### 2. Graduated Escalation ✅
+
 - **Warning**: Notification only, no restrictions (ODR >1%, Late >5%, Cancel >3%)
 - **Temp Suspension**: 30-day order restriction (ODR >2%, Late >10%, Cancel >6%)
 - **Permanent Block**: Indefinite restriction (ODR >4%, Late >15%, Cancel >10%)
 
 ### 3. Admin Oversight ✅
+
 - View all vendors requiring action with current metrics
 - Detailed escalation history per vendor
 - Override any action with mandatory reasoning (min 10 chars)
@@ -111,6 +114,7 @@ Implemented a comprehensive automated vendor enforcement system that monitors pe
 - Statistics dashboard (total, active, warnings, suspensions, blocks, overrides)
 
 ### 4. Vendor Experience ✅
+
 - Clear account status indication
 - View active actions with performance metrics
 - Action-specific improvement guidance
@@ -118,17 +122,20 @@ Implemented a comprehensive automated vendor enforcement system that monitors pe
 - Appeal process information
 
 ### 5. Order Guards ✅
+
 - `canVendorAcceptOrders()` function checks eligibility
 - Returns detailed status (can/cannot, reason, action)
 - Ready for integration in order creation endpoints
 
 ### 6. Auto-Expiration ✅
+
 - Temporary suspensions expire after 30 days
 - Background job processes expirations
 - Automatically restores vendor to active status
 - Updates action status to 'expired'
 
 ### 7. Audit Trail ✅
+
 - Every action logged with:
   - Trigger source (system/admin)
   - Metrics snapshot at time of action
@@ -141,10 +148,12 @@ Implemented a comprehensive automated vendor enforcement system that monitors pe
 ## API Endpoints
 
 ### Vendor Endpoints
+
 - `GET /v1/vendor-actions/my-actions` - Get my active actions
 - `GET /v1/vendor-actions/can-accept-orders` - Check order eligibility
 
 ### Admin Endpoints
+
 - `GET /v1/vendor-actions/pending` - Vendors requiring action
 - `GET /v1/vendor-actions/rules` - Current escalation rules
 - `GET /v1/vendor-actions/vendor/:vendorId/history` - Escalation history
@@ -160,16 +169,18 @@ Implemented a comprehensive automated vendor enforcement system that monitors pe
 ```typescript
 ESCALATION_RULES = {
   orderDefectRate: { warning: 0.01, tempSuspend: 0.02, permanentBlock: 0.04 },
-  lateShipmentRate: { warning: 0.05, tempSuspend: 0.10, permanentBlock: 0.15 },
-  cancellationRate: { warning: 0.03, tempSuspend: 0.06, permanentBlock: 0.10 }
-}
+  lateShipmentRate: { warning: 0.05, tempSuspend: 0.1, permanentBlock: 0.15 },
+  cancellationRate: { warning: 0.03, tempSuspend: 0.06, permanentBlock: 0.1 },
+};
 ```
 
 ### Suspension Duration
+
 - Default: 30 days
 - Configurable in `createVendorAction()` function
 
 ### Evaluation Period
+
 - Rolling 30-day window for all metrics
 - Configurable via `getVendorReputationMetrics()` daysPeriod parameter
 
@@ -178,11 +189,13 @@ ESCALATION_RULES = {
 ## Integration Requirements
 
 ### 1. Authentication Middleware ⏳ TODO
+
 - Uncomment auth middleware in `apps/api/src/routes/vendorActions.ts`
 - Apply `authenticate` to all routes
 - Apply `requireRole('admin')` to admin routes
 
 ### 2. Order Creation Guard ⏳ TODO
+
 ```typescript
 // Add to order creation endpoint
 const eligibility = await canVendorAcceptOrders(vendorId);
@@ -192,6 +205,7 @@ if (!eligibility.canAccept) {
 ```
 
 ### 3. Email Notifications ⏳ TODO
+
 - Integrate with email service in `createVendorAction()`
 - Templates needed:
   - `vendor-warning.html`
@@ -200,11 +214,16 @@ if (!eligibility.canAccept) {
   - `admin-action-notification.html`
 
 ### 4. Background Job Scheduling ⏳ TODO
+
 ```typescript
 // Schedule with BullMQ or cron
-queue.add('check-vendor-reputation', {}, {
-  repeat: { cron: '0 * * * *' } // Every hour
-});
+queue.add(
+  'check-vendor-reputation',
+  {},
+  {
+    repeat: { cron: '0 * * * *' }, // Every hour
+  },
+);
 ```
 
 ---
@@ -212,17 +231,20 @@ queue.add('check-vendor-reputation', {}, {
 ## Testing
 
 ### Unit Tests Required ⏳ TODO
+
 - [ ] `vendorEscalation.test.ts` - Service functions
 - [ ] `escalation.controller.test.ts` - Controller functions
 - [ ] `vendorActions.routes.test.ts` - API endpoints
 
 ### Integration Tests Required ⏳ TODO
+
 - [ ] End-to-end action creation flow
 - [ ] Admin override workflow
 - [ ] Auto-expiration process
 - [ ] Order guard enforcement
 
 ### Manual Testing Checklist ✅ Ready
+
 - [x] Create test vendor with poor metrics
 - [x] Trigger background job manually
 - [x] Verify action created in database
@@ -236,16 +258,19 @@ queue.add('check-vendor-reputation', {}, {
 ## Performance Considerations
 
 ### Database Queries
+
 - Indexes on `vendor + status + createdAt` for fast lookups
 - Indexes on `status + expiresAt` for expiration queries
 - Efficient aggregation in history endpoint
 
 ### Caching Opportunities
+
 - Vendor eligibility status (short TTL)
 - Escalation rules (long TTL, invalidate on config change)
 - Vendor action counts (medium TTL)
 
 ### Scaling
+
 - Background job can be parallelized per vendor
 - Consider sharding by vendor ID for large datasets
 - Rate limit admin API endpoints
@@ -275,6 +300,7 @@ queue.add('check-vendor-reputation', {}, {
 ## Metrics to Monitor (Post-Deployment)
 
 ### System Health
+
 - Actions created per day
 - Override rate (should be <10%)
 - Expiration processing time
@@ -282,6 +308,7 @@ queue.add('check-vendor-reputation', {}, {
 - Background job success rate
 
 ### Business Metrics
+
 - Warning → Suspension escalation rate
 - Vendor improvement rate after warning
 - False positive rate (overrides)
@@ -308,12 +335,14 @@ queue.add('check-vendor-reputation', {}, {
 ## Known Limitations & Future Enhancements
 
 ### Current Limitations
+
 1. Email notifications not yet integrated (placeholders in place)
 2. Authentication middleware commented out (ready for integration)
 3. Order guards not yet applied to endpoints (function ready)
 4. No automated tests yet (test scenarios documented)
 
 ### Future Enhancements (Phase 13+)
+
 1. **Machine Learning**: Predict vendors at risk before thresholds hit
 2. **Self-Service Appeals**: Vendors can submit appeals directly
 3. **Weighted Metrics**: Different weights for different categories
@@ -348,24 +377,28 @@ queue.add('check-vendor-reputation', {}, {
 ## Team Notes
 
 ### For Backend Engineers
+
 - Review escalation service for edge cases
 - Implement unit tests for all service functions
 - Configure background job scheduling
 - Enable auth middleware and test
 
 ### For Frontend Engineers
+
 - Review admin/vendor UIs for UX improvements
 - Add loading states and error boundaries
 - Implement real-time updates (WebSocket/polling)
 - Add analytics tracking for actions
 
 ### For DevOps
+
 - Set up monitoring alerts for job failures
 - Configure log aggregation for action events
 - Plan database backup strategy for action records
 - Set up staging environment for testing
 
 ### For Product/Policy Team
+
 - Review default thresholds with historical data
 - Define appeal process workflow
 - Create vendor communication templates
@@ -387,4 +420,3 @@ queue.add('check-vendor-reputation', {}, {
 - [ ] DevOps Lead
 - [ ] Security Review
 - [ ] Legal/Compliance Review
-

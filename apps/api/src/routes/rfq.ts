@@ -52,10 +52,7 @@ router.get('/vendor', async (req, res) => {
   if (!vendorId) return res.json({ success: true, data: [] });
   const rfqs = await RFQ.find({
     status: 'open',
-    $or: [
-      { targetVendor: vendorId },
-      { targetVendor: { $exists: false } },
-    ],
+    $or: [{ targetVendor: vendorId }, { targetVendor: { $exists: false } }],
   }).sort({ createdAt: -1 });
   res.json({ success: true, data: rfqs });
 });
@@ -76,7 +73,11 @@ router.post('/:id/quote', async (req, res) => {
     });
     // Notify buyer/admin
     const to = process.env.ADMIN_EMAIL || 'admin@example.com';
-    await emailQueue.add('send', { to, subject: 'New RFQ Quote', text: `RFQ ${req.params.id} has a new quote` });
+    await emailQueue.add('send', {
+      to,
+      subject: 'New RFQ Quote',
+      text: `RFQ ${req.params.id} has a new quote`,
+    });
     res.json({ success: true, data: quote });
   } catch (e: any) {
     res.status(400).json({ success: false, error: e.message });

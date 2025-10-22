@@ -142,6 +142,7 @@ Translation between platform SKUs and supplier SKUs.
 ```
 
 **Example**:
+
 - Customer orders: `NB-WIDGET-001`
 - Platform looks up: `ACM-WIDGET-001`
 - Order sent to supplier with: `ACM-WIDGET-001`
@@ -151,10 +152,12 @@ Translation between platform SKUs and supplier SKUs.
 Define profit margins vendors earn on supplier products.
 
 **Types**:
+
 - **Percent**: `25%` markup → Supplier cost $100 = Selling price $125
 - **Fixed**: `$10` markup → Supplier cost $50 = Selling price $60
 
 **Priority** (most specific wins):
+
 1. Category + Supplier specific
 2. Supplier specific
 3. Vendor default
@@ -198,7 +201,7 @@ sequenceDiagram
     participant V as Vendor
     participant DS as Dropship Service
     participant S as Supplier
-    
+
     C->>P: Place order (NB-WIDGET-001)
     P->>P: Validate order
     P->>DS: Check if dropship product
@@ -207,21 +210,21 @@ sequenceDiagram
     DS->>DS: Calculate vendor profit
     P->>V: Create order for vendor
     P->>C: Order confirmation
-    
+
     DS->>S: Push order (ACM-WIDGET-001)
     Note over DS,S: POST /api/orders<br/>{orderId, items, customer}
-    
+
     S->>DS: Order accepted (supplier_order_123)
     DS->>DS: Log SyncJob (success)
     DS->>V: Notify order pushed
-    
+
     S->>S: Pick & pack order
     S->>DS: Webhook: Order shipped
     Note over S,DS: POST /webhook/order-status<br/>{status: "shipped", tracking}
-    
+
     DS->>P: Update order status
     DS->>C: Send shipping notification
-    
+
     S->>C: Deliver package
     C->>P: Confirm delivery
     P->>V: Release payment (minus margin)
@@ -236,22 +239,22 @@ sequenceDiagram
     participant DS as Dropship Service
     participant S as Supplier
     participant DB as Database
-    
+
     Note over P,S: Scheduled every 15 minutes
-    
+
     P->>DS: Trigger stock sync job
     DS->>DB: Get all active SKU mappings
     DB->>DS: Return mappings (100 SKUs)
-    
+
     loop For each SKU
         DS->>S: GET /api/inventory/{sku}
         S->>DS: {sku, available: 150}
         DS->>DB: Update product stock
     end
-    
+
     DS->>DB: Log SyncJob (success)
     DS->>P: Sync complete
-    
+
     alt Stock below threshold
         DS->>P: Trigger low stock alert
         P->>V: Notify vendor
@@ -266,15 +269,15 @@ sequenceDiagram
     participant P as Platform
     participant V as Vendor
     participant S as Supplier
-    
+
     C->>P: Request return
     P->>V: Return request created
     V->>P: Approve return
     P->>C: Return shipping label
-    
+
     C->>S: Ship item to supplier
     S->>S: Receive & inspect
-    
+
     alt Item acceptable
         S->>P: Webhook: Return accepted
         P->>C: Issue refund
@@ -297,6 +300,7 @@ sequenceDiagram
 Supplier provides REST API for order push, stock sync, and status updates.
 
 **Required Endpoints**:
+
 - `POST /api/orders` - Receive orders
 - `GET /api/inventory/{sku}` - Get stock levels
 - `GET /api/pricing/{sku}` - Get current pricing
@@ -307,6 +311,7 @@ Supplier provides REST API for order push, stock sync, and status updates.
 Platform sends webhooks to supplier systems for events.
 
 **Supported Events**:
+
 - `order.created` - New order placed
 - `order.cancelled` - Order cancelled
 - `return.requested` - Customer requested return
@@ -316,6 +321,7 @@ Platform sends webhooks to supplier systems for events.
 Vendor manually forwards order details to supplier via email/portal.
 
 **Use Cases**:
+
 - Small suppliers without APIs
 - Testing new supplier relationships
 - Backup for API failures
@@ -329,21 +335,21 @@ Vendor manually forwards order details to supplier via email/portal.
 ```typescript
 interface Supplier {
   _id: ObjectId;
-  companyName: string;          // "Acme Wholesale"
-  contactName: string;          // "John Doe"
-  email: string;                // "john@acmewholesale.com"
-  taxId: string;                // "12-3456789"
-  address: string;              // Physical address
-  phone: string;                // Contact phone
-  status: SupplierStatus;       // invited | pending | active | suspended | terminated
-  invitedAt?: Date;             // When invited
-  approvedAt?: Date;            // When approved
-  suspendedAt?: Date;           // If suspended
-  terminatedAt?: Date;          // If terminated
-  kycDocs?: string[];           // KYC document URLs
-  apiEndpoint?: string;         // API base URL
-  apiKey?: string;              // Authentication key
-  webhookUrl?: string;          // Webhook endpoint
+  companyName: string; // "Acme Wholesale"
+  contactName: string; // "John Doe"
+  email: string; // "john@acmewholesale.com"
+  taxId: string; // "12-3456789"
+  address: string; // Physical address
+  phone: string; // Contact phone
+  status: SupplierStatus; // invited | pending | active | suspended | terminated
+  invitedAt?: Date; // When invited
+  approvedAt?: Date; // When approved
+  suspendedAt?: Date; // If suspended
+  terminatedAt?: Date; // If terminated
+  kycDocs?: string[]; // KYC document URLs
+  apiEndpoint?: string; // API base URL
+  apiKey?: string; // Authentication key
+  webhookUrl?: string; // Webhook endpoint
   createdAt: Date;
   updatedAt: Date;
 }
@@ -354,11 +360,11 @@ interface Supplier {
 ```typescript
 interface SkuMapping {
   _id: ObjectId;
-  supplierId: string;           // References Supplier
-  vendorId: string;             // References Vendor
-  productId: string;            // References Product
-  supplierSku: string;          // "ACM-WIDGET-001"
-  ourSku: string;               // "NB-WIDGET-001"
+  supplierId: string; // References Supplier
+  vendorId: string; // References Vendor
+  productId: string; // References Product
+  supplierSku: string; // "ACM-WIDGET-001"
+  ourSku: string; // "NB-WIDGET-001"
   status: 'active' | 'inactive';
   createdAt: Date;
   updatedAt: Date;
@@ -372,11 +378,11 @@ interface SkuMapping {
 ```typescript
 interface MarginRule {
   _id: ObjectId;
-  vendorId: ObjectId;           // References Vendor
-  supplierId?: ObjectId;        // Optional: specific supplier
-  category?: string;            // Optional: specific category
+  vendorId: ObjectId; // References Vendor
+  supplierId?: ObjectId; // Optional: specific supplier
+  category?: string; // Optional: specific category
   marginType: 'percent' | 'fixed';
-  value: number;                // 25 (percent) or 10.00 (fixed)
+  value: number; // 25 (percent) or 10.00 (fixed)
   active: boolean;
   createdAt: Date;
 }
@@ -409,21 +415,21 @@ See detailed API documentation: [DROPSHIP_API.md](./DROPSHIP_API.md)
 
 ### Quick Reference
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/dropship/suppliers` | GET | List suppliers |
-| `/api/dropship/suppliers` | POST | Create supplier |
-| `/api/dropship/suppliers/:id` | GET | Get supplier |
-| `/api/dropship/suppliers/:id` | PUT | Update supplier |
-| `/api/dropship/suppliers/:id/status` | PATCH | Update status |
-| `/api/dropship/mappings` | GET | List SKU mappings |
-| `/api/dropship/mappings` | POST | Create mapping |
-| `/api/dropship/mappings/bulk` | POST | Bulk create mappings |
-| `/api/dropship/margin-rules` | GET | List margin rules |
-| `/api/dropship/margin-rules` | POST | Create margin rule |
-| `/api/dropship/margin-rules/calculate-price` | POST | Calculate selling price |
-| `/api/dropship/sync/trigger` | POST | Trigger sync job |
-| `/api/dropship/sync/status/:jobId` | GET | Get sync job status |
+| Endpoint                                     | Method | Description             |
+| -------------------------------------------- | ------ | ----------------------- |
+| `/api/dropship/suppliers`                    | GET    | List suppliers          |
+| `/api/dropship/suppliers`                    | POST   | Create supplier         |
+| `/api/dropship/suppliers/:id`                | GET    | Get supplier            |
+| `/api/dropship/suppliers/:id`                | PUT    | Update supplier         |
+| `/api/dropship/suppliers/:id/status`         | PATCH  | Update status           |
+| `/api/dropship/mappings`                     | GET    | List SKU mappings       |
+| `/api/dropship/mappings`                     | POST   | Create mapping          |
+| `/api/dropship/mappings/bulk`                | POST   | Bulk create mappings    |
+| `/api/dropship/margin-rules`                 | GET    | List margin rules       |
+| `/api/dropship/margin-rules`                 | POST   | Create margin rule      |
+| `/api/dropship/margin-rules/calculate-price` | POST   | Calculate selling price |
+| `/api/dropship/sync/trigger`                 | POST   | Trigger sync job        |
+| `/api/dropship/sync/status/:jobId`           | GET    | Get sync job status     |
 
 ---
 
@@ -434,6 +440,7 @@ See detailed API documentation: [DROPSHIP_API.md](./DROPSHIP_API.md)
 **Endpoint**: Supplier's order API (e.g., `POST https://api.supplier.com/orders`)
 
 **Headers**:
+
 ```http
 Content-Type: application/json
 X-Idempotency-Key: order:ORD-12345:supplier:SUP-001
@@ -441,6 +448,7 @@ Authorization: Bearer sk_live_abc123...
 ```
 
 **Request Payload**:
+
 ```json
 {
   "orderId": "ORD-12345",
@@ -489,6 +497,7 @@ Authorization: Bearer sk_live_abc123...
 ```
 
 **Success Response** (200 OK):
+
 ```json
 {
   "success": true,
@@ -512,6 +521,7 @@ Authorization: Bearer sk_live_abc123...
 ```
 
 **Error Response** (400 Bad Request):
+
 ```json
 {
   "success": false,
@@ -533,6 +543,7 @@ Authorization: Bearer sk_live_abc123...
 **Endpoint**: Platform webhook (e.g., `POST https://api.nearbybazaar.com/webhooks/supplier/order-status`)
 
 **Headers**:
+
 ```http
 Content-Type: application/json
 X-Webhook-Signature: sha256=abc123def456...
@@ -540,6 +551,7 @@ X-Supplier-Id: SUP-001
 ```
 
 **Payload** (Order Shipped):
+
 ```json
 {
   "event": "order.shipped",
@@ -570,6 +582,7 @@ X-Supplier-Id: SUP-001
 ```
 
 **Platform Response** (200 OK):
+
 ```json
 {
   "success": true,
@@ -582,12 +595,14 @@ X-Supplier-Id: SUP-001
 **Endpoint**: Supplier inventory API (e.g., `GET https://api.supplier.com/inventory/{sku}`)
 
 **Headers**:
+
 ```http
 Authorization: Bearer sk_live_abc123...
 Accept: application/json
 ```
 
 **Response**:
+
 ```json
 {
   "sku": "ACM-WIDGET-001",
@@ -610,13 +625,14 @@ Accept: application/json
 **Endpoint**: Supplier pricing API (e.g., `GET https://api.supplier.com/pricing/{sku}`)
 
 **Response**:
+
 ```json
 {
   "sku": "ACM-WIDGET-001",
   "price": 29.99,
   "currency": "USD",
   "msrp": 49.99,
-  "costBasis": 25.00,
+  "costBasis": 25.0,
   "validFrom": "2025-10-01",
   "validUntil": "2025-10-31",
   "discounts": [
@@ -640,6 +656,7 @@ Accept: application/json
 **Endpoint**: Supplier RMA API (e.g., `POST https://api.supplier.com/returns`)
 
 **Request**:
+
 ```json
 {
   "returnId": "RMA-12345",
@@ -671,6 +688,7 @@ Accept: application/json
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -757,11 +775,11 @@ The dropshipping module uses Redis-based rate limiting to prevent overwhelming s
 
 #### Rate Limit Tiers
 
-| Tier          | Max Requests | Window    | Use Case                     |
-|---------------|--------------|-----------|------------------------------|
-| `conservative`| 30/minute    | 60s       | Suppliers with strict limits |
-| `default`     | 60/minute    | 60s       | Standard supplier APIs       |
-| `premium`     | 120/minute   | 60s       | High-volume suppliers        |
+| Tier           | Max Requests | Window | Use Case                     |
+| -------------- | ------------ | ------ | ---------------------------- |
+| `conservative` | 30/minute    | 60s    | Suppliers with strict limits |
+| `default`      | 60/minute    | 60s    | Standard supplier APIs       |
+| `premium`      | 120/minute   | 60s    | High-volume suppliers        |
 
 #### Configuration
 
@@ -853,7 +871,7 @@ import { Supplier } from './models/Supplier';
 // Process retry queues every 30 seconds
 cron.schedule('*/30 * * * * *', async () => {
   const suppliers = await Supplier.find({ status: 'active' });
-  
+
   for (const supplier of suppliers) {
     try {
       await processRetryQueue(supplier.id);
@@ -907,6 +925,7 @@ const price = await mockSupplier.syncPrice('TEST-SKU'); // Returns 9.99
 **Symptoms**: Order placed but not sent to supplier
 
 **Checklist**:
+
 1. ✅ Supplier status is `active`
 2. ✅ SKU mapping exists for product
 3. ✅ Supplier API endpoint configured
@@ -914,6 +933,7 @@ const price = await mockSupplier.syncPrice('TEST-SKU'); // Returns 9.99
 5. ✅ Check SyncJob logs for errors
 
 **Debug**:
+
 ```bash
 # Check SKU mapping
 curl http://localhost:3000/api/dropship/mappings?ourSku=NB-WIDGET-001
@@ -930,12 +950,14 @@ curl http://localhost:3000/api/dropship/sync/history?jobType=order-push&status=f
 **Symptoms**: Product stock levels not updating
 
 **Checklist**:
+
 1. ✅ Stock sync enabled (`ENABLE_STOCK_SYNC=true`)
 2. ✅ Sync job running (check cron/scheduler)
 3. ✅ Supplier API responding
 4. ✅ API rate limits not exceeded
 
 **Debug**:
+
 ```bash
 # Manually trigger sync
 curl -X POST http://localhost:3000/api/dropship/sync/trigger \
@@ -951,12 +973,14 @@ curl http://localhost:3000/api/dropship/sync/status/:jobId
 **Symptoms**: Selling price doesn't match expected margin
 
 **Checklist**:
+
 1. ✅ Margin rule configured correctly
 2. ✅ Margin rule is `active`
 3. ✅ Latest supplier cost synced
 4. ✅ Correct margin rule priority applied
 
 **Debug**:
+
 ```bash
 # Check margin rules
 curl http://localhost:3000/api/dropship/margin-rules?vendorId=vendor_456
@@ -979,6 +1003,7 @@ curl -X POST http://localhost:3000/api/dropship/margin-rules/calculate-price \
 **Solution**: Idempotency is built-in using `X-Idempotency-Key` header.
 
 **Verify**:
+
 - Check SyncJob logs for duplicate entries
 - Ensure idempotency key format: `order:{orderId}:supplier:{supplierId}`
 - Supplier should handle duplicate requests with same idempotency key
@@ -988,6 +1013,7 @@ curl -X POST http://localhost:3000/api/dropship/margin-rules/calculate-price \
 **Symptoms**: Supplier webhooks rejected
 
 **Solution**:
+
 ```typescript
 import crypto from 'crypto';
 
@@ -995,23 +1021,20 @@ function verifyWebhookSignature(payload: string, signature: string, secret: stri
   const hmac = crypto.createHmac('sha256', secret);
   hmac.update(payload);
   const expectedSignature = `sha256=${hmac.digest('hex')}`;
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
 }
 ```
 
 ### Error Codes
 
-| Code | Description | Action |
-|------|-------------|--------|
-| `SUPPLIER_INACTIVE` | Supplier not active | Activate supplier or use different supplier |
-| `SKU_NOT_MAPPED` | No SKU mapping found | Create SKU mapping |
-| `INSUFFICIENT_INVENTORY` | Product out of stock | Wait for restock or use alternative |
-| `API_TIMEOUT` | Supplier API timeout | Retry or check supplier status |
-| `INVALID_MARGIN_RULE` | Margin rule misconfigured | Fix margin rule configuration |
-| `ORDER_ALREADY_PUSHED` | Duplicate order detected | Check SyncJob for original push status |
+| Code                     | Description               | Action                                      |
+| ------------------------ | ------------------------- | ------------------------------------------- |
+| `SUPPLIER_INACTIVE`      | Supplier not active       | Activate supplier or use different supplier |
+| `SKU_NOT_MAPPED`         | No SKU mapping found      | Create SKU mapping                          |
+| `INSUFFICIENT_INVENTORY` | Product out of stock      | Wait for restock or use alternative         |
+| `API_TIMEOUT`            | Supplier API timeout      | Retry or check supplier status              |
+| `INVALID_MARGIN_RULE`    | Margin rule misconfigured | Fix margin rule configuration               |
+| `ORDER_ALREADY_PUSHED`   | Duplicate order detected  | Check SyncJob for original push status      |
 
 ### Monitoring
 
@@ -1024,6 +1047,7 @@ function verifyWebhookSignature(payload: string, signature: string, secret: stri
 5. **Margin Accuracy**: Compare expected vs actual prices
 
 **Alerts to Configure**:
+
 - Order push failure rate >5%
 - Stock sync missed for >30 minutes
 - Supplier API response time >5 seconds

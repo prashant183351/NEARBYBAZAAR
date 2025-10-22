@@ -15,6 +15,64 @@ import {
 } from '../src/jsonld';
 
 describe('JSON-LD Schema Generation', () => {
+  describe('Validation error branches', () => {
+    it('validateProductSchema returns errors for missing fields', () => {
+      expect(validateProductSchema({})).toEqual([
+        'Product name is required',
+        'Product price is required',
+      ]);
+      expect(validateProductSchema({ name: 'X' })).toEqual([
+        'Product price is required',
+      ]);
+      expect(validateProductSchema({ price: 1 })).toEqual([
+        'Product name is required',
+      ]);
+    });
+    it('validateServiceSchema returns errors for missing fields', () => {
+      expect(validateServiceSchema({})).toEqual([
+        'Service name is required',
+        'Service provider name is required',
+      ]);
+      expect(validateServiceSchema({ name: 'X' })).toEqual([
+        'Service provider name is required',
+      ]);
+      expect(validateServiceSchema({ provider: { name: 'Y' } })).toEqual([
+        'Service name is required',
+      ]);
+    });
+    it('validateLocalBusinessSchema returns errors for missing fields', () => {
+      expect(validateLocalBusinessSchema({})).toEqual([
+        'Business name is required',
+      ]);
+    });
+  });
+
+  describe('Edge cases for optional/empty fields', () => {
+    it('generateProductSchema omits aggregateRating if reviewCount is 0', () => {
+      const schema = generateProductSchema({ name: 'P', price: 1, aggregateRating: { ratingValue: 4.5, reviewCount: 0 } });
+      expect(schema.aggregateRating).toBeUndefined();
+    });
+    it('generateServiceSchema omits aggregateRating if reviewCount is 0', () => {
+      const schema = generateServiceSchema({ name: 'S', provider: { name: 'P' }, aggregateRating: { ratingValue: 4.5, reviewCount: 0 } });
+      expect(schema.aggregateRating).toBeUndefined();
+    });
+    it('generateLocalBusinessSchema omits aggregateRating if reviewCount is 0', () => {
+      const schema = generateLocalBusinessSchema({ name: 'B', aggregateRating: { ratingValue: 4.5, reviewCount: 0 } });
+      expect(schema.aggregateRating).toBeUndefined();
+    });
+    it('generateOrganizationSchema includes sameAs if present and non-empty', () => {
+      const schema = generateOrganizationSchema({ name: 'Org', sameAs: ['https://twitter.com/org'] });
+      expect(schema.sameAs).toEqual(['https://twitter.com/org']);
+    });
+    it('generateOrganizationSchema omits sameAs if empty', () => {
+      const schema = generateOrganizationSchema({ name: 'Org', sameAs: [] });
+      expect(schema.sameAs).toBeUndefined();
+    });
+    it('generateLocalBusinessSchema omits openingHoursSpecification if openingHours is empty', () => {
+      const schema = generateLocalBusinessSchema({ name: 'B', openingHours: [] });
+      expect(schema.openingHoursSpecification).toBeUndefined();
+    });
+  });
   describe('generateProductSchema', () => {
     it('should generate Product schema with required fields', () => {
       const schema = generateProductSchema({
@@ -46,8 +104,8 @@ describe('JSON-LD Schema Generation', () => {
 
       expect(schema.description).toBe('A complete product');
       expect(schema.sku).toBe('TEST-001');
-    expect(schema.brand).toBeDefined();
-    expect(schema.brand.name).toBe('TestBrand');
+      expect(schema.brand).toBeDefined();
+      expect(schema.brand.name).toBe('TestBrand');
       expect(schema.url).toBe('https://example.com/product');
       expect(Array.isArray(schema.image)).toBe(true);
       expect(schema.image[0]).toBe('https://example.com/image.jpg');
@@ -152,13 +210,13 @@ describe('JSON-LD Schema Generation', () => {
       const schema = generateLocalBusinessSchema({
         name: 'Business',
         geo: {
-          latitude: 19.0760,
+          latitude: 19.076,
           longitude: 72.8777,
         },
       });
 
       expect(schema.geo).toBeDefined();
-      expect(schema.geo.latitude).toBe(19.0760);
+      expect(schema.geo.latitude).toBe(19.076);
     });
 
     it('should include priceRange', () => {

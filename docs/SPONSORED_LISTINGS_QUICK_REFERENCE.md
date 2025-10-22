@@ -69,24 +69,24 @@ curl "http://localhost:5000/v1/campaigns/CAMPAIGN_ID/stats?startDate=2025-01-01&
 
 ## File Locations
 
-| Component | Path |
-|-----------|------|
-| **Models** |
-| AdCampaign | `apps/api/src/models/AdCampaign.ts` |
-| AdClick | `apps/api/src/models/AdClick.ts` |
-| **Services** |
-| Auction | `apps/api/src/services/adAuction.ts` |
-| Tracking | `apps/api/src/services/adTracking.ts` |
+| Component       | Path                                         |
+| --------------- | -------------------------------------------- |
+| **Models**      |
+| AdCampaign      | `apps/api/src/models/AdCampaign.ts`          |
+| AdClick         | `apps/api/src/models/AdClick.ts`             |
+| **Services**    |
+| Auction         | `apps/api/src/services/adAuction.ts`         |
+| Tracking        | `apps/api/src/services/adTracking.ts`        |
 | **Controllers** |
-| Campaigns | `apps/api/src/controllers/campaigns.ts` |
-| **Routes** |
-| Campaigns | `apps/api/src/routes/campaigns.ts` |
-| Tracking | `apps/api/src/routes/adTracking.ts` |
-| **Jobs** |
-| Budget Reset | `apps/api/src/jobs/resetAdBudgets.ts` |
-| **Docs** |
-| Full Docs | `docs/SPONSORED_LISTINGS.md` |
-| Quick Ref | `docs/SPONSORED_LISTINGS_QUICK_REFERENCE.md` |
+| Campaigns       | `apps/api/src/controllers/campaigns.ts`      |
+| **Routes**      |
+| Campaigns       | `apps/api/src/routes/campaigns.ts`           |
+| Tracking        | `apps/api/src/routes/adTracking.ts`          |
+| **Jobs**        |
+| Budget Reset    | `apps/api/src/jobs/resetAdBudgets.ts`        |
+| **Docs**        |
+| Full Docs       | `docs/SPONSORED_LISTINGS.md`                 |
+| Quick Ref       | `docs/SPONSORED_LISTINGS_QUICK_REFERENCE.md` |
 
 ---
 
@@ -109,7 +109,7 @@ const ads = await runAdAuction({
   placement: 'search',
   keywords: ['smartphone'],
   categoryId: 'electronics',
-  limit: 3
+  limit: 3,
 });
 
 // Validate campaign
@@ -121,7 +121,7 @@ const estimate = await estimateCampaignPerformance(
   placement,
   bidAmount,
   bidType,
-  dailyBudget
+  dailyBudget,
 );
 ```
 
@@ -134,7 +134,7 @@ await recordImpression({
   userId,
   sessionId,
   placement,
-  keyword
+  keyword,
 });
 
 // Record click
@@ -146,25 +146,17 @@ const result = await recordClick({
   keyword,
   ipAddress,
   userAgent,
-  referer
+  referer,
 });
 
 // Record conversion
 await recordConversion(clickId, orderId);
 
 // Get campaign analytics
-const analytics = await getCampaignAnalytics(
-  campaignId,
-  startDate,
-  endDate
-);
+const analytics = await getCampaignAnalytics(campaignId, startDate, endDate);
 
 // Get vendor analytics
-const analytics = await getVendorAnalytics(
-  vendorId,
-  startDate,
-  endDate
-);
+const analytics = await getVendorAnalytics(vendorId, startDate, endDate);
 
 // Detect fraud
 const fraud = await detectFraudPatterns(campaignId, hours);
@@ -177,93 +169,99 @@ const fraud = await detectFraudPatterns(campaignId, hours);
 ### MongoDB Queries
 
 **Get active campaigns for vendor**:
+
 ```javascript
 db.adcampaigns.find({
-  vendor: ObjectId("VENDOR_ID"),
-  status: "active"
-})
+  vendor: ObjectId('VENDOR_ID'),
+  status: 'active',
+});
 ```
 
 **Get campaigns needing budget reset**:
+
 ```javascript
 db.adcampaigns.find({
-  status: "active",
-  $expr: { $gte: ["$spentToday", "$dailyBudget"] }
-})
+  status: 'active',
+  $expr: { $gte: ['$spentToday', '$dailyBudget'] },
+});
 ```
 
 **Get expired campaigns**:
+
 ```javascript
 db.adcampaigns.find({
-  status: { $in: ["active", "paused"] },
-  endDate: { $lte: new Date() }
-})
+  status: { $in: ['active', 'paused'] },
+  endDate: { $lte: new Date() },
+});
 ```
 
 **Get total ad revenue this month**:
+
 ```javascript
 db.adclicks.aggregate([
   {
     $match: {
       clickedAt: {
-        $gte: ISODate("2025-01-01"),
-        $lte: ISODate("2025-01-31")
-      }
-    }
+        $gte: ISODate('2025-01-01'),
+        $lte: ISODate('2025-01-31'),
+      },
+    },
   },
   {
     $group: {
       _id: null,
-      totalRevenue: { $sum: "$cost" },
-      totalClicks: { $sum: 1 }
-    }
-  }
-])
+      totalRevenue: { $sum: '$cost' },
+      totalClicks: { $sum: 1 },
+    },
+  },
+]);
 ```
 
 **Get clicks by vendor**:
+
 ```javascript
 db.adclicks.aggregate([
   {
     $match: {
-      vendor: ObjectId("VENDOR_ID"),
-      clickedAt: { $gte: ISODate("2025-01-01") }
-    }
+      vendor: ObjectId('VENDOR_ID'),
+      clickedAt: { $gte: ISODate('2025-01-01') },
+    },
   },
   {
     $group: {
-      _id: "$campaign",
+      _id: '$campaign',
       clicks: { $sum: 1 },
-      totalCost: { $sum: "$cost" }
-    }
-  }
-])
+      totalCost: { $sum: '$cost' },
+    },
+  },
+]);
 ```
 
 **Find suspicious click patterns**:
+
 ```javascript
 db.adclicks.aggregate([
   {
     $match: {
-      clickedAt: { $gte: new Date(Date.now() - 24*60*60*1000) }
-    }
+      clickedAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+    },
   },
   {
     $group: {
-      _id: "$ipAddress",
+      _id: '$ipAddress',
       clicks: { $sum: 1 },
-      campaigns: { $addToSet: "$campaign" }
-    }
+      campaigns: { $addToSet: '$campaign' },
+    },
   },
   {
     $match: {
-      clicks: { $gt: 10 }
-    }
+      clicks: { $gt: 10 },
+    },
   },
   {
-    $sort: { clicks: -1 }
-  }
-])
+    $sort: { clicks: -1 },
+  },
+]);
 ```
 
 ---
@@ -293,10 +291,12 @@ Score = BidAmount × (Relevance/100) × (Quality/100)
 ### Examples
 
 **High bid, poor targeting**:
+
 - Bid: ₹20, Relevance: 20, Quality: 50
 - Score: 20 × 0.2 × 0.5 = **2.0**
 
 **Lower bid, good targeting**:
+
 - Bid: ₹10, Relevance: 80, Quality: 70
 - Score: 10 × 0.8 × 0.7 = **5.6** ✅ Winner
 
@@ -306,23 +306,23 @@ Score = BidAmount × (Relevance/100) × (Quality/100)
 
 ### Campaign Status
 
-| Status | Description | Can Edit | Can Delete |
-|--------|-------------|----------|------------|
-| `draft` | Not yet started | ✅ Yes | ✅ Yes |
-| `active` | Currently running | 🔒 Limited | ❌ No |
-| `paused` | Temporarily stopped | ✅ Yes | ❌ No |
-| `expired` | End date reached | ❌ No | ❌ No |
-| `completed` | Finished successfully | ❌ No | ❌ No |
+| Status      | Description           | Can Edit   | Can Delete |
+| ----------- | --------------------- | ---------- | ---------- |
+| `draft`     | Not yet started       | ✅ Yes     | ✅ Yes     |
+| `active`    | Currently running     | 🔒 Limited | ❌ No      |
+| `paused`    | Temporarily stopped   | ✅ Yes     | ❌ No      |
+| `expired`   | End date reached      | ❌ No      | ❌ No      |
+| `completed` | Finished successfully | ❌ No      | ❌ No      |
 
 ### Budget States
 
 ```typescript
 // Can serve if:
 status === 'active' &&
-now >= startDate &&
-(!endDate || now <= endDate) &&
-spentToday < dailyBudget &&
-spentTotal < totalBudget
+  now >= startDate &&
+  (!endDate || now <= endDate) &&
+  spentToday < dailyBudget &&
+  spentTotal < totalBudget;
 ```
 
 ---
@@ -332,6 +332,7 @@ spentTotal < totalBudget
 ### Creating Campaign
 
 ✅ **Required**:
+
 - `product` (ObjectId)
 - `name` (string)
 - `bidType` ('cpc' | 'cpm')
@@ -342,6 +343,7 @@ spentTotal < totalBudget
 - `placements` (array, min 1)
 
 ✅ **Constraints**:
+
 - `dailyBudget ≤ totalBudget`
 - `endDate > startDate` (if provided)
 - CPC bid ≥ ₹1
@@ -440,6 +442,7 @@ WALLET_API_KEY=your-wallet-api-key
 ## Troubleshooting
 
 **Campaign not showing?**
+
 ```typescript
 const campaign = await AdCampaign.findById(id);
 console.log(campaign.canServe()); // Should be true
@@ -448,12 +451,14 @@ console.log(campaign.keywords); // Should match search
 ```
 
 **Clicks not charged?**
+
 ```typescript
 // Check wallet integration (currently stub)
 // TODO: Implement actual wallet deduction
 ```
 
 **High fraud alerts?**
+
 ```typescript
 const fraud = await detectFraudPatterns(campaignId, 24);
 console.log(fraud.suspiciousPatterns);

@@ -1,11 +1,13 @@
 # GST-Compliant Business Invoicing - Feature #241
 
 ## Overview
+
 Implements GST-compliant invoice generation for B2B and B2C transactions in India, with automatic tax calculation, e-invoicing integration, and PDF generation.
 
 ## Key Features
 
 ### 1. GST-Compliant Invoice Generation
+
 - ✅ Automatic invoice numbering (FY-based sequential)
 - ✅ Intra-state vs Inter-state tax calculation
 - ✅ CGST + SGST for intra-state transactions
@@ -14,6 +16,7 @@ Implements GST-compliant invoice generation for B2B and B2C transactions in Indi
 - ✅ Buyer and seller GSTIN tracking
 
 ### 2. E-Invoicing Integration (GSTN)
+
 - ✅ IRN (Invoice Reference Number) generation
 - ✅ Acknowledgement number and date tracking
 - ✅ QR code support for e-invoices
@@ -21,6 +24,7 @@ Implements GST-compliant invoice generation for B2B and B2C transactions in Indi
 - ✅ Stub implementation with production-ready structure
 
 ### 3. PDF Generation
+
 - ✅ Professional GST-compliant invoice layout
 - ✅ Detailed line items with HSN codes
 - ✅ Tax breakdown (CGST/SGST/IGST)
@@ -31,6 +35,7 @@ Implements GST-compliant invoice generation for B2B and B2C transactions in Indi
 ## Database Schema
 
 ### Invoice Model
+
 **File**: `apps/api/src/models/Invoice.ts`
 
 ```typescript
@@ -40,7 +45,7 @@ Implements GST-compliant invoice generation for B2B and B2C transactions in Indi
   financialYear: string // e.g., "2024-25"
   invoiceDate: Date
   dueDate?: Date
-  
+
   // Seller Details
   seller: {
     name: string
@@ -50,7 +55,7 @@ Implements GST-compliant invoice generation for B2B and B2C transactions in Indi
     state: string
     stateCode?: string
   }
-  
+
   // Buyer Details
   buyer: {
     name: string
@@ -60,7 +65,7 @@ Implements GST-compliant invoice generation for B2B and B2C transactions in Indi
     state?: string
     stateCode?: string
   }
-  
+
   // Line Items
   lineItems: [{
     description: string
@@ -76,7 +81,7 @@ Implements GST-compliant invoice generation for B2B and B2C transactions in Indi
     }
     totalAmount: number
   }]
-  
+
   // Totals
   subtotal: number
   totalTax: number
@@ -84,24 +89,24 @@ Implements GST-compliant invoice generation for B2B and B2C transactions in Indi
   sgstTotal: number
   igstTotal: number
   grandTotal: number
-  
+
   // References
   orderId: ObjectId (indexed)
   userId: ObjectId (indexed)
-  
+
   // E-Invoicing
   irn?: string // Invoice Reference Number from GSTN
   ackNo?: string // Acknowledgement number
   ackDate?: Date
   qrCode?: string // QR code data
-  
+
   // Status
   status: 'draft' | 'generated' | 'sent' | 'paid' | 'cancelled'
-  
+
   // Additional
   paymentTerms?: string
   notes?: string
-  
+
   timestamps: true
 }
 ```
@@ -109,11 +114,13 @@ Implements GST-compliant invoice generation for B2B and B2C transactions in Indi
 ## API Endpoints
 
 ### 1. Generate Invoice
+
 **POST** `/v1/invoices/generate`
 
 Generate a GST-compliant invoice for an order.
 
 **Request Body**:
+
 ```json
 {
   "orderId": "65f1a2b3c4d5e6f7g8h9i0j1",
@@ -129,6 +136,7 @@ Generate a GST-compliant invoice for an order.
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -136,9 +144,15 @@ Generate a GST-compliant invoice for an order.
     "invoiceNumber": "2024-25/00001",
     "financialYear": "2024-25",
     "invoiceDate": "2025-01-20T...",
-    "seller": { /* seller details */ },
-    "buyer": { /* buyer details */ },
-    "lineItems": [ /* items with GST breakdown */ ],
+    "seller": {
+      /* seller details */
+    },
+    "buyer": {
+      /* buyer details */
+    },
+    "lineItems": [
+      /* items with GST breakdown */
+    ],
     "subtotal": 10000,
     "cgstTotal": 900,
     "sgstTotal": 900,
@@ -152,27 +166,32 @@ Generate a GST-compliant invoice for an order.
 ```
 
 ### 2. Get Invoice by Order
+
 **GET** `/v1/invoices/order/:orderId`
 
 Retrieve invoice for a specific order.
 
 ### 3. Get Invoice by Number
+
 **GET** `/v1/invoices/:invoiceNumber`
 
 Retrieve invoice by its number (URL-encode the slash, e.g., `2024-25%2F00001`).
 
 ### 4. List Invoices
+
 **GET** `/v1/invoices?userId=xxx&status=generated&page=1&limit=20`
 
 List invoices with pagination and filters.
 
 **Query Parameters**:
+
 - `userId`: Filter by user
 - `status`: Filter by status
 - `page`: Page number (default: 1)
 - `limit`: Items per page (default: 20)
 
 ### 5. Download PDF
+
 **GET** `/v1/invoices/:id/pdf`
 
 Download invoice as PDF file.
@@ -180,6 +199,7 @@ Download invoice as PDF file.
 **Response**: Binary PDF file with appropriate headers.
 
 ### 6. Regenerate IRN
+
 **POST** `/v1/invoices/:id/regenerate-irn`
 
 Regenerate e-invoice IRN (for failed or retry cases).
@@ -187,12 +207,16 @@ Regenerate e-invoice IRN (for failed or retry cases).
 ## Invoice Generation Logic
 
 ### Financial Year Calculation
+
 Financial year in India runs from April to March:
+
 - Jan-Mar: Previous year to current year (e.g., "2024-25")
 - Apr-Dec: Current year to next year (e.g., "2025-26")
 
 ### Invoice Numbering
+
 Format: `{FY}/{SEQUENCE}`
+
 - Example: `2024-25/00001`, `2024-25/00002`, etc.
 - Sequential within each financial year
 - 5-digit zero-padded sequence number
@@ -200,6 +224,7 @@ Format: `{FY}/{SEQUENCE}`
 ### GST Calculation
 
 #### Intra-State (Same State)
+
 ```
 Taxable Amount: ₹10,000
 GST Rate: 18%
@@ -214,6 +239,7 @@ Grand Total: ₹11,800
 ```
 
 #### Inter-State (Different States)
+
 ```
 Taxable Amount: ₹10,000
 GST Rate: 18%
@@ -230,12 +256,15 @@ Grand Total: ₹11,800
 ## E-Invoicing Integration
 
 ### When is E-Invoicing Required?
+
 E-invoicing is mandatory for:
+
 1. **B2B Transactions**: Both seller and buyer have GSTIN
 2. **Turnover Threshold**: Seller's annual turnover exceeds ₹5 crore (subject to GST notifications)
 3. **Categories**: Certain business categories as per GST rules
 
 ### E-Invoice Flow
+
 ```
 1. Generate Invoice → Create invoice record in DB
 2. Check E-Invoice Requirement → Both have GSTIN?
@@ -246,11 +275,13 @@ E-invoicing is mandatory for:
 ```
 
 ### GSP Integration (Production)
+
 To enable e-invoicing in production:
 
 1. **Register with GSP**: Choose a GST Suvidha Provider (e.g., Adaequare, ClearTax, IRIS, etc.)
 
 2. **Configure Environment Variables**:
+
 ```bash
 GSTN_E_INVOICE_URL=https://gsp.adaequare.com/enriched/ei/api/invoice
 GSTN_API_USERNAME=your_username
@@ -270,7 +301,9 @@ NODE_ENV=production
    - Duplicate IRN → Handle gracefully
 
 ### Development/Testing
+
 In non-production environments, the system returns mock IRN:
+
 ```json
 {
   "success": true,
@@ -284,21 +317,21 @@ In non-production environments, the system returns mock IRN:
 ## Integration with B2B Accounts
 
 ### Automatic B2B Detection
+
 When generating an invoice, the system checks if the buyer is a business account:
 
 ```typescript
 const user = await User.findById(order.user);
 const buyer = {
-  name: user.isBusiness 
-    ? (user.businessProfile?.companyName || user.name) 
-    : user.name,
+  name: user.isBusiness ? user.businessProfile?.companyName || user.name : user.name,
   gstin: user.businessProfile?.gstin,
   pan: user.businessProfile?.pan,
-  address: user.businessProfile?.address || ''
+  address: user.businessProfile?.address || '',
 };
 ```
 
 ### GST Compliance for B2B
+
 - Business buyer's GSTIN is included on invoice
 - E-invoicing is automatically triggered if both have GSTIN
 - Payment terms default to "Net 30" for business accounts
@@ -306,6 +339,7 @@ const buyer = {
 ## PDF Generation
 
 ### Layout Features
+
 - **Header**: Invoice number, date, IRN (if applicable)
 - **Seller Section**: Name, GSTIN, PAN, address, state
 - **Buyer Section**: Name, GSTIN, PAN, address, state
@@ -314,6 +348,7 @@ const buyer = {
 - **Footer**: Payment terms, notes, e-invoice authentication
 
 ### PDF Generation Service
+
 **File**: `apps/api/src/services/invoice/pdf.ts`
 
 ```typescript
@@ -331,12 +366,15 @@ res.send(pdfBuffer);
 ## HSN/SAC Codes
 
 ### What are HSN/SAC Codes?
+
 - **HSN**: Harmonized System of Nomenclature (for goods)
 - **SAC**: Services Accounting Code (for services)
 - Required on GST invoices for classification
 
 ### Implementation
+
 Products/Services should have HSN/SAC codes assigned:
+
 ```typescript
 // In Product model
 {
@@ -356,12 +394,14 @@ Products/Services should have HSN/SAC codes assigned:
 ## Error Handling
 
 ### Common Errors
+
 1. **Order Not Found**: Return 404
 2. **Duplicate Invoice**: Prevent creating invoice twice for same order
 3. **E-Invoice Failure**: Log error, generate invoice without IRN
 4. **PDF Generation Failure**: Return error with details
 
 ### Retry Logic
+
 ```typescript
 // For e-invoice failures
 if (eInvoiceResponse.success === false) {
@@ -382,12 +422,14 @@ if (eInvoiceResponse.success === false) {
 ## Testing
 
 ### Unit Tests
+
 ```bash
 # Test invoice generation logic
 npm test apps/api/tests/invoice.spec.ts
 ```
 
 ### Manual Testing
+
 ```bash
 # 1. Generate invoice for order
 curl -X POST http://localhost:4000/v1/invoices/generate \
@@ -412,12 +454,15 @@ curl http://localhost:4000/v1/invoices/INVOICE_ID/pdf -o invoice.pdf
 ## Migration Guide
 
 ### Existing Orders
+
 For orders created before this feature:
+
 1. Backfill invoices using a migration script
 2. Use historical order data to generate invoices
 3. Mark as "generated" retroactively
 
 ### Data Migration Script
+
 ```typescript
 // apps/api/src/migrations/backfill-invoices.ts
 import { Order } from './models/Order';
@@ -436,12 +481,14 @@ for (const order of orders) {
 ## Future Enhancements
 
 ### Phase 1 (Current) ✅
+
 - Basic invoice generation
 - GST calculation
 - E-invoicing stub
 - PDF generation
 
 ### Phase 2 (Planned)
+
 - [ ] Automatic GSTIN validation via GST portal API
 - [ ] Credit note and debit note generation
 - [ ] Multi-currency support (for exports)
@@ -449,6 +496,7 @@ for (const order of orders) {
 - [ ] Batch invoice generation
 
 ### Phase 3 (Advanced)
+
 - [ ] TDS (Tax Deducted at Source) calculation
 - [ ] TCS (Tax Collected at Source) for certain categories
 - [ ] Integration with accounting software (Tally, QuickBooks)
@@ -469,6 +517,7 @@ for (const order of orders) {
 - ⚠️ TODO: State code mapping from address
 
 ## Related Documentation
+
 - [B2B Buyer Accounts](./B2B_BUYER_ACCOUNTS.md)
 - [Tax Engine](./TAX_ENGINE.md) (TODO)
 - [Payment Integration](./PAYMENTS.md)
@@ -477,13 +526,17 @@ for (const order of orders) {
 ## Support
 
 ### GST Compliance Queries
+
 For questions about GST compliance, consult:
+
 - GST Portal: https://www.gst.gov.in/
 - GST Council Notifications
 - Your company's CA or tax consultant
 
 ### Technical Support
+
 For implementation issues:
+
 - Check logs in `apps/api/logs/invoice.log`
 - Review e-invoice API responses
 - Verify environment configuration
@@ -491,6 +544,7 @@ For implementation issues:
 ## Changelog
 
 ### 2025-01-20 (Feature #241)
+
 - ✅ Created Invoice model with GST fields
 - ✅ Implemented invoice generator service
 - ✅ Added e-invoicing stub with GSTN integration structure
@@ -503,4 +557,4 @@ For implementation issues:
 
 **Status**: ✅ Completed  
 **Version**: 1.0  
-**Last Updated**: 2025-01-20  
+**Last Updated**: 2025-01-20

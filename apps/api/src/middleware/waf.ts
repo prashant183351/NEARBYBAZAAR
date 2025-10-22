@@ -8,11 +8,7 @@ const SQLI_PATTERNS = [
   /union\s+select/i,
   /select\s+.*\s+from/i,
 ];
-const XSS_PATTERNS = [
-  /<script.*?>/i,
-  /onerror\s*=|onload\s*=/i,
-  /<img.*?src=.*?>/i,
-];
+const XSS_PATTERNS = [/<script.*?>/i, /onerror\s*=|onload\s*=/i, /<img.*?src=.*?>/i];
 
 export function wafMiddleware(req: Request, res: Response, next: NextFunction) {
   const body = JSON.stringify(req.body || {});

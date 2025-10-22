@@ -71,8 +71,7 @@ export async function createPaymentRequest(params: {
   amountInPaise: number;
   merchantUserId?: string;
   mobileNumber?: string;
-}): Promise<{ url: string; gateway: PaymentGateway }>
-{
+}): Promise<{ url: string; gateway: PaymentGateway }> {
   const env = getPhonePeEnv();
   const path = '/pg/v1/pay';
   const body: PhonePeInitRequest = {
@@ -88,15 +87,19 @@ export async function createPaymentRequest(params: {
   const payload = Buffer.from(JSON.stringify(body)).toString('base64');
   const xVerify = computeXVerify(payload, path, env);
 
-  const resp = await axios.post<PhonePeInitResponse>(`${env.baseUrl}${path}`, { request: payload }, {
-    headers: {
-      'Content-Type': 'application/json',
-      'X-VERIFY': xVerify,
-      'X-MERCHANT-ID': env.merchantId,
+  const resp = await axios.post<PhonePeInitResponse>(
+    `${env.baseUrl}${path}`,
+    { request: payload },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-VERIFY': xVerify,
+        'X-MERCHANT-ID': env.merchantId,
+      },
+      timeout: 10000,
+      validateStatus: () => true,
     },
-    timeout: 10000,
-    validateStatus: () => true,
-  });
+  );
 
   if (!resp.data?.success || !resp.data.data?.instrumentResponse?.redirectInfo?.url) {
     const code = resp.data?.code || 'UNKNOWN';

@@ -19,7 +19,7 @@ router.post('/compare', async (req, res) => {
 
     res.status(200).json({ success: true, comparison });
   } catch (error) {
-  res.status(500).json({ success: false, message: String(error) });
+    res.status(500).json({ success: false, message: String(error) });
   }
 });
 
@@ -36,7 +36,7 @@ router.get('/compare/:userId', async (req, res) => {
 
     res.status(200).json({ success: true, comparison });
   } catch (error) {
-  res.status(500).json({ success: false, message: String(error) });
+    res.status(500).json({ success: false, message: String(error) });
   }
 });
 

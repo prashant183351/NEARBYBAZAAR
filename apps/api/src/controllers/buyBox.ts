@@ -1,6 +1,6 @@
 /**
  * Buy Box Controller - Feature #183
- * 
+ *
  * Exposes buy box calculation and admin override functionality via REST API
  */
 
@@ -20,24 +20,21 @@ import {
 
 /**
  * GET /buybox/product/:productId
- * 
+ *
  * Calculate and return buy box result for a product
- * 
+ *
  * Public endpoint - anyone can see which offer wins the buy box
- * 
+ *
  * Query params:
  * - forceRecalculate: boolean (skip cache, default false)
  * - winnerId: boolean (return only winner ID, default false)
- * 
+ *
  * Response:
  * - 200: Buy box result with winner and all scores
  * - 404: No offers found for product
  * - 400: Invalid product ID
  */
-export const getBuyBoxForProduct = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const getBuyBoxForProduct = async (req: Request, res: Response): Promise<void> => {
   try {
     const { productId } = req.params;
     const forceRecalculate = req.query.forceRecalculate === 'true';
@@ -101,25 +98,22 @@ export const getBuyBoxForProduct = async (
 
 /**
  * POST /buybox/batch
- * 
+ *
  * Batch calculate buy boxes for multiple products
- * 
+ *
  * Useful for category pages or search results where multiple products
  * need buy box winners determined simultaneously
- * 
+ *
  * Body:
  * {
  *   "productIds": ["64abc...", "64def..."]
  * }
- * 
+ *
  * Response:
  * - 200: Map of product IDs to buy box results
  * - 400: Invalid input
  */
-export const batchGetBuyBox = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const batchGetBuyBox = async (req: Request, res: Response): Promise<void> => {
   try {
     const { productIds } = req.body;
 
@@ -178,14 +172,14 @@ export const batchGetBuyBox = async (
 
 /**
  * POST /buybox/admin/override
- * 
+ *
  * Admin endpoint to manually set buy box winner for a product
- * 
+ *
  * Use cases:
  * - Promote specific vendor for business reasons
  * - Run promotions or campaigns
  * - Override algorithm for fairness/quality reasons
- * 
+ *
  * Body:
  * {
  *   "productId": "64abc...",
@@ -193,16 +187,13 @@ export const batchGetBuyBox = async (
  *   "reason": "Promotional campaign",
  *   "expiresAt": "2024-12-31T23:59:59Z" // Optional
  * }
- * 
+ *
  * Response:
  * - 200: Override set successfully
  * - 400: Invalid input or missing required fields
  * - 403: User is not admin
  */
-export const setAdminBuyBoxOverride = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const setAdminBuyBoxOverride = async (req: Request, res: Response): Promise<void> => {
   try {
     // Verify admin role (should be enforced by middleware, but double-check)
     if (!req.user || req.user.role !== 'admin') {
@@ -298,18 +289,15 @@ export const setAdminBuyBoxOverride = async (
 
 /**
  * DELETE /buybox/admin/override/:productId
- * 
+ *
  * Admin endpoint to remove manual override for a product
- * 
+ *
  * Response:
  * - 200: Override cleared successfully
  * - 400: Invalid product ID
  * - 403: User is not admin
  */
-export const clearAdminBuyBoxOverride = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const clearAdminBuyBoxOverride = async (req: Request, res: Response): Promise<void> => {
   try {
     // Verify admin role
     if (!req.user || req.user.role !== 'admin') {
@@ -348,22 +336,19 @@ export const clearAdminBuyBoxOverride = async (
 
 /**
  * POST /buybox/admin/invalidate/:productId
- * 
+ *
  * Admin endpoint to force cache invalidation for a product
- * 
+ *
  * Useful when:
  * - Vendor metrics updated externally
  * - Manual intervention needed to trigger recalculation
- * 
+ *
  * Response:
  * - 200: Cache invalidated successfully
  * - 400: Invalid product ID
  * - 403: User is not admin
  */
-export const invalidateBuyBoxCacheEndpoint = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const invalidateBuyBoxCacheEndpoint = async (req: Request, res: Response): Promise<void> => {
   try {
     // Verify admin role
     if (!req.user || req.user.role !== 'admin') {
@@ -402,21 +387,18 @@ export const invalidateBuyBoxCacheEndpoint = async (
 
 /**
  * GET /buybox/admin/scoring-weights
- * 
+ *
  * Admin endpoint to view current scoring algorithm weights
- * 
+ *
  * Useful for:
  * - Understanding how buy box is calculated
  * - Debugging algorithm behavior
  * - Documentation purposes
- * 
+ *
  * Response:
  * - 200: Scoring weights configuration
  */
-export const getScoringWeights = async (
-  _req: Request,
-  res: Response
-): Promise<void> => {
+export const getScoringWeights = async (_req: Request, res: Response): Promise<void> => {
   try {
     // Import dynamically to avoid circular dependency
     const { SCORING_WEIGHTS } = await import('../services/buyBox');

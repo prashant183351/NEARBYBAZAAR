@@ -33,7 +33,8 @@ router.get('/auto-categorize/batch', async (_req, res) => {
 router.post('/auto-categorize/approve', async (req, res) => {
   try {
     const { productId, categoryId } = req.body;
-    if (!productId || !categoryId) return res.status(400).json({ success: false, error: 'Missing productId or categoryId' });
+    if (!productId || !categoryId)
+      return res.status(400).json({ success: false, error: 'Missing productId or categoryId' });
     await Product.findByIdAndUpdate(productId, { category: categoryId });
     res.json({ success: true });
   } catch (err) {

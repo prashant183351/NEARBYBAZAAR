@@ -14,6 +14,7 @@
 ## 📦 What Was Built
 
 ### Backend (3 files, ~570 lines)
+
 ```
 apps/api/src/
 ├── controllers/adDashboard.ts     # 3 endpoints, ~460 lines
@@ -22,6 +23,7 @@ apps/api/src/
 ```
 
 ### Frontend (3 files, ~1,150 lines)
+
 ```
 apps/vendor/pages/campaigns/
 ├── index.tsx                      # Dashboard with metrics, ~415 lines
@@ -38,6 +40,7 @@ apps/admin/pages/advertising/
 ### Vendor Endpoints
 
 #### GET /v1/ad-dashboard/vendor/summary
+
 **Purpose**: Get complete dashboard data  
 **Auth**: Vendor required  
 **Query**: `?daysBack=30` (optional, default: 30)  
@@ -49,6 +52,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 ```
 
 #### GET /v1/ad-dashboard/vendor/comparison
+
 **Purpose**: Compare multiple campaigns  
 **Auth**: Vendor required  
 **Query**: `?campaigns=id1,id2,id3`  
@@ -62,6 +66,7 @@ curl -H "Authorization: Bearer $TOKEN" \
 ### Admin Endpoints
 
 #### GET /v1/ad-dashboard/admin/overview
+
 **Purpose**: Platform-wide metrics and fraud alerts  
 **Auth**: Admin role required  
 **Query**: `?daysBack=30` (optional, default: 30)  
@@ -77,31 +82,34 @@ curl -H "Authorization: Bearer $ADMIN_TOKEN" \
 ## 📊 Key Metrics Explained
 
 ### Vendor Metrics
-| Metric | Calculation | Purpose |
-|--------|-------------|---------|
-| **Total Campaigns** | Count of all campaigns | Campaign volume |
-| **Active Campaigns** | Count where status='active' | Currently running ads |
-| **Total Impressions** | Sum of all campaign.impressions | Ad visibility |
-| **Total Clicks** | Sum of all campaign.clicks | User engagement |
-| **Average CTR** | (totalClicks / totalImpressions) × 100 | Click efficiency |
-| **Average CPC** | totalSpent / totalClicks | Cost per click |
-| **Total Spent** | Sum of campaign.spentTotal | Budget consumed |
-| **Remaining Budget** | Sum of (totalBudget - spentTotal) | Available funds |
+
+| Metric                | Calculation                            | Purpose               |
+| --------------------- | -------------------------------------- | --------------------- |
+| **Total Campaigns**   | Count of all campaigns                 | Campaign volume       |
+| **Active Campaigns**  | Count where status='active'            | Currently running ads |
+| **Total Impressions** | Sum of all campaign.impressions        | Ad visibility         |
+| **Total Clicks**      | Sum of all campaign.clicks             | User engagement       |
+| **Average CTR**       | (totalClicks / totalImpressions) × 100 | Click efficiency      |
+| **Average CPC**       | totalSpent / totalClicks               | Cost per click        |
+| **Total Spent**       | Sum of campaign.spentTotal             | Budget consumed       |
+| **Remaining Budget**  | Sum of (totalBudget - spentTotal)      | Available funds       |
 
 ### Admin Metrics
-| Metric | Calculation | Purpose |
-|--------|-------------|---------|
-| **Total Revenue** | Sum of all AdClick.cost | Platform earnings |
-| **Overall CTR** | Platform-wide click rate | Ad effectiveness |
-| **Avg Revenue/Click** | totalRevenue / totalClicks | Click value |
-| **Top Vendors** | Aggregated by spend | High spenders |
-| **Placement Stats** | Grouped by placement type | Best ad positions |
+
+| Metric                | Calculation                | Purpose           |
+| --------------------- | -------------------------- | ----------------- |
+| **Total Revenue**     | Sum of all AdClick.cost    | Platform earnings |
+| **Overall CTR**       | Platform-wide click rate   | Ad effectiveness  |
+| **Avg Revenue/Click** | totalRevenue / totalClicks | Click value       |
+| **Top Vendors**       | Aggregated by spend        | High spenders     |
+| **Placement Stats**   | Grouped by placement type  | Best ad positions |
 
 ---
 
 ## 🎨 UI Components Guide
 
 ### Vendor Dashboard Features
+
 ```
 ┌─────────────────────────────────────────────────┐
 │ Date Filter: [7 days] [30 days] [90 days]      │
@@ -128,6 +136,7 @@ curl -H "Authorization: Bearer $ADMIN_TOKEN" \
 ```
 
 ### Campaign Creation Wizard
+
 ```
 Step 1: Basic Info           Step 2: Budget & Bid
 ┌─────────────────┐         ┌─────────────────┐
@@ -156,6 +165,7 @@ Step 3: Targeting            Step 4: Review
 ```
 
 ### Admin Dashboard
+
 ```
 ┌─────────────────────────────────────────────────┐
 │ Platform Metrics:                               │
@@ -185,12 +195,14 @@ Step 3: Targeting            Step 4: Review
 ## 🔧 Campaign Creation Validation Rules
 
 ### Step 1: Basic Info
+
 - ✅ Campaign name required (non-empty)
 - ✅ Product required (must select from dropdown)
 - ✅ Start date required
 - ⚠️ End date optional (null = indefinite)
 
 ### Step 2: Budget & Bid
+
 - ✅ Bid type required (CPC or CPM)
 - ✅ Bid amount ≥ ₹1
 - ✅ Daily budget ≥ 10 × bid amount
@@ -198,12 +210,14 @@ Step 3: Targeting            Step 4: Review
 - 💡 Estimated clicks/impressions calculated automatically
 
 ### Step 3: Targeting
+
 - ✅ At least 1 keyword required
 - ✅ At least 1 placement required
 - 💡 Keywords case-insensitive, trimmed
 - 💡 Placements: search, category, homepage, product_detail
 
 ### Step 4: Review
+
 - ✅ All previous steps must be valid
 - ✅ Shows read-only summary
 - 💡 No additional validation
@@ -213,7 +227,9 @@ Step 3: Targeting            Step 4: Review
 ## 🚨 Fraud Detection Rules
 
 ### Suspicious Campaign Alert
+
 **Triggers when:**
+
 - Status = 'active' AND
 - Clicks > 100 AND
 - CTR < 0.5%
@@ -221,7 +237,9 @@ Step 3: Targeting            Step 4: Review
 **Reasoning:** High click volume with abnormally low CTR suggests click fraud
 
 ### High Spend Alert
+
 **Triggers when:**
+
 - (spentTotal / totalBudget) > 0.80 (80%)
 
 **Reasoning:** Campaign near budget exhaustion, vendor should be notified
@@ -231,6 +249,7 @@ Step 3: Targeting            Step 4: Review
 ## 💾 Data Models Used
 
 ### AdCampaign (from Feature #266)
+
 ```typescript
 {
   _id: ObjectId,
@@ -255,6 +274,7 @@ Step 3: Targeting            Step 4: Review
 ```
 
 ### AdClick (from Feature #266)
+
 ```typescript
 {
   _id: ObjectId,
@@ -309,9 +329,10 @@ pnpm --filter @nearbybazaar/web test:e2e campaigns
 ## 🐛 Common Issues & Solutions
 
 ### Dashboard Not Loading
+
 ```
 Problem: Empty dashboard or loading forever
-Solution: 
+Solution:
 1. Check API is running (localhost:4000)
 2. Verify auth token in localStorage: localStorage.getItem('token')
 3. Check browser console for API errors
@@ -319,6 +340,7 @@ Solution:
 ```
 
 ### Incorrect Metrics
+
 ```
 Problem: Numbers don't match expected values
 Solution:
@@ -329,6 +351,7 @@ Solution:
 ```
 
 ### Wizard Validation Failing
+
 ```
 Problem: Can't proceed to next step
 Solution:
@@ -339,6 +362,7 @@ Solution:
 ```
 
 ### Admin Dashboard 403 Error
+
 ```
 Problem: Forbidden error on admin dashboard
 Solution:
@@ -353,6 +377,7 @@ Solution:
 ## 📈 Performance Tips
 
 ### Backend Optimizations
+
 1. **Use Date Filtering**: Limit queries to last 30-90 days
 2. **Add Indexes**: Ensure indexes on AdClick.clickedAt, AdCampaign.vendor
 3. **Lean Queries**: Use `.lean()` for read-only data
@@ -360,6 +385,7 @@ Solution:
 5. **Pagination**: Limit top lists (5-10 items)
 
 ### Frontend Optimizations
+
 1. **Caching**: Store dashboard data in state, refresh on demand
 2. **Debouncing**: Wait 300ms after date range change
 3. **Lazy Loading**: Code-split dashboard components

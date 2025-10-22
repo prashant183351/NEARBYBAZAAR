@@ -17,9 +17,7 @@ Automatically determines which vendor's offer wins the **"Buy Box"** (default "A
 
 ```typescript
 // Simple - Just get winner ID
-const response = await fetch(
-  `/v1/buybox/product/${productId}?winnerId=true`
-);
+const response = await fetch(`/v1/buybox/product/${productId}?winnerId=true`);
 const { winnerId } = await response.json().data;
 
 // Full details with scores
@@ -51,7 +49,7 @@ await fetch('/v1/buybox/admin/override', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${adminToken}`,
+    Authorization: `Bearer ${adminToken}`,
   },
   body: JSON.stringify({
     productId: '64abc123...',
@@ -64,7 +62,7 @@ await fetch('/v1/buybox/admin/override', {
 // Clear override
 await fetch(`/v1/buybox/admin/override/${productId}`, {
   method: 'DELETE',
-  headers: { 'Authorization': `Bearer ${adminToken}` },
+  headers: { Authorization: `Bearer ${adminToken}` },
 });
 ```
 
@@ -85,38 +83,44 @@ Stock Level        ██  5%                    (More = Better)
 ### Component Formulas
 
 **Price Score** (40% weight):
+
 ```typescript
-score = 100 * (1 - (price - minPrice) / (maxPrice - minPrice))
+score = 100 * (1 - (price - minPrice) / (maxPrice - minPrice));
 // Cheapest = 100, Most Expensive = 0
 ```
 
 **Vendor Rating** (25% weight):
+
 ```typescript
-score = (rating / 5) * 100
+score = (rating / 5) * 100;
 // 5.0 stars = 100, 0 stars = 0
 ```
 
 **Delivery SLA** (20% weight):
+
 ```typescript
-score = 100 * (1 - (sla - 1) / (30 - 1))
+score = 100 * (1 - (sla - 1) / (30 - 1));
 // 1 day = 100, 30 days = 0
 ```
 
 **Cancellation Rate** (10% weight):
+
 ```typescript
-score = 100 * (1 - cancellationRate)
+score = 100 * (1 - cancellationRate);
 // 0% = 100, 100% = 0
 ```
 
 **Stock Level** (5% weight):
+
 ```typescript
-score = (log10(stock + 1) / log10(1001)) * 100
+score = (log10(stock + 1) / log10(1001)) * 100;
 // Logarithmic scale, caps at 1000
 ```
 
 **Final Score**:
+
 ```typescript
-total = price*0.40 + rating*0.25 + sla*0.20 + cancel*0.10 + stock*0.05
+total = price * 0.4 + rating * 0.25 + sla * 0.2 + cancel * 0.1 + stock * 0.05;
 ```
 
 ### Tie-Breaker Rule
@@ -130,13 +134,16 @@ If two offers score within **0.5 points**, vendor with **more reviews** wins.
 ### Public Endpoints
 
 #### GET `/v1/buybox/product/:productId`
+
 Get buy box winner for a product.
 
 **Query Params**:
+
 - `forceRecalculate`: Skip cache (default: false)
 - `winnerId`: Return only winner ID (default: false)
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -152,9 +159,11 @@ Get buy box winner for a product.
 ```
 
 #### POST `/v1/buybox/batch`
+
 Batch calculate for up to 50 products.
 
 **Body**:
+
 ```json
 {
   "productIds": ["64abc123...", "64def456..."]
@@ -162,6 +171,7 @@ Batch calculate for up to 50 products.
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -175,9 +185,11 @@ Batch calculate for up to 50 products.
 ### Admin Endpoints (Require Auth)
 
 #### POST `/v1/buybox/admin/override`
+
 Set manual buy box winner.
 
 **Body**:
+
 ```json
 {
   "productId": "64abc123...",
@@ -188,12 +200,15 @@ Set manual buy box winner.
 ```
 
 #### DELETE `/v1/buybox/admin/override/:productId`
+
 Clear manual override.
 
 #### POST `/v1/buybox/admin/invalidate/:productId`
+
 Force cache invalidation.
 
 #### GET `/v1/buybox/admin/scoring-weights`
+
 View algorithm weights configuration.
 
 ---
@@ -201,25 +216,28 @@ View algorithm weights configuration.
 ## 💾 Caching
 
 ### Configuration
+
 - **TTL**: 5 minutes (300 seconds)
 - **Storage**: Redis
 - **Key Format**: `buybox:<productId>`
 
 ### Performance Impact
 
-| Operation | Cold (No Cache) | Warm (Cached) | Speedup |
-|-----------|----------------|---------------|---------|
-| Single Product | ~150ms | ~5ms | **30x** |
-| Batch (10 products) | ~800ms | ~40ms | **20x** |
+| Operation           | Cold (No Cache) | Warm (Cached) | Speedup |
+| ------------------- | --------------- | ------------- | ------- |
+| Single Product      | ~150ms          | ~5ms          | **30x** |
+| Batch (10 products) | ~800ms          | ~40ms         | **20x** |
 
 ### Cache Invalidation
 
 Automatically invalidated when:
+
 - Admin sets/clears override
 - Manual invalidation endpoint called
 - 5 minutes TTL expires
 
 **Manual Invalidation**:
+
 ```typescript
 // When offer price/stock changes
 await invalidateBuyBoxCache(productId);
@@ -265,6 +283,7 @@ await invalidateBuyBoxCache(productId);
 ## 🧪 Testing
 
 ### Test Coverage
+
 - **Total**: 42 tests
 - **Passing**: 42 (100%)
 - **Categories**: 9 test suites
@@ -272,6 +291,7 @@ await invalidateBuyBoxCache(productId);
 ### Critical Scenarios Tested
 
 ✅ **Price vs Rating Balance**
+
 ```
 Vendor A: ₹700, 3★ → Wins
 Vendor B: ₹900, 5★ → Loses
@@ -279,6 +299,7 @@ Vendor B: ₹900, 5★ → Loses
 ```
 
 ✅ **Extreme Differences**
+
 ```
 Vendor A: ₹500, 1.5★, 20% cancel
 Vendor B: ₹1000, 5★, 0% cancel
@@ -286,6 +307,7 @@ Result: Balanced decision
 ```
 
 ✅ **Tie-Breaking**
+
 ```
 Vendor A: ₹1000, 4.5★, 50 reviews
 Vendor B: ₹1000, 4.5★, 500 reviews
@@ -318,39 +340,40 @@ pnpm test buyBox.spec.ts --coverage
 ### Frontend Integration
 
 **Product Page**:
+
 ```tsx
 const { winnerId } = useBuyBox(productId);
-<AddToCartButton offerId={winnerId} isPrimary />
+<AddToCartButton offerId={winnerId} isPrimary />;
 ```
 
 **Category Page**:
+
 ```tsx
 const buyBoxes = useBatchBuyBox(productIds);
-{products.map(p => (
-  <ProductCard product={p} offerId={buyBoxes[p._id]?.winnerId} />
-))}
+{
+  products.map((p) => <ProductCard product={p} offerId={buyBoxes[p._id]?.winnerId} />);
+}
 ```
 
 **Offers Page**:
+
 ```tsx
 const { allScores } = useBuyBox(productId);
-{allScores.map(score => (
-  <OfferRow
-    offer={score}
-    isBuyBoxWinner={score.offerId === winnerId}
-  />
-))}
+{
+  allScores.map((score) => <OfferRow offer={score} isBuyBoxWinner={score.offerId === winnerId} />);
+}
 ```
 
 ### Cache Invalidation Hooks
 
 **Add to ProductOffer Model**:
+
 ```typescript
-productOfferSchema.post('save', async function() {
+productOfferSchema.post('save', async function () {
   await invalidateBuyBoxCache(this.productId);
 });
 
-productOfferSchema.post('findOneAndUpdate', async function(doc) {
+productOfferSchema.post('findOneAndUpdate', async function (doc) {
   if (doc) await invalidateBuyBoxCache(doc.productId);
 });
 ```
@@ -443,18 +466,21 @@ Result: Offer B wins until October 30, then reverts to Offer A
 ## 🚀 Future Improvements
 
 ### Priority 1: Production Hardening
+
 - [ ] MongoDB collection for overrides
 - [ ] Real vendor metrics integration
 - [ ] Redis clustering for HA
 - [ ] Validate offer belongs to product
 
 ### Priority 2: Optimization
+
 - [ ] Configurable scoring weights (admin UI)
 - [ ] A/B testing framework
 - [ ] Pre-warming cache for popular products
 - [ ] Longer TTL for stable products (15-30 min)
 
 ### Priority 3: Analytics
+
 - [ ] Buy box win rate tracking
 - [ ] Conversion rate by winner
 - [ ] Vendor buy box insights dashboard

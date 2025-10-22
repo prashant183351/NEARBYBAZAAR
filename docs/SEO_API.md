@@ -26,7 +26,7 @@ The Server SEO API provides dynamic SEO metadata generation for all routes in th
 ✅ **Redis Caching**: Server-side caching with configurable TTL  
 ✅ **Structured Data**: Automatic JSON-LD generation for rich snippets  
 ✅ **Open Graph & Twitter Cards**: Social media optimization  
-✅ **Fail-Safe**: Graceful fallback if cache unavailable  
+✅ **Fail-Safe**: Graceful fallback if cache unavailable
 
 ---
 
@@ -37,13 +37,16 @@ The Server SEO API provides dynamic SEO metadata generation for all routes in th
 Fetch SEO metadata for a given path.
 
 **Query Parameters:**
+
 - `path` (required): The route path (e.g., `/p/product-slug`, `/s/store-slug`)
 - `lang` (optional): Locale code (default: `en`, supported: `en`, `hi`)
 
 **Headers:**
+
 - `If-None-Match`: ETag for conditional requests (returns 304 if unchanged)
 
 **Response (200 OK):**
+
 ```json
 {
   "title": "Cool Gadget | NearbyBazaar",
@@ -51,9 +54,7 @@ Fetch SEO metadata for a given path.
   "canonical": "https://nearbybazaar.com/p/cool-gadget",
   "keywords": ["Cool Gadget", "electronics", "Vendor Name", "SKU-001"],
   "locale": "en",
-  "alternateLocales": [
-    { "locale": "hi", "url": "https://nearbybazaar.com/p/cool-gadget?lang=hi" }
-  ],
+  "alternateLocales": [{ "locale": "hi", "url": "https://nearbybazaar.com/p/cool-gadget?lang=hi" }],
   "ogTitle": "Cool Gadget",
   "ogDescription": "An amazing gadget that does cool things",
   "ogType": "product",
@@ -90,6 +91,7 @@ Fetch SEO metadata for a given path.
 ```
 
 **Response Headers:**
+
 ```
 Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 ETag: "5d41402abc4b2a76b9719d911017c592"
@@ -98,6 +100,7 @@ Vary: Accept-Language
 ```
 
 **Error Responses:**
+
 - `304 Not Modified`: ETag matches (no body)
 - `400 Bad Request`: Missing or invalid parameters
 - `500 Internal Server Error`: Server error
@@ -109,11 +112,13 @@ Vary: Accept-Language
 Invalidate SEO cache (admin only).
 
 **Query Parameters:**
+
 - `path` (optional): Specific path to invalidate
 - `pattern` (optional): Pattern to match (e.g., `product:*`)
 - `all` (optional): Invalidate all cache (`true`)
 
 **Examples:**
+
 ```bash
 # Invalidate specific product
 DELETE /v1/seo/cache?path=/p/cool-gadget
@@ -132,6 +137,7 @@ DELETE /v1/seo/cache?all=true
 Get cache statistics (admin only).
 
 **Response:**
+
 ```json
 {
   "enabled": true,
@@ -147,9 +153,11 @@ Get cache statistics (admin only).
 The SEO API supports the following route types:
 
 ### Product Pages
+
 **Pattern:** `/p/{slug}`
 
 **Metadata Includes:**
+
 - Product name, description, price
 - Product images
 - Vendor/brand information
@@ -157,6 +165,7 @@ The SEO API supports the following route types:
 - SKU and category keywords
 
 **Example:**
+
 ```bash
 GET /v1/seo?path=/p/wireless-headphones&lang=en
 ```
@@ -164,15 +173,18 @@ GET /v1/seo?path=/p/wireless-headphones&lang=en
 ---
 
 ### Store/Vendor Pages
+
 **Pattern:** `/s/{slug}` or `/store/{slug}`
 
 **Metadata Includes:**
+
 - Store name and description
 - Store logo
 - Aggregate ratings (if available)
 - Store structured data (Schema.org Store)
 
 **Example:**
+
 ```bash
 GET /v1/seo?path=/s/awesome-electronics&lang=en
 ```
@@ -180,14 +192,17 @@ GET /v1/seo?path=/s/awesome-electronics&lang=en
 ---
 
 ### Category Pages
+
 **Pattern:** `/c/{slug}`
 
 **Metadata Includes:**
+
 - Category name (auto-formatted from slug)
 - Generic category description
 - Collection page structured data
 
 **Example:**
+
 ```bash
 GET /v1/seo?path=/c/home-appliances&lang=en
 ```
@@ -195,9 +210,11 @@ GET /v1/seo?path=/c/home-appliances&lang=en
 ---
 
 ### Home Page
+
 **Pattern:** `/`
 
 **Metadata Includes:**
+
 - Site name and description
 - Website structured data
 - Search action structured data
@@ -205,18 +222,22 @@ GET /v1/seo?path=/c/home-appliances&lang=en
 ---
 
 ### Search Page
+
 **Pattern:** `/search`
 
 **Metadata Includes:**
+
 - Generic search page metadata
 - `noindex, follow` robots directive (don't index search pages)
 
 ---
 
 ### Static Pages
+
 **Pattern:** Any other path
 
 **Metadata Includes:**
+
 - Generic metadata based on path
 - Default structured data
 
@@ -251,6 +272,7 @@ seo:meta:{hash}:en                       # Other pages (MD5 hash)
 ### ETag Generation
 
 ETags are MD5 hashes of the metadata JSON:
+
 - Consistent across requests for same content
 - Changes when metadata updates
 - Enables conditional requests (304 responses)
@@ -258,6 +280,7 @@ ETags are MD5 hashes of the metadata JSON:
 ### Stale-While-Revalidate
 
 Clients can serve stale content while fetching fresh data in background:
+
 - Improves perceived performance
 - Reduces server load
 - 24-hour stale window
@@ -286,15 +309,14 @@ Metadata includes alternate locale URLs for SEO:
 ```json
 {
   "locale": "en",
-  "alternateLocales": [
-    { "locale": "hi", "url": "https://nearbybazaar.com/p/product?lang=hi" }
-  ]
+  "alternateLocales": [{ "locale": "hi", "url": "https://nearbybazaar.com/p/product?lang=hi" }]
 }
 ```
 
 ### Open Graph Locale
 
 Locales are mapped to OG locale format:
+
 - `en` → `en_US`
 - `hi` → `hi_IN`
 
@@ -323,7 +345,7 @@ import { GetServerSideProps } from 'next';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { slug, lang = 'en' } = context.params;
-  
+
   const response = await fetch(
     `https://api.nearbybazaar.com/v1/seo?path=/p/${slug}&lang=${lang}`,
     {
@@ -332,14 +354,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       },
     }
   );
-  
+
   if (response.status === 304) {
     // Use cached metadata
     return { notModified: true };
   }
-  
+
   const seoMetadata = await response.json();
-  
+
   return {
     props: {
       seoMetadata,
@@ -354,19 +376,19 @@ export default function ProductPage({ seoMetadata }) {
         <title>{seoMetadata.title}</title>
         <meta name="description" content={seoMetadata.description} />
         <link rel="canonical" href={seoMetadata.canonical} />
-        
+
         {/* Open Graph */}
         <meta property="og:title" content={seoMetadata.ogTitle} />
         <meta property="og:description" content={seoMetadata.ogDescription} />
         <meta property="og:type" content={seoMetadata.ogType} />
         <meta property="og:url" content={seoMetadata.ogUrl} />
         <meta property="og:image" content={seoMetadata.ogImage} />
-        
+
         {/* Twitter Card */}
         <meta name="twitter:card" content={seoMetadata.twitterCard} />
         <meta name="twitter:title" content={seoMetadata.twitterTitle} />
         <meta name="twitter:description" content={seoMetadata.twitterDescription} />
-        
+
         {/* Structured Data */}
         <script
           type="application/ld+json"
@@ -374,7 +396,7 @@ export default function ProductPage({ seoMetadata }) {
             __html: JSON.stringify(seoMetadata.structuredData),
           }}
         />
-        
+
         {/* Alternate Locales */}
         {seoMetadata.alternateLocales?.map((alt) => (
           <link
@@ -385,7 +407,7 @@ export default function ProductPage({ seoMetadata }) {
           />
         ))}
       </Head>
-      
+
       {/* Page content */}
     </>
   );
@@ -400,13 +422,11 @@ import { GetStaticProps } from 'next';
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const { slug, lang = 'en' } = context.params;
-  
-  const response = await fetch(
-    `https://api.nearbybazaar.com/v1/seo?path=/p/${slug}&lang=${lang}`
-  );
-  
+
+  const response = await fetch(`https://api.nearbybazaar.com/v1/seo?path=/p/${slug}&lang=${lang}`);
+
   const seoMetadata = await response.json();
-  
+
   return {
     props: { seoMetadata },
     revalidate: 3600, // Revalidate every hour
@@ -423,16 +443,16 @@ import { useEffect, useState } from 'react';
 export function useSeoMetadata(path: string, lang = 'en') {
   const [metadata, setMetadata] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     fetch(`/api/seo?path=${path}&lang=${lang}`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setMetadata(data);
         setLoading(false);
       });
   }, [path, lang]);
-  
+
   return { metadata, loading };
 }
 ```
@@ -477,17 +497,17 @@ Integrate cache invalidation into Mongoose post-save hooks:
 
 ```typescript
 // In Product model
-ProductSchema.post('save', async function(doc) {
+ProductSchema.post('save', async function (doc) {
   // Invalidate product page cache
   await SeoCacheInvalidation.invalidateProduct(doc.slug);
-  
+
   // Invalidate category page if category changed
   if (doc.category) {
     await SeoCacheInvalidation.invalidateCategory(doc.category);
   }
 });
 
-ProductSchema.post('remove', async function(doc) {
+ProductSchema.post('remove', async function (doc) {
   await SeoCacheInvalidation.invalidateProduct(doc.slug);
 });
 ```
@@ -508,18 +528,22 @@ DELETE /v1/seo/cache?all=true
 ### Benchmark Results
 
 Without Cache:
+
 - Product page: ~150ms (DB queries)
 - Store page: ~120ms (DB queries)
 
 With Redis Cache (Hit):
+
 - Any page: ~5-10ms (Redis lookup)
 
 With HTTP Cache (304):
+
 - Any page: ~1ms (no body transfer)
 
 ### Optimization Tips
 
 1. **Precompute Common Pages**
+
    ```typescript
    // Warm up cache for popular products
    const popularProducts = await Product.find({ views: { $gt: 1000 } });
@@ -529,6 +553,7 @@ With HTTP Cache (304):
    ```
 
 2. **Use CDN Caching**
+
    ```nginx
    # Nginx config
    location /v1/seo {

@@ -7,7 +7,7 @@ services:
     container_name: nearbybazaar-mongodb
     restart: unless-stopped
     ports:
-      - "27017:27017"
+      - '27017:27017'
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password123
@@ -20,7 +20,7 @@ services:
     networks:
       - nearbybazaar-network
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -32,7 +32,7 @@ services:
     container_name: nearbybazaar-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - '6379:6379'
     command: redis-server --requirepass redispass123 --appendonly yes
     volumes:
       # Persistent data volume
@@ -40,7 +40,7 @@ services:
     networks:
       - nearbybazaar-network
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ['CMD', 'redis-cli', '--raw', 'incr', 'ping']
       interval: 10s
       timeout: 3s
       retries: 5
@@ -52,7 +52,7 @@ services:
     container_name: nearbybazaar-mongo-express
     restart: unless-stopped
     ports:
-      - "8081:8081"
+      - '8081:8081'
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: admin
       ME_CONFIG_MONGODB_ADMINPASSWORD: password123
@@ -74,7 +74,7 @@ services:
     container_name: nearbybazaar-redis-commander
     restart: unless-stopped
     ports:
-      - "8082:8081"
+      - '8082:8081'
     environment:
       REDIS_HOSTS: local:redis:6379:0:redispass123
     networks:

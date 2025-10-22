@@ -8,6 +8,7 @@
 ---
 
 ## Table of Contents
+
 1. [Overview](#overview)
 2. [Spec Requirements Checklist](#spec-requirements-checklist)
 3. [Files Created](#files-created)
@@ -30,6 +31,7 @@
 The **Buy Box Service** automatically determines which vendor's offer wins the "Buy Box" (the default "Add to Cart" vendor) when multiple vendors sell the same product. This feature is critical for multi-seller marketplaces to ensure buyers see the best overall value proposition.
 
 ### Key Features
+
 - **Multi-factor scoring algorithm** (price, vendor rating, delivery SLA, cancellation rate, stock level)
 - **Redis caching** with 5-minute TTL for performance
 - **Admin manual overrides** for promotions or fairness interventions
@@ -44,6 +46,7 @@ The **Buy Box Service** automatically determines which vendor's offer wins the "
 All requirements from Feature #183 spec have been implemented:
 
 ### Core Requirements
+
 - ✅ **Score calculation service** (`apps/api/src/services/buyBox.ts`)
 - ✅ **Price scoring** - Lower price scores higher (40% weight)
 - ✅ **Vendor rating scoring** - Higher rating scores higher (25% weight)
@@ -52,12 +55,14 @@ All requirements from Feature #183 spec have been implemented:
 - ✅ **Stock level scoring** - More stock scores higher (5% weight, logarithmic)
 
 ### Advanced Features
+
 - ✅ **Redis caching** - 5-minute TTL with automatic expiration
 - ✅ **Admin override** - Manual winner selection with reason and expiration
 - ✅ **Tie-breaking** - Vendor with more reviews wins close scores (<0.5 points)
 - ✅ **Batch processing** - Calculate buy boxes for multiple products simultaneously
 
 ### Testing Requirements
+
 - ✅ **Tie-break scenarios** - Equal scores resolved by review count
 - ✅ **Extreme differences** - Cheap vs high-rated vendor tested
 - ✅ **Edge cases** - No offers, single offer, all same price
@@ -68,13 +73,14 @@ All requirements from Feature #183 spec have been implemented:
 ## Files Created
 
 ### Service Layer
+
 **File**: `apps/api/src/services/buyBox.ts` (650+ lines)
+
 - **Core Functions**:
   - `calculateBuyBox()` - Main entry point for buy box determination
   - `getBuyBoxWinner()` - Lightweight function returning only winner ID
   - `batchCalculateBuyBox()` - Process multiple products
   - `invalidateBuyBoxCache()` - Force cache refresh
-  
 - **Scoring Functions**:
   - `calculatePriceScore()` - Inverse normalization (cheap = high score)
   - `calculateVendorRatingScore()` - Linear 0-5 to 0-100 conversion
@@ -94,7 +100,9 @@ All requirements from Feature #183 spec have been implemented:
   - `initBuyBoxCache()` - Initialize Redis client
 
 ### Controller Layer
+
 **File**: `apps/api/src/controllers/buyBox.ts` (460+ lines)
+
 - **Public Endpoints**:
   - `getBuyBoxForProduct()` - GET buy box result for product
   - `batchGetBuyBox()` - POST batch calculation for multiple products
@@ -106,7 +114,9 @@ All requirements from Feature #183 spec have been implemented:
   - `invalidateBuyBoxCacheEndpoint()` - POST force cache refresh
 
 ### Routes Layer
+
 **File**: `apps/api/src/routes/buyBox.ts` (90+ lines)
+
 - **Public Routes**:
   - `GET /buybox/product/:productId` - Get buy box for product
   - `POST /buybox/batch` - Batch calculate for multiple products
@@ -118,12 +128,16 @@ All requirements from Feature #183 spec have been implemented:
   - `GET /buybox/admin/scoring-weights` - View algorithm config
 
 ### Integration
+
 **File**: `apps/api/src/routes/index.ts` (modified)
+
 - Added import: `import buyBoxRouter from './buyBox';`
 - Added route: `router.use('/buybox', buyBoxRouter);`
 
 ### Tests
+
 **File**: `apps/api/tests/buyBox.spec.ts` (750+ lines)
+
 - **Test Suites**: 9 describe blocks
 - **Test Count**: 42 tests total
 - **Result**: 42/42 PASSING (100%)
@@ -232,9 +246,10 @@ All requirements from Feature #183 spec have been implemented:
 Each component is scored on a 0-100 scale before weighting:
 
 #### 1. Price Score (40% weight)
+
 ```typescript
 // Inverse normalization: cheapest = 100, most expensive = 0
-priceScore = 100 * (1 - (offerPrice - minPrice) / (maxPrice - minPrice))
+priceScore = 100 * (1 - (offerPrice - minPrice) / (maxPrice - minPrice));
 
 // Example:
 // Offers: ₹500, ₹750, ₹1000
@@ -244,9 +259,10 @@ priceScore = 100 * (1 - (offerPrice - minPrice) / (maxPrice - minPrice))
 ```
 
 #### 2. Vendor Rating Score (25% weight)
+
 ```typescript
 // Linear conversion from 0-5 star scale to 0-100
-vendorRatingScore = (rating / 5) * 100
+vendorRatingScore = (rating / 5) * 100;
 
 // Example:
 // 5.0 stars → 100
@@ -256,10 +272,11 @@ vendorRatingScore = (rating / 5) * 100
 ```
 
 #### 3. Delivery SLA Score (20% weight)
+
 ```typescript
 // Inverse normalization: 1 day = 100, 30 days = 0
-totalDelivery = slaInDays + handlingTimeInDays
-deliverySLAScore = 100 * (1 - (clampedSLA - 1) / (30 - 1))
+totalDelivery = slaInDays + handlingTimeInDays;
+deliverySLAScore = 100 * (1 - (clampedSLA - 1) / (30 - 1));
 
 // Example:
 // 2 days total → ~97
@@ -269,9 +286,10 @@ deliverySLAScore = 100 * (1 - (clampedSLA - 1) / (30 - 1))
 ```
 
 #### 4. Cancellation Rate Score (10% weight)
+
 ```typescript
 // Inverse: 0% cancellation = 100, 100% cancellation = 0
-cancellationScore = 100 * (1 - cancellationRate)
+cancellationScore = 100 * (1 - cancellationRate);
 
 // Example:
 // 0% cancellation → 100
@@ -281,9 +299,10 @@ cancellationScore = 100 * (1 - cancellationRate)
 ```
 
 #### 5. Stock Level Score (5% weight)
+
 ```typescript
 // Logarithmic scale to prevent huge stock from dominating
-stockScore = (log10(stock + 1) / log10(1001)) * 100
+stockScore = (log10(stock + 1) / log10(1001)) * 100;
 
 // Example:
 // 0 stock → 0
@@ -296,12 +315,12 @@ stockScore = (log10(stock + 1) / log10(1001)) * 100
 ### Final Score Calculation
 
 ```typescript
-totalScore = 
-  priceScore * 0.40 +
+totalScore =
+  priceScore * 0.4 +
   vendorRatingScore * 0.25 +
-  deliverySLAScore * 0.20 +
-  cancellationScore * 0.10 +
-  stockScore * 0.05
+  deliverySLAScore * 0.2 +
+  cancellationScore * 0.1 +
+  stockScore * 0.05;
 
 // Range: 0-100
 ```
@@ -324,13 +343,16 @@ if (Math.abs(topScore - runnerUpScore) < 0.5) {
 ### Public Endpoints
 
 #### `GET /v1/buybox/product/:productId`
+
 Get buy box winner for a product.
 
 **Query Parameters**:
+
 - `forceRecalculate`: boolean (default: false) - Skip cache and recalculate
 - `winnerId`: boolean (default: false) - Return only winner ID (lightweight)
 
 **Response** (full):
+
 ```json
 {
   "success": true,
@@ -361,6 +383,7 @@ Get buy box winner for a product.
 ```
 
 **Response** (winnerId only):
+
 ```json
 {
   "success": true,
@@ -371,11 +394,13 @@ Get buy box winner for a product.
 ```
 
 **Error Responses**:
+
 - `400`: Invalid product ID format
 - `404`: No offers available for product
 - `500`: Calculation failed
 
 **Example Usage**:
+
 ```bash
 # Get full buy box result
 curl http://localhost:4000/v1/buybox/product/64abc123
@@ -388,9 +413,11 @@ curl "http://localhost:4000/v1/buybox/product/64abc123?winnerId=true"
 ```
 
 #### `POST /v1/buybox/batch`
+
 Batch calculate buy boxes for multiple products (max 50 per request).
 
 **Request Body**:
+
 ```json
 {
   "productIds": ["64abc123...", "64def456...", "64ghi789..."]
@@ -398,6 +425,7 @@ Batch calculate buy boxes for multiple products (max 50 per request).
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -418,10 +446,12 @@ Batch calculate buy boxes for multiple products (max 50 per request).
 ```
 
 **Error Responses**:
+
 - `400`: Invalid input (empty array, >50 products, invalid IDs)
 - `500`: Batch calculation failed
 
 **Example Usage**:
+
 ```bash
 curl -X POST http://localhost:4000/v1/buybox/batch \
   -H "Content-Type: application/json" \
@@ -433,9 +463,11 @@ curl -X POST http://localhost:4000/v1/buybox/batch \
 ### Admin Endpoints
 
 #### `POST /v1/buybox/admin/override`
+
 Manually set buy box winner (requires admin authentication).
 
 **Request Body**:
+
 ```json
 {
   "productId": "64abc123...",
@@ -446,6 +478,7 @@ Manually set buy box winner (requires admin authentication).
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -459,14 +492,17 @@ Manually set buy box winner (requires admin authentication).
 ```
 
 **Error Responses**:
+
 - `400`: Missing required fields or invalid IDs
 - `403`: User is not admin
 - `500`: Failed to set override
 
 #### `DELETE /v1/buybox/admin/override/:productId`
+
 Remove manual buy box override (requires admin authentication).
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -475,14 +511,17 @@ Remove manual buy box override (requires admin authentication).
 ```
 
 **Error Responses**:
+
 - `400`: Invalid product ID
 - `403`: User is not admin
 - `500`: Failed to clear override
 
 #### `POST /v1/buybox/admin/invalidate/:productId`
+
 Force cache invalidation for a product (requires admin authentication).
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -491,23 +530,26 @@ Force cache invalidation for a product (requires admin authentication).
 ```
 
 **Use Cases**:
+
 - Vendor metrics updated externally
 - Manual intervention needed to trigger recalculation
 - Testing or debugging
 
 #### `GET /v1/buybox/admin/scoring-weights`
+
 View current scoring algorithm weights and configuration.
 
 **Response**:
+
 ```json
 {
   "success": true,
   "data": {
     "weights": {
-      "price": 0.40,
+      "price": 0.4,
       "vendorRating": 0.25,
-      "deliverySLA": 0.20,
-      "cancellationRate": 0.10,
+      "deliverySLA": 0.2,
+      "cancellationRate": 0.1,
       "stockLevel": 0.05
     },
     "description": {
@@ -533,19 +575,22 @@ View current scoring algorithm weights and configuration.
 ### Redis Implementation
 
 **Configuration**:
+
 ```typescript
 const CACHE_CONFIG = {
-  ttl: 300,              // 5 minutes (300 seconds)
-  keyPrefix: 'buybox:',  // Namespacing
+  ttl: 300, // 5 minutes (300 seconds)
+  keyPrefix: 'buybox:', // Namespacing
 };
 ```
 
 **Cache Key Format**:
+
 ```
 buybox:<productId>
 ```
 
 **Example**:
+
 ```
 buybox:64abc123def456789012345
 ```
@@ -563,11 +608,13 @@ Return immediately                      Next request uses cache
 ### Cache Invalidation Triggers
 
 The cache is automatically invalidated when:
+
 1. **Admin sets override** - `setAdminOverride()` deletes cache key
 2. **Admin clears override** - `clearAdminOverride()` deletes cache key
 3. **Manual invalidation** - Admin calls `/admin/invalidate/:productId`
 
 **Recommended** manual invalidation scenarios:
+
 - New offer added for product
 - Offer price/stock updated
 - Vendor metrics change significantly
@@ -576,6 +623,7 @@ The cache is automatically invalidated when:
 ### Cache Expiration
 
 Cached results include an expiration timestamp:
+
 ```json
 {
   "calculatedAt": "2025-10-20T10:30:00.000Z",
@@ -587,12 +635,14 @@ Cached results include an expiration timestamp:
 ### Performance Impact
 
 **Without Cache** (Cold):
+
 - Fetch all active offers from DB: ~50ms
 - Fetch vendor metrics (mock): ~10ms per vendor
 - Calculate scores: <5ms
 - Total: **~100-150ms**
 
 **With Cache** (Warm):
+
 - Redis GET: ~2-5ms
 - JSON parse: <1ms
 - Total: **~5-10ms** (20-30x faster)
@@ -624,13 +674,13 @@ Priority Order:
 
 ```typescript
 interface BuyBoxOverride {
-  productId: Types.ObjectId;      // Product being overridden
-  offerId: Types.ObjectId;         // Offer manually selected as winner
-  vendorId: Types.ObjectId;        // Vendor who owns the offer
-  reason: string;                  // Required explanation
-  setBy: Types.ObjectId;           // Admin user who set it
-  setAt: Date;                     // Timestamp of override
-  expiresAt?: Date;                // Optional expiration
+  productId: Types.ObjectId; // Product being overridden
+  offerId: Types.ObjectId; // Offer manually selected as winner
+  vendorId: Types.ObjectId; // Vendor who owns the offer
+  reason: string; // Required explanation
+  setBy: Types.ObjectId; // Admin user who set it
+  setAt: Date; // Timestamp of override
+  expiresAt?: Date; // Optional expiration
 }
 ```
 
@@ -653,6 +703,7 @@ When an override is active, the response indicates this:
 ### Audit Trail
 
 All override actions should be logged:
+
 - Who set the override (admin user ID)
 - When it was set
 - Why it was set (reason field)
@@ -672,6 +723,7 @@ This data is stored in-memory for now, but **should be persisted to MongoDB** in
 **Success Rate**: 100%
 
 #### 1. Price Scoring Tests (5 tests)
+
 - ✅ Cheapest offer gets 100
 - ✅ Most expensive offer gets 0
 - ✅ Mid-priced offer gets 50
@@ -679,6 +731,7 @@ This data is stored in-memory for now, but **should be persisted to MongoDB** in
 - ✅ Scores clamped to 0-100 range
 
 #### 2. Vendor Rating Tests (6 tests)
+
 - ✅ 5-star rating → 100
 - ✅ 0-star rating → 0
 - ✅ 2.5-star rating → 50
@@ -687,6 +740,7 @@ This data is stored in-memory for now, but **should be persisted to MongoDB** in
 - ✅ >5 ratings clamped to 100
 
 #### 3. Delivery SLA Tests (5 tests)
+
 - ✅ 1-day delivery → 100
 - ✅ 30-day delivery → 0
 - ✅ 15-day delivery → ~50
@@ -694,21 +748,25 @@ This data is stored in-memory for now, but **should be persisted to MongoDB** in
 - ✅ Very long delivery times clamped
 
 #### 4. Cancellation Rate Tests (4 tests)
+
 - ✅ 0% cancellation → 100
 - ✅ 100% cancellation → 0
 - ✅ 5% cancellation → 95
 - ✅ 10% cancellation → 90
 
 #### 5. Stock Level Tests (3 tests)
+
 - ✅ Zero stock → 0
 - ✅ Higher stock → higher score
 - ✅ Logarithmic scale prevents huge stock dominating
 
 #### 6. Comprehensive Scoring Tests (2 tests)
+
 - ✅ Total score calculated with correct weights
 - ✅ Total score always between 0-100
 
 #### 7. Buy Box Calculation Tests (7 tests)
+
 - ✅ Returns null when no offers available
 - ✅ Single offer automatically wins
 - ✅ **CRITICAL**: Cheapest offer wins with similar ratings
@@ -718,17 +776,20 @@ This data is stored in-memory for now, but **should be persisted to MongoDB** in
 - ✅ Handles different fulfillment methods
 
 #### 8. Admin Override Tests (4 tests)
+
 - ✅ Set override successfully
 - ✅ Clear override successfully
 - ✅ Respect expiration date
 - ✅ Return override result with source="admin_override"
 
 #### 9. Edge Case Tests (3 tests)
+
 - ✅ Product with no active offers
 - ✅ All offers with same price and rating
 - ✅ Missing vendor metrics handled gracefully
 
 #### 10. Configuration Tests (3 tests)
+
 - ✅ Weights sum to 1.0 (100%)
 - ✅ Price has highest weight
 - ✅ Stock has lowest weight
@@ -736,6 +797,7 @@ This data is stored in-memory for now, but **should be persisted to MongoDB** in
 ### Critical Scenario Testing
 
 **Scenario 1**: Cheap vs High-Rated Vendor
+
 ```
 Vendor A: ₹700, 3.0 rating, 10% cancellation
 Vendor B: ₹900, 5.0 rating, 1% cancellation
@@ -744,6 +806,7 @@ Result: Vendor A wins (price weight 40% > rating weight 25%)
 ```
 
 **Scenario 2**: Extreme Price Difference
+
 ```
 Vendor A: ₹500, 1.5 rating, 20% cancellation
 Vendor B: ₹1000, 5.0 rating, 0% cancellation
@@ -752,6 +815,7 @@ Result: Algorithm makes balanced decision
 ```
 
 **Scenario 3**: Perfect Tie
+
 ```
 Vendor A: ₹1000, 4.5 rating, 50 reviews
 Vendor B: ₹1000, 4.5 rating, 500 reviews
@@ -837,11 +901,7 @@ export function BuyingOptions({ productId }: { productId: string }) {
 // Admin sets manual buy box winner for promotion
 import { setAdminOverride } from '../services/buyBox';
 
-export async function setPromotionalBuyBox(
-  productId: string,
-  offerId: string,
-  adminId: string
-) {
+export async function setPromotionalBuyBox(productId: string, offerId: string, adminId: string) {
   await setAdminOverride({
     productId: new Types.ObjectId(productId),
     offerId: new Types.ObjectId(offerId),
@@ -910,10 +970,7 @@ export function CategoryPage({ category }: { category: string }) {
 // Invalidate buy box cache when offer price/stock changes
 import { invalidateBuyBoxCache } from '../services/buyBox';
 
-export async function updateOfferPrice(
-  offerId: string,
-  newPrice: number
-) {
+export async function updateOfferPrice(offerId: string, newPrice: number) {
   const offer = await ProductOffer.findById(offerId);
   if (!offer) throw new Error('Offer not found');
 
@@ -933,20 +990,22 @@ export async function updateOfferPrice(
 
 ### Execution Time Benchmarks
 
-| Operation | Cold (No Cache) | Warm (Cached) | Improvement |
-|-----------|----------------|---------------|-------------|
-| Single Product | ~150ms | ~5ms | **30x faster** |
-| Batch (10 products) | ~800ms | ~40ms | **20x faster** |
-| Batch (50 products) | ~3.5s | ~200ms | **17x faster** |
+| Operation           | Cold (No Cache) | Warm (Cached) | Improvement    |
+| ------------------- | --------------- | ------------- | -------------- |
+| Single Product      | ~150ms          | ~5ms          | **30x faster** |
+| Batch (10 products) | ~800ms          | ~40ms         | **20x faster** |
+| Batch (50 products) | ~3.5s           | ~200ms        | **17x faster** |
 
 ### Scalability Considerations
 
 **Current Setup**:
+
 - Single Redis instance
 - 5-minute TTL (300s)
 - In-memory override storage
 
 **Production Recommendations**:
+
 1. **Redis Cluster**: For high-availability and horizontal scaling
 2. **Longer TTL**: Consider 15-30 minutes for stable products
 3. **Persistent Overrides**: Move from in-memory Map to MongoDB collection
@@ -956,11 +1015,13 @@ export async function updateOfferPrice(
 ### Memory Usage
 
 **Per Cached Buy Box**:
+
 - Winner metadata: ~200 bytes
 - All scores (5 offers avg): ~1KB
 - Total per product: **~1.2KB**
 
 **Estimate for 100K products**:
+
 - 100,000 products × 1.2KB = **120MB** in Redis
 - Very manageable for modern Redis instances
 
@@ -1018,12 +1079,12 @@ In ProductOffer model hooks:
 // apps/api/src/models/ProductOffer.ts
 import { invalidateBuyBoxCache } from '../services/buyBox';
 
-productOfferSchema.post('save', async function() {
+productOfferSchema.post('save', async function () {
   // Invalidate buy box when offer changes
   await invalidateBuyBoxCache(this.productId);
 });
 
-productOfferSchema.post('findOneAndUpdate', async function(doc) {
+productOfferSchema.post('findOneAndUpdate', async function (doc) {
   if (doc) {
     await invalidateBuyBoxCache(doc.productId);
   }
@@ -1033,39 +1094,43 @@ productOfferSchema.post('findOneAndUpdate', async function(doc) {
 ### Step 4: Frontend Integration
 
 **Product Page**:
+
 ```tsx
 // Fetch buy box on product page load
 const { data: buyBox } = useBuyBox(productId);
 
 // Show default "Add to Cart" for winner
-<AddToCartButton offerId={buyBox.winnerId} isPrimary />
+<AddToCartButton offerId={buyBox.winnerId} isPrimary />;
 
 // Show link to see all offers
-{buyBox.allScores.length > 1 && (
-  <Link href={`/product/${productId}/offers`}>
-    See {buyBox.allScores.length - 1} more buying options
-  </Link>
-)}
+{
+  buyBox.allScores.length > 1 && (
+    <Link href={`/product/${productId}/offers`}>
+      See {buyBox.allScores.length - 1} more buying options
+    </Link>
+  );
+}
 ```
 
 **Category/Search Page**:
+
 ```tsx
 // Batch fetch buy boxes for all products
-const productIds = products.map(p => p._id);
+const productIds = products.map((p) => p._id);
 const { data: buyBoxes } = useBatchBuyBox(productIds);
 
 // Render products with their buy box winners
-{products.map(product => (
-  <ProductCard
-    product={product}
-    defaultOfferId={buyBoxes[product._id]?.winnerId}
-  />
-))}
+{
+  products.map((product) => (
+    <ProductCard product={product} defaultOfferId={buyBoxes[product._id]?.winnerId} />
+  ));
+}
 ```
 
 ### Step 5: Admin Panel Integration
 
 **Buy Box Override UI**:
+
 ```tsx
 // Admin can manually set buy box winner
 function BuyBoxOverridePanel({ productId }: { productId: string }) {
@@ -1079,7 +1144,7 @@ function BuyBoxOverridePanel({ productId }: { productId: string }) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${adminToken}`,
+        Authorization: `Bearer ${adminToken}`,
       },
       body: JSON.stringify({
         productId,
@@ -1095,8 +1160,8 @@ function BuyBoxOverridePanel({ productId }: { productId: string }) {
   return (
     <div>
       <h3>Set Buy Box Override</h3>
-      <select onChange={e => setSelectedOfferId(e.target.value)}>
-        {offers.map(offer => (
+      <select onChange={(e) => setSelectedOfferId(e.target.value)}>
+        {offers.map((offer) => (
           <option key={offer._id} value={offer._id}>
             {offer.vendorName} - ₹{offer.price}
           </option>
@@ -1106,13 +1171,13 @@ function BuyBoxOverridePanel({ productId }: { productId: string }) {
         type="text"
         placeholder="Reason for override"
         value={reason}
-        onChange={e => setReason(e.target.value)}
+        onChange={(e) => setReason(e.target.value)}
       />
       <input
         type="datetime-local"
         placeholder="Expiration (optional)"
         value={expiresAt}
-        onChange={e => setExpiresAt(e.target.value)}
+        onChange={(e) => setExpiresAt(e.target.value)}
       />
       <button onClick={handleSetOverride}>Set Override</button>
     </div>
@@ -1125,26 +1190,31 @@ function BuyBoxOverridePanel({ productId }: { productId: string }) {
 ## Known Limitations
 
 ### 1. Mock Vendor Metrics
+
 **Issue**: `fetchVendorMetrics()` currently returns hardcoded default values.
 **Impact**: All vendors score identically on rating/cancellation components.
 **Fix**: Integrate with real Vendor model and Order analytics.
 
 ### 2. In-Memory Override Storage
+
 **Issue**: Admin overrides stored in Map (lost on server restart).
 **Impact**: Overrides don't persist across deployments.
 **Fix**: Create MongoDB collection for overrides (see Future Improvements).
 
 ### 3. No Vendor Integration for vendorId in Override
+
 **Issue**: Override creation uses placeholder vendorId.
 **Impact**: Cannot validate that offerId belongs to productId.
 **Fix**: Add validation to check `ProductOffer.findOne({ _id: offerId, productId })`.
 
 ### 4. Single Redis Instance
+
 **Issue**: No Redis clustering or failover.
 **Impact**: Cache unavailable if Redis goes down (degrades to slow calculation).
 **Fix**: Implement Redis Sentinel or Cluster for HA.
 
 ### 5. Static Scoring Weights
+
 **Issue**: Algorithm weights are hardcoded constants.
 **Impact**: Cannot A/B test different weight configurations.
 **Fix**: Move weights to database and allow admin to adjust (see Future Improvements).
@@ -1156,9 +1226,11 @@ function BuyBoxOverridePanel({ productId }: { productId: string }) {
 ### Priority 1: Production Readiness
 
 #### 1. Persistent Override Storage
+
 **Task**: Create MongoDB collection for buy box overrides.
 
 **Model**:
+
 ```typescript
 // apps/api/src/models/BuyBoxOverride.ts
 const buyBoxOverrideSchema = new Schema({
@@ -1178,16 +1250,16 @@ buyBoxOverrideSchema.index({ productId: 1, status: 1 });
 **Migration**: Export existing in-memory overrides to DB.
 
 #### 2. Real Vendor Metrics Integration
+
 **Task**: Query actual vendor performance data.
 
 **Implementation**:
+
 ```typescript
-export const fetchVendorMetrics = async (
-  vendorId: Types.ObjectId
-): Promise<VendorMetrics> => {
+export const fetchVendorMetrics = async (vendorId: Types.ObjectId): Promise<VendorMetrics> => {
   // Fetch vendor
   const vendor = await Vendor.findById(vendorId);
-  
+
   // Aggregate order metrics
   const [metrics] = await Order.aggregate([
     { $match: { vendorId, status: { $in: ['delivered', 'cancelled'] } } },
@@ -1209,27 +1281,34 @@ export const fetchVendorMetrics = async (
 ```
 
 #### 3. Redis HA (High Availability)
+
 **Task**: Implement Redis Sentinel or Cluster.
 
 **Configuration**:
+
 ```typescript
-const redisClient = new Redis.Cluster([
-  { host: 'redis-node-1', port: 6379 },
-  { host: 'redis-node-2', port: 6379 },
-  { host: 'redis-node-3', port: 6379 },
-], {
-  redisOptions: {
-    password: process.env.REDIS_PASSWORD,
+const redisClient = new Redis.Cluster(
+  [
+    { host: 'redis-node-1', port: 6379 },
+    { host: 'redis-node-2', port: 6379 },
+    { host: 'redis-node-3', port: 6379 },
+  ],
+  {
+    redisOptions: {
+      password: process.env.REDIS_PASSWORD,
+    },
   },
-});
+);
 ```
 
 ### Priority 2: Optimization
 
 #### 4. Configurable Scoring Weights
+
 **Task**: Allow admin to adjust algorithm weights dynamically.
 
 **Admin UI**:
+
 ```tsx
 function ScoringWeightsConfig() {
   const [weights, setWeights] = useState({
@@ -1243,7 +1322,7 @@ function ScoringWeightsConfig() {
   const handleSave = async () => {
     // POST /v1/buybox/admin/weights
     await updateWeights(weights);
-    
+
     // Invalidate all buy box caches
     await invalidateAllBuyBoxes();
   };
@@ -1261,9 +1340,11 @@ function ScoringWeightsConfig() {
 ```
 
 #### 5. A/B Testing Framework
+
 **Task**: Test different scoring algorithms or weights.
 
 **Implementation**:
+
 ```typescript
 interface ABTestVariant {
   name: string;
@@ -1288,7 +1369,7 @@ const abTests: ABTestVariant[] = [
 export function getVariantForUser(userId: string): ABTestVariant {
   const hash = createHash('md5').update(userId).digest('hex');
   const bucket = parseInt(hash.substring(0, 2), 16) % 100;
-  
+
   let cumulative = 0;
   for (const variant of abTests) {
     cumulative += variant.traffic;
@@ -1296,23 +1377,22 @@ export function getVariantForUser(userId: string): ABTestVariant {
       return variant;
     }
   }
-  
+
   return abTests[0]; // Fallback to control
 }
 ```
 
 #### 6. Pre-warming Cache (Background Jobs)
+
 **Task**: Proactively calculate buy boxes for popular products.
 
 **Cron Job**:
+
 ```typescript
 // Run every hour
 cron.schedule('0 * * * *', async () => {
   // Fetch top 1000 most-viewed products
-  const popularProducts = await Product.find()
-    .sort({ viewCount: -1 })
-    .limit(1000)
-    .select('_id');
+  const popularProducts = await Product.find().sort({ viewCount: -1 }).limit(1000).select('_id');
 
   // Pre-calculate buy boxes
   for (const product of popularProducts) {
@@ -1326,9 +1406,11 @@ cron.schedule('0 * * * *', async () => {
 ### Priority 3: Analytics
 
 #### 7. Buy Box Performance Tracking
+
 **Task**: Track how often each vendor wins buy box and resulting conversion.
 
 **Analytics Schema**:
+
 ```typescript
 const buyBoxAnalyticsSchema = new Schema({
   productId: Types.ObjectId,
@@ -1343,22 +1425,25 @@ const buyBoxAnalyticsSchema = new Schema({
 ```
 
 **Report**:
+
 - Which vendors win buy box most often
 - Conversion rate by buy box winner
 - Impact of admin overrides on conversion
 
 #### 8. Vendor Buy Box Dashboard
+
 **Task**: Show vendors how often they win buy box and why they lose.
 
 **Vendor UI**:
+
 ```tsx
 function VendorBuyBoxInsights({ vendorId }: { vendorId: string }) {
   const [insights, setInsights] = useState(null);
 
   useEffect(() => {
     fetch(`/v1/buybox/vendor/${vendorId}/insights`)
-      .then(res => res.json())
-      .then(data => setInsights(data.data));
+      .then((res) => res.json())
+      .then((data) => setInsights(data.data));
   }, [vendorId]);
 
   return (
@@ -1387,6 +1472,7 @@ function VendorBuyBoxInsights({ vendorId }: { vendorId: string }) {
 ## Conclusion
 
 Feature #183 (Buy Box Service) is **production-ready** with:
+
 - ✅ Sophisticated multi-factor scoring algorithm
 - ✅ Redis caching for performance (30x faster)
 - ✅ Admin override capability for manual control
@@ -1397,6 +1483,7 @@ Feature #183 (Buy Box Service) is **production-ready** with:
 The implementation successfully balances **price competitiveness** (40% weight) with **vendor quality** (25% rating + 10% cancellation) and **delivery speed** (20% SLA), ensuring buyers get the best overall value proposition while giving high-quality vendors a fair chance to compete.
 
 **Next Steps**:
+
 1. Integrate real vendor metrics (currently mocked)
 2. Persist admin overrides to MongoDB
 3. Implement Redis clustering for HA

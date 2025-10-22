@@ -42,15 +42,15 @@ export default function CreditApprovals() {
   const [selectedApp, setSelectedApp] = useState<CreditApplication | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [adminId] = useState('ADMIN_USER_ID'); // TODO: Get from auth context
-  
+
   // Form state for approval
   const [approvalForm, setApprovalForm] = useState({
     creditLimit: 0,
     paymentTermId: '',
     maxNetDays: 30,
-    riskLevel: 'medium' as 'low' | 'medium' | 'high'
+    riskLevel: 'medium' as 'low' | 'medium' | 'high',
   });
-  
+
   // Form state for rejection
   const [rejectionReason, setRejectionReason] = useState('');
 
@@ -64,7 +64,7 @@ export default function CreditApprovals() {
       setLoading(true);
       const response = await fetch(`/api/credit/admin/applications?status=${statusFilter}`);
       const data = await response.json();
-      
+
       if (data.success) {
         setApplications(data.data.applications);
       }
@@ -79,7 +79,7 @@ export default function CreditApprovals() {
     try {
       const response = await fetch('/api/credit/terms');
       const data = await response.json();
-      
+
       if (data.success) {
         setPaymentTerms(data.data);
       }
@@ -94,7 +94,7 @@ export default function CreditApprovals() {
       creditLimit: app.creditLimit,
       paymentTermId: '',
       maxNetDays: 30,
-      riskLevel: 'medium'
+      riskLevel: 'medium',
     });
     setRejectionReason('');
     setShowModal(true);
@@ -102,7 +102,7 @@ export default function CreditApprovals() {
 
   const handleApprove = async () => {
     if (!selectedApp) return;
-    
+
     try {
       const response = await fetch('/api/credit/admin/approve', {
         method: 'POST',
@@ -113,12 +113,12 @@ export default function CreditApprovals() {
           creditLimit: approvalForm.creditLimit,
           paymentTermId: approvalForm.paymentTermId || undefined,
           maxNetDays: approvalForm.maxNetDays,
-          riskLevel: approvalForm.riskLevel
-        })
+          riskLevel: approvalForm.riskLevel,
+        }),
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         alert('Credit approved successfully!');
         setShowModal(false);
@@ -137,19 +137,19 @@ export default function CreditApprovals() {
       alert('Please provide a rejection reason');
       return;
     }
-    
+
     try {
       const response = await fetch('/api/credit/admin/reject', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId: selectedApp.userId._id,
-          reason: rejectionReason
-        })
+          reason: rejectionReason,
+        }),
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         alert('Credit application rejected');
         setShowModal(false);
@@ -166,19 +166,19 @@ export default function CreditApprovals() {
   const handleSuspend = async (app: CreditApplication) => {
     const reason = prompt('Reason for suspension:');
     if (!reason) return;
-    
+
     try {
       const response = await fetch('/api/credit/admin/suspend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId: app.userId._id,
-          reason
-        })
+          reason,
+        }),
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         alert('Credit suspended');
         fetchApplications();
@@ -195,26 +195,35 @@ export default function CreditApprovals() {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
-      minimumFractionDigits: 0
+      minimumFractionDigits: 0,
     }).format(amount);
   };
 
   const getRiskBadgeColor = (risk: string) => {
     switch (risk) {
-      case 'low': return 'bg-green-100 text-green-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'high': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'low':
+        return 'bg-green-100 text-green-800';
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'high':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
-      case 'approved': return 'bg-green-100 text-green-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'rejected': return 'bg-red-100 text-red-800';
-      case 'suspended': return 'bg-orange-100 text-orange-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'approved':
+        return 'bg-green-100 text-green-800';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'rejected':
+        return 'bg-red-100 text-red-800';
+      case 'suspended':
+        return 'bg-orange-100 text-orange-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -222,7 +231,7 @@ export default function CreditApprovals() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Credit Approvals</h1>
-        
+
         <div className="flex gap-2">
           <select
             value={statusFilter}
@@ -241,9 +250,7 @@ export default function CreditApprovals() {
       {loading ? (
         <div className="text-center py-8">Loading...</div>
       ) : applications.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
-          No applications found
-        </div>
+        <div className="text-center py-8 text-gray-500">No applications found</div>
       ) : (
         <div className="bg-white shadow rounded-lg overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200">
@@ -284,17 +291,19 @@ export default function CreditApprovals() {
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
-                      {formatCurrency(app.creditLimit)}
-                    </div>
+                    <div className="text-sm text-gray-900">{formatCurrency(app.creditLimit)}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getRiskBadgeColor(app.riskLevel)}`}>
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getRiskBadgeColor(app.riskLevel)}`}
+                    >
                       {app.riskLevel}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeColor(app.status)}`}>
+                    <span
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeColor(app.status)}`}
+                    >
                       {app.status}
                     </span>
                   </td>
@@ -334,16 +343,27 @@ export default function CreditApprovals() {
               <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
                 Review Credit Application
               </h3>
-              
+
               <div className="mb-4 p-4 bg-gray-50 rounded">
-                <p><strong>Buyer:</strong> {selectedApp.userId.businessProfile?.companyName || selectedApp.userId.name}</p>
-                <p><strong>Email:</strong> {selectedApp.userId.email}</p>
+                <p>
+                  <strong>Buyer:</strong>{' '}
+                  {selectedApp.userId.businessProfile?.companyName || selectedApp.userId.name}
+                </p>
+                <p>
+                  <strong>Email:</strong> {selectedApp.userId.email}
+                </p>
                 {selectedApp.userId.businessProfile?.gstin && (
-                  <p><strong>GSTIN:</strong> {selectedApp.userId.businessProfile.gstin}</p>
+                  <p>
+                    <strong>GSTIN:</strong> {selectedApp.userId.businessProfile.gstin}
+                  </p>
                 )}
-                <p><strong>Requested Amount:</strong> {formatCurrency(selectedApp.creditLimit)}</p>
+                <p>
+                  <strong>Requested Amount:</strong> {formatCurrency(selectedApp.creditLimit)}
+                </p>
                 {selectedApp.notes && (
-                  <p><strong>Notes:</strong> {selectedApp.notes}</p>
+                  <p>
+                    <strong>Notes:</strong> {selectedApp.notes}
+                  </p>
                 )}
               </div>
 
@@ -355,7 +375,9 @@ export default function CreditApprovals() {
                   <input
                     type="number"
                     value={approvalForm.creditLimit}
-                    onChange={(e) => setApprovalForm({ ...approvalForm, creditLimit: Number(e.target.value) })}
+                    onChange={(e) =>
+                      setApprovalForm({ ...approvalForm, creditLimit: Number(e.target.value) })
+                    }
                     className="w-full border rounded px-3 py-2"
                     min="0"
                   />
@@ -367,7 +389,9 @@ export default function CreditApprovals() {
                   </label>
                   <select
                     value={approvalForm.paymentTermId}
-                    onChange={(e) => setApprovalForm({ ...approvalForm, paymentTermId: e.target.value })}
+                    onChange={(e) =>
+                      setApprovalForm({ ...approvalForm, paymentTermId: e.target.value })
+                    }
                     className="w-full border rounded px-3 py-2"
                   >
                     <option value="">-- Select --</option>
@@ -386,19 +410,21 @@ export default function CreditApprovals() {
                   <input
                     type="number"
                     value={approvalForm.maxNetDays}
-                    onChange={(e) => setApprovalForm({ ...approvalForm, maxNetDays: Number(e.target.value) })}
+                    onChange={(e) =>
+                      setApprovalForm({ ...approvalForm, maxNetDays: Number(e.target.value) })
+                    }
                     className="w-full border rounded px-3 py-2"
                     min="1"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Risk Level
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Risk Level</label>
                   <select
                     value={approvalForm.riskLevel}
-                    onChange={(e) => setApprovalForm({ ...approvalForm, riskLevel: e.target.value as any })}
+                    onChange={(e) =>
+                      setApprovalForm({ ...approvalForm, riskLevel: e.target.value as any })
+                    }
                     className="w-full border rounded px-3 py-2"
                   >
                     <option value="low">Low</option>

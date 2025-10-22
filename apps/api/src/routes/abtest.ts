@@ -34,12 +34,15 @@ router.put('/:id', async (req, res) => {
 router.get('/:id/results', async (req, res) => {
   const test = await ABTest.findById(req.params.id);
   if (!test) return res.status(404).json({ success: false, error: 'Not found' });
-  res.json({ success: true, data: {
-    variantA: test.variantA,
-    variantB: test.variantB,
-    startedAt: test.startedAt,
-    endedAt: test.endedAt,
-  }});
+  res.json({
+    success: true,
+    data: {
+      variantA: test.variantA,
+      variantB: test.variantB,
+      startedAt: test.startedAt,
+      endedAt: test.endedAt,
+    },
+  });
 });
 
 export default router;

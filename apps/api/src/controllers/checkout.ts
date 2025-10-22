@@ -1,9 +1,33 @@
 import { Request, Response } from 'express';
+// Removed duplicate Cart import
 import { z } from 'zod';
-import { Types } from 'mongoose';
-import { Cart, ICartItem } from '../models/Cart';
+// Types already imported below
+import { Cart as CartBase, ICart, ICartItem } from '../models/Cart';
+import { StockReservation as StockReservationBase } from '../models/StockReservation';
+// Extend Mongoose model types to include statics
+import { Model, Types } from 'mongoose';
+
+interface CartStatics {
+  findOrCreate(userId?: Types.ObjectId, sessionId?: string): Promise<any>;
+}
+const Cart = CartBase as Model<any> & CartStatics;
+
+interface StockReservationStatics {
+  createReservation(params: {
+    productId: Types.ObjectId | string;
+    warehouseId: Types.ObjectId | string;
+    sku: string;
+    quantity: number;
+    orderId?: Types.ObjectId | string;
+    cartId?: string;
+    userId?: Types.ObjectId | string;
+    expiryMinutes?: number;
+    variantId?: string;
+  }): Promise<any>;
+}
+const StockReservation = StockReservationBase as Model<any> & StockReservationStatics;
 import { Address } from '../models/Address';
-import { StockReservation } from '../models/StockReservation';
+// Use StockReservationBase and static type below
 import { PaymentGateway, PaymentStatus, PaymentIntent } from '../models/PaymentIntent';
 import { Order } from '../models/Order';
 import { awardPoints } from '../services/loyalty';
@@ -21,8 +45,17 @@ function getSessionId(req: Request): string {
   return sid;
 }
 
+interface AuthRequest extends Request {
+  user?: {
+    id: string;
+    email: string;
+    role: 'user' | 'vendor' | 'admin';
+    scopes?: string[];
+  };
+}
+
 function getUserIdOrAnonymous(req: Request): Types.ObjectId {
-  const user = (req as any).user as { id: string } | undefined;
+  const user = (req as AuthRequest).user;
   if (user?.id) return new Types.ObjectId(user.id);
   // Anonymous placeholder user id for guest checkout
   return new Types.ObjectId();
@@ -76,17 +109,21 @@ export const ConfirmBody = z.object({
 
 // Controllers
 export const getCart = async (req: Request, res: Response) => {
-  const userId = (req as any).user?.id ? new Types.ObjectId((req as any).user.id) : undefined;
+  const userId = (req as AuthRequest).user?.id
+    ? new Types.ObjectId((req as AuthRequest).user!.id)
+    : undefined;
   const sessionId = userId ? undefined : getSessionId(req);
-  const cart = await (Cart as any).findOrCreate(userId, sessionId);
+  const cart = (await Cart.findOrCreate(userId, sessionId)) as ICart;
   return res.json({ success: true, data: cart });
 };
 
 export const addToCart = async (req: Request, res: Response) => {
   const parsed = AddToCartBody.parse(req.body);
-  const userId = (req as any).user?.id ? new Types.ObjectId((req as any).user.id) : undefined;
+  const userId = (req as AuthRequest).user?.id
+    ? new Types.ObjectId((req as AuthRequest).user!.id)
+    : undefined;
   const sessionId = userId ? undefined : getSessionId(req);
-  const cart = await (Cart as any).findOrCreate(userId, sessionId);
+  const cart = (await Cart.findOrCreate(userId, sessionId)) as ICart;
 
   const item: ICartItem = {
     itemId: new Types.ObjectId(parsed.itemId),
@@ -96,16 +133,18 @@ export const addToCart = async (req: Request, res: Response) => {
     price: parsed.price,
     discount: parsed.discount,
     tax: parsed.tax,
-  } as any;
-  await (cart as any).addItem(item);
+  };
+  await cart.addItem(item);
   return res.status(201).json({ success: true, data: cart });
 };
 
 export const setAddress = async (req: Request, res: Response) => {
   const parsed = SetAddressBody.parse(req.body);
-  const userId = (req as any).user?.id ? new Types.ObjectId((req as any).user.id) : undefined;
+  const userId = (req as AuthRequest).user?.id
+    ? new Types.ObjectId((req as AuthRequest).user!.id)
+    : undefined;
   const sessionId = userId ? undefined : getSessionId(req);
-  const cart = await (Cart as any).findOrCreate(userId, sessionId);
+  const cart = (await Cart.findOrCreate(userId, sessionId)) as ICart;
 
   if (parsed.shippingAddressId) {
     cart.shippingAddressId = new Types.ObjectId(parsed.shippingAddressId);
@@ -115,12 +154,12 @@ export const setAddress = async (req: Request, res: Response) => {
       type: 'SHIPPING',
       ...parsed.shippingAddress,
       isDefault: false,
-    } as any);
+    });
     cart.shippingAddressId = created._id as Types.ObjectId;
   } else if (parsed.shippingAddress && !userId) {
     // Store inline for guest in metadata
-    (cart as any).metadata = {
-      ...(cart as any).metadata,
+    cart.metadata = {
+      ...cart.metadata,
       guestShippingAddress: parsed.shippingAddress,
     };
   }
@@ -144,18 +183,20 @@ function computeShippingOptions(_cartTotal: number): ShippingOption[] {
 
 export const shipping = async (req: Request, res: Response) => {
   const parsed = ShippingBody.parse(req.body || {});
-  const userId = (req as any).user?.id ? new Types.ObjectId((req as any).user.id) : undefined;
+  const userId = (req as AuthRequest).user?.id
+    ? new Types.ObjectId((req as AuthRequest).user!.id)
+    : undefined;
   const sessionId = userId ? undefined : getSessionId(req);
-  const cart = await (Cart as any).findOrCreate(userId, sessionId);
+  const cart = (await Cart.findOrCreate(userId, sessionId)) as ICart;
 
-  const options = computeShippingOptions((cart as any).total || 0);
+  const options = computeShippingOptions(cart.total || 0);
   if (!parsed.selectOption) {
     return res.json({ success: true, data: { options } });
   }
 
   // Persist chosen option in cart metadata
-  (cart as any).metadata = {
-    ...(cart as any).metadata,
+  cart.metadata = {
+    ...cart.metadata,
     shippingOption: parsed.selectOption,
   };
   await cart.save();
@@ -165,26 +206,34 @@ export const shipping = async (req: Request, res: Response) => {
 export const pay = async (req: Request, res: Response) => {
   const { gateway } = PayBody.parse(req.body || {});
   const userId = getUserIdOrAnonymous(req);
-  const sessionId = (req as any).user?.id ? undefined : getSessionId(req);
-  const cart = await (Cart as any).findOrCreate((req as any).user?.id ? userId : undefined, sessionId);
+  const sessionId = (req as AuthRequest).user?.id ? undefined : getSessionId(req);
+  const cart = (await Cart.findOrCreate(
+    (req as AuthRequest).user?.id ? userId : undefined,
+    sessionId,
+  )) as ICart;
 
   if (!cart.items || cart.items.length === 0) {
     return res.status(400).json({ success: false, error: { message: 'Cart is empty' } });
   }
 
-  const shippingCost = (cart as any).metadata?.shippingOption?.cost || 0;
+  const shippingCost = cart.metadata?.shippingOption?.cost || 0;
   const amount = (cart.total || 0) + shippingCost;
+
+  // Reserve stock for each product item (best-effort; ignore services)
 
   // Reserve stock for each product item (best-effort; ignore services)
   for (const item of cart.items) {
     if (item.itemType === 'product') {
       try {
-        await (StockReservation as any).reserveStock(
-          new Types.ObjectId(item.itemId),
-          item.quantity,
+        await StockReservation.createReservation({
+          productId: new Types.ObjectId(item.itemId),
+          warehouseId: new Types.ObjectId(), // TODO: select correct warehouse
+          sku: item.variantId || '',
+          quantity: item.quantity,
+          cartId: (cart._id as Types.ObjectId).toString(),
           userId,
-          { variantId: item.variantId }
-        );
+          variantId: item.variantId,
+        });
       } catch (err) {
         req.log?.warn({ err }, 'Failed to reserve stock');
       }
@@ -205,7 +254,7 @@ export const pay = async (req: Request, res: Response) => {
   // If high-risk, hold funds in escrow until delivery
   let escrow: EscrowRecord | undefined;
   if (await isHighRiskBuyer(userId.toString())) {
-    escrow = createEscrow(cart._id, amount);
+    escrow = createEscrow(cart._id as Types.ObjectId, amount);
     // TODO: Save escrow record to DB
   }
 
@@ -216,10 +265,14 @@ export const confirm = async (req: Request, res: Response) => {
   const { paymentIntentId, simulateSuccess } = ConfirmBody.parse(req.body);
 
   const pi = await PaymentIntent.findOne({ paymentIntentId });
-  if (!pi) return res.status(404).json({ success: false, error: { message: 'PaymentIntent not found' } });
+  if (!pi)
+    return res.status(404).json({ success: false, error: { message: 'PaymentIntent not found' } });
 
   // In real flow, verify gateway webhook or capture status; here support simulation
-  if (simulateSuccess && (pi.status === PaymentStatus.PENDING || pi.status === PaymentStatus.PROCESSING)) {
+  if (
+    simulateSuccess &&
+    (pi.status === PaymentStatus.PENDING || pi.status === PaymentStatus.PROCESSING)
+  ) {
     pi.status = PaymentStatus.SUCCEEDED;
     pi.capturedAmount = pi.amount;
     await pi.save();
@@ -233,11 +286,11 @@ export const confirm = async (req: Request, res: Response) => {
   // Retrieve cart (user or session not stored; we just create order from PI amount and pretend lines)
   // Better: derive from reservations or stash snapshot in PI metadata. For now, fetch latest cart for user.
   const cart = await Cart.findOne({ userId }).lean();
-  if (!cart || !cart.items?.length) {
+  if (!cart || !(cart as unknown as ICart).items?.length) {
     return res.status(400).json({ success: false, error: { message: 'No cart to confirm' } });
   }
 
-  const items = cart.items.map((i: any) => ({
+  const items = (cart as unknown as ICart).items.map((i: any) => ({
     product: i.itemId,
     quantity: i.quantity,
     price: i.price,
@@ -247,9 +300,9 @@ export const confirm = async (req: Request, res: Response) => {
     user: userId,
     status: 'confirmed',
     items,
-    subtotal: cart.subtotal,
-    tax: cart.tax,
-    total: cart.total + ((cart as any).metadata?.shippingOption?.cost || 0),
+    subtotal: (cart as unknown as ICart).subtotal,
+    tax: (cart as unknown as ICart).tax,
+    total: (cart as unknown as ICart).total + ((cart as any).metadata?.shippingOption?.cost || 0),
     currency: 'INR',
   } as any);
 
@@ -265,7 +318,7 @@ export const confirm = async (req: Request, res: Response) => {
   try {
     await (StockReservation as any).updateMany(
       { userId, status: 'reserved' },
-      { $set: { status: 'confirmed', orderId: order._id, confirmedAt: new Date() } }
+      { $set: { status: 'confirmed', orderId: order._id, confirmedAt: new Date() } },
     );
   } catch (err) {
     req.log?.warn({ err }, 'Failed to confirm some reservations');
@@ -290,7 +343,7 @@ export const confirm = async (req: Request, res: Response) => {
       action: 'purchase',
       points: Math.floor(order.total / 100), // 1 point per ₹100 spent
       refId: order._id as Types.ObjectId,
-      meta: { orderId: order._id }
+      meta: { orderId: order._id },
     });
   } catch (err) {
     req.log?.warn({ err }, 'Failed to award loyalty points');
@@ -301,8 +354,10 @@ export const confirm = async (req: Request, res: Response) => {
 // Payment method selection endpoint
 export const selectPaymentMethod = async (req: Request, res: Response) => {
   const { buyerId, paymentMethod, orderId, orderTotal } = req.body;
-  if (paymentMethod === 'COD' && await isHighRiskBuyer(buyerId.toString())) {
-    return res.status(403).json({ error: 'COD not allowed for high-risk buyers. Please use prepaid or verified payment.' });
+  if (paymentMethod === 'COD' && (await isHighRiskBuyer(buyerId.toString()))) {
+    return res.status(403).json({
+      error: 'COD not allowed for high-risk buyers. Please use prepaid or verified payment.',
+    });
   }
   let escrow;
   if (await isHighRiskBuyer(buyerId.toString())) {

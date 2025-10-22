@@ -35,6 +35,7 @@ Comprehensive documentation for the dropshipping module including:
 ### 1. Customer Order to Supplier Flow
 
 Shows complete order lifecycle:
+
 - Customer places order with platform SKU
 - Platform maps to supplier SKU
 - Platform applies margin rule
@@ -48,6 +49,7 @@ Shows complete order lifecycle:
 ### 2. Stock Sync Flow
 
 Automated stock synchronization:
+
 - Scheduled job triggers (every 15 minutes)
 - Fetches all active SKU mappings
 - Queries supplier API for each SKU
@@ -60,6 +62,7 @@ Automated stock synchronization:
 ### 3. Return/RMA Flow
 
 Return merchandise authorization process:
+
 - Customer requests return
 - Vendor approves
 - Customer ships to supplier
@@ -75,6 +78,7 @@ Return merchandise authorization process:
 ### 1. Order Push to Supplier
 
 **Complete example with**:
+
 - Full order details (items, customer, shipping)
 - Idempotency header
 - Authentication
@@ -84,6 +88,7 @@ Return merchandise authorization process:
 ### 2. Order Status Webhook (from Supplier)
 
 **Shipped event example**:
+
 - Tracking information
 - Carrier details
 - Estimated delivery
@@ -93,6 +98,7 @@ Return merchandise authorization process:
 ### 3. Stock Sync Request/Response
 
 **Inventory query**:
+
 - Available quantity
 - Reserved stock
 - Incoming stock with dates
@@ -102,6 +108,7 @@ Return merchandise authorization process:
 ### 4. Price Sync Request/Response
 
 **Pricing query**:
+
 - Current price
 - MSRP
 - Cost basis
@@ -111,6 +118,7 @@ Return merchandise authorization process:
 ### 5. Return/RMA Notification
 
 **Return request**:
+
 - Original order reference
 - Return reason
 - Item condition
@@ -177,30 +185,35 @@ docs/
 ## Target Audiences
 
 ### 1. **Backend Developers**
+
 - Architecture diagrams
 - Data model interfaces
 - API integration patterns
 - Error handling
 
 ### 2. **Frontend Developers**
+
 - Order flow diagrams
 - Webhook event types
 - Status update sequences
 - API endpoint reference
 
 ### 3. **Supplier Integration Partners**
+
 - Webhook payload examples
 - API requirements
 - Authentication setup
 - Testing procedures
 
 ### 4. **DevOps/SRE**
+
 - Configuration variables
 - Monitoring metrics
 - Troubleshooting commands
 - Alert setup
 
 ### 5. **Product Managers**
+
 - High-level architecture
 - Workflow diagrams
 - Feature capabilities
@@ -226,10 +239,12 @@ All examples include:
 ## Diagram Technologies
 
 ### ASCII Art Diagrams
+
 - **Architecture diagrams**: Compatible with all viewers
 - **Component diagrams**: Plain text, version control friendly
 
 ### Mermaid Diagrams
+
 - **Sequence diagrams**: Beautiful rendering in modern tools
 - **Supported by**: GitHub, GitLab, VS Code, Notion, etc.
 - **Fallback**: Still readable as text if viewer doesn't support
@@ -243,22 +258,17 @@ Covers 6 common scenarios:
 1. **Order Not Pushed to Supplier**
    - 5-point checklist
    - Debug commands with cURL
-   
 2. **Stock Not Syncing**
    - Configuration checks
    - Manual trigger commands
-   
 3. **Incorrect Pricing**
    - Margin rule verification
    - Price calculation testing
-   
 4. **Duplicate Orders Sent**
    - Idempotency explanation
    - Verification steps
-   
 5. **Webhook Signature Verification Failed**
    - Code example for verification
-   
 6. **Error Codes Reference**
    - 6 common error codes
    - Recommended actions for each
@@ -268,6 +278,7 @@ Covers 6 common scenarios:
 ## Configuration Examples
 
 ### Environment Variables
+
 ```bash
 SUPPLIER_API_TIMEOUT=10000
 STOCK_SYNC_INTERVAL=900000
@@ -276,7 +287,9 @@ ENABLE_AUTO_DROPSHIP=true
 ```
 
 ### Supplier Configuration JSON
+
 Complete example showing:
+
 - API endpoints
 - Feature flags
 - Rate limits
@@ -287,24 +300,28 @@ Complete example showing:
 ## Quality Metrics
 
 ### Completeness
+
 - ✅ All major workflows documented
 - ✅ All webhook types covered
 - ✅ All data models specified
 - ✅ Common issues addressed
 
 ### Clarity
+
 - ✅ Clear section headers
 - ✅ Table of contents
 - ✅ Code syntax highlighting
 - ✅ Descriptive examples
 
 ### Maintainability
+
 - ✅ Markdown format (easy to edit)
 - ✅ Version and date stamps
 - ✅ Links to related docs
 - ✅ Modular sections
 
 ### Usability
+
 - ✅ Quick reference tables
 - ✅ Copy-paste ready commands
 - ✅ Searchable content
@@ -315,6 +332,7 @@ Complete example showing:
 ## Related Documentation
 
 Links to:
+
 - [DROPSHIP_API.md](./DROPSHIP_API.md) - REST API endpoints
 - [DROPSHIP_TESTING.md](./DROPSHIP_TESTING.md) - Testing guide
 - [DROPSHIP_TESTING_CHECKLIST.md](./DROPSHIP_TESTING_CHECKLIST.md) - Quick tests
@@ -329,25 +347,28 @@ Links to:
 ✅ **Practical**: 5 complete webhook examples ready to use  
 ✅ **Accessible**: Clear for developers, partners, and operations  
 ✅ **Maintainable**: Well-organized, easy to update  
-✅ **Integrated**: Linked from main README  
+✅ **Integrated**: Linked from main README
 
 ---
 
 ## Next Steps
 
 ### For Developers
+
 1. Read architecture section
 2. Review sequence diagrams
 3. Implement using webhook examples
 4. Test with mock suppliers
 
 ### For Suppliers
+
 1. Review integration types
 2. Implement required API endpoints
 3. Test webhook payloads
 4. Verify signature handling
 
 ### For Operations
+
 1. Configure environment variables
 2. Set up monitoring for key metrics
 3. Configure alerts
@@ -358,6 +379,7 @@ Links to:
 ## Continuous Improvement
 
 Documentation should be updated when:
+
 - New supplier integration types added
 - Webhook payload formats change
 - New error codes introduced

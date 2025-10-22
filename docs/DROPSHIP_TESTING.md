@@ -207,36 +207,36 @@ on: [push, pull_request]
 jobs:
   api-tests:
     runs-on: ubuntu-latest
-    
+
     services:
       mongodb:
         image: mongo:7
         ports:
           - 27017:27017
-    
+
     steps:
       - uses: actions/checkout@v3
-      
+
       - uses: pnpm/action-setup@v2
         with:
           version: 8
-      
+
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'pnpm'
-      
+
       - name: Install dependencies
         run: pnpm install
-      
+
       - name: Run API tests
         run: pnpm --filter @nearbybazaar/api test --coverage
         env:
           MONGO_URL: mongodb://localhost:27017/test-dropship
-      
+
       - name: Check coverage thresholds
         run: pnpm --filter @nearbybazaar/api test --coverage --coverageReporters=text-summary
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v3
         with:
@@ -277,8 +277,8 @@ Test fixtures are created inline using factory functions:
 
 ```typescript
 // From setup.ts
-global.testUtils.createMockSupplier()
-global.testUtils.createMockOrder()
+global.testUtils.createMockSupplier();
+global.testUtils.createMockOrder();
 ```
 
 ### Idempotency
@@ -313,11 +313,7 @@ Add to `.vscode/launch.json`:
   "request": "launch",
   "name": "Jest: Dropship Tests",
   "program": "${workspaceFolder}/apps/api/node_modules/.bin/jest",
-  "args": [
-    "dropship.spec.ts",
-    "--runInBand",
-    "--no-cache"
-  ],
+  "args": ["dropship.spec.ts", "--runInBand", "--no-cache"],
   "console": "integratedTerminal",
   "internalConsoleOptions": "neverOpen",
   "env": {
@@ -333,6 +329,7 @@ Add to `.vscode/launch.json`:
 **Problem**: `MongooseServerSelectionError: connect ECONNREFUSED`
 
 **Solution**: Ensure MongoDB is running:
+
 ```bash
 # Start MongoDB locally
 mongod --dbpath ./data/db
@@ -346,6 +343,7 @@ docker run -d -p 27017:27017 mongo:7
 **Problem**: Tests timeout after 5 seconds
 
 **Solution**: Tests have 30s timeout (configured in `setup.ts`). Check for:
+
 - Slow network operations
 - Missing await keywords
 - Infinite loops
@@ -354,7 +352,8 @@ docker run -d -p 27017:27017 mongo:7
 
 **Problem**: Coverage below thresholds
 
-**Solution**: 
+**Solution**:
+
 1. Check which files are not covered: `pnpm test --coverage`
 2. Add tests for uncovered branches
 3. Ensure critical paths (order push, margin calc) have 100% coverage
@@ -386,6 +385,7 @@ docker run -d -p 27017:27017 mongo:7
 ## Contact
 
 For questions about dropshipping tests, consult:
+
 - Technical Lead: Dropship module owner
 - CI/CD Team: For pipeline integration issues
 - QA Team: For test strategy discussions

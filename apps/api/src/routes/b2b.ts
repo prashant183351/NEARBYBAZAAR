@@ -15,7 +15,7 @@ router.post('/register', async (req, res) => {
         isBusiness: true,
         businessProfile: { companyName, gstin, pan, address },
       },
-      { new: true }
+      { new: true },
     );
     res.json({ success: true, data: user });
   } catch (e: any) {

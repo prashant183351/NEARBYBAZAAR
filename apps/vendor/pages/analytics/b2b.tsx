@@ -33,7 +33,7 @@ export default function VendorB2BAnalytics() {
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState({
     startDate: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 6 months ago
-    endDate: new Date().toISOString().split('T')[0]
+    endDate: new Date().toISOString().split('T')[0],
   });
   const [exportLoading, setExportLoading] = useState(false);
 
@@ -50,12 +50,12 @@ export default function VendorB2BAnalytics() {
       const params = new URLSearchParams({
         vendorId,
         startDate: dateRange.startDate,
-        endDate: dateRange.endDate
+        endDate: dateRange.endDate,
       });
-      
+
       const response = await fetch(`/api/analytics/vendor/b2b/summary?${params}`);
       const result = await response.json();
-      
+
       if (result.success) {
         setSummary(result.data);
       } else {
@@ -72,12 +72,12 @@ export default function VendorB2BAnalytics() {
     try {
       const params = new URLSearchParams({
         vendorId,
-        days: '30'
+        days: '30',
       });
-      
+
       const response = await fetch(`/api/analytics/vendor/b2b/trends?${params}`);
       const result = await response.json();
-      
+
       if (result.success) {
         setTrends(result.data);
       }
@@ -93,11 +93,11 @@ export default function VendorB2BAnalytics() {
         vendorId,
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,
-        format
+        format,
       });
-      
+
       const response = await fetch(`/api/analytics/vendor/b2b/export?${params}`);
-      
+
       if (format === 'csv') {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
@@ -133,7 +133,7 @@ export default function VendorB2BAnalytics() {
       style: 'currency',
       currency: 'INR',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     }).format(amount);
   };
 
@@ -166,7 +166,7 @@ export default function VendorB2BAnalytics() {
             <input
               type="date"
               value={dateRange.startDate}
-              onChange={(e) => setDateRange(prev => ({ ...prev, startDate: e.target.value }))}
+              onChange={(e) => setDateRange((prev) => ({ ...prev, startDate: e.target.value }))}
               className="px-3 py-2 border border-gray-300 rounded-md"
             />
           </div>
@@ -175,7 +175,7 @@ export default function VendorB2BAnalytics() {
             <input
               type="date"
               value={dateRange.endDate}
-              onChange={(e) => setDateRange(prev => ({ ...prev, endDate: e.target.value }))}
+              onChange={(e) => setDateRange((prev) => ({ ...prev, endDate: e.target.value }))}
               className="px-3 py-2 border border-gray-300 rounded-md"
             />
           </div>
@@ -196,25 +196,35 @@ export default function VendorB2BAnalytics() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <div className="text-sm font-medium text-gray-500 mb-1">Bulk Revenue</div>
-              <div className="text-2xl font-bold text-blue-600">{formatCurrency(summary.totalBulkRevenue)}</div>
+              <div className="text-2xl font-bold text-blue-600">
+                {formatCurrency(summary.totalBulkRevenue)}
+              </div>
               <div className="text-xs text-gray-500 mt-1">{summary.bulkOrderCount} orders</div>
             </div>
 
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <div className="text-sm font-medium text-gray-500 mb-1">Retail Revenue</div>
-              <div className="text-2xl font-bold text-green-600">{formatCurrency(summary.totalRetailRevenue)}</div>
+              <div className="text-2xl font-bold text-green-600">
+                {formatCurrency(summary.totalRetailRevenue)}
+              </div>
               <div className="text-xs text-gray-500 mt-1">{summary.retailOrderCount} orders</div>
             </div>
 
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <div className="text-sm font-medium text-gray-500 mb-1">Avg Bulk Order Value</div>
-              <div className="text-2xl font-bold text-purple-600">{formatCurrency(summary.averageBulkOrderValue)}</div>
-              <div className="text-xs text-gray-500 mt-1">vs {formatCurrency(summary.averageRetailOrderValue)} retail</div>
+              <div className="text-2xl font-bold text-purple-600">
+                {formatCurrency(summary.averageBulkOrderValue)}
+              </div>
+              <div className="text-xs text-gray-500 mt-1">
+                vs {formatCurrency(summary.averageRetailOrderValue)} retail
+              </div>
             </div>
 
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <div className="text-sm font-medium text-gray-500 mb-1">Bulk vs Retail</div>
-              <div className="text-2xl font-bold text-orange-600">{formatPercentage(summary.bulkVsRetailRatio)}</div>
+              <div className="text-2xl font-bold text-orange-600">
+                {formatPercentage(summary.bulkVsRetailRatio)}
+              </div>
               <div className="text-xs text-gray-500 mt-1">bulk revenue share</div>
             </div>
           </div>
@@ -251,12 +261,12 @@ export default function VendorB2BAnalytics() {
               {/* Simple bar chart visualization */}
               <div className="flex items-end justify-between h-full gap-1">
                 {trends.map((trend, index) => {
-                  const maxRevenue = Math.max(...trends.map(t => t.revenue));
+                  const maxRevenue = Math.max(...trends.map((t) => t.revenue));
                   const height = maxRevenue > 0 ? (trend.revenue / maxRevenue) * 100 : 0;
-                  
+
                   return (
                     <div key={index} className="flex-1 flex flex-col items-center">
-                      <div 
+                      <div
                         className="w-full bg-blue-500 hover:bg-blue-600 transition-colors rounded-t"
                         style={{ height: `${height}%` }}
                         title={`${trend.date}: ${formatCurrency(trend.revenue)} (${trend.orderCount} orders)`}
@@ -299,7 +309,8 @@ export default function VendorB2BAnalytics() {
               </button>
             </div>
             <p className="text-xs text-gray-500 mt-4">
-              * Export includes order details, payment status, outstanding amounts, and credit information for the selected date range.
+              * Export includes order details, payment status, outstanding amounts, and credit
+              information for the selected date range.
             </p>
           </div>
         </>

@@ -42,52 +42,56 @@ export class DelhiveryAdapter implements ShippingAdapter {
     });
 
     const data = resp.data[0] || {};
-    return [{
-      courier: 'Delhivery',
-      serviceType: request.paymentMode === 'cod' ? 'COD' : 'Prepaid',
-      rate: parseFloat(data.total_amount || 0),
-      estimatedDays: parseInt(data.expected_delivery_date || 3, 10),
-      currency: 'INR',
-    }];
+    return [
+      {
+        courier: 'Delhivery',
+        serviceType: request.paymentMode === 'cod' ? 'COD' : 'Prepaid',
+        rate: parseFloat(data.total_amount || 0),
+        estimatedDays: parseInt(data.expected_delivery_date || 3, 10),
+        currency: 'INR',
+      },
+    ];
   }
 
   async createLabel(request: CreateLabelRequest): Promise<CreateLabelResponse> {
     const waybill = await this.fetchWaybill();
-    
+
     const pickupData = {
-      shipments: [{
-        name: request.destination.name,
-        add: request.destination.addressLine1,
-        pin: request.destination.pincode,
-        city: request.destination.city,
-        state: request.destination.state,
-        country: request.destination.country,
-        phone: request.destination.phone,
-        order: request.orderId,
-        payment_mode: request.paymentMode === 'cod' ? 'COD' : 'Prepaid',
-        return_pin: request.origin.pincode,
-        return_city: request.origin.city,
-        return_phone: request.origin.phone,
-        return_add: request.origin.addressLine1,
-        return_state: request.origin.state,
-        return_country: request.origin.country,
-        products_desc: 'Order Items',
-        hsn_code: '',
-        cod_amount: request.codAmount || 0,
-        order_date: new Date().toISOString(),
-        total_amount: request.codAmount || 0,
-        seller_add: request.origin.addressLine1,
-        seller_name: request.origin.name,
-        seller_inv: '',
-        quantity: 1,
-        waybill,
-        shipment_width: request.parcel.breadth || 10,
-        shipment_height: request.parcel.height || 10,
-        weight: request.parcel.weight,
-        seller_gst_tin: '',
-        shipping_mode: 'Surface',
-        address_type: 'home',
-      }],
+      shipments: [
+        {
+          name: request.destination.name,
+          add: request.destination.addressLine1,
+          pin: request.destination.pincode,
+          city: request.destination.city,
+          state: request.destination.state,
+          country: request.destination.country,
+          phone: request.destination.phone,
+          order: request.orderId,
+          payment_mode: request.paymentMode === 'cod' ? 'COD' : 'Prepaid',
+          return_pin: request.origin.pincode,
+          return_city: request.origin.city,
+          return_phone: request.origin.phone,
+          return_add: request.origin.addressLine1,
+          return_state: request.origin.state,
+          return_country: request.origin.country,
+          products_desc: 'Order Items',
+          hsn_code: '',
+          cod_amount: request.codAmount || 0,
+          order_date: new Date().toISOString(),
+          total_amount: request.codAmount || 0,
+          seller_add: request.origin.addressLine1,
+          seller_name: request.origin.name,
+          seller_inv: '',
+          quantity: 1,
+          waybill,
+          shipment_width: request.parcel.breadth || 10,
+          shipment_height: request.parcel.height || 10,
+          weight: request.parcel.weight,
+          seller_gst_tin: '',
+          shipping_mode: 'Surface',
+          address_type: 'home',
+        },
+      ],
       pickup_location: {
         name: request.origin.name,
         add: request.origin.addressLine1,
@@ -98,12 +102,16 @@ export class DelhiveryAdapter implements ShippingAdapter {
       },
     };
 
-    await axios.post(`${this.config.baseUrl}/cmu/create.json`, `format=json&data=${JSON.stringify(pickupData)}`, {
-      headers: {
-        Authorization: `Token ${this.config.apiKey}`,
-        'Content-Type': 'application/json',
+    await axios.post(
+      `${this.config.baseUrl}/cmu/create.json`,
+      `format=json&data=${JSON.stringify(pickupData)}`,
+      {
+        headers: {
+          Authorization: `Token ${this.config.apiKey}`,
+          'Content-Type': 'application/json',
+        },
       },
-    });
+    );
 
     return {
       awbCode: waybill,

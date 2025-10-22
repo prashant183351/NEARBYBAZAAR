@@ -31,13 +31,13 @@ GET /v1/analytics/admin/b2b/industries
 
 ## Key Metrics Cheat Sheet
 
-| Metric | What It Means | Good Value |
-|--------|---------------|------------|
-| **Bulk vs Retail Ratio** | % of revenue from bulk orders | >50% for wholesale focus |
-| **Avg Bulk Order Value** | Average bulk order size | 10-20x retail average |
-| **Regional Revenue** | Revenue by geographic region | Balanced distribution |
-| **Industry Concentration** | Top industries buying bulk | Diversified or focused |
-| **Order Type Split** | Wholesale vs RFQ vs Contract | Track conversion patterns |
+| Metric                     | What It Means                 | Good Value                |
+| -------------------------- | ----------------------------- | ------------------------- |
+| **Bulk vs Retail Ratio**   | % of revenue from bulk orders | >50% for wholesale focus  |
+| **Avg Bulk Order Value**   | Average bulk order size       | 10-20x retail average     |
+| **Regional Revenue**       | Revenue by geographic region  | Balanced distribution     |
+| **Industry Concentration** | Top industries buying bulk    | Diversified or focused    |
+| **Order Type Split**       | Wholesale vs RFQ vs Contract  | Track conversion patterns |
 
 ---
 
@@ -58,19 +58,21 @@ GET /v1/analytics/admin/b2b/industries
 ## Dashboard Features
 
 ### Vendor Dashboard
+
 ✅ Bulk vs retail revenue comparison  
 ✅ Average order value comparison  
 ✅ Top bulk order type, industry, region  
 ✅ 30-day trend chart (bar chart)  
-✅ CSV/JSON export with filters  
+✅ CSV/JSON export with filters
 
 ### Admin Dashboard
+
 ✅ Platform-wide B2B metrics  
 ✅ Regional breakdown (table)  
 ✅ Industry breakdown (table)  
 ✅ Order type breakdown (cards)  
 ✅ 30-day trend chart  
-✅ Export with region/industry filters  
+✅ Export with region/industry filters
 
 ---
 
@@ -82,6 +84,7 @@ Subtotal | Tax | Total | Payment Status | Paid | Outstanding | Credit | Due Date
 ```
 
 **Example:**
+
 ```csv
 "67156abc123","2024-10-15","Rajesh Kumar","Kumar Mfg","manufacturing","north","wholesale","45000.00","8100.00","53100.00","partial","25000.00","28100.00","0.00","2024-11-14"
 ```
@@ -97,6 +100,7 @@ curl "http://localhost:5000/v1/analytics/vendor/b2b/summary?vendorId=vendor123&s
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -118,6 +122,7 @@ curl "http://localhost:5000/v1/analytics/admin/b2b/breakdown?startDate=2024-04-2
 ```
 
 **Response includes:**
+
 - `byRegion[]`: Array of regional stats
 - `byIndustry[]`: Array of industry stats
 - `byBulkOrderType[]`: Order type breakdown
@@ -138,16 +143,19 @@ curl "http://localhost:5000/v1/analytics/admin/b2b/export?region=north&industry=
 ## Integration Points
 
 ### With Payment Terms (#242)
+
 - Export includes `creditUsed`, `outstandingAmount`, `paidAmount`
 - Payment status tracked: unpaid/partial/paid/overdue
 - Due dates included for credit term orders
 
 ### With B2B Accounts (#240)
+
 - `businessAccount` flag differentiates B2B from retail
 - `industry` from buyer company profile
 - `region` from buyer primary address
 
 ### With RFQ System (#238)
+
 - RFQ orders tagged as `bulkOrderType: 'rfq'`
 - Track RFQ conversion to orders
 - Include in analytics automatically
@@ -157,24 +165,28 @@ curl "http://localhost:5000/v1/analytics/admin/b2b/export?region=north&industry=
 ## Troubleshooting
 
 ### No Data in Dashboard
+
 ✅ Check orders have `isBulkOrder: true`  
 ✅ Verify date range includes bulk orders  
-✅ Check browser console for API errors  
+✅ Check browser console for API errors
 
 ### Export File Empty
+
 ✅ Verify query parameters  
 ✅ Check if orders exist for filters  
-✅ Test endpoint with curl/Postman  
+✅ Test endpoint with curl/Postman
 
 ### Missing Regional Data
+
 ✅ Ensure orders have `region` field  
 ✅ Update order creation to capture region  
-✅ Backfill existing orders  
+✅ Backfill existing orders
 
 ### Trends Chart Not Showing
+
 ✅ Check trends API returns data  
 ✅ Verify date format (YYYY-MM-DD)  
-✅ Check CSS height on chart container  
+✅ Check CSS height on chart container
 
 ---
 
@@ -196,14 +208,17 @@ curl "http://localhost:5000/v1/analytics/admin/b2b/export?region=north&industry=
 ## Security Notes
 
 ⚠️ **Access Control**:
+
 - Vendor endpoints: Require vendor auth (replace VENDOR_ID placeholder)
 - Admin endpoints: Require admin role (add RBAC middleware)
 
 ⚠️ **Rate Limiting**:
+
 - Apply rate limits to export endpoints
 - Consider daily export quotas for large vendors
 
 ⚠️ **Data Privacy**:
+
 - Buyer names in exports for accounting only
 - Serve exports over HTTPS only
 - Consider auto-deletion of exports after 30 days
@@ -245,13 +260,13 @@ docs/
 
 ```typescript
 // Bulk vs Retail Ratio
-bulkVsRetailRatio = (totalBulkRevenue / (totalBulkRevenue + totalRetailRevenue)) * 100
+bulkVsRetailRatio = (totalBulkRevenue / (totalBulkRevenue + totalRetailRevenue)) * 100;
 
 // Average Order Value
-averageOrderValue = totalRevenue / orderCount
+averageOrderValue = totalRevenue / orderCount;
 
 // Utilization (for charts)
-barHeight = (value / maxValue) * 100 + '%'
+barHeight = (value / maxValue) * 100 + '%';
 ```
 
 ---
@@ -270,4 +285,4 @@ barHeight = (value / maxValue) * 100 + '%'
 
 📘 Full Documentation: [B2B_ANALYTICS.md](./B2B_ANALYTICS.md)  
 📧 Support: dev-team@nearbybazaar.com  
-🐛 Report Issues: GitHub Issues  
+🐛 Report Issues: GitHub Issues

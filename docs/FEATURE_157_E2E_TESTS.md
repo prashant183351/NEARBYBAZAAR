@@ -73,6 +73,7 @@ pnpm test:e2e:debug
 ```
 
 **Pre-test Check:** `scripts/check-servers.js`
+
 - Verifies dev servers are running before tests
 - Provides helpful error messages if servers aren't up
 - Exits with code 1 if any server is unreachable
@@ -82,11 +83,13 @@ pnpm test:e2e:debug
 ### Local Development
 
 1. **Start dev servers:**
+
    ```bash
    pnpm dev
    ```
 
 2. **Run E2E tests:**
+
    ```bash
    pnpm test:e2e
    ```
@@ -109,7 +112,7 @@ pnpm test:e2e:debug
 
 - name: Start dev servers
   run: pnpm dev &
-  
+
 - name: Wait for servers
   run: npx wait-on http://localhost:3001 http://localhost:3002 http://localhost:3003
 
@@ -129,6 +132,7 @@ pnpm test:e2e:debug
 ### Writing Tests
 
 1. **Use descriptive names:**
+
    ```typescript
    test('should display product details when navigating to product page', async ({ page }) => {
      // ...
@@ -158,24 +162,30 @@ pnpm test:e2e:debug
 ### Best Practices
 
 - **Arrange-Act-Assert pattern:**
+
   ```typescript
   test('example', async ({ page }) => {
     // Arrange
     await page.goto('/products');
-    
+
     // Act
     await page.click('[data-testid="filter-electronics"]');
-    
+
     // Assert
     await expect(page.locator('.product-card')).toHaveCount(5);
   });
   ```
 
 - **Group related tests:**
+
   ```typescript
   test.describe('Product Search', () => {
-    test('filters by category', async ({ page }) => { /* ... */ });
-    test('sorts by price', async ({ page }) => { /* ... */ });
+    test('filters by category', async ({ page }) => {
+      /* ... */
+    });
+    test('sorts by price', async ({ page }) => {
+      /* ... */
+    });
   });
   ```
 
@@ -184,11 +194,11 @@ pnpm test:e2e:debug
   // tests/e2e/fixtures/pages/product.page.ts
   export class ProductPage {
     constructor(private page: Page) {}
-    
+
     async addToCart() {
       await this.page.click('[data-testid="add-to-cart"]');
     }
-    
+
     async getPrice() {
       return this.page.locator('[data-testid="price"]').textContent();
     }
@@ -239,6 +249,7 @@ pnpm test:e2e:debug
 **Issue:** Tests hang or timeout waiting for page load.
 
 **Solution:**
+
 - Verify dev servers are running and accessible
 - Check network tab in headed mode
 - Increase timeout in `playwright.config.ts`
@@ -249,6 +260,7 @@ pnpm test:e2e:debug
 **Issue:** Tests pass/fail inconsistently.
 
 **Solution:**
+
 - Add explicit waits: `await page.waitForLoadState('networkidle')`
 - Use more specific selectors
 - Enable retries in config
@@ -259,6 +271,7 @@ pnpm test:e2e:debug
 **Issue:** `browserType.launch: Executable doesn't exist`
 
 **Solution:**
+
 ```bash
 npx playwright install chromium
 ```
@@ -268,6 +281,7 @@ npx playwright install chromium
 **Issue:** `Error: locator.click: Target closed`
 
 **Solution:**
+
 - Use `page.waitForSelector('[data-testid="button"]')` before clicking
 - Check if element is in viewport: `await element.scrollIntoViewIfNeeded()`
 - Verify selector matches actual DOM

@@ -18,7 +18,9 @@ export async function suggestCategoryForProduct(product: any): Promise<string> {
 
 // Batch suggest for admin review
 export async function batchSuggestCategories(limit = 20) {
-  const products = await Product.find({ category: { $exists: false } }).limit(limit).lean();
+  const products = await Product.find({ category: { $exists: false } })
+    .limit(limit)
+    .lean();
   const suggestions = [];
   for (const p of products) {
     const cat = await suggestCategoryForProduct(p);

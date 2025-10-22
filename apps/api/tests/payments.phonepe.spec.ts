@@ -1,4 +1,9 @@
-import { computeXVerify, getPhonePeEnv, createPaymentRequest, verifyCallbackSignature } from '../src/services/payment/phonepe';
+import {
+  computeXVerify,
+  getPhonePeEnv,
+  createPaymentRequest,
+  verifyCallbackSignature,
+} from '../src/services/payment/phonepe';
 import { PaymentGateway } from '../src/models/PaymentIntent';
 import axios from 'axios';
 
@@ -29,12 +34,17 @@ describe('PhonePe payments', () => {
         code: 'SUCCESS',
         message: 'OK',
         data: {
-          instrumentResponse: { redirectInfo: { url: 'https://pay.example.com/redirect', method: 'GET' } }
-        }
-      }
+          instrumentResponse: {
+            redirectInfo: { url: 'https://pay.example.com/redirect', method: 'GET' },
+          },
+        },
+      },
     } as any);
 
-    const res = await createPaymentRequest({ merchantTransactionId: 'PI123', amountInPaise: 12345 });
+    const res = await createPaymentRequest({
+      merchantTransactionId: 'PI123',
+      amountInPaise: 12345,
+    });
     expect(res.url).toContain('https://');
     expect(res.gateway).toBe(PaymentGateway.PHONEPE);
   });
@@ -42,9 +52,16 @@ describe('PhonePe payments', () => {
   it('verifies callback signature (happy)', () => {
     const env = getPhonePeEnv();
     const path = '/pg/v1/pay';
-    const body = JSON.stringify({ success: true, code: 'SUCCESS', data: { merchantTransactionId: 'PI123' } });
+    const body = JSON.stringify({
+      success: true,
+      code: 'SUCCESS',
+      data: { merchantTransactionId: 'PI123' },
+    });
     // Generate expected header using same function
-    const hash = require('crypto').createHash('sha256').update(body + path + env.saltKey).digest('hex');
+    const hash = require('crypto')
+      .createHash('sha256')
+      .update(body + path + env.saltKey)
+      .digest('hex');
     const headers = { 'X-VERIFY': `${hash}###${env.saltIndex}`, 'x-verify-path': path } as any;
     expect(verifyCallbackSignature(headers, body)).toBe(true);
   });

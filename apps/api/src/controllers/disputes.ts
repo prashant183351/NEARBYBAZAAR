@@ -120,12 +120,15 @@ export const resolveDispute = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { resolutionNote, adminId } = req.body;
 
-    if (!resolutionNote) return res.status(400).json({ success: false, error: 'resolutionNote required' });
+    if (!resolutionNote)
+      return res.status(400).json({ success: false, error: 'resolutionNote required' });
 
     const dispute = await Dispute.findById(id);
     if (!dispute) return res.status(404).json({ success: false, error: 'Not found' });
 
-    const admin = adminId ? new Types.ObjectId(adminId) : userIdFromReq(req) || new Types.ObjectId();
+    const admin = adminId
+      ? new Types.ObjectId(adminId)
+      : userIdFromReq(req) || new Types.ObjectId();
     await dispute.resolve(admin, resolutionNote);
 
     const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';

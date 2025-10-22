@@ -12,7 +12,9 @@ export default function B2BRegister() {
     setStatus(null);
     try {
       // Get reCAPTCHA token
-      const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || (window as any).NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+      const siteKey =
+        process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ||
+        (window as any).NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
       if (!siteKey) {
         setStatus('reCAPTCHA site key missing');
         return;
@@ -25,7 +27,11 @@ export default function B2BRegister() {
       // @ts-ignore
       const token = await window.grecaptcha.execute(siteKey, { action: 'b2b_register' });
       const fingerprint = await getClientFingerprint();
-      const r = await axios.post('/api/b2b/register', { ...form, recaptchaToken: token, fingerprint });
+      const r = await axios.post('/api/b2b/register', {
+        ...form,
+        recaptchaToken: token,
+        fingerprint,
+      });
       if (r.data?.success) setStatus('Business profile saved.');
       else setStatus(r.data?.error || 'Failed');
     } catch (e: any) {

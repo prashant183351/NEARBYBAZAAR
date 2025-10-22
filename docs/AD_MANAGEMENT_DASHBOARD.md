@@ -41,12 +41,15 @@ apps/admin/pages/advertising/
 ### Vendor Endpoints
 
 #### GET /v1/ad-dashboard/vendor/summary
+
 Get comprehensive vendor dashboard data
 
 **Query Parameters:**
+
 - `daysBack` (optional): Number of days for historical data (default: 30)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -87,19 +90,24 @@ Get comprehensive vendor dashboard data
       "dailyBudgetTotal": 2000,
       "dailySpentToday": 450
     },
-    "campaigns": [/* array of all campaigns */]
+    "campaigns": [
+      /* array of all campaigns */
+    ]
   }
 }
 ```
 
 #### GET /v1/ad-dashboard/vendor/comparison
+
 Compare multiple campaigns side-by-side
 
 **Query Parameters:**
+
 - `campaigns`: Comma-separated campaign IDs
 - `vendorId`: Vendor ID (from auth or query)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -134,14 +142,17 @@ Compare multiple campaigns side-by-side
 ### Admin Endpoints
 
 #### GET /v1/ad-dashboard/admin/overview
+
 Platform-wide advertising metrics and alerts
 
 **Query Parameters:**
+
 - `daysBack` (optional): Number of days for historical data (default: 30)
 
 **Authorization:** Admin role required
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -221,6 +232,7 @@ Platform-wide advertising metrics and alerts
 ## Vendor Dashboard Features
 
 ### Campaign List View
+
 - **Summary Cards**: Total campaigns, impressions, CTR, total spent
 - **Budget Overview**: Visual progress bars showing budget utilization
 - **Top Performers**: Quick view of best-performing campaigns
@@ -229,26 +241,31 @@ Platform-wide advertising metrics and alerts
 ### Campaign Creation Wizard
 
 **Step 1: Basic Info**
+
 - Campaign name
 - Product selection (with preview)
 - Start/end dates
 
 **Step 2: Budget & Bid**
+
 - Bid type selection (CPC vs CPM)
 - Bid amount configuration
 - Daily and total budget settings
 - Performance estimates
 
 **Step 3: Targeting**
+
 - Keyword management (add/remove)
 - Ad placement selection (search, category, homepage, product detail)
 - Category targeting
 
 **Step 4: Review & Submit**
+
 - Summary of all settings
 - Create campaign button
 
 ### Key Metrics Displayed
+
 - Total campaigns (active/paused/draft breakdown)
 - Total impressions and clicks
 - Average CTR and CPC
@@ -261,6 +278,7 @@ Platform-wide advertising metrics and alerts
 ## Admin Dashboard Features
 
 ### Platform Metrics
+
 - Total revenue from ads
 - Active campaign count
 - Total impressions and clicks
@@ -268,11 +286,13 @@ Platform-wide advertising metrics and alerts
 - Average revenue per click
 
 ### Top Spending Vendors
+
 - Ranked list of highest spenders
 - Campaign count per vendor
 - Performance metrics (impressions, clicks, CTR)
 
 ### Placement Performance
+
 - Performance breakdown by ad placement
 - Clicks, revenue, conversions per placement
 - Conversion rates by placement type
@@ -280,16 +300,19 @@ Platform-wide advertising metrics and alerts
 ### Fraud Detection Alerts
 
 **Suspicious Campaigns:**
+
 - Low CTR (<0.5%) with high click volume (>100 clicks)
 - Potential click fraud indicators
 - Vendor contact information for investigation
 
 **High Spend Alerts:**
+
 - Campaigns at >80% of total budget
 - Alerts for budget exhaustion
 - Vendor notification system
 
 ### Daily Revenue Trend
+
 - Visual bar chart of daily revenue
 - Click and conversion counts
 - Last 14 days by default
@@ -299,23 +322,23 @@ Platform-wide advertising metrics and alerts
 ## Data Aggregation Logic
 
 ### Vendor Summary Calculation
+
 ```javascript
 // Total metrics across all campaigns
-totalImpressions = campaigns.reduce((sum, c) => sum + c.impressions, 0)
-totalClicks = campaigns.reduce((sum, c) => sum + c.clicks, 0)
-totalSpent = campaigns.reduce((sum, c) => sum + c.spentTotal, 0)
+totalImpressions = campaigns.reduce((sum, c) => sum + c.impressions, 0);
+totalClicks = campaigns.reduce((sum, c) => sum + c.clicks, 0);
+totalSpent = campaigns.reduce((sum, c) => sum + c.spentTotal, 0);
 
 // Averages
-averageCTR = (totalClicks / totalImpressions) * 100
-averageCPC = totalSpent / totalClicks
+averageCTR = (totalClicks / totalImpressions) * 100;
+averageCPC = totalSpent / totalClicks;
 
 // Budget analysis
-remainingBudget = campaigns.reduce((sum, c) => 
-  sum + (c.totalBudget - c.spentTotal), 0
-)
+remainingBudget = campaigns.reduce((sum, c) => sum + (c.totalBudget - c.spentTotal), 0);
 ```
 
 ### Admin Revenue Calculation
+
 ```javascript
 // MongoDB aggregation pipeline
 [
@@ -325,25 +348,23 @@ remainingBudget = campaigns.reduce((sum, c) =>
       _id: { $dateToString: { format: '%Y-%m-%d', date: '$clickedAt' } },
       revenue: { $sum: '$cost' },
       clicks: { $sum: 1 },
-      conversions: { $sum: { $cond: ['$convertedToOrder', 1, 0] } }
-    }
+      conversions: { $sum: { $cond: ['$convertedToOrder', 1, 0] } },
+    },
   },
-  { $sort: { _id: 1 } }
-]
+  { $sort: { _id: 1 } },
+];
 ```
 
 ### Fraud Detection Query
+
 ```javascript
 // Suspicious campaigns: Low CTR + High clicks
 AdCampaign.find({
   status: 'active',
   $expr: {
-    $and: [
-      { $gt: ['$clicks', 100] },
-      { $lt: ['$ctr', 0.5] }
-    ]
-  }
-})
+    $and: [{ $gt: ['$clicks', 100] }, { $lt: ['$ctr', 0.5] }],
+  },
+});
 ```
 
 ---
@@ -353,6 +374,7 @@ AdCampaign.find({
 ### Vendor Components
 
 **CampaignsDashboard** (`apps/vendor/pages/campaigns/index.tsx`)
+
 - Date range filter (7/30/90 days)
 - Summary cards with key metrics
 - Budget overview with progress bars
@@ -360,6 +382,7 @@ AdCampaign.find({
 - Full campaign table with actions
 
 **CreateCampaign** (`apps/vendor/pages/campaigns/create.tsx`)
+
 - 4-step wizard with validation
 - Product selection with preview
 - Bid type selection (CPC/CPM)
@@ -370,6 +393,7 @@ AdCampaign.find({
 ### Admin Components
 
 **AdminAdvertisingDashboard** (`apps/admin/pages/advertising/dashboard.tsx`)
+
 - Platform-wide metrics cards
 - Alert sections (suspicious + high spend)
 - Top vendors table
@@ -377,6 +401,7 @@ AdCampaign.find({
 - Daily revenue bar chart
 
 ### Shared UI Patterns
+
 - **Loading States**: Spinning loader during data fetch
 - **Error States**: Red alert box with retry button
 - **Status Badges**: Color-coded campaign status indicators
@@ -388,12 +413,14 @@ AdCampaign.find({
 ## Performance Optimizations
 
 ### Backend
+
 1. **MongoDB Aggregations**: Use aggregation pipelines for complex queries
 2. **Indexes**: Utilize existing indexes on AdCampaign and AdClick
 3. **Pagination**: Limit top lists to 5-10 items
 4. **Date Range**: Default 30 days to limit query scope
 
 ### Frontend
+
 1. **Data Caching**: Store dashboard data in state, refresh on demand
 2. **Lazy Loading**: Component-level code splitting
 3. **Debouncing**: Date range changes trigger API calls
@@ -404,12 +431,14 @@ AdCampaign.find({
 ## Security Considerations
 
 ### Authorization
+
 - **Vendor endpoints**: Require vendor authentication
 - **Admin endpoints**: Require admin role check
 - **Data isolation**: Vendors only see own campaigns
 - **Admin access**: Full platform visibility
 
 ### Data Privacy
+
 - **PII Protection**: Email addresses only in admin view
 - **Audit Logging**: Track all campaign creations/modifications
 - **Rate Limiting**: Apply to dashboard endpoints
@@ -419,6 +448,7 @@ AdCampaign.find({
 ## Testing Scenarios
 
 ### Vendor Dashboard Tests
+
 1. ✅ Load dashboard with no campaigns (empty state)
 2. ✅ Load dashboard with multiple campaigns
 3. ✅ Filter by date range (7/30/90 days)
@@ -428,6 +458,7 @@ AdCampaign.find({
 7. ✅ Calculate metrics correctly
 
 ### Admin Dashboard Tests
+
 1. ✅ Load platform metrics
 2. ✅ Display fraud alerts correctly
 3. ✅ Show top vendors ranked
@@ -437,6 +468,7 @@ AdCampaign.find({
 7. ✅ Enforce admin-only access
 
 ### API Tests
+
 1. ✅ Vendor summary aggregation accuracy
 2. ✅ Admin overview calculations
 3. ✅ Campaign comparison logic
@@ -449,11 +481,13 @@ AdCampaign.find({
 ## Integration Points
 
 ### With Feature #266 (Sponsored Listings)
+
 - Uses AdCampaign and AdClick models
 - Displays data from auction and tracking services
 - Campaign creation calls campaigns controller
 
 ### Future Integrations
+
 - **Feature #275 (Wallet)**: Budget deduction from vendor wallet
 - **Search/Category Pages**: Display campaign ads
 - **Analytics Platform**: Export metrics for BI tools
@@ -473,6 +507,7 @@ AdCampaign.find({
 ## Future Enhancements
 
 ### Vendor Dashboard
+
 - [ ] Real-time campaign metrics via WebSockets
 - [ ] A/B testing for ad creatives
 - [ ] Bulk campaign operations
@@ -480,6 +515,7 @@ AdCampaign.find({
 - [ ] Export campaign reports to CSV/PDF
 
 ### Admin Dashboard
+
 - [ ] ML-based fraud detection
 - [ ] Revenue forecasting
 - [ ] Vendor performance scoring
@@ -492,18 +528,21 @@ AdCampaign.find({
 ## Troubleshooting
 
 ### Dashboard Not Loading
+
 1. Check API endpoint availability
 2. Verify auth token is valid
 3. Check browser console for errors
 4. Ensure date range is reasonable
 
 ### Incorrect Metrics
+
 1. Verify AdCampaign.impressions/clicks updated
 2. Check AdClick records are being created
 3. Confirm aggregation pipeline logic
 4. Review date range filtering
 
 ### Performance Issues
+
 1. Reduce date range (use 7 days)
 2. Limit campaign count if possible
 3. Check database indexes
@@ -514,16 +553,19 @@ AdCampaign.find({
 ## File Summary
 
 ### Backend (3 files, ~570 lines)
+
 - `apps/api/src/controllers/adDashboard.ts` (~460 lines)
 - `apps/api/src/routes/adDashboard.ts` (~25 lines)
 - `apps/api/src/routes/index.ts` (modified, +2 lines)
 
 ### Frontend (3 files, ~1,150 lines)
+
 - `apps/vendor/pages/campaigns/index.tsx` (~415 lines)
 - `apps/vendor/pages/campaigns/create.tsx` (~635 lines)
 - `apps/admin/pages/advertising/dashboard.tsx` (~330 lines)
 
 ### Documentation (1 file)
+
 - `docs/AD_MANAGEMENT_DASHBOARD.md` (this file)
 
 **Total:** 7 files, ~1,720 lines of code
@@ -533,18 +575,21 @@ AdCampaign.find({
 ## Quick Reference
 
 ### Start Vendor Dashboard
+
 ```bash
 # Navigate to vendor campaigns
 http://localhost:3002/campaigns
 ```
 
 ### Start Admin Dashboard
+
 ```bash
 # Navigate to admin advertising
 http://localhost:3003/advertising/dashboard
 ```
 
 ### Test API Endpoints
+
 ```bash
 # Vendor summary
 curl -H "Authorization: Bearer $TOKEN" \

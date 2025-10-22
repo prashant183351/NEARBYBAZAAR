@@ -10,6 +10,7 @@
 ## Common Commands
 
 ### Check Vendor Actions
+
 ```bash
 # Get vendor's action history
 curl http://localhost:4000/v1/vendor-actions/vendor/{vendorId}/history
@@ -19,6 +20,7 @@ curl http://localhost:4000/v1/vendor-actions/can-accept-orders
 ```
 
 ### Admin Operations
+
 ```bash
 # Get vendors requiring action
 curl http://localhost:4000/v1/vendor-actions/pending
@@ -38,20 +40,20 @@ curl -X POST http://localhost:4000/v1/vendor-actions/vendor/{vendorId}/action \
 
 ```javascript
 // Find all active actions
-db.vendorActions.find({ status: 'active' })
+db.vendorActions.find({ status: 'active' });
 
 // Find suspended vendors
-db.vendors.find({ status: 'suspended' })
+db.vendors.find({ status: 'suspended' });
 
 // Find expired suspensions that need cleanup
 db.vendorActions.find({
   status: 'active',
   actionType: 'temp_suspend',
-  expiresAt: { $lt: new Date() }
-})
+  expiresAt: { $lt: new Date() },
+});
 
 // Get vendor's action count
-db.vendorActions.countDocuments({ vendor: ObjectId('...') })
+db.vendorActions.countDocuments({ vendor: ObjectId('...') });
 ```
 
 ## Action Flow
@@ -94,20 +96,21 @@ Notify Vendor & Admin (TODO)
 
 ## File Locations
 
-| Component | Path |
-|-----------|------|
-| VendorAction Model | `apps/api/src/models/VendorAction.ts` |
-| Escalation Service | `apps/api/src/services/vendorEscalation.ts` |
-| Background Job | `apps/api/src/jobs/checkVendorReputation.ts` |
-| API Controller | `apps/api/src/controllers/metrics/escalation.ts` |
-| API Routes | `apps/api/src/routes/vendorActions.ts` |
-| Admin UI | `apps/admin/pages/vendors/actions.tsx` |
-| Vendor UI | `apps/vendor/pages/account/actions.tsx` |
-| Documentation | `docs/VENDOR_ESCALATION.md` |
+| Component          | Path                                             |
+| ------------------ | ------------------------------------------------ |
+| VendorAction Model | `apps/api/src/models/VendorAction.ts`            |
+| Escalation Service | `apps/api/src/services/vendorEscalation.ts`      |
+| Background Job     | `apps/api/src/jobs/checkVendorReputation.ts`     |
+| API Controller     | `apps/api/src/controllers/metrics/escalation.ts` |
+| API Routes         | `apps/api/src/routes/vendorActions.ts`           |
+| Admin UI           | `apps/admin/pages/vendors/actions.tsx`           |
+| Vendor UI          | `apps/vendor/pages/account/actions.tsx`          |
+| Documentation      | `docs/VENDOR_ESCALATION.md`                      |
 
 ## Key Functions
 
 ### Service Functions
+
 - `evaluateEscalation(metrics)` - Returns recommended action
 - `createVendorAction(vendorId, type, reason, metrics)` - Creates and applies action
 - `overrideVendorAction(actionId, adminId, reason)` - Admin override
@@ -116,6 +119,7 @@ Notify Vendor & Admin (TODO)
 - `getEscalationHistory(vendorId)` - Get full history
 
 ### Controller Functions
+
 - `getMyActions` - Vendor's active actions
 - `checkOrderAcceptance` - Can vendor accept orders?
 - `getVendorsPendingAction` - Admin: vendors needing action
@@ -126,12 +130,14 @@ Notify Vendor & Admin (TODO)
 ## Status Reference
 
 ### VendorAction Status
+
 - `pending` - Created but not yet applied
 - `active` - Currently in effect
 - `overridden` - Admin manually reversed
 - `expired` - Temporary suspension time elapsed
 
 ### Vendor Status
+
 - `active` - Can accept orders
 - `suspended` - Temporarily restricted
 - `blocked` - Permanently restricted
@@ -152,6 +158,7 @@ Notify Vendor & Admin (TODO)
 ## Monitoring
 
 ### Metrics to Track
+
 - Actions created per day
 - Warning → Suspension escalation rate
 - Override frequency
@@ -159,6 +166,7 @@ Notify Vendor & Admin (TODO)
 - Vendor improvement rate after warning
 
 ### Alerts to Set Up
+
 - Spike in permanent blocks (potential platform issue)
 - High override rate (rules may need adjustment)
 - Expired suspensions not processed (job failure)
@@ -166,6 +174,7 @@ Notify Vendor & Admin (TODO)
 ## Troubleshooting Quick Fixes
 
 ### Action not created
+
 ```javascript
 // Manually trigger evaluation
 const metrics = await getVendorReputationMetrics(vendorId, 30);
@@ -173,18 +182,21 @@ const action = await createVendorAction(vendorId, 'warning', 'Manual check', met
 ```
 
 ### Suspension not expiring
+
 ```javascript
 // Manually expire suspensions
 await expireSuspensions();
 ```
 
 ### Vendor status stuck
+
 ```javascript
 // Manually reset vendor status
 await Vendor.findByIdAndUpdate(vendorId, { status: 'active' });
 ```
 
 ### Clear all actions for testing
+
 ```javascript
 // WARNING: Use only in development
 await VendorAction.deleteMany({ vendor: vendorId });
@@ -198,26 +210,27 @@ Edit `apps/api/src/services/vendorEscalation.ts`:
 ```typescript
 export const ESCALATION_RULES: EscalationRules = {
   orderDefectRate: {
-    warning: 0.01,           // Adjust these values
+    warning: 0.01, // Adjust these values
     tempSuspend: 0.02,
-    permanentBlock: 0.04
+    permanentBlock: 0.04,
   },
   lateShipmentRate: {
     warning: 0.05,
-    tempSuspend: 0.10,
-    permanentBlock: 0.15
+    tempSuspend: 0.1,
+    permanentBlock: 0.15,
   },
   cancellationRate: {
     warning: 0.03,
     tempSuspend: 0.06,
-    permanentBlock: 0.10
-  }
+    permanentBlock: 0.1,
+  },
 };
 ```
 
 ## API Response Examples
 
 ### Success Response
+
 ```json
 {
   "success": true,
@@ -227,6 +240,7 @@ export const ESCALATION_RULES: EscalationRules = {
 ```
 
 ### Error Response
+
 ```json
 {
   "success": false,
@@ -237,18 +251,20 @@ export const ESCALATION_RULES: EscalationRules = {
 ## Integration Points
 
 ### Order Creation
+
 ```typescript
 // Add this guard to order creation endpoint
 const eligibility = await canVendorAcceptOrders(vendorId);
 if (!eligibility.canAccept) {
   return res.status(403).json({
     success: false,
-    error: eligibility.reason
+    error: eligibility.reason,
   });
 }
 ```
 
 ### Vendor Dashboard
+
 ```typescript
 // Show banner if vendor has active actions
 const actions = await getVendorActions(vendorId, false);
@@ -258,6 +274,7 @@ if (actions.length > 0) {
 ```
 
 ### Admin Dashboard
+
 ```typescript
 // Show count of vendors needing review
 const vendors = await getVendorsRequiringAction();

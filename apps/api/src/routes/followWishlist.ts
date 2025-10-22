@@ -1,5 +1,10 @@
 import express from 'express';
-import { followVendor, followProduct, addToWishlist, getWishlist } from '../services/followWishlist';
+import {
+  followVendor,
+  followProduct,
+  addToWishlist,
+  getWishlist,
+} from '../services/followWishlist';
 
 const router = express.Router();
 

@@ -40,35 +40,41 @@ The shipping module implements the **Adapter Pattern** to provide a consistent i
 
 ## Provider Comparison
 
-| Feature | Shiprocket | Delhivery |
-|---------|-----------|-----------|
-| **Coverage** | Pan-India + International | Pan-India |
-| **API Type** | RESTful JSON | RESTful JSON |
-| **Authentication** | Email/Password → Token | API Key (Bearer) |
-| **Token Caching** | Yes (~9 days) | N/A (key-based) |
-| **Rate Quotes** | Serviceability API | Invoice Charges API |
-| **Label Format** | PDF via URL | AWB code |
-| **Tracking** | Real-time with activities | Real-time with scans |
-| **COD Support** | Yes | Yes |
-| **Webhook Support** | Yes (not implemented) | Yes (not implemented) |
-| **Sandbox** | Available | Limited |
+| Feature             | Shiprocket                | Delhivery             |
+| ------------------- | ------------------------- | --------------------- |
+| **Coverage**        | Pan-India + International | Pan-India             |
+| **API Type**        | RESTful JSON              | RESTful JSON          |
+| **Authentication**  | Email/Password → Token    | API Key (Bearer)      |
+| **Token Caching**   | Yes (~9 days)             | N/A (key-based)       |
+| **Rate Quotes**     | Serviceability API        | Invoice Charges API   |
+| **Label Format**    | PDF via URL               | AWB code              |
+| **Tracking**        | Real-time with activities | Real-time with scans  |
+| **COD Support**     | Yes                       | Yes                   |
+| **Webhook Support** | Yes (not implemented)     | Yes (not implemented) |
+| **Sandbox**         | Available                 | Limited               |
 
 ## Implementation Details
 
 ### Shiprocket Adapter
 
 #### Authentication Flow
+
 ```typescript
 // First call: Login and cache token
-POST /auth/login
-Body: { email, password }
-Response: { token: "eyJ..." }
+POST / auth / login;
+Body: {
+  (email, password);
+}
+Response: {
+  token: 'eyJ...';
+}
 
 // Token cached for ~9 days (exp - 1 day)
 // Subsequent calls use: Authorization: Bearer {token}
 ```
 
 #### Rate Quote Flow
+
 ```typescript
 // 1. Get authentication token (cached)
 const token = await this.getToken();
@@ -89,6 +95,7 @@ Response: {
 ```
 
 #### Label Creation Flow
+
 ```typescript
 // 1. Create adhoc order
 POST /orders/create/adhoc
@@ -120,6 +127,7 @@ Response: {
 ```
 
 #### Tracking Flow
+
 ```typescript
 GET /courier/track/awb/AWB123456789
 Response: {
@@ -148,6 +156,7 @@ Response: {
 ### Delhivery Adapter
 
 #### Rate Quote Flow
+
 ```typescript
 GET /kinko/v1/invoice/charges?md=E&ss=Delivered&d_pin=560001&o_pin=110001&cgm=1000
 Authorization: Token {api_key}
@@ -163,6 +172,7 @@ Response: [
 ```
 
 #### Label Creation Flow
+
 ```typescript
 // 1. Fetch waybill number
 GET /waybill/api/bulk/json/?count=1
@@ -188,6 +198,7 @@ Body: format=json&data={
 ```
 
 #### Tracking Flow
+
 ```typescript
 GET /v1/packages/json/?waybill=DHL123456789
 Authorization: Token {api_key}
@@ -249,7 +260,7 @@ const tracking = await shipping.trackShipment({
 // In order controller after payment confirmation
 export async function confirmOrder(req, res) {
   const order = await Order.findById(req.params.orderId);
-  
+
   // Create shipping label
   const shipping = getShippingAdapter();
   const label = await shipping.createLabel({
@@ -265,7 +276,7 @@ export async function confirmOrder(req, res) {
     paymentMode: order.paymentMode,
     codAmount: order.paymentMode === 'cod' ? order.total : 0,
   });
-  
+
   // Save tracking info
   order.shipment = {
     awbCode: label.awbCode,
@@ -274,7 +285,7 @@ export async function confirmOrder(req, res) {
     status: 'pending',
   };
   await order.save();
-  
+
   // Send tracking email to buyer
   await emailQueue.add('trackingCreated', {
     to: order.buyer.email,
@@ -290,17 +301,17 @@ export async function confirmOrder(req, res) {
 async function getBestShippingRate(origin, destination, parcel) {
   const providers = ['shiprocket', 'delhivery'];
   const allQuotes = [];
-  
+
   for (const provider of providers) {
     try {
       const adapter = getShippingAdapter(provider);
       const quotes = await adapter.rateQuote({ origin, destination, parcel });
-      allQuotes.push(...quotes.map(q => ({ ...q, provider })));
+      allQuotes.push(...quotes.map((q) => ({ ...q, provider })));
     } catch (error) {
       console.error(`Failed to get quotes from ${provider}:`, error);
     }
   }
-  
+
   // Sort by rate and select cheapest
   allQuotes.sort((a, b) => a.rate - b.rate);
   return allQuotes[0]; // Cheapest option
@@ -313,29 +324,29 @@ async function getBestShippingRate(origin, destination, parcel) {
 // POST /webhooks/shipping/shiprocket
 export async function handleShiprocketWebhook(req, res) {
   const { awb, status, location, timestamp } = req.body;
-  
+
   // Verify webhook signature (not yet implemented)
-  
+
   // Find order by AWB
   const order = await Order.findOne({ 'shipment.awbCode': awb });
   if (!order) {
     return res.status(404).json({ error: 'Order not found' });
   }
-  
+
   // Update shipment status
   order.shipment.status = mapShiprocketStatus(status);
   order.shipment.currentLocation = location;
   order.shipment.lastUpdate = timestamp;
-  
+
   // Add activity to history
   order.shipment.activities.push({
     timestamp,
     location,
     status,
   });
-  
+
   await order.save();
-  
+
   // Notify buyer if delivered
   if (order.shipment.status === 'delivered') {
     await emailQueue.add('orderDelivered', {
@@ -343,7 +354,7 @@ export async function handleShiprocketWebhook(req, res) {
       orderId: order.id,
     });
   }
-  
+
   res.json({ success: true });
 }
 ```
@@ -353,6 +364,7 @@ export async function handleShiprocketWebhook(req, res) {
 ### Common Error Scenarios
 
 1. **Authentication Failures**
+
 ```typescript
 try {
   const token = await shiprocketAdapter.getToken();
@@ -366,6 +378,7 @@ try {
 ```
 
 2. **Serviceability Issues**
+
 ```typescript
 const quotes = await adapter.rateQuote(request);
 if (quotes.length === 0) {
@@ -374,6 +387,7 @@ if (quotes.length === 0) {
 ```
 
 3. **Label Creation Failures**
+
 ```typescript
 try {
   const label = await adapter.createLabel(request);
@@ -387,6 +401,7 @@ try {
 ```
 
 4. **Tracking Not Found**
+
 ```typescript
 const tracking = await adapter.trackShipment({ awbCode });
 if (!tracking.activities || tracking.activities.length === 0) {
@@ -404,10 +419,10 @@ async function createLabelWithRetry(adapter, request, maxRetries = 3) {
       return await adapter.createLabel(request);
     } catch (error) {
       if (attempt === maxRetries) throw error;
-      
+
       // Exponential backoff
       const delay = Math.pow(2, attempt) * 1000;
-      await new Promise(resolve => setTimeout(resolve, delay));
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
 }
@@ -429,16 +444,16 @@ describe('Shiprocket Adapter', () => {
 
   it('should cache auth token', async () => {
     // Mock login response
-    mockedAxios.post.mockResolvedValueOnce({ 
-      data: { token: 'mock-token' } 
+    mockedAxios.post.mockResolvedValueOnce({
+      data: { token: 'mock-token' }
     });
-    
+
     // Mock two rate quote calls
     mockedAxios.get.mockResolvedValue({ data: {...} });
-    
+
     await adapter.rateQuote(request);
     await adapter.rateQuote(request);
-    
+
     // Login should be called only once
     expect(mockedAxios.post).toHaveBeenCalledTimes(1);
   });
@@ -461,6 +476,7 @@ pnpm test -- --coverage tests/shipping.adapters.spec.ts
 ### Test Coverage
 
 Current coverage:
+
 - **14/14 tests passing** (100%)
 - Token caching ✓
 - Rate quotes ✓
@@ -485,12 +501,12 @@ export class DtdcAdapter implements ShippingAdapter {
   name = 'DTDC';
   private apiKey: string;
   private baseUrl: string;
-  
+
   constructor(config?) {
     this.apiKey = config?.apiKey || process.env.DTDC_API_KEY || '';
     this.baseUrl = config?.baseUrl || process.env.DTDC_BASE_URL || 'https://api.dtdc.com';
   }
-  
+
   async rateQuote(request: RateQuoteRequest): Promise<RateQuoteResponse[]> {
     // Implement DTDC rate API
     const resp = await axios.post(`${this.baseUrl}/rates`, {
@@ -500,7 +516,7 @@ export class DtdcAdapter implements ShippingAdapter {
     }, {
       headers: { 'X-API-Key': this.apiKey },
     });
-    
+
     return resp.data.rates.map(r => ({
       courier: 'DTDC',
       serviceType: r.service,
@@ -509,11 +525,11 @@ export class DtdcAdapter implements ShippingAdapter {
       currency: 'INR',
     }));
   }
-  
+
   async createLabel(request: CreateLabelRequest): Promise<CreateLabelResponse> {
     // Implement DTDC booking API
   }
-  
+
   async trackShipment(request: TrackShipmentRequest): Promise<TrackShipmentResponse> {
     // Implement DTDC tracking API
   }
@@ -549,16 +565,16 @@ DTDC_BASE_URL=https://api.dtdc.com
 // tests/shipping.adapters.spec.ts
 describe('DTDC Adapter', () => {
   let adapter: DtdcAdapter;
-  
+
   beforeEach(() => {
     adapter = new DtdcAdapter({ apiKey: 'test-key', baseUrl: 'https://test.api' });
   });
-  
+
   it('should fetch rate quotes', async () => {
     mockedAxios.post.mockResolvedValueOnce({
       data: { rates: [{ service: 'Express', amount: 150, tat: 3 }] },
     });
-    
+
     const quotes = await adapter.rateQuote(mockRequest);
     expect(quotes[0].rate).toBe(150);
   });
@@ -604,9 +620,7 @@ const results = await Promise.allSettled([
 ]);
 
 // Filter successful responses
-const quotes = results
-  .filter(r => r.status === 'fulfilled')
-  .flatMap(r => r.value);
+const quotes = results.filter((r) => r.status === 'fulfilled').flatMap((r) => r.value);
 ```
 
 ## Security
@@ -633,10 +647,7 @@ function verifyWebhookSignature(payload, signature, secret) {
     .createHmac('sha256', secret)
     .update(JSON.stringify(payload))
     .digest('hex');
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(computed)
-  );
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(computed));
 }
 ```
 
@@ -652,7 +663,8 @@ function verifyWebhookSignature(payload, signature, secret) {
 
 **Problem**: No rate quotes returned
 
-**Solution**: 
+**Solution**:
+
 - Verify pincodes are valid
 - Check parcel weight is within limits
 - Ensure COD is enabled for destination if using COD mode
@@ -661,7 +673,8 @@ function verifyWebhookSignature(payload, signature, secret) {
 
 **Problem**: Label creation fails with "Invalid AWB"
 
-**Solution**: 
+**Solution**:
+
 - Check order format matches provider requirements
 - Verify all required fields are present
 - For Delhivery, ensure waybill is fresh (not expired)
@@ -671,6 +684,7 @@ function verifyWebhookSignature(payload, signature, secret) {
 **Problem**: Tracking shows "pending" indefinitely
 
 **Solution**:
+
 - Allow 2-4 hours after label creation for first scan
 - Verify AWB code is correct
 - Check provider's status page for outages

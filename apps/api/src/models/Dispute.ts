@@ -1,6 +1,6 @@
 /**
  * Dispute Model
- * 
+ *
  * Handles buyer-vendor disputes for orders with SLA-based escalation.
  */
 import { Schema, model, Document, Types } from 'mongoose';
@@ -58,37 +58,53 @@ export interface IDispute extends Document {
   updatedAt: Date;
 
   // Methods
-  addMessage(senderRole: DisputeActor, senderId: Types.ObjectId | null, message: string, attachments?: string[]): Promise<void>;
+  addMessage(
+    senderRole: DisputeActor,
+    senderId: Types.ObjectId | null,
+    message: string,
+    attachments?: string[],
+  ): Promise<void>;
   escalate(reason?: string): Promise<void>;
   resolve(adminId: Types.ObjectId, resolutionNote: string): Promise<void>;
 }
 
-const messageSchema = new Schema<IDisputeMessage>({
-  senderRole: { type: String, enum: ['buyer', 'vendor', 'admin', 'system'], required: true },
-  senderId: { type: Schema.Types.ObjectId, ref: 'User', default: null },
-  message: { type: String, required: true, trim: true, maxlength: 4000 },
-  attachments: [{ type: String, trim: true }],
-  createdAt: { type: Date, default: Date.now },
-}, { _id: true });
+const messageSchema = new Schema<IDisputeMessage>(
+  {
+    senderRole: { type: String, enum: ['buyer', 'vendor', 'admin', 'system'], required: true },
+    senderId: { type: Schema.Types.ObjectId, ref: 'User', default: null },
+    message: { type: String, required: true, trim: true, maxlength: 4000 },
+    attachments: [{ type: String, trim: true }],
+    createdAt: { type: Date, default: Date.now },
+  },
+  { _id: true },
+);
 
-const disputeSchema = new Schema<IDispute>({
-  orderId: { type: Schema.Types.ObjectId, ref: 'Order', required: true, index: true },
-  vendorId: { type: Schema.Types.ObjectId, ref: 'Vendor', required: true, index: true },
-  buyerId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-  category: { type: String, enum: Object.values(DisputeCategory), required: true, index: true },
-  subject: { type: String, required: true, trim: true, maxlength: 200 },
-  description: { type: String, trim: true, maxlength: 4000 },
-  status: { type: String, enum: Object.values(DisputeStatus), default: DisputeStatus.OPEN, index: true },
-  messages: { type: [messageSchema], default: [] },
+const disputeSchema = new Schema<IDispute>(
+  {
+    orderId: { type: Schema.Types.ObjectId, ref: 'Order', required: true, index: true },
+    vendorId: { type: Schema.Types.ObjectId, ref: 'Vendor', required: true, index: true },
+    buyerId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    category: { type: String, enum: Object.values(DisputeCategory), required: true, index: true },
+    subject: { type: String, required: true, trim: true, maxlength: 200 },
+    description: { type: String, trim: true, maxlength: 4000 },
+    status: {
+      type: String,
+      enum: Object.values(DisputeStatus),
+      default: DisputeStatus.OPEN,
+      index: true,
+    },
+    messages: { type: [messageSchema], default: [] },
 
-  slaRespondBy: { type: Date, required: true, index: true },
-  respondedAt: { type: Date },
-  escalatedAt: { type: Date },
-  resolvedAt: { type: Date },
+    slaRespondBy: { type: Date, required: true, index: true },
+    respondedAt: { type: Date },
+    escalatedAt: { type: Date },
+    resolvedAt: { type: Date },
 
-  resolutionNote: { type: String, trim: true, maxlength: 1000 },
-  resolvedBy: { type: Schema.Types.ObjectId, ref: 'User' },
-}, { timestamps: true });
+    resolutionNote: { type: String, trim: true, maxlength: 1000 },
+    resolvedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+  },
+  { timestamps: true },
+);
 
 // Indexes for dashboards
 disputeSchema.index({ vendorId: 1, status: 1, createdAt: -1 });
@@ -98,7 +114,7 @@ disputeSchema.methods.addMessage = async function (
   senderRole: DisputeActor,
   senderId: Types.ObjectId | null,
   message: string,
-  attachments?: string[]
+  attachments?: string[],
 ): Promise<void> {
   this.messages.push({ senderRole, senderId, message, attachments, createdAt: new Date() } as any);
 
@@ -116,12 +132,20 @@ disputeSchema.methods.escalate = async function (reason?: string): Promise<void>
   this.status = DisputeStatus.ESCALATED;
   this.escalatedAt = new Date();
   if (reason) {
-    this.messages.push({ senderRole: 'system', senderId: null, message: `Escalated: ${reason}`, createdAt: new Date() } as any);
+    this.messages.push({
+      senderRole: 'system',
+      senderId: null,
+      message: `Escalated: ${reason}`,
+      createdAt: new Date(),
+    } as any);
   }
   await this.save();
 };
 
-disputeSchema.methods.resolve = async function (adminId: Types.ObjectId, resolutionNote: string): Promise<void> {
+disputeSchema.methods.resolve = async function (
+  adminId: Types.ObjectId,
+  resolutionNote: string,
+): Promise<void> {
   this.status = DisputeStatus.RESOLVED;
   this.resolvedAt = new Date();
   this.resolvedBy = adminId;

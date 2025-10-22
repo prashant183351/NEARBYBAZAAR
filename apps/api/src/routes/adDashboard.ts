@@ -5,9 +5,9 @@
 
 import { Router } from 'express';
 import {
-	getVendorDashboardSummary,
-	getAdminDashboardOverview,
-	getCampaignComparison,
+  getVendorDashboardSummary,
+  getAdminDashboardOverview,
+  getCampaignComparison,
 } from '../controllers/adDashboard';
 
 const router = Router();

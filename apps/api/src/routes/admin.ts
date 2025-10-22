@@ -8,6 +8,10 @@ const router = Router();
 router.put('/overrideSlug', ...overrideSlug);
 router.put('/overrideSEO', ...overrideSEO);
 // Admin disputes list (admin only)
-router.get('/disputes', authorize({ action: 'manage', resource: 'admin', requireAuth: true }) as any, listDisputes as any);
+router.get(
+  '/disputes',
+  authorize({ action: 'manage', resource: 'admin', requireAuth: true }) as any,
+  listDisputes as any,
+);
 
 export default router;

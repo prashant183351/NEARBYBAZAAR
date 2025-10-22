@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { getVendorReputation, getAllVendorsReputation, evaluateVendor } from '../controllers/metrics/reputation';
+import {
+  getVendorReputation,
+  getAllVendorsReputation,
+  evaluateVendor,
+} from '../controllers/metrics/reputation';
 
 const router = Router();
 

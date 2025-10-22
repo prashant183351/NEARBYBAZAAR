@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import {
-	getVendorEscalationHistory,
-	getMyActions,
-	checkOrderAcceptance,
-	getVendorsPendingAction,
-	adminOverrideAction,
-	adminCreateAction,
-	getEscalationRules,
+  getVendorEscalationHistory,
+  getMyActions,
+  checkOrderAcceptance,
+  getVendorsPendingAction,
+  adminOverrideAction,
+  adminCreateAction,
+  getEscalationRules,
 } from '../controllers/metrics/escalation';
 // Import auth middleware (placeholder - adjust path as needed)
 // import { authenticate, requireRole } from '../middleware/auth';
@@ -39,14 +39,23 @@ router.get('/rules', /* authenticate, requireRole('admin'), */ getEscalationRule
 
 // Admin: Get escalation history for a specific vendor
 // TODO: Add authenticate + requireRole('admin') middleware
-router.get('/vendor/:vendorId/history', /* authenticate, requireRole('admin'), */ getVendorEscalationHistory);
+router.get(
+  '/vendor/:vendorId/history',
+  /* authenticate, requireRole('admin'), */ getVendorEscalationHistory,
+);
 
 // Admin: Override a vendor action
 // TODO: Add authenticate + requireRole('admin') middleware
-router.post('/action/:actionId/override', /* authenticate, requireRole('admin'), */ adminOverrideAction);
+router.post(
+  '/action/:actionId/override',
+  /* authenticate, requireRole('admin'), */ adminOverrideAction,
+);
 
 // Admin: Manually create a vendor action
 // TODO: Add authenticate + requireRole('admin') middleware
-router.post('/vendor/:vendorId/action', /* authenticate, requireRole('admin'), */ adminCreateAction);
+router.post(
+  '/vendor/:vendorId/action',
+  /* authenticate, requireRole('admin'), */ adminCreateAction,
+);
 
 export default router;

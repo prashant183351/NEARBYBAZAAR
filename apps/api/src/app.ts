@@ -31,7 +31,7 @@ import bnplRoutes from './routes/bnpl'; // Import BNPL routes
 import { startScheduler } from './services/scheduler';
 
 if (process.env.NODE_ENV !== 'test') {
-	startScheduler();
+  startScheduler();
 }
 import helmet from 'helmet';
 import compression from 'compression';

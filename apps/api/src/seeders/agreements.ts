@@ -4,13 +4,13 @@ import { AgreementModel } from '../models/Agreement';
  * Seed initial compliance agreements.
  */
 export async function seedAgreements() {
-    const existingSLA = await AgreementModel.findOne({ type: 'sla', version: '1.0' });
-    if (!existingSLA) {
-        await AgreementModel.create({
-            type: 'sla',
-            version: '1.0',
-            title: 'Service Level Agreement v1.0',
-            content: `
+  const existingSLA = await AgreementModel.findOne({ type: 'sla', version: '1.0' });
+  if (!existingSLA) {
+    await AgreementModel.create({
+      type: 'sla',
+      version: '1.0',
+      title: 'Service Level Agreement v1.0',
+      content: `
 # Service Level Agreement
 
 ## 1. Order Processing
@@ -24,17 +24,17 @@ export async function seedAgreements() {
 ## 3. Response Time
 - Customer inquiries must be responded to within 12 hours
       `.trim(),
-            effectiveDate: new Date('2025-01-01'),
-        });
-    }
+      effectiveDate: new Date('2025-01-01'),
+    });
+  }
 
-    const existingCompliance = await AgreementModel.findOne({ type: 'compliance', version: '1.0' });
-    if (!existingCompliance) {
-        await AgreementModel.create({
-            type: 'compliance',
-            version: '1.0',
-            title: 'Compliance Terms v1.0',
-            content: `
+  const existingCompliance = await AgreementModel.findOne({ type: 'compliance', version: '1.0' });
+  if (!existingCompliance) {
+    await AgreementModel.create({
+      type: 'compliance',
+      version: '1.0',
+      title: 'Compliance Terms v1.0',
+      content: `
 # Compliance Terms
 
 ## 1. Data Protection
@@ -49,9 +49,9 @@ export async function seedAgreements() {
 - All tax obligations must be met
 - Proper invoicing required for all transactions
       `.trim(),
-            effectiveDate: new Date('2025-01-01'),
-        });
-    }
+      effectiveDate: new Date('2025-01-01'),
+    });
+  }
 
-    console.log('Agreement seeding completed');
+  console.log('Agreement seeding completed');
 }

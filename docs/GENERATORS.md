@@ -13,6 +13,7 @@ Bulk import allows admins to upload CSV files to create or update products, serv
 ```
 POST /api/import/:type
 ```
+
 - `:type` can be `products`, `services`, or `classifieds`.
 - Requires authentication and admin privileges.
 - Accepts `multipart/form-data` with a `file` field containing the CSV.
@@ -27,6 +28,7 @@ curl -X POST \
 ```
 
 ### CSV Format
+
 - The CSV should have headers matching the model fields (e.g., `name`, `price`, `category`, etc.).
 - Invalid rows will be skipped with errors reported in the response.
 
@@ -41,6 +43,7 @@ Admin override endpoints allow privileged users to update slugs, SEO fields, and
 ```
 POST /api/admin/overrides/:model/:id
 ```
+
 - `:model` can be `product`, `service`, or `classified`.
 - Requires authentication and admin privileges.
 - Accepts JSON body with fields to override (e.g., `{ "slug": "new-slug" }`).
@@ -68,6 +71,7 @@ Read-only, public endpoints for products, services, and classifieds. Support fil
 - `GET /api/public/classifieds`
 
 #### Query Parameters
+
 - `q`: Search term (applies to name/title fields)
 - `page`: Page number (default: 1)
 - `limit`: Results per page (default: 20)
@@ -79,6 +83,7 @@ curl "http://localhost:4000/api/public/products?q=shoes&page=2&limit=10"
 ```
 
 #### Response
+
 ```json
 {
   "products": [ ... ],
@@ -91,6 +96,7 @@ curl "http://localhost:4000/api/public/products?q=shoes&page=2&limit=10"
 ---
 
 ## Notes
+
 - All endpoints return standard error responses on failure.
 - Bulk import and admin override endpoints require authentication and admin role.
 - Public endpoints are read-only and cacheable (with ETag and Cache-Control headers).

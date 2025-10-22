@@ -2,7 +2,11 @@ import axios from 'axios';
 import { ShiprocketAdapter } from '../src/services/shipping/shiprocket';
 import { DelhiveryAdapter } from '../src/services/shipping/delhivery';
 import { getShippingAdapter, registerShippingAdapter } from '../src/services/shipping';
-import type { RateQuoteRequest, CreateLabelRequest, TrackShipmentRequest } from '../src/services/shipping/types';
+import type {
+  RateQuoteRequest,
+  CreateLabelRequest,
+  TrackShipmentRequest,
+} from '../src/services/shipping/types';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -25,18 +29,14 @@ describe('Shiprocket Adapter', () => {
       .mockResolvedValueOnce({
         data: {
           data: {
-            available_courier_companies: [
-              { name: 'BlueDart', rate: 150, etd: '5' },
-            ],
+            available_courier_companies: [{ name: 'BlueDart', rate: 150, etd: '5' }],
           },
         },
       })
       .mockResolvedValueOnce({
         data: {
           data: {
-            available_courier_companies: [
-              { name: 'BlueDart', rate: 150, etd: '5' },
-            ],
+            available_courier_companies: [{ name: 'BlueDart', rate: 150, etd: '5' }],
           },
         },
       });
@@ -90,12 +90,30 @@ describe('Shiprocket Adapter', () => {
     mockedAxios.post
       .mockResolvedValueOnce({ data: { token: 'mock-token' } })
       .mockResolvedValueOnce({ data: { order_id: 12345, shipment_id: 67890 } })
-      .mockResolvedValueOnce({ data: { response: { data: { awb_code: 'AWB123456', label_url: 'https://label.url' } } } });
+      .mockResolvedValueOnce({
+        data: { response: { data: { awb_code: 'AWB123456', label_url: 'https://label.url' } } },
+      });
 
     const request: CreateLabelRequest = {
       orderId: 'ORD-123',
-      origin: { pincode: '110001', city: 'Delhi', state: 'Delhi', country: 'India', name: 'Seller', phone: '1234567890', addressLine1: 'Address' },
-      destination: { pincode: '560001', city: 'Bangalore', state: 'Karnataka', country: 'India', name: 'Buyer', phone: '0987654321', addressLine1: 'Address' },
+      origin: {
+        pincode: '110001',
+        city: 'Delhi',
+        state: 'Delhi',
+        country: 'India',
+        name: 'Seller',
+        phone: '1234567890',
+        addressLine1: 'Address',
+      },
+      destination: {
+        pincode: '560001',
+        city: 'Bangalore',
+        state: 'Karnataka',
+        country: 'India',
+        name: 'Buyer',
+        phone: '0987654321',
+        addressLine1: 'Address',
+      },
       parcel: { weight: 1, length: 10, breadth: 10, height: 10 },
       paymentMode: 'prepaid',
     };
@@ -116,8 +134,18 @@ describe('Shiprocket Adapter', () => {
           track_status: '7',
           shipment_status: 7,
           shipment_track: [
-            { current_status: 'Delivered', date: '2024-01-05 10:30:00', location: 'Bangalore', activity: 'Package delivered' },
-            { current_status: 'Out for Delivery', date: '2024-01-05 08:00:00', location: 'Bangalore Hub', activity: '' },
+            {
+              current_status: 'Delivered',
+              date: '2024-01-05 10:30:00',
+              location: 'Bangalore',
+              activity: 'Package delivered',
+            },
+            {
+              current_status: 'Out for Delivery',
+              date: '2024-01-05 08:00:00',
+              location: 'Bangalore Hub',
+              activity: '',
+            },
           ],
         },
       },
@@ -139,7 +167,12 @@ describe('Shiprocket Adapter', () => {
           track_status: '6',
           shipment_status: 6,
           shipment_track: [
-            { current_status: 'Out for Delivery', date: '2024-01-05 08:00:00', location: 'Hub', activity: '' },
+            {
+              current_status: 'Out for Delivery',
+              date: '2024-01-05 08:00:00',
+              location: 'Hub',
+              activity: '',
+            },
           ],
         },
       },
@@ -165,9 +198,7 @@ describe('Delhivery Adapter', () => {
 
   it('should fetch rate quotes', async () => {
     mockedAxios.get.mockResolvedValueOnce({
-      data: [
-        { total_amount: '120.50', expected_delivery_date: '4' },
-      ],
+      data: [{ total_amount: '120.50', expected_delivery_date: '4' }],
     });
 
     const request: RateQuoteRequest = {
@@ -183,7 +214,7 @@ describe('Delhivery Adapter', () => {
     expect(quotes[0]).toMatchObject({
       courier: 'Delhivery',
       serviceType: 'COD',
-      rate: 120.50,
+      rate: 120.5,
       estimatedDays: 4,
       currency: 'INR',
     });
@@ -195,7 +226,7 @@ describe('Delhivery Adapter', () => {
           md: 'E', // COD mode
           cgm: 1000, // weight in grams
         }),
-      })
+      }),
     );
   });
 
@@ -205,8 +236,24 @@ describe('Delhivery Adapter', () => {
 
     const request: CreateLabelRequest = {
       orderId: 'ORD-123',
-      origin: { pincode: '110001', city: 'Delhi', state: 'Delhi', country: 'India', name: 'Seller', phone: '1234567890', addressLine1: 'Address' },
-      destination: { pincode: '560001', city: 'Bangalore', state: 'Karnataka', country: 'India', name: 'Buyer', phone: '0987654321', addressLine1: 'Address' },
+      origin: {
+        pincode: '110001',
+        city: 'Delhi',
+        state: 'Delhi',
+        country: 'India',
+        name: 'Seller',
+        phone: '1234567890',
+        addressLine1: 'Address',
+      },
+      destination: {
+        pincode: '560001',
+        city: 'Bangalore',
+        state: 'Karnataka',
+        country: 'India',
+        name: 'Buyer',
+        phone: '0987654321',
+        addressLine1: 'Address',
+      },
       parcel: { weight: 1, length: 10, breadth: 10, height: 10 },
       paymentMode: 'prepaid',
     };
@@ -218,27 +265,39 @@ describe('Delhivery Adapter', () => {
     expect(label.pickupScheduled).toBe(true);
     expect(mockedAxios.get).toHaveBeenCalledWith(
       expect.stringContaining('/waybill/api/bulk/json/'),
-      expect.any(Object)
+      expect.any(Object),
     );
     expect(mockedAxios.post).toHaveBeenCalledWith(
       expect.stringContaining('/cmu/create.json'),
       expect.any(String),
-      expect.any(Object)
+      expect.any(Object),
     );
   });
 
   it('should track shipment', async () => {
     mockedAxios.get.mockResolvedValueOnce({
       data: {
-        ShipmentData: [{
-          Shipment: {
-            Status: { Status: 'Delivered' },
-            Scans: [
-              { ScanDateTime: '2024-01-05T10:30:00Z', ScannedLocation: 'Bangalore', ScanType: 'Delivered', Instructions: 'Package delivered' },
-              { ScanDateTime: '2024-01-05T08:00:00Z', ScannedLocation: 'Bangalore Hub', ScanType: 'Out for Delivery', Instructions: '' },
-            ],
+        ShipmentData: [
+          {
+            Shipment: {
+              Status: { Status: 'Delivered' },
+              Scans: [
+                {
+                  ScanDateTime: '2024-01-05T10:30:00Z',
+                  ScannedLocation: 'Bangalore',
+                  ScanType: 'Delivered',
+                  Instructions: 'Package delivered',
+                },
+                {
+                  ScanDateTime: '2024-01-05T08:00:00Z',
+                  ScannedLocation: 'Bangalore Hub',
+                  ScanType: 'Out for Delivery',
+                  Instructions: '',
+                },
+              ],
+            },
           },
-        }],
+        ],
       },
     });
 

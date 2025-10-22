@@ -44,7 +44,7 @@ describe('validate middleware', () => {
       expect.arrayContaining([
         expect.objectContaining({ path: 'name' }),
         expect.objectContaining({ path: 'age' }),
-      ])
+      ]),
     );
   });
 

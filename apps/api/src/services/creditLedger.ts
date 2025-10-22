@@ -12,11 +12,11 @@ import { Types } from 'mongoose';
 export async function applyForCredit(
   userId: string,
   requestedAmount: number,
-  notes?: string
+  notes?: string,
 ): Promise<any> {
   // Check if already exists
   let buyerCredit = await BuyerCredit.findOne({ userId });
-  
+
   if (buyerCredit) {
     if (buyerCredit.status === 'approved') {
       throw new Error('Credit already approved. Request increase instead.');
@@ -25,7 +25,7 @@ export async function applyForCredit(
       throw new Error('Credit application already pending review.');
     }
   }
-  
+
   // Create new application
   buyerCredit = new BuyerCredit({
     userId: new Types.ObjectId(userId),
@@ -34,9 +34,9 @@ export async function applyForCredit(
     outstandingAmount: 0,
     totalCreditUsed: 0,
     status: 'pending',
-    notes
+    notes,
   });
-  
+
   await buyerCredit.save();
   return buyerCredit;
 }
@@ -50,37 +50,37 @@ export async function approveCredit(
   creditLimit: number,
   paymentTermId?: string,
   maxNetDays?: number,
-  riskLevel?: 'low' | 'medium' | 'high'
+  riskLevel?: 'low' | 'medium' | 'high',
 ): Promise<any> {
   const buyerCredit = await BuyerCredit.findOne({ userId });
-  
+
   if (!buyerCredit) {
     throw new Error('No credit application found for this user.');
   }
-  
+
   if (buyerCredit.status === 'approved') {
     throw new Error('Credit already approved. Use updateCreditLimit instead.');
   }
-  
+
   buyerCredit.creditLimit = creditLimit;
   buyerCredit.availableCredit = creditLimit; // Full credit available
   buyerCredit.status = 'approved';
   buyerCredit.approvedBy = approvedBy.toString();
   buyerCredit.approvedAt = new Date();
   buyerCredit.lastReviewDate = new Date();
-  
+
   if (paymentTermId) {
     buyerCredit.defaultPaymentTermId = paymentTermId.toString();
   }
-  
+
   if (maxNetDays) {
     buyerCredit.maxNetDays = maxNetDays;
   }
-  
+
   if (riskLevel) {
     buyerCredit.riskLevel = riskLevel;
   }
-  
+
   await buyerCredit.save();
   return buyerCredit;
 }
@@ -88,20 +88,17 @@ export async function approveCredit(
 /**
  * Admin rejects credit application
  */
-export async function rejectCredit(
-  userId: string,
-  reason: string
-): Promise<any> {
+export async function rejectCredit(userId: string, reason: string): Promise<any> {
   const buyerCredit = await BuyerCredit.findOne({ userId });
-  
+
   if (!buyerCredit) {
     throw new Error('No credit application found.');
   }
-  
+
   buyerCredit.status = 'rejected';
   buyerCredit.notes = reason;
   buyerCredit.lastReviewDate = new Date();
-  
+
   await buyerCredit.save();
   return buyerCredit;
 }
@@ -112,21 +109,21 @@ export async function rejectCredit(
 export async function updateCreditLimit(
   userId: string,
   newLimit: number,
-  updatedBy: string
+  updatedBy: string,
 ): Promise<any> {
   const buyerCredit = await BuyerCredit.findOne({ userId });
-  
+
   if (!buyerCredit || buyerCredit.status !== 'approved') {
     throw new Error('Buyer does not have approved credit.');
   }
-  
+
   const difference = newLimit - buyerCredit.creditLimit;
-  
+
   buyerCredit.creditLimit = newLimit;
   buyerCredit.availableCredit = Math.max(0, buyerCredit.availableCredit + difference);
   buyerCredit.approvedBy = updatedBy.toString();
   buyerCredit.lastReviewDate = new Date();
-  
+
   await buyerCredit.save();
   return buyerCredit;
 }
@@ -134,20 +131,17 @@ export async function updateCreditLimit(
 /**
  * Suspend credit (e.g., for late payments)
  */
-export async function suspendCredit(
-  userId: string,
-  reason: string
-): Promise<any> {
+export async function suspendCredit(userId: string, reason: string): Promise<any> {
   const buyerCredit = await BuyerCredit.findOne({ userId });
-  
+
   if (!buyerCredit) {
     throw new Error('Buyer credit not found.');
   }
-  
+
   buyerCredit.status = 'suspended';
   buyerCredit.notes = reason;
   buyerCredit.lastReviewDate = new Date();
-  
+
   await buyerCredit.save();
   return buyerCredit;
 }
@@ -157,26 +151,30 @@ export async function suspendCredit(
  */
 export async function checkCreditAvailability(
   userId: string,
-  orderAmount: number
+  orderAmount: number,
 ): Promise<{ available: boolean; reason?: string; credit?: any }> {
   const buyerCredit = await BuyerCredit.findOne({ userId });
-  
+
   if (!buyerCredit) {
     return { available: false, reason: 'No credit account found' };
   }
-  
+
   if (buyerCredit.status !== 'approved') {
-    return { available: false, reason: `Credit status: ${buyerCredit.status}`, credit: buyerCredit };
-  }
-  
-  if (buyerCredit.availableCredit < orderAmount) {
-    return { 
-      available: false, 
-      reason: `Insufficient credit. Available: ₹${buyerCredit.availableCredit}, Required: ₹${orderAmount}`,
-      credit: buyerCredit
+    return {
+      available: false,
+      reason: `Credit status: ${buyerCredit.status}`,
+      credit: buyerCredit,
     };
   }
-  
+
+  if (buyerCredit.availableCredit < orderAmount) {
+    return {
+      available: false,
+      reason: `Insufficient credit. Available: ₹${buyerCredit.availableCredit}, Required: ₹${orderAmount}`,
+      credit: buyerCredit,
+    };
+  }
+
   return { available: true, credit: buyerCredit };
 }
 
@@ -186,54 +184,51 @@ export async function checkCreditAvailability(
 export async function allocateOrderCredit(
   userId: string,
   orderId: string,
-  amount: number
+  amount: number,
 ): Promise<boolean> {
   const buyerCredit = await BuyerCredit.findOne({ userId });
-  
+
   if (!buyerCredit) {
     throw new Error('Buyer credit not found.');
   }
-  
+
   const allocated = await buyerCredit.allocateCredit(amount);
-  
+
   if (!allocated) {
     throw new Error('Failed to allocate credit. Insufficient available credit.');
   }
-  
+
   // Update order
   await Order.findByIdAndUpdate(orderId, {
     creditUsed: amount,
-    outstandingAmount: amount
+    outstandingAmount: amount,
   });
-  
+
   return true;
 }
 
 /**
  * Release credit when order is cancelled
  */
-export async function releaseOrderCredit(
-  userId: string,
-  orderId: string
-): Promise<void> {
+export async function releaseOrderCredit(userId: string, orderId: string): Promise<void> {
   const order = await Order.findById(orderId);
-  
+
   if (!order || !order.creditUsed || order.creditUsed === 0) {
     return; // No credit was used
   }
-  
+
   const buyerCredit = await BuyerCredit.findOne({ userId });
-  
+
   if (!buyerCredit) {
     throw new Error('Buyer credit not found.');
   }
-  
+
   await buyerCredit.releaseCredit(order.creditUsed);
-  
+
   // Update order
   await Order.findByIdAndUpdate(orderId, {
     creditUsed: 0,
-    outstandingAmount: 0
+    outstandingAmount: 0,
   });
 }
 
@@ -243,55 +238,59 @@ export async function releaseOrderCredit(
 export async function recordOrderPayment(
   userId: string,
   orderId: string,
-  paymentAmount: number
+  paymentAmount: number,
 ): Promise<any> {
   const order = await Order.findById(orderId);
-  
+
   if (!order) {
     throw new Error('Order not found.');
   }
-  
+
   const buyerCredit = await BuyerCredit.findOne({ userId });
-  
+
   if (!buyerCredit) {
     throw new Error('Buyer credit not found.');
   }
-  
+
   // Calculate how much of this payment goes toward outstanding credit
   const creditPayment = Math.min(order.outstandingAmount, paymentAmount);
-  
+
   if (creditPayment > 0) {
     await buyerCredit.recordPayment(creditPayment);
   }
-  
+
   // Update order
   const newPaidAmount = (order.paidAmount || 0) + paymentAmount;
   const newOutstanding = Math.max(0, order.outstandingAmount - creditPayment);
-  
+
   let paymentStatus: 'unpaid' | 'partial' | 'paid' | 'overdue' = 'unpaid';
   if (newPaidAmount >= order.total) {
     paymentStatus = 'paid';
   } else if (newPaidAmount > 0) {
     paymentStatus = 'partial';
   }
-  
+
   // Check if overdue
-  if (order.paymentTerms?.dueDate && new Date() > order.paymentTerms.dueDate && paymentStatus !== 'paid') {
+  if (
+    order.paymentTerms?.dueDate &&
+    new Date() > order.paymentTerms.dueDate &&
+    paymentStatus !== 'paid'
+  ) {
     paymentStatus = 'overdue';
   }
-  
+
   await Order.findByIdAndUpdate(orderId, {
     paidAmount: newPaidAmount,
     outstandingAmount: newOutstanding,
-    paymentStatus
+    paymentStatus,
   });
-  
+
   return {
     order,
     credit: buyerCredit,
     paymentAmount,
     creditPayment,
-    newOutstanding
+    newOutstanding,
   };
 }
 
@@ -302,28 +301,28 @@ export async function getBuyerCreditSummary(userId: string): Promise<any> {
   const buyerCredit = await BuyerCredit.findOne({ userId })
     .populate('defaultPaymentTermId')
     .populate('approvedBy', 'name email');
-  
+
   if (!buyerCredit) {
     return null;
   }
-  
+
   // Get orders with outstanding amounts
   const outstandingOrders = await Order.find({
     user: userId,
-    outstandingAmount: { $gt: 0 }
+    outstandingAmount: { $gt: 0 },
   }).select('_id total paidAmount outstandingAmount paymentTerms paymentStatus createdAt');
-  
+
   // Count overdue orders
   const overdueOrders = await Order.countDocuments({
     user: userId,
-    paymentStatus: 'overdue'
+    paymentStatus: 'overdue',
   });
-  
+
   return {
     credit: buyerCredit,
     outstandingOrders,
     overdueCount: overdueOrders,
-    utilizationPercentage: buyerCredit.utilizationPercentage
+    utilizationPercentage: buyerCredit.utilizationPercentage,
   };
 }
 
@@ -332,39 +331,39 @@ export async function getBuyerCreditSummary(userId: string): Promise<any> {
  */
 export function calculatePaymentSchedule(
   orderTotal: number,
-  paymentTerm: any
+  paymentTerm: any,
 ): { advance: number; onDelivery: number; dueDate?: Date } {
   if (!paymentTerm) {
     return { advance: orderTotal, onDelivery: 0 };
   }
-  
+
   switch (paymentTerm.type) {
     case PaymentTermType.FULL_ADVANCE:
       return { advance: orderTotal, onDelivery: 0 };
-      
+
     case PaymentTermType.PARTIAL_ADVANCE: {
       const advancePercent = paymentTerm.advancePercentage || 30;
       const advance = Math.round(orderTotal * (advancePercent / 100));
-      return { 
-        advance, 
-        onDelivery: orderTotal - advance 
+      return {
+        advance,
+        onDelivery: orderTotal - advance,
       };
     }
-    
+
     case PaymentTermType.NET_DAYS: {
       const netDays = paymentTerm.netDays || 30;
       const dueDate = new Date();
       dueDate.setDate(dueDate.getDate() + netDays);
-      return { 
-        advance: 0, 
+      return {
+        advance: 0,
         onDelivery: 0,
-        dueDate
+        dueDate,
       };
     }
-    
+
     case PaymentTermType.COD:
       return { advance: 0, onDelivery: orderTotal };
-      
+
     default:
       return { advance: orderTotal, onDelivery: 0 };
   }
@@ -392,16 +391,16 @@ export async function createPaymentTermTemplate(data: any): Promise<any> {
  */
 export async function markOverdueOrders(): Promise<number> {
   const now = new Date();
-  
+
   const result = await Order.updateMany(
     {
       paymentStatus: { $in: ['unpaid', 'partial'] },
-      'paymentTerms.dueDate': { $lt: now }
+      'paymentTerms.dueDate': { $lt: now },
     },
     {
-      $set: { paymentStatus: 'overdue' }
-    }
+      $set: { paymentStatus: 'overdue' },
+    },
   );
-  
+
   return result.modifiedCount || 0;
 }

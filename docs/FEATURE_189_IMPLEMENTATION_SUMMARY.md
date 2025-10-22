@@ -11,6 +11,7 @@
 ## Overview
 
 Implemented comprehensive media upload pipeline with enterprise-grade security features including:
+
 - **Virus Scanning**: EICAR detection + ClamAV integration stub
 - **EXIF Privacy Protection**: Automatic metadata stripping
 - **DoS Prevention**: Size limits, timeouts, file count limits
@@ -24,10 +25,12 @@ Implemented comprehensive media upload pipeline with enterprise-grade security f
 ### New Files Created
 
 #### 1. Core Service (`apps/api/src/services/media.ts`)
+
 **Lines**: 294  
 **Purpose**: Complete media processing pipeline
 
 **Key Functions**:
+
 ```typescript
 // Presigned upload URL generation (15min expiry)
 generatePresignedUpload(req: PresignedUploadRequest): Promise<PresignedUploadResponse>
@@ -49,15 +52,18 @@ withUploadTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T>
 ```
 
 **Configuration**:
+
 - `MAX_FILE_SIZE`: 10MB default (configurable via MAX_UPLOAD_SIZE_MB env)
 - `ALLOWED_FILE_TYPES`: Images (jpeg/png/webp/gif), PDF, MP4
 - `VIRUS_SCAN_ENABLED`: Toggle ClamAV scanning
 
 #### 2. Upload Middleware (`apps/api/src/middleware/upload.ts`)
+
 **Lines**: 78  
 **Purpose**: Multer configuration and upload middleware
 
 **Exports**:
+
 ```typescript
 // Single file upload
 uploadSingle: multer.single('file')
@@ -76,16 +82,19 @@ validateUpload: Middleware
 ```
 
 **Features**:
+
 - Memory storage (process before cloud upload)
 - File type filtering via mimetype check
 - Size/count limit enforcement
 - Structured error responses
 
 #### 3. Test Suite (`apps/api/tests/media.spec.ts`)
+
 **Lines**: 246  
 **Tests**: 21 passing
 
 **Coverage**:
+
 - ✓ Virus Scanning (4 tests)
   - EICAR detection ⚠️ (explicit user requirement)
   - Clean file allowance
@@ -109,16 +118,19 @@ validateUpload: Middleware
 ### Modified Files
 
 #### 1. Media Controller (`apps/api/src/controllers/media.ts`)
+
 **Added Functions**:
+
 ```typescript
 // POST /v1/media/upload
-async function uploadMedia(req, res)
+async function uploadMedia(req, res);
 
 // POST /v1/media/presigned
-async function getPresignedUpload(req, res)
+async function getPresignedUpload(req, res);
 ```
 
 **Preserved Functions**:
+
 - `listMedia()` - GET /
 - `getMedia()` - GET /:id
 - `createMedia()` - POST /
@@ -126,7 +138,9 @@ async function getPresignedUpload(req, res)
 - `getUploadSignature()` - GET /upload/signature (legacy)
 
 #### 2. Media Routes (`apps/api/src/routes/media.ts`)
+
 **New Routes**:
+
 ```typescript
 // Presigned upload (recommended for production)
 POST /v1/media/presigned → getPresignedUpload
@@ -136,14 +150,15 @@ POST /v1/media/upload (middleware stack) → uploadMedia
 ```
 
 **Middleware Stack**:
+
 ```typescript
 [
-  uploadTimeout(60000),      // 60s timeout protection
-  uploadSingle,              // Multer file handling
-  handleUploadError,         // Error transformation
-  validateUpload,            // Pre-flight checks
-  uploadMedia                // Controller
-]
+  uploadTimeout(60000), // 60s timeout protection
+  uploadSingle, // Multer file handling
+  handleUploadError, // Error transformation
+  validateUpload, // Pre-flight checks
+  uploadMedia, // Controller
+];
 ```
 
 ---
@@ -153,14 +168,17 @@ POST /v1/media/upload (middleware stack) → uploadMedia
 ### 1. Virus Scanning
 
 **EICAR Test Detection** (Always Active):
+
 ```typescript
 const eicarSignature = 'X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*';
 ```
+
 - Detects standard antivirus test file
 - Always checked regardless of VIRUS_SCAN_ENABLED
 - User requirement: "Test uploading an EICAR test file and ensure it's detected and upload is rejected" ✓
 
 **ClamAV Integration** (Production):
+
 - Stub implementation ready: `scanWithClamAV(buffer)`
 - Production requires: clamd-js or similar
 - Fail-safe: Rejects on scan error (doesn't bypass)
@@ -168,6 +186,7 @@ const eicarSignature = 'X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TE
 ### 2. EXIF Privacy Protection
 
 **Metadata Removed**:
+
 - GPS coordinates (location tracking)
 - Camera make/model (device fingerprinting)
 - Orientation EXIF (applied as rotation before removal)
@@ -175,12 +194,13 @@ const eicarSignature = 'X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TE
 - All other privacy-sensitive metadata
 
 **Implementation**:
+
 ```typescript
 const processed = await sharp(buffer)
   .rotate() // Auto-rotate based on EXIF orientation
   .withMetadata({
-    exif: {},    // Strip all EXIF
-    icc: true,   // Preserve color profile
+    exif: {}, // Strip all EXIF
+    icc: true, // Preserve color profile
   })
   .toBuffer();
 ```
@@ -188,22 +208,26 @@ const processed = await sharp(buffer)
 ### 3. DoS Prevention
 
 **File Size Limits**:
+
 - Default: 10MB per file
 - Configurable: `MAX_UPLOAD_SIZE_MB` env
 - Returns 413 Payload Too Large
 
 **File Count Limits**:
+
 - Default: 10 files per request
 - Configurable: `MAX_FILES_PER_UPLOAD` env
 - Prevents batch upload abuse
 
 **Upload Timeout**:
+
 - Default: 60 seconds
 - Returns 408 Request Timeout
 - Prevents slowloris attacks
 - Uses `Promise.race()` wrapper
 
 **File Type Whitelist**:
+
 - Images: jpeg, jpg, png, webp, gif
 - Documents: pdf
 - Videos: mp4
@@ -214,12 +238,14 @@ const processed = await sharp(buffer)
 ## Performance Metrics
 
 **Local Tests** (Development):
+
 - Virus scan (EICAR check): <5ms
 - EXIF stripping (sharp): 20-50ms
 - File validation: <1ms
 - Presigned URL generation: 10-20ms
 
 **Expected Production** (with ClamAV):
+
 - Virus scan: 50-100ms
 - EXIF stripping: 20-50ms
 - Cloudinary upload: 200-500ms (depends on network)
@@ -232,14 +258,17 @@ const processed = await sharp(buffer)
 ### Endpoints
 
 #### POST /v1/media/upload
+
 Direct file upload with full security pipeline.
 
 **Request**: `multipart/form-data`
+
 - `file` (required): File to upload
 - `alt` (required): Alt text for accessibility
 - `folder` (optional): Custom folder path
 
 **Response** (201):
+
 ```json
 {
   "success": true,
@@ -270,6 +299,7 @@ Direct file upload with full security pipeline.
 ```
 
 **Errors**:
+
 - `400`: Missing file or alt text
 - `403`: Virus detected
 - `408`: Upload timeout
@@ -278,9 +308,11 @@ Direct file upload with full security pipeline.
 - `500`: Processing error
 
 #### POST /v1/media/presigned
+
 Generate presigned URL for direct client uploads.
 
 **Request**:
+
 ```json
 {
   "filename": "photo.jpg",
@@ -291,6 +323,7 @@ Generate presigned URL for direct client uploads.
 ```
 
 **Response** (200):
+
 ```json
 {
   "success": true,
@@ -309,6 +342,7 @@ Generate presigned URL for direct client uploads.
 ## Environment Configuration
 
 ### Required
+
 ```bash
 # Cloudinary
 CLOUDINARY_CLOUD_NAME=your-cloud-name
@@ -317,6 +351,7 @@ CLOUDINARY_API_SECRET=your-api-secret
 ```
 
 ### Optional
+
 ```bash
 # Security
 VIRUS_SCAN_ENABLED=false          # Enable ClamAV (default: false)
@@ -336,12 +371,14 @@ CLOUDINARY_UPLOAD_PRESET=ml_default  # Unsigned upload preset
 ## Testing
 
 ### Run Tests
+
 ```bash
 cd apps/api
 pnpm test media.spec.ts
 ```
 
 ### Test Results
+
 ```
 PASS  tests/media.spec.ts (3.349s)
   Feature #189: Media Pipeline
@@ -382,6 +419,7 @@ Tests:       21 passed, 21 total
 ## Production Deployment Checklist
 
 ### 1. Install ClamAV
+
 ```bash
 # Ubuntu/Debian
 sudo apt-get update
@@ -399,6 +437,7 @@ sudo systemctl status clamav-daemon
 ```
 
 ### 2. Configure Environment
+
 ```bash
 # Enable virus scanning
 VIRUS_SCAN_ENABLED=true
@@ -407,6 +446,7 @@ CLAMAV_PORT=3310
 ```
 
 ### 3. Set Up Virus Definition Updates
+
 ```bash
 # Edit crontab
 sudo crontab -e
@@ -416,6 +456,7 @@ sudo crontab -e
 ```
 
 ### 4. Monitor Performance
+
 ```bash
 # Check scan times
 tail -f logs/api.log | grep "Virus scan"
@@ -429,6 +470,7 @@ tail -f /var/log/clamav/clamav.log
 ## Integration Examples
 
 ### Browser (Direct Upload)
+
 ```javascript
 const formData = new FormData();
 formData.append('file', fileInput.files[0]);
@@ -444,6 +486,7 @@ console.log('Uploaded:', data.media.url);
 ```
 
 ### Node.js (Direct Upload)
+
 ```javascript
 const FormData = require('form-data');
 const fs = require('fs');
@@ -459,6 +502,7 @@ const response = await fetch('http://localhost:4000/v1/media/upload', {
 ```
 
 ### Browser (Presigned Upload)
+
 ```javascript
 // 1. Get presigned URL
 const file = fileInput.files[0];
@@ -470,7 +514,7 @@ const { data } = await fetch('/v1/media/presigned', {
     contentType: file.type,
     size: file.size,
   }),
-}).then(r => r.json());
+}).then((r) => r.json());
 
 // 2. Upload directly to Cloudinary
 const uploadForm = new FormData();
@@ -486,10 +530,12 @@ await fetch(data.uploadUrl, {
 ## Documentation
 
 ### Created
+
 - `docs/MEDIA_PIPELINE_QUICK_REFERENCE.md` - API reference and usage guide
 - `apps/api/tests/media.spec.ts` - Test documentation (21 test cases)
 
 ### Related
+
 - `docs/WATERMARKING.md` - Watermark pipeline (Feature #046-055)
 - `apps/api/src/services/storage/cloudinary.ts` - Cloud storage adapter
 - `apps/api/src/models/Media.ts` - Media document schema
@@ -511,6 +557,7 @@ await fetch(data.uploadUrl, {
 ## Compliance
 
 ### User Requirements Met ✓
+
 - ✅ "Integrate an antivirus scan hook after upload (maybe using ClamAV)"
 - ✅ "Strip EXIF metadata from images for privacy"
 - ✅ "Test uploading an EICAR test file and ensure it's detected and upload is rejected"
@@ -519,6 +566,7 @@ await fetch(data.uploadUrl, {
 - ✅ "Responsive variants (thumbnails, WebP)"
 
 ### Security Best Practices ✓
+
 - ✅ Fail-safe virus scanning (rejects on error)
 - ✅ Privacy-first EXIF stripping
 - ✅ DoS prevention (size/count/timeout limits)

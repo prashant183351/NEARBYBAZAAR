@@ -1,7 +1,6 @@
 import { Schema, model, Document, Types } from 'mongoose';
 import { ulid } from 'ulid';
 
-
 export enum ReservationStatus {
   RESERVED = 'reserved',
   CONFIRMED = 'confirmed',
@@ -32,7 +31,6 @@ export interface IStockReservation extends Document {
   release(): Promise<IStockReservation>;
   expire(): Promise<IStockReservation>;
 }
-
 
 const stockReservationSchema = new Schema<IStockReservation>(
   {
@@ -94,7 +92,7 @@ const stockReservationSchema = new Schema<IStockReservation>(
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  }
+  },
 );
 
 // Compound indexes for common queries
@@ -192,7 +190,7 @@ stockReservationSchema.statics.createReservation = async function (params: {
   const stockItem = await StockItem.reserveStock(
     params.productId,
     params.warehouseId,
-    params.quantity
+    params.quantity,
   );
 
   if (!stockItem) {
@@ -219,7 +217,7 @@ stockReservationSchema.statics.createReservation = async function (params: {
  * Release a reservation and return stock
  */
 stockReservationSchema.statics.releaseReservation = async function (
-  reservationId: Types.ObjectId | string
+  reservationId: Types.ObjectId | string,
 ): Promise<void> {
   const { StockItem } = require('./StockItem');
 
@@ -240,7 +238,7 @@ stockReservationSchema.statics.releaseReservation = async function (
   await StockItem.releaseReservation(
     reservation.productId,
     reservation.warehouseId,
-    reservation.quantity
+    reservation.quantity,
   );
 
   // Update reservation status
@@ -251,7 +249,7 @@ stockReservationSchema.statics.releaseReservation = async function (
  * Commit a reservation (order confirmed)
  */
 stockReservationSchema.statics.commitReservation = async function (
-  reservationId: Types.ObjectId | string
+  reservationId: Types.ObjectId | string,
 ): Promise<void> {
   const { StockItem } = require('./StockItem');
 
@@ -272,7 +270,7 @@ stockReservationSchema.statics.commitReservation = async function (
   await StockItem.commitReservation(
     reservation.productId,
     reservation.warehouseId,
-    reservation.quantity
+    reservation.quantity,
   );
 
   // Update reservation status
@@ -299,7 +297,7 @@ stockReservationSchema.statics.releaseExpiredReservations = async function (): P
       await StockItem.releaseReservation(
         reservation.productId,
         reservation.warehouseId,
-        reservation.quantity
+        reservation.quantity,
       );
 
       // Mark as expired
@@ -317,7 +315,7 @@ stockReservationSchema.statics.releaseExpiredReservations = async function (): P
  * Release all reservations for a cart (e.g., cart abandoned)
  */
 stockReservationSchema.statics.releaseCartReservations = async function (
-  cartId: string
+  cartId: string,
 ): Promise<number> {
   const reservations = await this.find({
     cartId,
@@ -331,7 +329,7 @@ stockReservationSchema.statics.releaseCartReservations = async function (
       const StockReservationModel = model<IStockReservation>('StockReservation');
       await StockReservationModel.schema.statics.releaseReservation.call(
         StockReservationModel,
-        reservation._id
+        reservation._id,
       );
       releasedCount++;
     } catch (error) {
@@ -344,5 +342,5 @@ stockReservationSchema.statics.releaseCartReservations = async function (
 
 export const StockReservation = model<IStockReservation>(
   'StockReservation',
-  stockReservationSchema
+  stockReservationSchema,
 );

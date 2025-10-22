@@ -1,7 +1,7 @@
 /**
  * ProductOffer Tests
  * Feature #182 - Multi-seller marketplace
- * 
+ *
  * Tests for:
  * - Unique constraint (one offer per vendor per product)
  * - Validation (no negative price/stock)
@@ -113,7 +113,7 @@ describe('Feature #182: ProductOffer - Multi-seller Marketplace', () => {
   describe('CRITICAL: Validation', () => {
     it('should reject negative price', () => {
       const offer = createMockOffer({ price: -100 });
-      
+
       // In real Mongoose, this would be caught by schema validation
       // We verify the constraint exists
       expect(offer.price).toBeLessThan(0);
@@ -121,21 +121,21 @@ describe('Feature #182: ProductOffer - Multi-seller Marketplace', () => {
 
     it('should reject zero price', () => {
       const offer = createMockOffer({ price: 0 });
-      
+
       expect(offer.price).toBe(0);
       // Schema validation would require price > 0
     });
 
     it('should reject negative stock', () => {
       const offer = createMockOffer({ stock: -10 });
-      
+
       expect(offer.stock).toBeLessThan(0);
       // Schema validation would require stock >= 0
     });
 
     it('should validate compareAtPrice >= price', () => {
       const offer = createMockOffer({ price: 1000, compareAtPrice: 800 });
-      
+
       expect(offer.compareAtPrice).toBeLessThan(offer.price!);
       // Schema validation would enforce compareAtPrice >= price
     });
@@ -144,7 +144,7 @@ describe('Feature #182: ProductOffer - Multi-seller Marketplace', () => {
       const validOffer = createMockOffer({
         shippingTerms: { sla: 5, shippingCharge: 50, handlingTime: 1 },
       });
-      
+
       expect(validOffer.shippingTerms!.sla).toBeGreaterThanOrEqual(0);
       expect(validOffer.shippingTerms!.sla).toBeLessThanOrEqual(30);
     });
@@ -153,7 +153,7 @@ describe('Feature #182: ProductOffer - Multi-seller Marketplace', () => {
       const offer = createMockOffer({
         shippingTerms: { sla: 2, shippingCharge: 50, handlingTime: 3 },
       });
-      
+
       expect(offer.shippingTerms!.handlingTime).toBeGreaterThanOrEqual(1);
       expect(offer.shippingTerms!.handlingTime).toBeLessThanOrEqual(7);
     });
@@ -220,13 +220,16 @@ describe('Feature #182: ProductOffer - Multi-seller Marketplace', () => {
     it('should update stock atomically', async () => {
       const offer = createMockOffer({ stock: 100 }) as IProductOffer;
       const updatedOffer = { ...offer, stock: 90 };
-      
+
       (ProductOffer.findOneAndUpdate as jest.Mock).mockResolvedValue(updatedOffer);
-      (offer.updateStock as jest.Mock).mockImplementation(async function(this: any, quantity: number) {
+      (offer.updateStock as jest.Mock).mockImplementation(async function (
+        this: any,
+        quantity: number,
+      ) {
         const result = await ProductOffer.findOneAndUpdate(
           { _id: this._id, stock: { $gte: -quantity } },
           { $inc: { stock: quantity }, $set: { lastStockUpdate: new Date() } },
-          { new: true }
+          { new: true },
         );
         if (!result) throw new Error('Insufficient stock or offer not found');
         this.stock = result.stock;
@@ -239,13 +242,16 @@ describe('Feature #182: ProductOffer - Multi-seller Marketplace', () => {
 
     it('should prevent stock from going negative', async () => {
       const offer = createMockOffer({ stock: 5 }) as IProductOffer;
-      
+
       (ProductOffer.findOneAndUpdate as jest.Mock).mockResolvedValue(null);
-      (offer.updateStock as jest.Mock).mockImplementation(async function(this: any, quantity: number) {
+      (offer.updateStock as jest.Mock).mockImplementation(async function (
+        this: any,
+        quantity: number,
+      ) {
         const result = await ProductOffer.findOneAndUpdate(
           { _id: this._id, stock: { $gte: -quantity } },
           { $inc: { stock: quantity } },
-          { new: true }
+          { new: true },
         );
         if (!result) throw new Error('Insufficient stock or offer not found');
       });
@@ -259,7 +265,7 @@ describe('Feature #182: ProductOffer - Multi-seller Marketplace', () => {
         lowStockThreshold: 5,
       }) as IProductOffer;
 
-      (lowStockOffer.hasLowStock as jest.Mock).mockImplementation(function(this: any) {
+      (lowStockOffer.hasLowStock as jest.Mock).mockImplementation(function (this: any) {
         return this.stock <= this.lowStockThreshold && this.stock > 0;
       });
 
@@ -272,7 +278,7 @@ describe('Feature #182: ProductOffer - Multi-seller Marketplace', () => {
         lowStockThreshold: 5,
       }) as IProductOffer;
 
-      (sufficientStockOffer.hasLowStock as jest.Mock).mockImplementation(function(this: any) {
+      (sufficientStockOffer.hasLowStock as jest.Mock).mockImplementation(function (this: any) {
         return this.stock <= this.lowStockThreshold && this.stock > 0;
       });
 
@@ -281,10 +287,10 @@ describe('Feature #182: ProductOffer - Multi-seller Marketplace', () => {
 
     it('should auto-pause when stock reaches zero', async () => {
       const offer = createMockOffer({ stock: 1, isPaused: false }) as IProductOffer;
-      
+
       // Simulate stock going to zero
       offer.stock = 0;
-      
+
       // Pre-save hook would set isPaused = true
       // Simulate this behavior
       if (offer.stock === 0 && offer.isActive && !offer.isPaused) {
@@ -300,10 +306,10 @@ describe('Feature #182: ProductOffer - Multi-seller Marketplace', () => {
         isPaused: true,
         isActive: true,
       }) as IProductOffer;
-      
+
       // Simulate stock replenishment
       offer.stock = 10;
-      
+
       // Pre-save hook would set isPaused = false
       if (offer.stock > 0 && offer.isPaused && offer.isActive) {
         offer.isPaused = false;
@@ -413,7 +419,7 @@ describe('Feature #182: ProductOffer - Multi-seller Marketplace', () => {
         stock: 10,
       }) as IProductOffer;
 
-      (offer.isAvailable as jest.Mock).mockImplementation(function(this: any) {
+      (offer.isAvailable as jest.Mock).mockImplementation(function (this: any) {
         return this.isActive && !this.isPaused && this.stock > 0;
       });
 
@@ -427,7 +433,7 @@ describe('Feature #182: ProductOffer - Multi-seller Marketplace', () => {
         stock: 10,
       }) as IProductOffer;
 
-      (offer.isAvailable as jest.Mock).mockImplementation(function(this: any) {
+      (offer.isAvailable as jest.Mock).mockImplementation(function (this: any) {
         return this.isActive && !this.isPaused && this.stock > 0;
       });
 
@@ -441,7 +447,7 @@ describe('Feature #182: ProductOffer - Multi-seller Marketplace', () => {
         stock: 10,
       }) as IProductOffer;
 
-      (offer.isAvailable as jest.Mock).mockImplementation(function(this: any) {
+      (offer.isAvailable as jest.Mock).mockImplementation(function (this: any) {
         return this.isActive && !this.isPaused && this.stock > 0;
       });
 
@@ -455,7 +461,7 @@ describe('Feature #182: ProductOffer - Multi-seller Marketplace', () => {
         stock: 0,
       }) as IProductOffer;
 
-      (offer.isAvailable as jest.Mock).mockImplementation(function(this: any) {
+      (offer.isAvailable as jest.Mock).mockImplementation(function (this: any) {
         return this.isActive && !this.isPaused && this.stock > 0;
       });
 
@@ -469,7 +475,10 @@ describe('Feature #182: ProductOffer - Multi-seller Marketplace', () => {
         stock: 50,
       }) as IProductOffer;
 
-      (offer.canFulfill as jest.Mock).mockImplementation(function(this: any, requestedQuantity: number) {
+      (offer.canFulfill as jest.Mock).mockImplementation(function (
+        this: any,
+        requestedQuantity: number,
+      ) {
         return this.isActive && !this.isPaused && this.stock > 0 && this.stock >= requestedQuantity;
       });
 
@@ -500,7 +509,9 @@ describe('Feature #182: ProductOffer - Multi-seller Marketplace', () => {
       });
 
       // Virtual: savingsPercent = ((compareAtPrice - price) / compareAtPrice) * 100
-      const savingsPercent = Math.round(((offer.compareAtPrice! - offer.price!) / offer.compareAtPrice!) * 100);
+      const savingsPercent = Math.round(
+        ((offer.compareAtPrice! - offer.price!) / offer.compareAtPrice!) * 100,
+      );
       expect(savingsPercent).toBe(25);
     });
 
@@ -510,9 +521,10 @@ describe('Feature #182: ProductOffer - Multi-seller Marketplace', () => {
         compareAtPrice: undefined,
       });
 
-      const savings = offer.compareAtPrice && offer.compareAtPrice > offer.price!
-        ? offer.compareAtPrice - offer.price!
-        : 0;
+      const savings =
+        offer.compareAtPrice && offer.compareAtPrice > offer.price!
+          ? offer.compareAtPrice - offer.price!
+          : 0;
       expect(savings).toBe(0);
     });
 

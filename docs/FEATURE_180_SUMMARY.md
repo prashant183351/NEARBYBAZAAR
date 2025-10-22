@@ -24,18 +24,22 @@ Successfully implemented a multi-warehouse inventory management system with atom
 ## Spec Requirements vs Implementation
 
 ### ✅ Requirement 1: Multi-warehouse Support
+
 **Spec**: "Expand inventory management to support multiple warehouses"
 
 **Implementation**:
+
 - Created `Warehouse` model with operating hours logic
 - Created `StockItem` model with unique compound index on `productId + warehouseId`
 - Each product can have separate stock levels at different warehouse locations
 - Warehouse selection considers both stock availability and proximity
 
 ### ✅ Requirement 2: Atomic Updates & Race Condition Prevention
+
 **Spec**: "Atomic updates when reserving stock (to avoid race conditions)"
 
 **Implementation**:
+
 - All stock mutations use `findOneAndUpdate` with filter conditions
 - Atomic check-and-set pattern prevents concurrent reservations from exceeding available stock
 - Example pattern:
@@ -48,18 +52,22 @@ Successfully implemented a multi-warehouse inventory management system with atom
 - MongoDB's document-level atomic operations guarantee no partial updates
 
 ### ✅ Requirement 3: Time-based Reservation Expiry
+
 **Spec**: "Release reservations if not checked out in a certain time (e.g. 15 minutes hold)"
 
 **Implementation**:
+
 - `StockReservation` model includes `expiresAt` field (default 15 minutes from creation)
 - BullMQ cleanup job runs every 5 minutes to scan for expired reservations
 - Expired reservations are automatically released back to available stock
 - TTL index auto-deletes old reservation records after 7 days
 
 ### ✅ Requirement 4: Test Coverage
+
 **Spec**: "Simulate two parallel checkout attempts for the last item to ensure one fails to reserve stock"
 
 **Implementation**:
+
 - Created comprehensive test suite: `inventory.race.spec.ts` (12 tests, all ✅ PASS)
 - Tests document and verify:
   - Atomic operation patterns
@@ -77,6 +85,7 @@ Successfully implemented a multi-warehouse inventory management system with atom
 ### 1. Data Models
 
 #### Warehouse Model (`apps/api/src/models/Warehouse.ts`)
+
 ```typescript
 {
   code: string;              // Unique warehouse code (e.g., "WH-001")
@@ -98,28 +107,31 @@ Successfully implemented a multi-warehouse inventory management system with atom
 ```
 
 **Key Methods**:
+
 - `isOperating(date?)`: Validates if warehouse is active and within operating hours
 
 **Indexes**:
+
 - Unique index on `code`
 - Compound indexes on `isActive`, `address.city+isActive`, `address.pincode+isActive` for queries
 
 ---
 
 #### StockItem Model (`apps/api/src/models/StockItem.ts`)
+
 ```typescript
 {
-  productId: ObjectId;       // Reference to Product
-  warehouseId: ObjectId;     // Reference to Warehouse
+  productId: ObjectId; // Reference to Product
+  warehouseId: ObjectId; // Reference to Warehouse
   sku: string;
   quantity: {
-    available: number;       // Stock available for reservation
-    reserved: number;        // Stock currently reserved (pending checkout)
-    damaged: number;         // Damaged/unsellable stock
-    total: number;          // Auto-calculated: available + reserved + damaged
-  };
-  reorderPoint: number;      // Trigger level for restocking
-  reorderQuantity: number;   // Qty to reorder when below reorder point
+    available: number; // Stock available for reservation
+    reserved: number; // Stock currently reserved (pending checkout)
+    damaged: number; // Damaged/unsellable stock
+    total: number; // Auto-calculated: available + reserved + damaged
+  }
+  reorderPoint: number; // Trigger level for restocking
+  reorderQuantity: number; // Qty to reorder when below reorder point
   lastRestocked: Date;
 }
 ```
@@ -163,6 +175,7 @@ Successfully implemented a multi-warehouse inventory management system with atom
 ---
 
 #### StockReservation Model (`apps/api/src/models/StockReservation.ts`)
+
 ```typescript
 {
   orderId?: ObjectId;        // Links to Order when committed
@@ -180,6 +193,7 @@ Successfully implemented a multi-warehouse inventory management system with atom
 ```
 
 **Indexes**:
+
 - Compound indexes for cleanup queries: `status+expiresAt`, `cartId+status`, `orderId`, `productId+warehouseId+status`
 - TTL index on `createdAt` (auto-delete after 7 days)
 
@@ -228,12 +242,14 @@ Successfully implemented a multi-warehouse inventory management system with atom
 **Purpose**: Automatically release expired stock reservations to prevent inventory from being locked indefinitely
 
 **Configuration**:
+
 - **Queue**: `reservation-cleanup`
 - **Schedule**: Every 5 minutes (`*/5 * * * *` cron)
 - **Concurrency**: 1 worker (single-threaded to avoid race conditions)
 - **Retention**: Keep last 10 completed jobs, 50 failed jobs for debugging
 
 **Job Logic**:
+
 ```typescript
 1. Query: Find all reservations where status='active' AND expiresAt <= now
 2. For each expired reservation:
@@ -243,6 +259,7 @@ Successfully implemented a multi-warehouse inventory management system with atom
 ```
 
 **Startup Functions**:
+
 - `startReservationCleanupWorker()`: Initialize BullMQ worker and schedule repeating job
 - `triggerReservationCleanup()`: Manual trigger for testing or admin operations
 
@@ -257,6 +274,7 @@ Successfully implemented a multi-warehouse inventory management system with atom
 **Scenario**: Two users try to reserve the last available item simultaneously
 
 **MongoDB Atomic Operation**:
+
 ```typescript
 // User A and User B both request quantity=1 at the same time
 // Initial state: { available: 1, reserved: 0 }
@@ -265,19 +283,20 @@ const result = await StockItem.findOneAndUpdate(
   {
     productId: 'prod-123',
     warehouseId: 'wh-456',
-    'quantity.available': { $gte: 1 }  // CRITICAL: Filter checks before update
+    'quantity.available': { $gte: 1 }, // CRITICAL: Filter checks before update
   },
   {
     $inc: {
       'quantity.available': -1,
-      'quantity.reserved': 1
-    }
+      'quantity.reserved': 1,
+    },
   },
-  { new: true }
+  { new: true },
 );
 ```
 
 **Execution Sequence** (MongoDB serializes updates per document):
+
 1. **User A's request arrives first**:
    - Filter matches: `available=1 >= 1` ✅
    - Update executes: `available=0, reserved=1`
@@ -298,6 +317,7 @@ const result = await StockItem.findOneAndUpdate(
 **Scenario**: User completes payment, order is fulfilled, stock should decrease
 
 **MongoDB Atomic Operation**:
+
 ```typescript
 // Reservation: { quantity: 3, status: 'active' }
 // Stock before: { available: 7, reserved: 3, total: 10 }
@@ -306,16 +326,17 @@ await StockItem.findOneAndUpdate(
   { productId, warehouseId },
   {
     $inc: {
-      'quantity.reserved': -3,  // Remove from reserved
-      'quantity.total': -3      // Decrease total (item shipped)
-    }
-  }
+      'quantity.reserved': -3, // Remove from reserved
+      'quantity.total': -3, // Decrease total (item shipped)
+    },
+  },
 );
 
 // Stock after: { available: 7, reserved: 0, total: 7 }
 ```
 
-**Why This Matters**: 
+**Why This Matters**:
+
 - `available` stays at 7 (other customers can still buy remaining stock)
 - `reserved` goes to 0 (reservation fulfilled)
 - `total` decreases to 7 (physical inventory reduced by shipment)
@@ -327,6 +348,7 @@ await StockItem.findOneAndUpdate(
 **Scenario**: User adds to cart but doesn't checkout within 15 minutes
 
 **MongoDB Atomic Operation**:
+
 ```typescript
 // Reservation expires at 10:15, cleanup job runs at 10:20
 // Stock before: { available: 2, reserved: 3, total: 5 }
@@ -335,10 +357,10 @@ await StockItem.findOneAndUpdate(
   { productId, warehouseId },
   {
     $inc: {
-      'quantity.available': 3,  // Return to available pool
-      'quantity.reserved': -3   // Remove from reserved
-    }
-  }
+      'quantity.available': 3, // Return to available pool
+      'quantity.reserved': -3, // Remove from reserved
+    },
+  },
 );
 
 // Stock after: { available: 5, reserved: 0, total: 5 }
@@ -363,7 +385,7 @@ const reservation = await StockReservation.createReservation({
   quantity: item.quantity,
   userId: req.user.id,
   cartId: req.session.cartId,
-  expiresInMinutes: 15
+  expiresInMinutes: 15,
 });
 
 // STEP 2: On successful payment
@@ -385,7 +407,7 @@ await StockReservation.releaseCartReservations(req.session.cartId);
 const bestWarehouse = await StockItem.findBestWarehouse(
   productId,
   requestedQty,
-  buyerPincode  // Optional: prefer nearby warehouse
+  buyerPincode, // Optional: prefer nearby warehouse
 );
 
 if (!bestWarehouse) {
@@ -400,6 +422,7 @@ const reservation = await StockReservation.createReservation({
 ```
 
 **Selection Algorithm**:
+
 1. Filter warehouses that have `quantity.available >= requestedQty`
 2. If `buyerPincode` provided, sort by distance (closest first)
 3. Otherwise, sort by warehouse capacity (largest first)
@@ -457,6 +480,7 @@ POST   /v1/inventory/mark-damaged     // Mark items as damaged
 **Note**: Tests use unit testing approach to document patterns due to MongoMemoryServer compatibility issues on Windows. Integration tests should be run in CI/staging environment with real MongoDB.
 
 **Test Output**:
+
 ```
 PASS  tests/inventory.race.spec.ts
   Feature #180: Inventory Race Condition Tests (Unit)
@@ -512,6 +536,7 @@ Time:        2.477 s
    - 12/12 tests passing
 
 ### Modified Files (0)
+
 - No existing files were modified
 - All changes are additive (new models and services)
 
@@ -520,16 +545,19 @@ Time:        2.477 s
 ## Performance Characteristics
 
 ### Atomic Operations
+
 - **Stock reservation**: Sub-millisecond atomic update (MongoDB findOneAndUpdate)
 - **Race condition handling**: Zero data inconsistency risk (MongoDB document-level atomicity)
 - **Concurrent load**: Scales linearly with MongoDB performance (no application-level locking required)
 
 ### Cleanup Job
+
 - **Frequency**: Every 5 minutes
 - **Overhead**: Single query to find expired reservations + N individual release operations
 - **Optimization potential**: Could batch release operations in future if needed
 
 ### Indexes
+
 - All critical query paths are indexed (productId+warehouseId, status+expiresAt, etc.)
 - Compound unique index prevents duplicate stock records
 - TTL index auto-cleans old reservations (no manual maintenance)
@@ -539,16 +567,19 @@ Time:        2.477 s
 ## Security & Data Integrity
 
 ### Atomic Guarantees
+
 ✅ **Race-free stock updates**: MongoDB's document-level atomic operations prevent overselling  
 ✅ **Consistent state**: No partial updates possible (all-or-nothing semantics)  
 ✅ **No application locks needed**: Database handles concurrency internally
 
 ### Validation
+
 ✅ **Negative stock prevention**: Filter condition prevents `available` from going below zero  
 ✅ **Quantity integrity**: Pre-save hook ensures `total = available + reserved + damaged`  
 ✅ **Expiry enforcement**: Cleanup job automatically releases expired reservations
 
 ### Audit Trail
+
 ✅ **Timestamps**: All reservations track createdAt, committedAt, releasedAt  
 ✅ **Status tracking**: Reservation status transitions are logged (active → committed/released/expired)  
 ✅ **BullMQ job logs**: Cleanup job results are logged for monitoring
@@ -598,12 +629,14 @@ Time:        2.477 s
 ## Dependencies
 
 ### External Packages
+
 - **mongoose**: MongoDB ORM for models and queries
 - **bullmq**: Job queue for cleanup scheduling
 - **ioredis**: Redis client for BullMQ (already in project)
 - **@nearbybazaar/lib**: Logger for structured logging
 
 ### Internal Dependencies
+
 - **Product model**: Referenced by StockItem and StockReservation
 - **User model**: Referenced by StockReservation for buyer tracking
 - **Order model**: Referenced by StockReservation when committed
@@ -625,22 +658,25 @@ Time:        2.477 s
 ### Deployment Steps
 
 1. **Database Migrations**:
+
    ```bash
    # No explicit migration needed (Mongoose auto-creates indexes)
    # But recommend running in staging first to verify index creation
    ```
 
 2. **Environment Variables**:
+
    ```bash
    # Add to .env
    REDIS_URL=redis://localhost:6379  # Already exists for BullMQ
    ```
 
 3. **Start Cleanup Worker**:
+
    ```typescript
    // In apps/api/src/server.ts
    import { startReservationCleanupWorker } from './jobs/reservationCleanup';
-   
+
    // After Express app starts
    startReservationCleanupWorker();
    ```
@@ -674,12 +710,11 @@ try {
     quantity: 2,
     userId: req.user.id,
     cartId: req.session.cartId,
-    expiresInMinutes: 15
+    expiresInMinutes: 15,
   });
-  
+
   console.log('Stock reserved:', reservation._id);
   // Proceed to payment flow
-  
 } catch (error) {
   if (error.message.includes('Insufficient stock')) {
     // Show "Out of stock" message to user
@@ -726,8 +761,8 @@ const warehouseId = new mongoose.Types.ObjectId('60d5e...');
 await StockItem.schema.statics.addStock(
   productId,
   warehouseId,
-  100,  // Quantity to add
-  'PROD-12345'
+  100, // Quantity to add
+  'PROD-12345',
 );
 
 console.log('Stock added successfully');
@@ -752,11 +787,13 @@ console.log('Stock added successfully');
 **Symptoms**: Stock permanently stuck in "reserved" state
 
 **Diagnosis**:
+
 1. Check if cleanup job is running: `GET /admin/queues/reservation-cleanup`
 2. Check BullMQ logs for errors
 3. Verify Redis connection is healthy
 
 **Solution**:
+
 ```bash
 # Manual trigger of cleanup job (for testing)
 curl -X POST http://localhost:4000/admin/cleanup/trigger
@@ -769,11 +806,13 @@ curl -X POST http://localhost:4000/admin/cleanup/trigger
 **This Should NEVER Happen** due to atomic operations, but if it does:
 
 **Diagnosis**:
+
 1. Check MongoDB version (must be 3.6+ for atomic updates)
 2. Verify indexes exist: `db.stockitems.getIndexes()`
 3. Check for manual database modifications (bypassing atomic logic)
 
 **Emergency Fix**:
+
 ```bash
 # Recount all stock (run in maintenance window)
 node scripts/recountInventory.js

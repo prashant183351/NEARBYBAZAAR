@@ -9,12 +9,14 @@ This feature provides a Docker Compose configuration for running MongoDB and Red
 ### 1. Docker Compose Configuration (`docker-compose.yml`)
 
 **Services**:
+
 - **MongoDB 7.0**: Database with persistent storage and health checks
 - **Redis 7.2**: Cache and queue system with persistent storage
 - **Mongo Express** (optional): Web UI for MongoDB on port 8081
 - **Redis Commander** (optional): Web UI for Redis on port 8082
 
 **Features**:
+
 - ✅ Persistent data volumes (survives container restarts)
 - ✅ Health checks for service readiness
 - ✅ Custom network for service communication
@@ -24,6 +26,7 @@ This feature provides a Docker Compose configuration for running MongoDB and Red
 ### 2. Service Configuration
 
 #### MongoDB
+
 - **Image**: `mongo:7.0`
 - **Port**: `27017`
 - **Username**: `admin`
@@ -35,6 +38,7 @@ This feature provides a Docker Compose configuration for running MongoDB and Red
   - `mongodb_config:/data/configdb` - Configuration
 
 #### Redis
+
 - **Image**: `redis:7.2-alpine`
 - **Port**: `6379`
 - **Password**: `redispass123`
@@ -48,12 +52,14 @@ This feature provides a Docker Compose configuration for running MongoDB and Red
 A Node.js script that waits for MongoDB and Redis to be ready before allowing the API to start.
 
 **Features**:
+
 - Colored terminal output for readability
 - Configurable retry attempts and delays
 - Clear error messages with troubleshooting steps
 - Non-blocking for services that are already ready
 
 **Usage**:
+
 ```bash
 node scripts/wait-for-services.js
 ```
@@ -61,6 +67,7 @@ node scripts/wait-for-services.js
 ### 4. Environment Configuration (`.env.example`)
 
 Comprehensive environment template with:
+
 - Docker-ready MongoDB connection string
 - Docker-ready Redis connection string
 - All required platform configuration
@@ -72,15 +79,18 @@ Comprehensive environment template with:
 ### 1. Install Docker
 
 **Windows**:
+
 - Download Docker Desktop from https://www.docker.com/products/docker-desktop
 - Install and start Docker Desktop
 
 **Mac**:
+
 ```bash
 brew install --cask docker
 ```
 
 **Linux**:
+
 ```bash
 # Ubuntu/Debian
 sudo apt-get update
@@ -251,6 +261,7 @@ REDIS_URL=redis://username:password@redis-server.com:6379
 **Problem**: `docker-compose up` fails
 
 **Solutions**:
+
 ```powershell
 # Check if Docker is running
 docker info
@@ -272,6 +283,7 @@ docker-compose logs mongodb redis
 **Problem**: `Error: bind: address already in use`
 
 **Solutions**:
+
 ```powershell
 # Find process using port
 Get-Process -Id (Get-NetTCPConnection -LocalPort 27017).OwningProcess
@@ -285,6 +297,7 @@ Get-Process -Id (Get-NetTCPConnection -LocalPort 27017).OwningProcess
 **Problem**: Container shows as `unhealthy`
 
 **Solutions**:
+
 ```powershell
 # Check logs
 docker-compose logs mongodb
@@ -302,6 +315,7 @@ docker-compose up -d
 **Problem**: API can't connect to MongoDB/Redis
 
 **Solutions**:
+
 ```powershell
 # 1. Wait for services to be fully ready
 node scripts/wait-for-services.js
@@ -325,6 +339,7 @@ redis-cli -h localhost -p 6379 -a redispass123 ping
 **Cause**: Using `docker-compose down -v` removes volumes
 
 **Solution**:
+
 ```powershell
 # Use this to stop (preserves data)
 docker-compose stop
@@ -341,6 +356,7 @@ docker-compose down
 **Problem**: Docker containers are slow
 
 **Solutions**:
+
 ```powershell
 # 1. Allocate more resources in Docker Desktop
 # Settings → Resources → Increase CPU and Memory
@@ -357,6 +373,7 @@ docker system prune
 **Problem**: Can't access Mongo Express or Redis Commander
 
 **Solutions**:
+
 ```powershell
 # 1. Make sure started with --profile ui
 docker-compose --profile ui up -d
@@ -397,6 +414,7 @@ All services are on a custom bridge network (`nearbybazaar-network`), which is f
 ## Security Notes
 
 ⚠️ **These credentials are for DEVELOPMENT ONLY**:
+
 - MongoDB: `admin:password123`
 - Redis: `redispass123`
 - Mongo Express: `admin:admin123`
@@ -404,6 +422,7 @@ All services are on a custom bridge network (`nearbybazaar-network`), which is f
 **Never use these in production!**
 
 For production:
+
 1. Use strong, unique passwords
 2. Store credentials in secrets management (e.g., AWS Secrets Manager)
 3. Enable SSL/TLS for connections
@@ -415,11 +434,13 @@ For production:
 The API should use the wait script before starting:
 
 **Option 1**: Manual check before starting API:
+
 ```powershell
 node scripts/wait-for-services.js && pnpm --filter @nearbybazaar/api dev
 ```
 
 **Option 2**: Add to API's package.json:
+
 ```json
 {
   "scripts": {
@@ -430,6 +451,7 @@ node scripts/wait-for-services.js && pnpm --filter @nearbybazaar/api dev
 ```
 
 **Option 3**: Use in CI/CD pipeline:
+
 ```yaml
 # .github/workflows/ci.yml
 - name: Wait for services
@@ -438,26 +460,28 @@ node scripts/wait-for-services.js && pnpm --filter @nearbybazaar/api dev
 
 ## Comparison: Docker vs Local Installation
 
-| Aspect | Docker | Local Installation |
-|--------|--------|-------------------|
-| Setup Time | 5 minutes | 30-60 minutes |
-| Consistency | Identical across machines | Varies by OS |
-| Isolation | Isolated containers | Shared system |
-| Resource Usage | Moderate overhead | Native performance |
-| Cleanup | Easy (docker-compose down) | Manual uninstall |
-| Version Control | Defined in docker-compose.yml | Manual updates |
+| Aspect          | Docker                        | Local Installation |
+| --------------- | ----------------------------- | ------------------ |
+| Setup Time      | 5 minutes                     | 30-60 minutes      |
+| Consistency     | Identical across machines     | Varies by OS       |
+| Isolation       | Isolated containers           | Shared system      |
+| Resource Usage  | Moderate overhead             | Native performance |
+| Cleanup         | Easy (docker-compose down)    | Manual uninstall   |
+| Version Control | Defined in docker-compose.yml | Manual updates     |
 
 **Recommendation**: Use Docker for development unless you have specific reasons not to.
 
 ## Files Created/Modified
 
 ### Created
+
 1. **docker-compose.yml** - Service definitions
 2. **.dockerignore** - Docker context exclusions
 3. **scripts/wait-for-services.js** - Readiness check script
 4. **docs/FEATURE_159_DOCKER.md** - This documentation
 
 ### Modified
+
 1. **.env.example** - Added Docker-ready connection strings
 2. **README.md** - Added Quick Start with Docker
 3. **DEV.md** - Added Docker development section
@@ -465,12 +489,14 @@ node scripts/wait-for-services.js && pnpm --filter @nearbybazaar/api dev
 ## Next Steps
 
 ### For Developers
+
 1. Install Docker Desktop
 2. Run `docker-compose up -d`
 3. Run `node scripts/wait-for-services.js` to verify
 4. Continue with normal development workflow
 
 ### Future Enhancements
+
 - Add Meilisearch service for search
 - Add reverse proxy (Nginx) for local SSL
 - Add CI/CD pipeline integration
@@ -480,6 +506,7 @@ node scripts/wait-for-services.js && pnpm --filter @nearbybazaar/api dev
 ## Summary
 
 Feature #159 provides:
+
 - ✅ Complete Docker Compose setup for MongoDB and Redis
 - ✅ Health checks ensuring services are ready
 - ✅ Persistent data volumes

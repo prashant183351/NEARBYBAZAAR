@@ -22,9 +22,8 @@ export async function startReservationCleanupWorker(): Promise<void> {
       logger.info('Starting reservation cleanup job');
 
       try {
-        const releasedCount = await StockReservation.schema.statics.releaseExpiredReservations.call(
-          StockReservation
-        );
+        const releasedCount =
+          await StockReservation.schema.statics.releaseExpiredReservations.call(StockReservation);
 
         logger.info(`Released ${releasedCount} expired reservations`);
 
@@ -38,11 +37,13 @@ export async function startReservationCleanupWorker(): Promise<void> {
     {
       connection,
       concurrency: 1, // Only one cleanup job at a time
-    }
+    },
   );
 
   worker.on('completed', (job) => {
-    logger.info(`Reservation cleanup job ${job.id} completed with ${job.returnvalue?.releasedCount || 0} released`);
+    logger.info(
+      `Reservation cleanup job ${job.id} completed with ${job.returnvalue?.releasedCount || 0} released`,
+    );
   });
 
   worker.on('failed', (job, err) => {
@@ -60,7 +61,7 @@ export async function startReservationCleanupWorker(): Promise<void> {
       },
       removeOnComplete: 10, // Keep last 10 completed jobs
       removeOnFail: 50, // Keep last 50 failed jobs
-    }
+    },
   );
 
   logger.info('Reservation cleanup worker started (runs every 5 minutes)');

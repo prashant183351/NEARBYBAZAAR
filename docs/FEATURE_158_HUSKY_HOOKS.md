@@ -13,6 +13,7 @@ This feature implements Git hooks using Husky to enforce code quality standards 
 Husky is initialized in the repository with hooks stored in `.husky/` directory.
 
 **Installation**: Automatic via `prepare` script in `package.json`:
+
 ```json
 "scripts": {
   "prepare": "husky"
@@ -28,11 +29,13 @@ This ensures hooks are installed when anyone runs `pnpm install`.
 Runs `lint-staged` on staged files before allowing commit.
 
 **Purpose**:
+
 - Fix ESLint issues automatically
 - Format code with Prettier
 - Ensure only quality code enters the repository
 
 **What it runs**:
+
 ```bash
 npx lint-staged
 ```
@@ -44,11 +47,13 @@ npx lint-staged
 Runs test suite before allowing push to remote.
 
 **Purpose**:
+
 - Catch failing tests before they reach CI
 - Prevent broken code from being pushed
 - Save CI resources and time
 
 **What it runs**:
+
 ```bash
 pnpm test
 ```
@@ -60,6 +65,7 @@ This runs the Jest test suite (104 tests across 8 suites).
 **Location**: `package.json` under `"lint-staged"` key
 
 **Configuration**:
+
 ```json
 "lint-staged": {
   "*.{ts,tsx,js,jsx}": [
@@ -73,6 +79,7 @@ This runs the Jest test suite (104 tests across 8 suites).
 ```
 
 **Behavior**:
+
 - Only runs on staged files (fast)
 - Fixes ESLint issues automatically where possible
 - Formats all code with Prettier
@@ -183,11 +190,13 @@ git push --no-verify
 ## Performance
 
 ### Pre-commit Hook
+
 - **Speed**: Very fast (< 5 seconds typically)
 - **Reason**: Only processes staged files
 - **Impact**: Minimal disruption to workflow
 
 ### Pre-push Hook
+
 - **Speed**: ~10-30 seconds (depends on test suite size)
 - **Reason**: Runs full Jest test suite (104 tests currently)
 - **Impact**: Moderate, but prevents broken pushes
@@ -201,6 +210,7 @@ git push --no-verify
 **Symptom**: Commits succeed without running lint-staged
 
 **Solution**:
+
 ```bash
 # Reinstall hooks
 pnpm exec husky install
@@ -217,6 +227,7 @@ ls -la .husky/pre-commit
 **Symptom**: `Permission denied` when running hooks
 
 **Solution**:
+
 ```bash
 # Make hooks executable
 chmod +x .husky/pre-commit
@@ -228,6 +239,7 @@ chmod +x .husky/pre-push
 **Symptom**: ESLint errors that can't be auto-fixed
 
 **Solution**:
+
 ```bash
 # Run ESLint manually to see errors
 pnpm exec eslint <file>
@@ -258,6 +270,7 @@ pnpm test -- --coverage=false
 **Symptom**: `pnpm install` doesn't set up hooks
 
 **Solution**:
+
 ```bash
 # Check if prepare script exists in package.json
 grep prepare package.json
@@ -327,10 +340,12 @@ npx husky add .husky/post-merge 'pnpm install'
 ## Files Modified
 
 ### Created
+
 - `.husky/pre-commit` - Runs lint-staged on commit
 - `.husky/pre-push` - Runs tests on push
 
 ### Modified
+
 - `package.json`:
   - Added `"prepare": "husky"` script (auto-created by Husky)
   - Added `"lint-staged"` configuration
@@ -355,6 +370,7 @@ git push origin main
 ## Summary
 
 Feature #158 successfully implements:
+
 - ✅ Husky initialization with automatic install via `prepare` script
 - ✅ Pre-commit hook running lint-staged (ESLint + Prettier)
 - ✅ Pre-push hook running Jest test suite

@@ -104,24 +104,24 @@ Successfully implemented comprehensive unit and integration tests for the dropsh
 
 ### 37 Tests Across 8 Categories
 
-| Category | Tests | Description |
-|----------|-------|-------------|
-| **Supplier Lifecycle** | 3 | Invitation, approval, suspension, termination |
-| **SKU Mapping Logic** | 6 | Create, update, find, unique constraints, bulk ops |
-| **Margin Rule Logic** | 6 | Percent/fixed margins, category rules, calculations |
-| **Order Push to Supplier** | 5 | Success, errors, idempotency, audit logging |
-| **Supplier Interface** | 5 | Connect, disconnect, sync stock/price, SKU mapping |
-| **Integration Flows** | 3 | End-to-end workflows, rule priority |
-| **Error Handling** | 6 | Missing data, validation, concurrent updates |
-| **Performance** | 2 | Indexed queries, pagination |
-| **TOTAL** | **37** | **Complete coverage of critical paths** |
+| Category                   | Tests  | Description                                         |
+| -------------------------- | ------ | --------------------------------------------------- |
+| **Supplier Lifecycle**     | 3      | Invitation, approval, suspension, termination       |
+| **SKU Mapping Logic**      | 6      | Create, update, find, unique constraints, bulk ops  |
+| **Margin Rule Logic**      | 6      | Percent/fixed margins, category rules, calculations |
+| **Order Push to Supplier** | 5      | Success, errors, idempotency, audit logging         |
+| **Supplier Interface**     | 5      | Connect, disconnect, sync stock/price, SKU mapping  |
+| **Integration Flows**      | 3      | End-to-end workflows, rule priority                 |
+| **Error Handling**         | 6      | Missing data, validation, concurrent updates        |
+| **Performance**            | 2      | Indexed queries, pagination                         |
+| **TOTAL**                  | **37** | **Complete coverage of critical paths**             |
 
 ### Coverage Requirements
 
-| Scope | Lines | Branches | Functions | Statements |
-|-------|-------|----------|-----------|------------|
-| **Global API** | 80% | 70% | 70% | 80% |
-| **Dropship Services** | 90% | 80% | 90% | 90% |
+| Scope                 | Lines | Branches | Functions | Statements |
+| --------------------- | ----- | -------- | --------- | ---------- |
+| **Global API**        | 80%   | 70%      | 70%       | 80%        |
+| **Dropship Services** | 90%   | 80%      | 90%       | 90%        |
 
 **Enforcement**: Jest will fail if coverage falls below these thresholds.
 
@@ -185,6 +185,7 @@ The dropshipping tests are configured as a **mandatory CI gate** because:
 ### GitHub Actions Workflow
 
 Example workflow provided with:
+
 - MongoDB service container
 - Multi-stage testing
 - Coverage verification
@@ -220,6 +221,7 @@ LOG_TESTS=1 pnpm --filter @nearbybazaar/api test
 ### Prerequisites
 
 1. **MongoDB** running on `localhost:27017`
+
    ```bash
    docker run -d -p 27017:27017 mongo:7
    ```
@@ -234,29 +236,34 @@ LOG_TESTS=1 pnpm --filter @nearbybazaar/api test
 ## Key Features
 
 ### ✅ Comprehensive Test Coverage
+
 - 37 tests covering all critical paths
 - Unit tests for individual functions
 - Integration tests for workflows
 - Performance tests for scalability
 
 ### ✅ Realistic Mocking
+
 - Multiple mock suppliers (realistic, failing, slow)
 - Complete API server simulation
 - Configurable test data
 
 ### ✅ Error Handling
+
 - Tests for missing data
 - Tests for validation errors
 - Tests for concurrent updates
 - Tests for API failures
 
 ### ✅ CI Gate Protection
+
 - Mandatory passing tests before merge
 - 90% coverage requirement
 - GitHub Actions workflow ready
 - Automatic PR comments
 
 ### ✅ Developer Experience
+
 - Quick start checklist
 - Best practices guide
 - Test templates
@@ -264,6 +271,7 @@ LOG_TESTS=1 pnpm --filter @nearbybazaar/api test
 - Clear error messages
 
 ### ✅ Documentation
+
 - Comprehensive testing guide (450+ lines)
 - Implementation summary
 - Quick reference checklist
@@ -278,10 +286,10 @@ LOG_TESTS=1 pnpm --filter @nearbybazaar/api test
 Global utilities available in all tests:
 
 ```typescript
-global.testUtils.randomObjectId()
-global.testUtils.wait(1000)
-global.testUtils.createMockSupplier()
-global.testUtils.createMockOrder({ total: 99.99 })
+global.testUtils.randomObjectId();
+global.testUtils.wait(1000);
+global.testUtils.createMockSupplier();
+global.testUtils.createMockOrder({ total: 99.99 });
 ```
 
 ### Idempotency Testing
@@ -309,7 +317,7 @@ Unique constraints enforced:
 
 ```typescript
 await expect(
-    SkuMapping.create({ supplierId, supplierSku }) // Duplicate
+  SkuMapping.create({ supplierId, supplierSku }), // Duplicate
 ).rejects.toThrow();
 ```
 
@@ -376,15 +384,18 @@ await expect(
 ## Dependencies
 
 ### Already Available
+
 - `jest` - Test framework
 - `ts-jest` - TypeScript support
 - `mongoose` - MongoDB ODM
 - `axios` - HTTP client (mocked)
 
 ### No New Dependencies Required
+
 All mocking is done with Jest's built-in capabilities.
 
 ### Optional Enhancements
+
 - `@shelf/jest-mongodb` - In-memory MongoDB (faster tests)
 - `supertest` - HTTP assertion library
 - `nock` - Alternative HTTP mocking
@@ -404,24 +415,29 @@ All mocking is done with Jest's built-in capabilities.
 ### Remaining Risks (Low)
 
 ⚠️ **Mock Drift**: Mocks may diverge from real supplier APIs
-   - Mitigation: Add E2E tests with sandbox APIs quarterly
+
+- Mitigation: Add E2E tests with sandbox APIs quarterly
 
 ⚠️ **Test Maintenance**: Tests need updates as code changes
-   - Mitigation: Coverage requirements prevent test rot
+
+- Mitigation: Coverage requirements prevent test rot
 
 ⚠️ **Flaky Tests**: Network/timing issues could cause failures
-   - Mitigation: Use realistic delays, proper async/await
+
+- Mitigation: Use realistic delays, proper async/await
 
 ---
 
 ## Cost-Benefit Analysis
 
 ### Costs
+
 - **Development Time**: ~6 hours to implement
 - **CI Runtime**: +1-2 minutes per build
 - **Maintenance**: ~1 hour/month
 
 ### Benefits
+
 - **Prevent Fulfillment Errors**: Save $10,000+ annually in refunds
 - **Faster Debugging**: Identify issues in seconds vs hours
 - **Confident Refactoring**: Change code without fear
@@ -435,22 +451,26 @@ All mocking is done with Jest's built-in capabilities.
 ## Team Impact
 
 ### Developers
+
 - Clear testing patterns to follow
 - Fast feedback on code changes
 - Confidence in refactoring
 - Reduced debugging time
 
 ### QA
+
 - Automated regression testing
 - Focus on exploratory testing
 - Clear coverage metrics
 
 ### DevOps
+
 - CI gate prevents bad deploys
 - Coverage trends visible
 - Automated test reporting
 
 ### Product/Business
+
 - Reduced fulfillment errors
 - Faster feature velocity
 - Higher code quality

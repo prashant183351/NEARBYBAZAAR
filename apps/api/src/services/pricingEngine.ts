@@ -1,6 +1,6 @@
 /**
  * Feature #181: Pricing Engine Service
- * 
+ *
  * Evaluates applicable pricing rules for carts and orders.
  * Handles:
  * - Coupon code validation and application
@@ -20,21 +20,21 @@ export interface CartItem {
   categoryId?: Types.ObjectId;
   vendorId?: Types.ObjectId;
   quantity: number;
-  unitPrice: number;           // Original price per unit
-  originalTotal: number;       // quantity * unitPrice
-  isDiscounted?: boolean;      // Already on sale?
-  isSaleItem?: boolean;        // Part of clearance/sale?
+  unitPrice: number; // Original price per unit
+  originalTotal: number; // quantity * unitPrice
+  isDiscounted?: boolean; // Already on sale?
+  isSaleItem?: boolean; // Part of clearance/sale?
 }
 
 export interface AppliedDiscount {
   ruleId: Types.ObjectId;
   ruleName: string;
   ruleType: 'coupon' | 'promotion' | 'tiered' | 'bundle';
-  code?: string;               // If coupon
-  discountAmount: number;      // Amount saved
-  appliedTo: 'cart' | 'item';  // Cart-level or item-level
-  itemId?: string;             // If item-level, which item (productId or index)
-  explanation: string;         // Human-readable explanation
+  code?: string; // If coupon
+  discountAmount: number; // Amount saved
+  appliedTo: 'cart' | 'item'; // Cart-level or item-level
+  itemId?: string; // If item-level, which item (productId or index)
+  explanation: string; // Human-readable explanation
 }
 
 export interface PricingResult {
@@ -42,8 +42,8 @@ export interface PricingResult {
   discountTotal: number;
   finalTotal: number;
   appliedDiscounts: AppliedDiscount[];
-  errors: string[];            // Validation errors (e.g., "Coupon expired")
-  warnings: string[];          // Non-blocking warnings (e.g., "Coupon not stackable")
+  errors: string[]; // Validation errors (e.g., "Coupon expired")
+  warnings: string[]; // Non-blocking warnings (e.g., "Coupon not stackable")
 }
 
 export class PricingEngine {
@@ -53,7 +53,7 @@ export class PricingEngine {
   static async evaluateCart(
     items: CartItem[],
     couponCodes: string[] = [],
-    _userId?: Types.ObjectId
+    _userId?: Types.ObjectId,
   ): Promise<PricingResult> {
     const result: PricingResult = {
       originalTotal: 0,
@@ -71,7 +71,7 @@ export class PricingEngine {
     const couponRules: IPricingRule[] = [];
     for (const code of couponCodes) {
       const rule = await PricingRule.findByCode(code);
-      
+
       if (!rule) {
         result.errors.push(`Coupon code "${code}" not found or expired`);
         continue;
@@ -85,29 +85,25 @@ export class PricingEngine {
       // Check min cart value
       if (rule.usageLimits.minCartValue && result.originalTotal < rule.usageLimits.minCartValue) {
         result.errors.push(
-          `Coupon "${code}" requires minimum cart value of ₹${rule.usageLimits.minCartValue}`
+          `Coupon "${code}" requires minimum cart value of ₹${rule.usageLimits.minCartValue}`,
         );
         continue;
       }
 
       // TODO: Check per-user usage limit (requires user purchase history)
-      
+
       couponRules.push(rule);
     }
 
     // Step 2: Load applicable automatic promotions
     const productIds = items.map((item) => item.productId);
-    const categoryIds = items
-      .filter((item) => item.categoryId)
-      .map((item) => item.categoryId!);
-    const vendorIds = items
-      .filter((item) => item.vendorId)
-      .map((item) => item.vendorId!);
+    const categoryIds = items.filter((item) => item.categoryId).map((item) => item.categoryId!);
+    const vendorIds = items.filter((item) => item.vendorId).map((item) => item.vendorId!);
 
     const promotionRules = await PricingRule.findApplicableRules(
       productIds,
       categoryIds,
-      vendorIds
+      vendorIds,
     );
 
     // Step 3: Combine all rules and sort by priority
@@ -116,7 +112,7 @@ export class PricingEngine {
     // Step 4: Apply rules with stacking logic
     const appliedRuleIds = new Set<string>();
     let hasNonStackableRule = false; // Track if any non-stackable rule has been applied
-    
+
     for (const rule of allRules) {
       // If a non-stackable rule was already applied, skip all others
       if (hasNonStackableRule) {
@@ -135,27 +131,27 @@ export class PricingEngine {
         const appliedIds = Array.from(appliedRuleIds);
         // All already-applied rules must be in the whitelist
         const canStack = appliedIds.every((id) =>
-          rule.stackableWith!.some((allowed: Types.ObjectId) => allowed.toString() === id)
+          rule.stackableWith!.some((allowed: Types.ObjectId) => allowed.toString() === id),
         );
-        
+
         if (!canStack) {
           result.warnings.push(`Rule "${rule.name}" can only stack with specific rules`);
           continue;
         }
       }
-      
+
       // Also check if already-applied rules allow this new rule to be stacked
       if (appliedRuleIds.size > 0) {
         // Check each applied rule to see if it has a whitelist that excludes this rule
         const ruleId = rule._id.toString();
         let blockedByAppliedRule = false;
-        
+
         for (const appliedId of appliedRuleIds) {
-          const appliedRule = allRules.find(r => r._id.toString() === appliedId);
+          const appliedRule = allRules.find((r) => r._id.toString() === appliedId);
           if (appliedRule && appliedRule.stackableWith && appliedRule.stackableWith.length > 0) {
             // Applied rule has whitelist - check if current rule is in it
-            const isInWhitelist = appliedRule.stackableWith.some((allowed: Types.ObjectId) => 
-              allowed.toString() === ruleId
+            const isInWhitelist = appliedRule.stackableWith.some(
+              (allowed: Types.ObjectId) => allowed.toString() === ruleId,
             );
             if (!isInWhitelist) {
               blockedByAppliedRule = true;
@@ -163,7 +159,7 @@ export class PricingEngine {
             }
           }
         }
-        
+
         if (blockedByAppliedRule) {
           result.warnings.push(`Rule "${rule.name}" can only stack with specific rules`);
           continue;
@@ -172,26 +168,27 @@ export class PricingEngine {
 
       // Apply the rule
       const discount = await this.applyRule(rule, items, result.originalTotal);
-      
+
       if (discount) {
         result.appliedDiscounts.push(discount);
         result.discountTotal += discount.discountAmount;
         appliedRuleIds.add(rule._id.toString());
-        
+
         // Mark if this is a non-stackable rule (block further rules)
         if (!rule.stackable) {
           hasNonStackableRule = true;
         }
-        
+
         // Cap discount at maxDiscountAmount if set
-        if (rule.usageLimits.maxDiscountAmount && discount.discountAmount > rule.usageLimits.maxDiscountAmount) {
+        if (
+          rule.usageLimits.maxDiscountAmount &&
+          discount.discountAmount > rule.usageLimits.maxDiscountAmount
+        ) {
           const cappedAmount = rule.usageLimits.maxDiscountAmount;
           const originalAmount = discount.discountAmount;
           discount.discountAmount = cappedAmount;
           result.discountTotal = result.discountTotal - originalAmount + cappedAmount;
-          result.warnings.push(
-            `Discount capped at ₹${cappedAmount} (max allowed for this rule)`
-          );
+          result.warnings.push(`Discount capped at ₹${cappedAmount} (max allowed for this rule)`);
         }
       }
     }
@@ -208,7 +205,7 @@ export class PricingEngine {
   private static async applyRule(
     rule: IPricingRule,
     items: CartItem[],
-    cartTotal: number
+    cartTotal: number,
   ): Promise<AppliedDiscount | null> {
     // Filter applicable items
     const applicableItems = items.filter((item) => this.isItemApplicable(item, rule));
@@ -221,13 +218,13 @@ export class PricingEngine {
     switch (rule.discount.type) {
       case 'percentage':
         return this.applyPercentageDiscount(rule, applicableItems, cartTotal);
-      
+
       case 'fixed':
         return this.applyFixedDiscount(rule, applicableItems, cartTotal);
-      
+
       case 'tiered':
         return this.applyTieredDiscount(rule, applicableItems);
-      
+
       default:
         return null;
     }
@@ -260,17 +257,14 @@ export class PricingEngine {
 
     if (applicableTo.type === 'category') {
       return (
-        item.categoryId &&
-        applicableTo.categoryIds?.some((id) => id.equals(item.categoryId!)) ||
+        (item.categoryId && applicableTo.categoryIds?.some((id) => id.equals(item.categoryId!))) ||
         false
       );
     }
 
     if (applicableTo.type === 'vendor') {
       return (
-        item.vendorId &&
-        applicableTo.vendorIds?.some((id) => id.equals(item.vendorId!)) ||
-        false
+        (item.vendorId && applicableTo.vendorIds?.some((id) => id.equals(item.vendorId!))) || false
       );
     }
 
@@ -283,7 +277,7 @@ export class PricingEngine {
   private static applyPercentageDiscount(
     rule: IPricingRule,
     items: CartItem[],
-    _cartTotal: number
+    _cartTotal: number,
   ): AppliedDiscount {
     const applicableTotal = items.reduce((sum, item) => sum + item.originalTotal, 0);
     const discountAmount = (applicableTotal * rule.discount.value!) / 100;
@@ -312,7 +306,7 @@ export class PricingEngine {
   private static applyFixedDiscount(
     rule: IPricingRule,
     _items: CartItem[],
-    _cartTotal: number
+    _cartTotal: number,
   ): AppliedDiscount {
     const discountAmount = rule.discount.value!;
 
@@ -339,7 +333,7 @@ export class PricingEngine {
    */
   private static applyTieredDiscount(
     rule: IPricingRule,
-    items: CartItem[]
+    items: CartItem[],
   ): AppliedDiscount | null {
     if (!rule.discount.tiers || rule.discount.tiers.length === 0) {
       return null;
@@ -351,9 +345,7 @@ export class PricingEngine {
     for (const item of items) {
       // Find applicable tier for this item's quantity
       const tier = rule.discount.tiers.find(
-        (t) =>
-          item.quantity >= t.minQuantity &&
-          (!t.maxQuantity || item.quantity <= t.maxQuantity)
+        (t) => item.quantity >= t.minQuantity && (!t.maxQuantity || item.quantity <= t.maxQuantity),
       );
 
       if (!tier) {
@@ -366,18 +358,14 @@ export class PricingEngine {
         // Override price per unit
         const newTotal = tier.pricePerUnit * item.quantity;
         itemDiscount = item.originalTotal - newTotal;
-        explanationParts.push(
-          `${item.name} (${item.quantity} units): ₹${tier.pricePerUnit}/unit`
-        );
+        explanationParts.push(`${item.name} (${item.quantity} units): ₹${tier.pricePerUnit}/unit`);
       } else if (tier.discountPercentage) {
         itemDiscount = (item.originalTotal * tier.discountPercentage) / 100;
-        explanationParts.push(
-          `${tier.discountPercentage}% off for ${item.quantity}+ units`
-        );
+        explanationParts.push(`${tier.discountPercentage}% off for ${item.quantity}+ units`);
       } else if (tier.discountFixed) {
         itemDiscount = tier.discountFixed;
         explanationParts.push(
-          `${item.name}: ₹${tier.discountFixed} off for ${item.quantity}+ units`
+          `${item.name}: ₹${tier.discountFixed} off for ${item.quantity}+ units`,
         );
       }
 
@@ -389,7 +377,8 @@ export class PricingEngine {
     }
 
     // Use the most relevant explanation (percentage if exists)
-    let mainExplanation = explanationParts.length > 0 ? explanationParts[0] : `${rule.name}: Bulk discount`;
+    const mainExplanation =
+      explanationParts.length > 0 ? explanationParts[0] : `${rule.name}: Bulk discount`;
 
     return {
       ruleId: rule._id,
@@ -407,9 +396,9 @@ export class PricingEngine {
    */
   static formatBreakdown(result: PricingResult): string[] {
     const lines: string[] = [];
-    
+
     lines.push(`Subtotal: ₹${result.originalTotal.toFixed(2)}`);
-    
+
     if (result.appliedDiscounts.length > 0) {
       lines.push('\nDiscounts:');
       for (const discount of result.appliedDiscounts) {
@@ -417,14 +406,14 @@ export class PricingEngine {
       }
       lines.push(`\nTotal Savings: -₹${result.discountTotal.toFixed(2)}`);
     }
-    
+
     lines.push(`\nTotal: ₹${result.finalTotal.toFixed(2)}`);
-    
+
     if (result.warnings.length > 0) {
       lines.push('\nNotes:');
       result.warnings.forEach((warning) => lines.push(`  - ${warning}`));
     }
-    
+
     return lines;
   }
 
@@ -434,7 +423,7 @@ export class PricingEngine {
   static async validateCoupon(
     code: string,
     cartTotal: number,
-    _userId?: Types.ObjectId
+    _userId?: Types.ObjectId,
   ): Promise<{ valid: boolean; message: string; rule?: IPricingRule }> {
     const rule = await PricingRule.findByCode(code);
 

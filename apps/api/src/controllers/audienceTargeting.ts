@@ -3,7 +3,11 @@ import { BuyerSegment, TargetedAdRequest, TargetedAdResponse } from '../services
 
 // Mock database for buyer segments
 const buyerSegments: BuyerSegment[] = [
-  { id: '1', name: 'Frequent Electronics Shoppers', criteria: { category: 'electronics', purchaseFrequency: 'high' } },
+  {
+    id: '1',
+    name: 'Frequent Electronics Shoppers',
+    criteria: { category: 'electronics', purchaseFrequency: 'high' },
+  },
   { id: '2', name: 'City: New York', criteria: { location: 'New York' } },
   { id: '3', name: 'Demographic: Age 25-34', criteria: { ageRange: [25, 34] } },
 ];
@@ -16,7 +20,7 @@ export const handleTargetedAdRequest = async (req: Request, res: Response) => {
     const adRequest: TargetedAdRequest = req.body;
 
     // Match buyer segments
-    const matchedSegments = buyerSegments.filter(segment => {
+    const matchedSegments = buyerSegments.filter((segment) => {
       return Object.entries(segment.criteria).every(([key, value]) => {
         if (key === 'ageRange') {
           const [minAge, maxAge] = value as [number, number];
@@ -34,7 +38,7 @@ export const handleTargetedAdRequest = async (req: Request, res: Response) => {
     const response: TargetedAdResponse = {
       buyerId: adRequest.buyerId,
       matchedSegments,
-      ads: matchedSegments.map(segment => ({
+      ads: matchedSegments.map((segment) => ({
         segmentId: segment.id,
         adContent: `Ad for ${segment.name}`,
       })),

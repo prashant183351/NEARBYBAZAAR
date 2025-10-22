@@ -2,13 +2,13 @@
 
 /**
  * Wait for Docker services (MongoDB and Redis) to be ready
- * 
+ *
  * This script checks if MongoDB and Redis are accessible before
  * allowing the API to start. Prevents connection errors during startup.
- * 
+ *
  * Usage:
  *   node scripts/wait-for-services.js
- * 
+ *
  * Environment Variables:
  *   MONGODB_URI - MongoDB connection string (default: mongodb://admin:password123@localhost:27017/nearbybazaar?authSource=admin)
  *   REDIS_URL - Redis connection string (default: redis://:redispass123@localhost:6379)
@@ -20,7 +20,9 @@ const { MongoClient } = require('mongodb');
 const Redis = require('ioredis');
 
 // Configuration
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://admin:password123@localhost:27017/nearbybazaar?authSource=admin';
+const MONGODB_URI =
+  process.env.MONGODB_URI ||
+  'mongodb://admin:password123@localhost:27017/nearbybazaar?authSource=admin';
 const REDIS_URL = process.env.REDIS_URL || 'redis://:redispass123@localhost:6379';
 const MAX_RETRIES = parseInt(process.env.MAX_RETRIES || '30', 10);
 const RETRY_DELAY = parseInt(process.env.RETRY_DELAY || '2000', 10);
@@ -39,7 +41,7 @@ const colors = {
  * Sleep for specified milliseconds
  */
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -52,11 +54,13 @@ async function checkMongoDB(attempt) {
   });
 
   try {
-    console.log(`${colors.cyan}[${attempt}/${MAX_RETRIES}]${colors.reset} Checking MongoDB connection...`);
-    
+    console.log(
+      `${colors.cyan}[${attempt}/${MAX_RETRIES}]${colors.reset} Checking MongoDB connection...`,
+    );
+
     await client.connect();
     await client.db().admin().ping();
-    
+
     console.log(`${colors.green}✓${colors.reset} MongoDB is ready!`);
     return true;
   } catch (error) {
@@ -78,11 +82,13 @@ async function checkRedis(attempt) {
   });
 
   try {
-    console.log(`${colors.cyan}[${attempt}/${MAX_RETRIES}]${colors.reset} Checking Redis connection...`);
-    
+    console.log(
+      `${colors.cyan}[${attempt}/${MAX_RETRIES}]${colors.reset} Checking Redis connection...`,
+    );
+
     await redis.connect();
     await redis.ping();
-    
+
     console.log(`${colors.green}✓${colors.reset} Redis is ready!`);
     return true;
   } catch (error) {
@@ -135,15 +141,17 @@ async function waitForServices() {
 
   // Max retries reached
   console.error(`\n${colors.red}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}`);
-  console.error(`${colors.red}✗ Services failed to start after ${MAX_RETRIES} attempts${colors.reset}`);
+  console.error(
+    `${colors.red}✗ Services failed to start after ${MAX_RETRIES} attempts${colors.reset}`,
+  );
   console.error(`${colors.red}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${colors.reset}\n`);
-  
+
   console.error('Troubleshooting:');
   console.error('1. Ensure Docker is running');
   console.error('2. Run: docker-compose up -d');
   console.error('3. Check logs: docker-compose logs mongodb redis');
   console.error('4. Check status: docker-compose ps\n');
-  
+
   process.exit(1);
 }
 

@@ -4,8 +4,8 @@
  */
 
 export default function sharp() {
-    return {
-        extract: jest.fn().mockReturnThis(),
-        toBuffer: jest.fn().mockResolvedValue(Buffer.from('mock-image-data')),
-    };
+  return {
+    extract: jest.fn().mockReturnThis(),
+    toBuffer: jest.fn().mockResolvedValue(Buffer.from('mock-image-data')),
+  };
 }

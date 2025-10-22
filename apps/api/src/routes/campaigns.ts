@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import {
-	getVendorCampaigns,
-	getCampaignById,
-	createCampaign,
-	updateCampaign,
-	pauseCampaign,
-	resumeCampaign,
-	deleteCampaign,
-	getCampaignStats,
-	estimateCampaign,
+  getVendorCampaigns,
+  getCampaignById,
+  createCampaign,
+  updateCampaign,
+  pauseCampaign,
+  resumeCampaign,
+  deleteCampaign,
+  getCampaignStats,
+  estimateCampaign,
 } from '../controllers/campaigns';
 
 const router = Router();

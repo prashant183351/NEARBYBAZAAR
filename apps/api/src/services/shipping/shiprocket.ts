@@ -86,7 +86,7 @@ export class ShiprocketAdapter implements ShippingAdapter {
 
   async createLabel(request: CreateLabelRequest): Promise<CreateLabelResponse> {
     const token = await this.getToken();
-    
+
     // Create order first
     const orderResp = await axios.post(
       `${this.config.baseUrl}/orders/create/adhoc`,
@@ -103,12 +103,14 @@ export class ShiprocketAdapter implements ShippingAdapter {
         billing_country: request.destination.country,
         billing_email: request.destination.email || '',
         shipping_is_billing: true,
-        order_items: [{
-          name: 'Order Item',
-          sku: 'DEFAULT',
-          units: 1,
-          selling_price: request.codAmount || 0,
-        }],
+        order_items: [
+          {
+            name: 'Order Item',
+            sku: 'DEFAULT',
+            units: 1,
+            selling_price: request.codAmount || 0,
+          },
+        ],
         payment_method: request.paymentMode === 'cod' ? 'COD' : 'Prepaid',
         sub_total: request.codAmount || 0,
         length: request.parcel.length || 10,
@@ -116,7 +118,7 @@ export class ShiprocketAdapter implements ShippingAdapter {
         height: request.parcel.height || 10,
         weight: request.parcel.weight,
       },
-      { headers: { Authorization: `Bearer ${token}` } }
+      { headers: { Authorization: `Bearer ${token}` } },
     );
 
     const shipmentId = orderResp.data.shipment_id;
@@ -125,7 +127,7 @@ export class ShiprocketAdapter implements ShippingAdapter {
     const awbResp = await axios.post(
       `${this.config.baseUrl}/courier/assign/awb`,
       { shipment_id: shipmentId },
-      { headers: { Authorization: `Bearer ${token}` } }
+      { headers: { Authorization: `Bearer ${token}` } },
     );
 
     return {
@@ -163,7 +165,8 @@ export class ShiprocketAdapter implements ShippingAdapter {
     const s = String(status || '').toLowerCase();
     if (s.includes('delivered') || s === '7') return 'delivered';
     if (s.includes('out for delivery') || s === '6') return 'out_for_delivery';
-    if (s.includes('in transit') || s.includes('picked') || s === '4' || s === '5') return 'in_transit';
+    if (s.includes('in transit') || s.includes('picked') || s === '4' || s === '5')
+      return 'in_transit';
     if (s.includes('return')) return 'returned';
     if (s.includes('fail') || s.includes('cancel')) return 'failed';
     return 'pending';

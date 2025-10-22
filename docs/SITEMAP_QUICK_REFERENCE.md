@@ -4,15 +4,15 @@ One-page reference for sitemap generation and robots.txt.
 
 ## URLs
 
-| URL | Description |
-|-----|-------------|
-| `/sitemap.xml` | Main sitemap index |
-| `/sitemap-static.xml` | Static pages |
-| `/sitemap-products-{n}.xml` | Products (chunked) |
-| `/sitemap-services-{n}.xml` | Services (chunked) |
-| `/sitemap-stores-{n}.xml` | Store pages (chunked) |
+| URL                            | Description           |
+| ------------------------------ | --------------------- |
+| `/sitemap.xml`                 | Main sitemap index    |
+| `/sitemap-static.xml`          | Static pages          |
+| `/sitemap-products-{n}.xml`    | Products (chunked)    |
+| `/sitemap-services-{n}.xml`    | Services (chunked)    |
+| `/sitemap-stores-{n}.xml`      | Store pages (chunked) |
 | `/sitemap-classifieds-{n}.xml` | Classifieds (chunked) |
-| `/robots.txt` | Robots.txt file |
+| `/robots.txt`                  | Robots.txt file       |
 
 ## API Endpoints
 
@@ -89,15 +89,15 @@ const generator = new SitemapGenerator({
 
 ## Priority & Change Frequency
 
-| Type | Priority | Changefreq |
-|------|----------|------------|
-| Homepage | 1.0 | daily |
-| Search | 0.8 | daily |
-| Products | 0.8 | weekly |
-| Services | 0.8 | weekly |
-| Stores | 0.7 | weekly |
-| Classifieds | 0.6 | daily |
-| Static | 0.5 | weekly |
+| Type        | Priority | Changefreq |
+| ----------- | -------- | ---------- |
+| Homepage    | 1.0      | daily      |
+| Search      | 0.8      | daily      |
+| Products    | 0.8      | weekly     |
+| Services    | 0.8      | weekly     |
+| Stores      | 0.7      | weekly     |
+| Classifieds | 0.6      | daily      |
+| Static      | 0.5      | weekly     |
 
 ## Chunking
 
@@ -152,12 +152,12 @@ curl "https://www.bing.com/ping?sitemap=https://nearbybazaar.com/sitemap.xml"
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| Sitemap not updating | Check cache headers, wait for expiry, or clear CDN cache |
-| Missing images | Verify `includeImages: true` and product has images array |
-| 404 on chunk | Check chunk number is within `totalChunks` range |
-| Invalid XML | Ensure special characters are escaped (`&`, `<`, `>`) |
+| Issue                | Solution                                                  |
+| -------------------- | --------------------------------------------------------- |
+| Sitemap not updating | Check cache headers, wait for expiry, or clear CDN cache  |
+| Missing images       | Verify `includeImages: true` and product has images array |
+| 404 on chunk         | Check chunk number is within `totalChunks` range          |
+| Invalid XML          | Ensure special characters are escaped (`&`, `<`, `>`)     |
 
 ## Environment Variables
 

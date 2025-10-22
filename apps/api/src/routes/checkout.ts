@@ -29,12 +29,7 @@ router.get('/cart', getCart);
 // Initiate payment intent
 
 // Confirm with idempotency to avoid duplicate order creation
-router.post(
-  '/checkout/confirm',
-  idempotency({ required: true }),
-  validate(ConfirmBody),
-  confirm
-);
+router.post('/checkout/confirm', idempotency({ required: true }), validate(ConfirmBody), confirm);
 // Removed stray closing parenthesis
 router.post('/cart', validate(AddToCartBody), addToCart);
 

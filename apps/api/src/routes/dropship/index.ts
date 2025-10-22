@@ -8,12 +8,12 @@ const router = Router();
 
 /**
  * Dropshipping Module API Endpoints
- * 
+ *
  * All endpoints require authentication and apply RBAC:
  * - Vendors: Can only access their own resources
  * - Admins: Can access all resources
  * - Suppliers: Can access assigned resources (future)
- * 
+ *
  * Base path: /api/dropship
  */
 
@@ -34,37 +34,38 @@ router.use('/sync', syncRouter);
  * Get dropship module overview/stats.
  */
 router.get('/', async (req, res) => {
-    try {
-        // @ts-ignore
-        const { userId, userType } = req.user;
+  try {
+  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    const { userId, userType } = req.user;
 
-        // RBAC: Only vendors and admins
-        if (userType !== 'vendor' && userType !== 'admin') {
-            return res.status(403).json({ error: 'Forbidden: Insufficient permissions' });
-        }
-
-        // TODO: Aggregate stats from various models
-        const stats = {
-            suppliers: {
-                total: 0,
-                active: 0,
-                pending: 0,
-            },
-            mappings: {
-                total: 0,
-                active: 0,
-            },
-            marginRules: {
-                total: 0,
-                active: 0,
-            },
-            recentSyncs: [],
-        };
-
-        res.json({ stats });
-    } catch (error: any) {
-        res.status(500).json({ error: error.message });
+    // RBAC: Only vendors and admins
+    if (userType !== 'vendor' && userType !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden: Insufficient permissions' });
     }
+
+    // TODO: Aggregate stats from various models
+    const stats = {
+      suppliers: {
+        total: 0,
+        active: 0,
+        pending: 0,
+      },
+      mappings: {
+        total: 0,
+        active: 0,
+      },
+      marginRules: {
+        total: 0,
+        active: 0,
+      },
+      recentSyncs: [],
+    };
+
+    res.json({ stats });
+  } catch (error: unknown) {
+    const message = (error instanceof Error) ? error.message : String(error);
+    res.status(500).json({ error: message });
+  }
 });
 
 export default router;

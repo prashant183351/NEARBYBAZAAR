@@ -1,5 +1,3 @@
-
-
 import { Router } from 'express';
 import { health } from '../controllers/shared';
 import adminRouter from './admin';

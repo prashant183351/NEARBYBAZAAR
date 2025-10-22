@@ -1,6 +1,6 @@
 /**
  * Feature #181: Pricing Rules Model
- * 
+ *
  * Supports flexible pricing strategies:
  * - Coupons (code-based discounts)
  * - Automatic promotions (category/product-based)
@@ -16,63 +16,64 @@ export interface IPricingRule extends Document {
   description: string;
   type: 'coupon' | 'promotion' | 'tiered' | 'bundle';
   status: 'active' | 'inactive' | 'expired' | 'scheduled';
-  
+
   // Coupon-specific fields
-  code?: string;                    // e.g., "SAVE10", "NEWYEAR2025"
-  
+  code?: string; // e.g., "SAVE10", "NEWYEAR2025"
+
   // Applicability conditions
   applicableTo: {
     type: 'all' | 'category' | 'product' | 'vendor' | 'brand';
     categoryIds?: Types.ObjectId[]; // If type = 'category'
-    productIds?: Types.ObjectId[];  // If type = 'product'
-    vendorIds?: Types.ObjectId[];   // If type = 'vendor'
-    brandIds?: Types.ObjectId[];    // If type = 'brand'
+    productIds?: Types.ObjectId[]; // If type = 'product'
+    vendorIds?: Types.ObjectId[]; // If type = 'vendor'
+    brandIds?: Types.ObjectId[]; // If type = 'brand'
   };
-  
+
   // Discount configuration
   discount: {
     type: 'percentage' | 'fixed' | 'tiered';
-    value?: number;                 // For percentage or fixed
-    tiers?: Array<{                 // For tiered pricing
+    value?: number; // For percentage or fixed
+    tiers?: Array<{
+      // For tiered pricing
       minQuantity: number;
-      maxQuantity?: number;         // Optional upper bound
-      discountPercentage?: number;  // e.g., 10 for 10% off
-      discountFixed?: number;       // e.g., 100 for ₹100 off
-      pricePerUnit?: number;        // Override price for this tier
+      maxQuantity?: number; // Optional upper bound
+      discountPercentage?: number; // e.g., 10 for 10% off
+      discountFixed?: number; // e.g., 100 for ₹100 off
+      pricePerUnit?: number; // Override price for this tier
     }>;
   };
-  
+
   // Usage limits
   usageLimits: {
-    maxUsageTotal?: number;         // Global usage limit
-    maxUsagePerUser?: number;       // Per-user limit
-    currentUsageTotal: number;      // Track total uses
-    maxDiscountAmount?: number;     // Cap on discount (e.g., max ₹500 off)
-    minCartValue?: number;          // Min cart value to apply (e.g., ₹1000)
+    maxUsageTotal?: number; // Global usage limit
+    maxUsagePerUser?: number; // Per-user limit
+    currentUsageTotal: number; // Track total uses
+    maxDiscountAmount?: number; // Cap on discount (e.g., max ₹500 off)
+    minCartValue?: number; // Min cart value to apply (e.g., ₹1000)
   };
-  
+
   // Scheduling
   validFrom: Date;
   validUntil: Date;
-  
+
   // Stacking rules
-  stackable: boolean;               // Can combine with other rules?
+  stackable: boolean; // Can combine with other rules?
   stackableWith?: Types.ObjectId[]; // Specific rules it can stack with
-  priority: number;                 // Higher priority applies first (1-100)
-  
+  priority: number; // Higher priority applies first (1-100)
+
   // Exclusions
-  excludeDiscountedItems: boolean;  // Don't apply to already-discounted items
-  excludeSaleItems: boolean;        // Don't apply to sale items
-  
+  excludeDiscountedItems: boolean; // Don't apply to already-discounted items
+  excludeSaleItems: boolean; // Don't apply to sale items
+
   // Metadata
-  createdBy?: Types.ObjectId;       // Admin/vendor who created
-  vendorId?: Types.ObjectId;        // If vendor-specific rule
-  isVendorRule: boolean;            // Platform vs vendor rule
-  tags?: string[];                  // For categorization/filtering
-  
+  createdBy?: Types.ObjectId; // Admin/vendor who created
+  vendorId?: Types.ObjectId; // If vendor-specific rule
+  isVendorRule: boolean; // Platform vs vendor rule
+  tags?: string[]; // For categorization/filtering
+
   createdAt: Date;
   updatedAt: Date;
-  
+
   // Instance methods
   isValid(): boolean;
   hasReachedUsageLimit(): boolean;
@@ -186,7 +187,7 @@ const pricingRuleSchema = new Schema<IPricingRule>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Indexes for efficient queries
@@ -205,7 +206,7 @@ pricingRuleSchema.index(
       code: { $exists: true },
       status: { $in: ['active', 'scheduled'] },
     },
-  }
+  },
 );
 
 // Pre-save validation
@@ -216,17 +217,26 @@ pricingRuleSchema.pre('save', function (next) {
   }
 
   // Validate tiered pricing has tiers
-  if (this.discount.type === 'tiered' && (!this.discount.tiers || this.discount.tiers.length === 0)) {
+  if (
+    this.discount.type === 'tiered' &&
+    (!this.discount.tiers || this.discount.tiers.length === 0)
+  ) {
     return next(new Error('Tiered discount requires at least one tier'));
   }
 
   // Validate percentage/fixed has value
-  if ((this.discount.type === 'percentage' || this.discount.type === 'fixed') && !this.discount.value) {
+  if (
+    (this.discount.type === 'percentage' || this.discount.type === 'fixed') &&
+    !this.discount.value
+  ) {
     return next(new Error(`${this.discount.type} discount requires a value`));
   }
 
   // Validate percentage is between 0-100
-  if (this.discount.type === 'percentage' && (this.discount.value! < 0 || this.discount.value! > 100)) {
+  if (
+    this.discount.type === 'percentage' &&
+    (this.discount.value! < 0 || this.discount.value! > 100)
+  ) {
     return next(new Error('Percentage discount must be between 0 and 100'));
   }
 
@@ -236,7 +246,11 @@ pricingRuleSchema.pre('save', function (next) {
   }
 
   // Auto-activate if scheduled and now past validFrom
-  if (this.status === 'scheduled' && this.validFrom <= new Date() && this.validUntil >= new Date()) {
+  if (
+    this.status === 'scheduled' &&
+    this.validFrom <= new Date() &&
+    this.validUntil >= new Date()
+  ) {
     this.status = 'active';
   }
 
@@ -246,16 +260,15 @@ pricingRuleSchema.pre('save', function (next) {
 // Instance method: Check if rule is currently valid
 pricingRuleSchema.methods.isValid = function (): boolean {
   const now = new Date();
-  return (
-    this.status === 'active' &&
-    this.validFrom <= now &&
-    this.validUntil >= now
-  );
+  return this.status === 'active' && this.validFrom <= now && this.validUntil >= now;
 };
 
 // Instance method: Check if usage limit reached
 pricingRuleSchema.methods.hasReachedUsageLimit = function (): boolean {
-  if (this.usageLimits.maxUsageTotal && this.usageLimits.currentUsageTotal >= this.usageLimits.maxUsageTotal) {
+  if (
+    this.usageLimits.maxUsageTotal &&
+    this.usageLimits.currentUsageTotal >= this.usageLimits.maxUsageTotal
+  ) {
     return true;
   }
   return false;
@@ -293,10 +306,10 @@ pricingRuleSchema.statics.findActivePromotions = async function (): Promise<IPri
 pricingRuleSchema.statics.findApplicableRules = async function (
   productIds: Types.ObjectId[],
   categoryIds: Types.ObjectId[],
-  vendorIds: Types.ObjectId[]
+  vendorIds: Types.ObjectId[],
 ): Promise<IPricingRule[]> {
   const now = new Date();
-  
+
   return this.find({
     status: 'active',
     validFrom: { $lte: now },
@@ -317,7 +330,7 @@ interface IPricingRuleModel extends Model<IPricingRule> {
   findApplicableRules(
     productIds: Types.ObjectId[],
     categoryIds: Types.ObjectId[],
-    vendorIds: Types.ObjectId[]
+    vendorIds: Types.ObjectId[],
   ): Promise<IPricingRule[]>;
 }
 

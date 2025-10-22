@@ -1,6 +1,11 @@
 import { Router } from 'express';
 import * as media from '../controllers/media';
-import { uploadSingle, handleUploadError, uploadTimeout, validateUpload } from '../middleware/upload';
+import {
+  uploadSingle,
+  handleUploadError,
+  uploadTimeout,
+  validateUpload,
+} from '../middleware/upload';
 
 const router = Router();
 
@@ -17,12 +22,12 @@ router.post('/presigned', media.getPresignedUpload);
 
 // Direct file upload with security pipeline
 router.post(
-    '/upload',
-    uploadTimeout(60000), // 60 second timeout
-    uploadSingle,
-    handleUploadError,
-    validateUpload,
-    media.uploadMedia
+  '/upload',
+  uploadTimeout(60000), // 60 second timeout
+  uploadSingle,
+  handleUploadError,
+  validateUpload,
+  media.uploadMedia,
 );
 
 export default router;

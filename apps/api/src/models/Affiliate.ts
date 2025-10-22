@@ -13,15 +13,18 @@ export interface IAffiliate extends Document {
   updatedAt: Date;
 }
 
-const affiliateSchema = new Schema<IAffiliate>({
-  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
-  code: { type: String, required: true, unique: true },
-  clicks: { type: Number, default: 0 },
-  signups: { type: Number, default: 0 },
-  sales: { type: Number, default: 0 },
-  commissionEarned: { type: Number, default: 0 },
-  commissionPaid: { type: Number, default: 0 },
-}, { timestamps: true });
+const affiliateSchema = new Schema<IAffiliate>(
+  {
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
+    code: { type: String, required: true, unique: true },
+    clicks: { type: Number, default: 0 },
+    signups: { type: Number, default: 0 },
+    sales: { type: Number, default: 0 },
+    commissionEarned: { type: Number, default: 0 },
+    commissionPaid: { type: Number, default: 0 },
+  },
+  { timestamps: true },
+);
 
 affiliateSchema.index({ code: 1 }, { unique: true });
 

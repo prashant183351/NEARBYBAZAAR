@@ -9,6 +9,7 @@ Feature #172 introduces **CORS (Cross-Origin Resource Sharing) refinement** and 
 ## ✅ Completed Tasks
 
 ### 1. CORS Middleware (`apps/api/src/middleware/cors.ts`)
+
 - ✅ Environment-based origin whitelisting via `CORS_ALLOW_ORIGINS`
 - ✅ Wildcard support for development/testing (`*`)
 - ✅ Default production domains if environment variable not set
@@ -20,6 +21,7 @@ Feature #172 introduces **CORS (Cross-Origin Resource Sharing) refinement** and 
 **Lines of Code**: 84 lines
 
 ### 2. Rate Limiting Middleware (`apps/api/src/middleware/rateLimit.ts`)
+
 - ✅ Redis-based sliding window algorithm using sorted sets
 - ✅ Atomic pipeline operations (thread-safe)
 - ✅ Adaptive rate limits based on user role:
@@ -39,12 +41,14 @@ Feature #172 introduces **CORS (Cross-Origin Resource Sharing) refinement** and 
 **Lines of Code**: 227 lines (complete rewrite from 20-line basic limiter)
 
 ### 3. Integration (`apps/api/src/app.ts`)
+
 - ✅ Applied `corsMiddleware` globally
 - ✅ Applied adaptive `rateLimit()` globally
 - ✅ Proper middleware order: CORS → JWT → Rate Limit → Routes
 - ✅ Ensures `req.user` available for adaptive limits
 
 ### 4. Strict Rate Limits on Sensitive Endpoints
+
 - ✅ Auth routes (`apps/api/src/routes/auth.ts`):
   - POST /signup → 10 req/min
   - POST /login → 10 req/min
@@ -54,6 +58,7 @@ Feature #172 introduces **CORS (Cross-Origin Resource Sharing) refinement** and 
 ### 5. Comprehensive Test Suites
 
 #### CORS Tests (`apps/api/tests/cors.spec.ts`)
+
 - ✅ 10 tests covering:
   - No origin handling
   - Whitelisted origins
@@ -66,6 +71,7 @@ Feature #172 introduces **CORS (Cross-Origin Resource Sharing) refinement** and 
 **Test Results**: ✅ All 10 tests passing
 
 #### Rate Limit Tests (`apps/api/tests/rateLimit.spec.ts`)
+
 - ✅ 19 tests covering:
   - Basic rate limiting
   - 429 responses when exceeded
@@ -112,14 +118,14 @@ Time:        7.397 s
 
 ### Breakdown by Module
 
-| Module | Tests | Status |
-|--------|-------|--------|
-| CORS | 10 | ✅ All passing |
-| Rate Limiting | 19 | ✅ All passing |
-| RBAC | 5 | ✅ All passing |
-| Sanitize | 3 | ✅ All passing |
-| Validate | 2 | ✅ All passing |
-| **Total** | **39** | **✅ 100%** |
+| Module        | Tests  | Status         |
+| ------------- | ------ | -------------- |
+| CORS          | 10     | ✅ All passing |
+| Rate Limiting | 19     | ✅ All passing |
+| RBAC          | 5      | ✅ All passing |
+| Sanitize      | 3      | ✅ All passing |
+| Validate      | 2      | ✅ All passing |
+| **Total**     | **39** | **✅ 100%**    |
 
 ---
 
@@ -127,14 +133,14 @@ Time:        7.397 s
 
 ### Attack Mitigation
 
-| Attack Type | Mitigation Strategy | Implementation |
-|-------------|---------------------|----------------|
-| **Brute Force** | Strict rate limits on auth | 10 req/min on /signup, /login |
-| **Credential Stuffing** | Low login attempt limits | 10 req/min prevents rapid attempts |
-| **OTP Spam** | Very strict OTP limits | 5 req/min on OTP request |
-| **API Abuse** | Sliding window + atomic counting | Redis pipeline prevents races |
-| **DDoS** | Per-IP and per-user limits | 100 req/min baseline for anonymous |
-| **Cross-Origin Attacks** | CORS origin whitelisting | Production allows only specified domains |
+| Attack Type              | Mitigation Strategy              | Implementation                           |
+| ------------------------ | -------------------------------- | ---------------------------------------- |
+| **Brute Force**          | Strict rate limits on auth       | 10 req/min on /signup, /login            |
+| **Credential Stuffing**  | Low login attempt limits         | 10 req/min prevents rapid attempts       |
+| **OTP Spam**             | Very strict OTP limits           | 5 req/min on OTP request                 |
+| **API Abuse**            | Sliding window + atomic counting | Redis pipeline prevents races            |
+| **DDoS**                 | Per-IP and per-user limits       | 100 req/min baseline for anonymous       |
+| **Cross-Origin Attacks** | CORS origin whitelisting         | Production allows only specified domains |
 
 ### Security Properties
 
@@ -150,15 +156,18 @@ Time:        7.397 s
 ## 📈 Performance
 
 ### CORS Middleware
+
 - **Overhead**: < 1ms (simple origin check)
 - **Preflight Cache**: 24-hour cache reduces OPTIONS requests by ~95%
 
 ### Rate Limiting Middleware
+
 - **With Redis (hit)**: 2-5ms per request
 - **With Redis (miss)**: ~10-20ms (pipeline execution)
 - **Without Redis**: < 1ms (fail-open bypass)
 
 ### Redis Memory Usage
+
 - **Per request**: ~40 bytes (timestamp + key)
 - **Example load**: 100 users @ 100 req/min = ~400 KB/min
 - **Auto-cleanup**: Sliding window removes old entries
@@ -180,20 +189,22 @@ REDIS_URL=redis://localhost:6379
 
 ### Default Behavior
 
-| Environment | CORS | Rate Limiting |
-|-------------|------|---------------|
-| **Development** | Wildcard (*) | Enabled (fail-open if no Redis) |
-| **Test** | Wildcard (*) | Enabled (fail-open if no Redis) |
-| **Production** | Specific domains only | Enabled (requires Redis) |
+| Environment     | CORS                  | Rate Limiting                   |
+| --------------- | --------------------- | ------------------------------- |
+| **Development** | Wildcard (\*)         | Enabled (fail-open if no Redis) |
+| **Test**        | Wildcard (\*)         | Enabled (fail-open if no Redis) |
+| **Production**  | Specific domains only | Enabled (requires Redis)        |
 
 ---
 
 ## 📦 Dependencies
 
 ### New Dependencies
+
 - None (uses existing packages)
 
 ### Existing Dependencies Used
+
 - `cors`: CORS middleware
 - `ioredis`: Redis client (already used for refresh tokens/queues)
 - `express`: Base framework
@@ -233,6 +244,7 @@ tail -f logs/api.log | grep -i "rate\|cors"
 ## 📝 Files Modified/Created
 
 ### Created Files (6)
+
 1. `apps/api/src/middleware/cors.ts` (84 lines)
 2. `apps/api/src/middleware/rateLimit.ts` (227 lines)
 3. `apps/api/tests/cors.spec.ts` (107 lines)
@@ -241,6 +253,7 @@ tail -f logs/api.log | grep -i "rate\|cors"
 6. `docs/CORS_AND_RATE_LIMITING_QUICK_REFERENCE.md` (200+ lines)
 
 ### Modified Files (3)
+
 1. `apps/api/src/app.ts` (integrated CORS and rate limiting)
 2. `apps/api/src/routes/auth.ts` (applied sensitive rate limits)
 3. `apps/api/src/auth/otp/index.ts` (applied strict rate limits)
@@ -253,16 +266,16 @@ tail -f logs/api.log | grep -i "rate\|cors"
 
 ### From Feature #172 Specification
 
-| Requirement | Status | Implementation |
-|-------------|--------|----------------|
-| "Only allow specified domains to call the APIs" | ✅ | CORS origin whitelisting |
-| "For production, list front-end domains" | ✅ | `CORS_ALLOW_ORIGINS` env var |
-| "Implement sliding window rate limit per route" | ✅ | Redis sorted sets |
-| "Rate limit per user/IP (e.g. 100 requests/minute)" | ✅ | Adaptive: 100/300/1000 req/min |
-| "Allow higher limits for authenticated users vs anonymous" | ✅ | 300 vs 100 req/min |
-| "Ensure burst of requests returns 429 after threshold" | ✅ | Tested with 101 requests |
-| "Verify CORS headers appear correctly for allowed origins" | ✅ | 10 CORS tests |
-| "Verify CORS headers don't appear for blocked origins" | ✅ | Blocked origins test |
+| Requirement                                                | Status | Implementation                 |
+| ---------------------------------------------------------- | ------ | ------------------------------ |
+| "Only allow specified domains to call the APIs"            | ✅     | CORS origin whitelisting       |
+| "For production, list front-end domains"                   | ✅     | `CORS_ALLOW_ORIGINS` env var   |
+| "Implement sliding window rate limit per route"            | ✅     | Redis sorted sets              |
+| "Rate limit per user/IP (e.g. 100 requests/minute)"        | ✅     | Adaptive: 100/300/1000 req/min |
+| "Allow higher limits for authenticated users vs anonymous" | ✅     | 300 vs 100 req/min             |
+| "Ensure burst of requests returns 429 after threshold"     | ✅     | Tested with 101 requests       |
+| "Verify CORS headers appear correctly for allowed origins" | ✅     | 10 CORS tests                  |
+| "Verify CORS headers don't appear for blocked origins"     | ✅     | Blocked origins test           |
 
 **Requirements Met**: 8/8 (100%)
 

@@ -28,6 +28,7 @@ This document provides comprehensive information about the NearbyBazaar sponsore
 ### Purpose
 
 The sponsored listings system allows vendors to:
+
 - Create advertising campaigns for their products
 - Choose between CPC (cost-per-click) or CPM (cost-per-1000-impressions) bidding
 - Target specific keywords, categories, and placements
@@ -113,33 +114,33 @@ The sponsored listings system allows vendors to:
   product: ObjectId,          // Promoted product
   name: String,               // Campaign name
   status: 'draft' | 'active' | 'paused' | 'completed' | 'expired',
-  
+
   // Bidding
   bidType: 'cpc' | 'cpm',     // Cost per click or per 1000 impressions
   bidAmount: Number,          // Bid in rupees
-  
+
   // Budget
   dailyBudget: Number,        // Max spend per day
   totalBudget: Number,        // Max total spend
   spentToday: Number,         // Current day spend
   spentTotal: Number,         // Cumulative spend
-  
+
   // Dates
   startDate: Date,            // Campaign start
   endDate: Date,              // Campaign end
-  
+
   // Targeting
   keywords: [String],         // Target keywords
   placements: ['search' | 'category' | 'homepage' | 'product_detail'],
   targetCategories: [String], // Category IDs
-  
+
   // Metrics
   impressions: Number,        // Total impressions served
   clicks: Number,             // Total clicks received
   ctr: Number,                // Click-through rate (calculated)
   avgCPC: Number,             // Average cost per click
   lastServed: Date,           // Last impression timestamp
-  
+
   createdAt: Date,
   updatedAt: Date
 }
@@ -178,13 +179,13 @@ The sponsored listings system allows vendors to:
   placement: String,          // Where ad was shown
   keyword: String,            // Search keyword (if search placement)
   cost: Number,               // Cost for this click
-  
+
   // Metadata
   ipAddress: String,          // Client IP
   userAgent: String,          // Browser info
   referer: String,            // Referring page
   clickedAt: Date,            // When clicked
-  
+
   // Conversion tracking
   convertedToOrder: Boolean,  // Did this lead to purchase?
   orderId: ObjectId           // Order if converted
@@ -223,6 +224,7 @@ Final Score = Bid Amount × (Relevance Score / 100) × (Quality Score / 100)
 ```
 
 This ensures that:
+
 - Higher bids have advantage
 - Poor relevance/quality reduces effectiveness of high bids
 - Well-targeted ads can win with lower bids
@@ -232,15 +234,17 @@ This ensures that:
 Calculated based on:
 
 1. **Keyword Matching (0-50 points)**
+
    ```typescript
-   const matchedKeywords = campaign.keywords.filter(k => 
-     searchKeywords.some(sk => sk.includes(k) || k.includes(sk))
+   const matchedKeywords = campaign.keywords.filter((k) =>
+     searchKeywords.some((sk) => sk.includes(k) || k.includes(sk)),
    );
    const ratio = matchedKeywords.length / max(searchKeywords.length, campaign.keywords.length);
    score += ratio * 50;
    ```
 
 2. **Category Matching (0-30 points)**
+
    ```typescript
    if (campaign.targetCategories.includes(requestCategoryId)) {
      score += 30;
@@ -272,12 +276,14 @@ Based on campaign performance history:
 ### Example Scoring
 
 **Campaign A**:
+
 - Bid: ₹10 CPC
 - Relevance: 80/100 (good keyword match, right category)
 - Quality: 70/100 (decent CTR)
 - **Final Score**: 10 × 0.8 × 0.7 = 5.6
 
 **Campaign B**:
+
 - Bid: ₹15 CPC
 - Relevance: 30/100 (poor keyword match)
 - Quality: 50/100 (no performance history)
@@ -293,11 +299,11 @@ export async function runAdAuction(context: AuctionContext): Promise<AdResult[]>
   const campaigns = await AdCampaign.getActiveCampaigns(
     context.keywords,
     context.placement,
-    context.categoryId
+    context.categoryId,
   );
 
   // 2. Score each campaign
-  const scoredAds = campaigns.map(campaign => ({
+  const scoredAds = campaigns.map((campaign) => ({
     campaign,
     score: calculateScore(campaign, context),
     // ... other metrics
@@ -310,10 +316,10 @@ export async function runAdAuction(context: AuctionContext): Promise<AdResult[]>
   const winners = scoredAds.slice(0, context.limit);
 
   // 5. Record impressions
-  await Promise.all(winners.map(w => w.campaign.recordImpression()));
+  await Promise.all(winners.map((w) => w.campaign.recordImpression()));
 
   // 6. Return formatted results
-  return winners.map(w => ({
+  return winners.map((w) => ({
     campaign: w.campaign,
     product: w.campaign.product,
     vendor: w.campaign.vendor,
@@ -451,10 +457,10 @@ export async function runAdAuction(context: AuctionContext): Promise<AdResult[]>
 ```json
 {
   "campaignId": "64c1d2e3f4g5h6789abcdef2",
-  "userId": "64a1b2c3d4e5f6789abcdef0",  // optional
-  "sessionId": "sess_abc123",             // optional
+  "userId": "64a1b2c3d4e5f6789abcdef0", // optional
+  "sessionId": "sess_abc123", // optional
   "placement": "search",
-  "keyword": "smartphone"                 // optional
+  "keyword": "smartphone" // optional
 }
 ```
 
@@ -474,10 +480,10 @@ export async function runAdAuction(context: AuctionContext): Promise<AdResult[]>
 ```json
 {
   "campaignId": "64c1d2e3f4g5h6789abcdef2",
-  "userId": "64a1b2c3d4e5f6789abcdef0",  // optional
-  "sessionId": "sess_abc123",             // optional
+  "userId": "64a1b2c3d4e5f6789abcdef0", // optional
+  "sessionId": "sess_abc123", // optional
   "placement": "search",
-  "keyword": "smartphone"                 // optional
+  "keyword": "smartphone" // optional
 }
 ```
 
@@ -501,11 +507,7 @@ async function recordClick(data: ClickData): Promise<TrackingResult> {
   const cost = calculateClickCost(campaign); // CPC or estimated CPC for CPM
 
   // 4. Charge vendor wallet
-  const charged = await chargeVendorWallet(
-    campaign.vendor,
-    cost,
-    campaign._id
-  );
+  const charged = await chargeVendorWallet(campaign.vendor, cost, campaign._id);
   if (!charged) {
     return { success: false, message: 'Wallet charge failed' };
   }
@@ -552,7 +554,7 @@ if (campaign.bidType === 'cpc') {
 ```typescript
 if (campaign.bidType === 'cpm') {
   const estimatedCTR = campaign.ctr > 0 ? campaign.ctr : 0.02; // Default 2%
-  return (campaign.bidAmount / 1000) / estimatedCTR;
+  return campaign.bidAmount / 1000 / estimatedCTR;
   // Example: ₹50 CPM / 1000 / 0.02 = ₹2.5 per click
 }
 ```
@@ -583,12 +585,12 @@ if (req.session.lastAdClick) {
 ```typescript
 async function detectDuplicateClick(data: ClickData): Promise<boolean> {
   const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
-  
+
   const query: any = {
     campaign: data.campaignId,
     clickedAt: { $gte: fiveMinutesAgo },
   };
-  
+
   if (data.userId) {
     query.user = data.userId;
   } else if (data.sessionId) {
@@ -596,7 +598,7 @@ async function detectDuplicateClick(data: ClickData): Promise<boolean> {
   } else {
     return false; // Can't detect without identifier
   }
-  
+
   const existingClick = await AdClick.findOne(query);
   return existingClick !== null;
 }
@@ -605,15 +607,9 @@ async function detectDuplicateClick(data: ClickData): Promise<boolean> {
 **MongoDB Indexes**:
 
 ```javascript
-db.adclicks.createIndex(
-  { user: 1, campaign: 1, clickedAt: 1 },
-  { expireAfterSeconds: 300 }
-);
+db.adclicks.createIndex({ user: 1, campaign: 1, clickedAt: 1 }, { expireAfterSeconds: 300 });
 
-db.adclicks.createIndex(
-  { sessionId: 1, campaign: 1, clickedAt: 1 },
-  { expireAfterSeconds: 300 }
-);
+db.adclicks.createIndex({ sessionId: 1, campaign: 1, clickedAt: 1 }, { expireAfterSeconds: 300 });
 ```
 
 ### Fraud Pattern Detection
@@ -623,6 +619,7 @@ db.adclicks.createIndex(
 **Patterns Detected**:
 
 1. **Rapid clicks from same IP**
+
    ```typescript
    if (clicksByIP[ip] > 10 in 24 hours) {
      flag as suspicious
@@ -630,9 +627,10 @@ db.adclicks.createIndex(
    ```
 
 2. **Multiple clicks without conversions**
+
    ```typescript
    if (sessionClicks.length > 5 && conversions === 0) {
-     flag as suspicious
+     flag as suspicious;
    }
    ```
 
@@ -656,32 +654,32 @@ db.adclicks.createIndex(
 
 ### Campaign Management
 
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| GET | `/v1/campaigns` | List vendor's campaigns | Vendor |
-| POST | `/v1/campaigns` | Create new campaign | Vendor |
-| GET | `/v1/campaigns/:id` | Get campaign details | Vendor/Admin |
-| PUT | `/v1/campaigns/:id` | Update campaign | Vendor/Admin |
-| POST | `/v1/campaigns/:id/pause` | Pause campaign | Vendor/Admin |
-| POST | `/v1/campaigns/:id/resume` | Resume campaign | Vendor/Admin |
-| DELETE | `/v1/campaigns/:id` | Delete draft campaign | Vendor/Admin |
-| GET | `/v1/campaigns/:id/stats` | Get analytics | Vendor/Admin |
-| POST | `/v1/campaigns/estimate` | Estimate performance | Public |
+| Method | Endpoint                   | Description             | Auth         |
+| ------ | -------------------------- | ----------------------- | ------------ |
+| GET    | `/v1/campaigns`            | List vendor's campaigns | Vendor       |
+| POST   | `/v1/campaigns`            | Create new campaign     | Vendor       |
+| GET    | `/v1/campaigns/:id`        | Get campaign details    | Vendor/Admin |
+| PUT    | `/v1/campaigns/:id`        | Update campaign         | Vendor/Admin |
+| POST   | `/v1/campaigns/:id/pause`  | Pause campaign          | Vendor/Admin |
+| POST   | `/v1/campaigns/:id/resume` | Resume campaign         | Vendor/Admin |
+| DELETE | `/v1/campaigns/:id`        | Delete draft campaign   | Vendor/Admin |
+| GET    | `/v1/campaigns/:id/stats`  | Get analytics           | Vendor/Admin |
+| POST   | `/v1/campaigns/estimate`   | Estimate performance    | Public       |
 
 ### Ad Tracking
 
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| POST | `/v1/ad-tracking/impression` | Record impression | Public |
-| POST | `/v1/ad-tracking/click` | Record click | Public |
+| Method | Endpoint                     | Description       | Auth   |
+| ------ | ---------------------------- | ----------------- | ------ |
+| POST   | `/v1/ad-tracking/impression` | Record impression | Public |
+| POST   | `/v1/ad-tracking/click`      | Record click      | Public |
 
 ### Admin Analytics
 
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| GET | `/v1/admin/ad-revenue` | Total revenue stats | Admin |
-| GET | `/v1/admin/top-advertisers` | Top spending vendors | Admin |
-| GET | `/v1/admin/fraud-alerts` | Suspicious activity | Admin |
+| Method | Endpoint                    | Description          | Auth  |
+| ------ | --------------------------- | -------------------- | ----- |
+| GET    | `/v1/admin/ad-revenue`      | Total revenue stats  | Admin |
+| GET    | `/v1/admin/top-advertisers` | Top spending vendors | Admin |
+| GET    | `/v1/admin/fraud-alerts`    | Suspicious activity  | Admin |
 
 ---
 
@@ -695,18 +693,17 @@ db.adclicks.createIndex(
 // In search page component
 async function loadSearchResults(query: string) {
   // Get organic results
-  const products = await fetch(`/v1/search?q=${query}`).then(r => r.json());
-  
+  const products = await fetch(`/v1/search?q=${query}`).then((r) => r.json());
+
   // Get sponsored ads
-  const ads = await fetch(`/v1/ad-auction/search?q=${query}&limit=2`)
-    .then(r => r.json());
-  
+  const ads = await fetch(`/v1/ad-auction/search?q=${query}&limit=2`).then((r) => r.json());
+
   // Merge with "Sponsored" label
   const results = [
-    ...ads.map(ad => ({ ...ad.product, isSponsored: true, campaignId: ad.campaign._id })),
-    ...products
+    ...ads.map((ad) => ({ ...ad.product, isSponsored: true, campaignId: ad.campaign._id })),
+    ...products,
   ];
-  
+
   return results;
 }
 ```
@@ -748,14 +745,14 @@ function handleProductClick(product) {
         placement: 'search',
         keyword: searchQuery,
       }),
-    }).then(response => {
+    }).then((response) => {
       if (response.ok) {
         // Store click ID for conversion tracking
         sessionStorage.setItem('lastAdClick', response.clickId);
       }
     });
   }
-  
+
   // Navigate to product
   router.push(`/p/${product.slug}`);
 }
@@ -765,11 +762,7 @@ function handleProductClick(product) {
 
 ```tsx
 <ProductCard>
-  {product.isSponsored && (
-    <Badge className="sponsored-badge">
-      Sponsored
-    </Badge>
-  )}
+  {product.isSponsored && <Badge className="sponsored-badge">Sponsored</Badge>}
   <ProductImage src={product.image} />
   <ProductTitle>{product.name}</ProductTitle>
   <ProductPrice>{product.price}</ProductPrice>
@@ -784,16 +777,16 @@ function handleProductClick(product) {
 // apps/api/src/routes/search.ts
 router.get('/', async (req, res) => {
   const { q, includeAds = 'true', adLimit = 2 } = req.query;
-  
+
   // Get organic results
   const products = await searchProducts(q);
-  
+
   // Get sponsored ads if requested
   let ads = [];
   if (includeAds === 'true') {
     ads = await getSearchAds(q, Number(adLimit));
   }
-  
+
   res.json({
     organic: products,
     sponsored: ads,
@@ -822,11 +815,15 @@ router.get('/', async (req, res) => {
 
 ```typescript
 // Using node-cron or BullMQ scheduler
-cron.schedule('0 0 * * *', async () => {
-  await resetAdBudgets();
-}, {
-  timezone: 'UTC'
-});
+cron.schedule(
+  '0 0 * * *',
+  async () => {
+    await resetAdBudgets();
+  },
+  {
+    timezone: 'UTC',
+  },
+);
 ```
 
 **Manual Trigger** (for testing):
@@ -949,6 +946,7 @@ const campaigns = await AdCampaign.find(query)
 **Checklist**:
 
 - ✅ Check `canServe()` returns `true`
+
   ```typescript
   const campaign = await AdCampaign.findById(campaignId);
   console.log('Can serve:', campaign.canServe());
@@ -957,6 +955,7 @@ const campaigns = await AdCampaign.find(query)
   ```
 
 - ✅ Verify dates
+
   ```typescript
   const now = new Date();
   console.log('Start:', campaign.startDate <= now);
@@ -964,6 +963,7 @@ const campaigns = await AdCampaign.find(query)
   ```
 
 - ✅ Check targeting match
+
   ```typescript
   console.log('Keywords:', campaign.keywords);
   console.log('Placements:', campaign.placements);
@@ -1033,7 +1033,7 @@ const stats = await getCampaignAnalytics(campaignId);
 
 console.log('Total impressions:', stats.totalClicks / stats.avgCTR);
 console.log('Total clicks:', stats.totalClicks);
-console.log('CTR:', (stats.totalClicks / impressions * 100).toFixed(2) + '%');
+console.log('CTR:', ((stats.totalClicks / impressions) * 100).toFixed(2) + '%');
 console.log('Clicks by keyword:', stats.clicksByKeyword);
 console.log('Clicks by placement:', stats.clicksByPlacement);
 ```

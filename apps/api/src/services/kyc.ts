@@ -1,6 +1,6 @@
 /**
  * KYC Service
- * 
+ *
  * Handles KYC document operations with security measures:
  * - Document encryption at rest
  * - Watermarking with vendor ID and timestamp
@@ -53,14 +53,14 @@ export interface IKYCSummary {
 export function encryptData(text: string): { encrypted: string; iv: string; authTag: string } {
   const iv = crypto.randomBytes(IV_LENGTH);
   const key = Buffer.from(ENCRYPTION_KEY, 'hex');
-  
+
   const cipher = crypto.createCipheriv(ENCRYPTION_ALGORITHM, key, iv);
-  
+
   let encrypted = cipher.update(text, 'utf8', 'hex');
   encrypted += cipher.final('hex');
-  
+
   const authTag = cipher.getAuthTag();
-  
+
   return {
     encrypted,
     iv: iv.toString('hex'),
@@ -75,13 +75,13 @@ export function decryptData(encrypted: string, ivHex: string, authTagHex: string
   const key = Buffer.from(ENCRYPTION_KEY, 'hex');
   const iv = Buffer.from(ivHex, 'hex');
   const authTag = Buffer.from(authTagHex, 'hex');
-  
+
   const decipher = crypto.createDecipheriv(ENCRYPTION_ALGORITHM, key, iv);
   decipher.setAuthTag(authTag);
-  
+
   let decrypted = decipher.update(encrypted, 'hex', 'utf8');
   decrypted += decipher.final('utf8');
-  
+
   return decrypted;
 }
 
@@ -102,7 +102,7 @@ export function validatePAN(pan: string): { isValid: boolean; error?: string } {
   }
 
   const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-  
+
   if (!panRegex.test(pan.toUpperCase())) {
     return {
       isValid: false,
@@ -122,7 +122,7 @@ export function validateGST(gst: string): { isValid: boolean; error?: string } {
   }
 
   const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
-  
+
   if (!gstRegex.test(gst.toUpperCase())) {
     return {
       isValid: false,
@@ -133,7 +133,7 @@ export function validateGST(gst: string): { isValid: boolean; error?: string } {
   // Validate that PAN is embedded in GST (characters 3-12)
   const embeddedPAN = gst.substring(2, 12);
   const panCheck = validatePAN(embeddedPAN);
-  
+
   if (!panCheck.isValid) {
     return {
       isValid: false,
@@ -154,9 +154,9 @@ export function validateAadhaar(aadhaar: string): { isValid: boolean; error?: st
 
   // Remove spaces and hyphens
   const cleaned = aadhaar.replace(/[\s-]/g, '');
-  
+
   const aadhaarRegex = /^[0-9]{12}$/;
-  
+
   if (!aadhaarRegex.test(cleaned)) {
     return {
       isValid: false,
@@ -184,7 +184,7 @@ export function validateIFSC(ifsc: string): { isValid: boolean; error?: string }
   }
 
   const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
-  
+
   if (!ifscRegex.test(ifsc.toUpperCase())) {
     return {
       isValid: false,
@@ -201,7 +201,7 @@ export function validateIFSC(ifsc: string): { isValid: boolean; error?: string }
  */
 export async function extractDocumentNumber(
   fileUrl: string,
-  documentType: KYCDocumentType
+  documentType: KYCDocumentType,
 ): Promise<string | null> {
   // Stub implementation - returns null
   // In production, this would:
@@ -209,14 +209,14 @@ export async function extractDocumentNumber(
   // 2. Run OCR to extract text
   // 3. Parse text to find document number based on type
   // 4. Validate extracted number
-  
+
   console.log(`[KYC Service] OCR extraction stub for ${documentType} at ${fileUrl}`);
   return null;
 }
 
 /**
  * Upload KYC document with watermarking
- * 
+ *
  * This is a stub that simulates the upload process.
  * In production, integrate with Cloudinary or S3 with watermarking.
  */
@@ -228,11 +228,11 @@ export async function uploadKYCDocument(
     mimetype: string;
     size: number;
   },
-  documentType: KYCDocumentType
+  documentType: KYCDocumentType,
 ): Promise<IDocumentUploadResult> {
   // Generate watermark text
   const watermarkText = generateWatermarkText(vendorId);
-  
+
   // TODO: In production:
   // 1. Upload original file to secure storage (encrypted)
   // 2. Generate watermarked version with overlay:
@@ -242,19 +242,19 @@ export async function uploadKYCDocument(
   //    - Diagonal overlay across image
   // 3. Store both versions
   // 4. Return URLs and encryption key
-  
+
   // Stub implementation
   const fileKey = crypto.randomBytes(16).toString('hex');
   const fileUrl = `https://storage.nearbybazaar.com/kyc/${vendorId}/${fileKey}_original_${file.originalname}`;
   const watermarkedUrl = `https://storage.nearbybazaar.com/kyc/${vendorId}/${fileKey}_watermarked_${file.originalname}`;
-  
+
   console.log(`[KYC Service] Document upload stub:`);
   console.log(`  - Type: ${documentType}`);
   console.log(`  - Vendor: ${vendorId}`);
   console.log(`  - Watermark: ${watermarkText}`);
   console.log(`  - Original URL: ${fileUrl}`);
   console.log(`  - Watermarked URL: ${watermarkedUrl}`);
-  
+
   return {
     fileUrl,
     watermarkedUrl,
@@ -272,10 +272,10 @@ export async function uploadKYCDocument(
  */
 export async function getOrCreateKYC(
   vendorId: Types.ObjectId,
-  businessDetails?: any
+  businessDetails?: any,
 ): Promise<IKYC> {
   let kyc = await KYC.findOne({ vendorId });
-  
+
   if (!kyc) {
     // Create new KYC with initial status
     kyc = new KYC({
@@ -301,10 +301,10 @@ export async function getOrCreateKYC(
         },
       ],
     });
-    
+
     await kyc.save();
   }
-  
+
   return kyc;
 }
 
@@ -313,21 +313,21 @@ export async function getOrCreateKYC(
  */
 export async function getKYCByVendorId(
   vendorId: Types.ObjectId,
-  maskData: boolean = true
+  maskData: boolean = true,
 ): Promise<IKYC | null> {
   const kyc = await KYC.findOne({ vendorId })
     .populate('verifiedBy', 'name email')
     .populate('rejectedBy', 'name email')
     .populate('statusHistory.changedBy', 'name email');
-  
+
   if (!kyc) {
     return null;
   }
-  
+
   if (maskData) {
     return kyc.maskSensitiveData();
   }
-  
+
   return kyc;
 }
 
@@ -341,18 +341,18 @@ export async function getAllKYCs(filters?: {
   skip?: number;
 }): Promise<{ kycs: IKYC[]; total: number }> {
   const query: any = {};
-  
+
   if (filters?.status) {
     query.status = filters.status;
   }
-  
+
   if (filters?.isVerified !== undefined) {
     query.isVerified = filters.isVerified;
   }
-  
+
   const limit = filters?.limit || 20;
   const skip = filters?.skip || 0;
-  
+
   const [kycs, total] = await Promise.all([
     KYC.find(query)
       .populate('vendorId', 'name email storeName')
@@ -362,10 +362,10 @@ export async function getAllKYCs(filters?: {
       .skip(skip),
     KYC.countDocuments(query),
   ]);
-  
+
   // Mask sensitive data for all KYCs
-  const maskedKYCs = kycs.map(kyc => kyc.maskSensitiveData());
-  
+  const maskedKYCs = kycs.map((kyc) => kyc.maskSensitiveData());
+
   return { kycs: maskedKYCs, total };
 }
 
@@ -384,7 +384,7 @@ export async function getKYCSummary(): Promise<IKYCSummary> {
       },
     ]),
   ]);
-  
+
   const summary: IKYCSummary = {
     totalKYCs,
     pending: 0,
@@ -394,7 +394,7 @@ export async function getKYCSummary(): Promise<IKYCSummary> {
     rejected: 0,
     resubmissionRequired: 0,
   };
-  
+
   for (const item of statusCounts) {
     switch (item._id) {
       case KYCStatus.PENDING:
@@ -417,7 +417,7 @@ export async function getKYCSummary(): Promise<IKYCSummary> {
         break;
     }
   }
-  
+
   return summary;
 }
 
@@ -428,34 +428,34 @@ export async function updateKYCStatus(
   vendorId: Types.ObjectId,
   newStatus: KYCStatus,
   adminId: Types.ObjectId,
-  reason?: string
+  reason?: string,
 ): Promise<IKYC> {
   const kyc = await KYC.findOne({ vendorId });
-  
+
   if (!kyc) {
     throw new Error('KYC not found for vendor');
   }
-  
+
   // Use model methods for status transitions
   switch (newStatus) {
     case KYCStatus.VERIFIED:
       await kyc.approve(adminId, reason);
       break;
-      
+
     case KYCStatus.REJECTED:
       if (!reason) {
         throw new Error('Rejection reason is required');
       }
       await kyc.reject(adminId, reason);
       break;
-      
+
     case KYCStatus.RESUBMISSION_REQUIRED:
       if (!reason) {
         throw new Error('Resubmission reason is required');
       }
       await kyc.requestResubmission(adminId, reason);
       break;
-      
+
     case KYCStatus.UNDER_REVIEW:
       kyc.status = KYCStatus.UNDER_REVIEW;
       kyc.statusHistory.push({
@@ -466,11 +466,11 @@ export async function updateKYCStatus(
       });
       await kyc.save();
       break;
-      
+
     default:
       throw new Error(`Invalid status transition to: ${newStatus}`);
   }
-  
+
   return kyc.maskSensitiveData();
 }
 
@@ -479,11 +479,11 @@ export async function updateKYCStatus(
  */
 export async function verifyKYCForPayouts(vendorId: Types.ObjectId): Promise<boolean> {
   const kyc = await KYC.findOne({ vendorId });
-  
+
   if (!kyc) {
     return false;
   }
-  
+
   return kyc.isVerified && kyc.canReceivePayouts;
 }
 
@@ -501,30 +501,30 @@ export async function getPendingReviewCount(): Promise<number> {
  */
 export async function bulkApproveKYCs(
   vendorIds: Types.ObjectId[],
-  adminId: Types.ObjectId
+  adminId: Types.ObjectId,
 ): Promise<{ success: number; failed: number; errors: string[] }> {
   const results = {
     success: 0,
     failed: 0,
     errors: [] as string[],
   };
-  
+
   for (const vendorId of vendorIds) {
     try {
       const kyc = await KYC.findOne({ vendorId });
-      
+
       if (!kyc) {
         results.failed++;
         results.errors.push(`KYC not found for vendor: ${vendorId}`);
         continue;
       }
-      
+
       if (kyc.status !== KYCStatus.SUBMITTED && kyc.status !== KYCStatus.UNDER_REVIEW) {
         results.failed++;
         results.errors.push(`Invalid status for vendor ${vendorId}: ${kyc.status}`);
         continue;
       }
-      
+
       await kyc.approve(adminId, 'Bulk approval');
       results.success++;
     } catch (error: any) {
@@ -532,7 +532,7 @@ export async function bulkApproveKYCs(
       results.errors.push(`Error approving ${vendorId}: ${error.message}`);
     }
   }
-  
+
   return results;
 }
 
@@ -540,21 +540,18 @@ export async function bulkApproveKYCs(
  * Check if specific document type is uploaded and verified
  */
 export function hasVerifiedDocument(kyc: IKYC, documentType: KYCDocumentType): boolean {
-  return kyc.documents.some(doc => doc.type === documentType && doc.isVerified);
+  return kyc.documents.some((doc) => doc.type === documentType && doc.isVerified);
 }
 
 /**
  * Get missing required documents
  */
 export function getMissingDocuments(kyc: IKYC): KYCDocumentType[] {
-  const required = [
-    KYCDocumentType.PAN,
-    KYCDocumentType.BANK_ACCOUNT,
-  ];
-  
-  const uploaded = kyc.documents.map(d => d.type);
-  
-  return required.filter(type => !uploaded.includes(type));
+  const required = [KYCDocumentType.PAN, KYCDocumentType.BANK_ACCOUNT];
+
+  const uploaded = kyc.documents.map((d) => d.type);
+
+  return required.filter((type) => !uploaded.includes(type));
 }
 
 /**
@@ -562,35 +559,35 @@ export function getMissingDocuments(kyc: IKYC): KYCDocumentType[] {
  */
 export function validateKYCCompleteness(kyc: IKYC): { isComplete: boolean; missing: string[] } {
   const missing: string[] = [];
-  
+
   // Check required documents
-  if (!kyc.documents.some(d => d.type === KYCDocumentType.PAN)) {
+  if (!kyc.documents.some((d) => d.type === KYCDocumentType.PAN)) {
     missing.push('PAN card document');
   }
-  
-  if (!kyc.documents.some(d => d.type === KYCDocumentType.BANK_ACCOUNT)) {
+
+  if (!kyc.documents.some((d) => d.type === KYCDocumentType.BANK_ACCOUNT)) {
     missing.push('Bank account proof');
   }
-  
+
   // Check PAN number
   if (!kyc.panNumber) {
     missing.push('PAN number');
   }
-  
+
   // Check bank details
   if (!kyc.bankAccount) {
     missing.push('Bank account details');
   }
-  
+
   // Check business details
   if (!kyc.businessDetails?.legalName) {
     missing.push('Business legal name');
   }
-  
+
   if (!kyc.businessDetails?.registeredAddress?.pincode) {
     missing.push('Registered address');
   }
-  
+
   return {
     isComplete: missing.length === 0,
     missing,

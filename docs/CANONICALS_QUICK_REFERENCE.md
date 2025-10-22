@@ -22,28 +22,28 @@ const canonical = getStoreCanonical(baseUrl, 'store-slug', { tab: 'services' });
 
 ## Common Functions
 
-| Function | Purpose | Example |
-|----------|---------|---------|
-| `getProductCanonical(baseUrl, slug, options?)` | Product pages | `getProductCanonical(base, 'laptop')` |
-| `getServiceCanonical(baseUrl, slug)` | Service pages | `getServiceCanonical(base, 'cleaning')` |
-| `getStoreCanonical(baseUrl, slug, options?)` | Store pages | `getStoreCanonical(base, 'johns', { tab: 'services' })` |
-| `getClassifiedCanonical(baseUrl, slug)` | Classified pages | `getClassifiedCanonical(base, 'bike')` |
-| `getCategoryCanonical(baseUrl, slug, options?)` | Category pages | `getCategoryCanonical(base, 'electronics', { page: 2 })` |
-| `getSearchCanonical(baseUrl, options?)` | Search pages | `getSearchCanonical(base, { q: 'laptop' })` |
-| `stripTrackingParams(url)` | Remove tracking | `stripTrackingParams(url)` |
-| `normalizeUrl(url, options?)` | Normalize URL | `normalizeUrl(url)` |
+| Function                                        | Purpose          | Example                                                  |
+| ----------------------------------------------- | ---------------- | -------------------------------------------------------- |
+| `getProductCanonical(baseUrl, slug, options?)`  | Product pages    | `getProductCanonical(base, 'laptop')`                    |
+| `getServiceCanonical(baseUrl, slug)`            | Service pages    | `getServiceCanonical(base, 'cleaning')`                  |
+| `getStoreCanonical(baseUrl, slug, options?)`    | Store pages      | `getStoreCanonical(base, 'johns', { tab: 'services' })`  |
+| `getClassifiedCanonical(baseUrl, slug)`         | Classified pages | `getClassifiedCanonical(base, 'bike')`                   |
+| `getCategoryCanonical(baseUrl, slug, options?)` | Category pages   | `getCategoryCanonical(base, 'electronics', { page: 2 })` |
+| `getSearchCanonical(baseUrl, options?)`         | Search pages     | `getSearchCanonical(base, { q: 'laptop' })`              |
+| `stripTrackingParams(url)`                      | Remove tracking  | `stripTrackingParams(url)`                               |
+| `normalizeUrl(url, options?)`                   | Normalize URL    | `normalizeUrl(url)`                                      |
 
 ## URL Patterns
 
-| Content Type | Pattern | Canonical Example |
-|-------------|---------|-------------------|
-| Product | `/p/{slug}` | `https://nearbybazaar.com/p/laptop-stand` |
-| Service | `/s/{slug}` | `https://nearbybazaar.com/s/home-cleaning` |
-| Store | `/store/{slug}` | `https://nearbybazaar.com/store/johns-electronics` |
-| Classified | `/c/{slug}` | `https://nearbybazaar.com/c/used-bike` |
-| Category | `/category/{slug}` | `https://nearbybazaar.com/category/electronics` |
-| Search | `/search` | `https://nearbybazaar.com/search?q=laptop` |
-| Home | `/` | `https://nearbybazaar.com/` |
+| Content Type | Pattern            | Canonical Example                                  |
+| ------------ | ------------------ | -------------------------------------------------- |
+| Product      | `/p/{slug}`        | `https://nearbybazaar.com/p/laptop-stand`          |
+| Service      | `/s/{slug}`        | `https://nearbybazaar.com/s/home-cleaning`         |
+| Store        | `/store/{slug}`    | `https://nearbybazaar.com/store/johns-electronics` |
+| Classified   | `/c/{slug}`        | `https://nearbybazaar.com/c/used-bike`             |
+| Category     | `/category/{slug}` | `https://nearbybazaar.com/category/electronics`    |
+| Search       | `/search`          | `https://nearbybazaar.com/search?q=laptop`         |
+| Home         | `/`                | `https://nearbybazaar.com/`                        |
 
 ## Tracking Parameters Removed
 
@@ -61,14 +61,10 @@ import { getProductCanonical } from '@nearbybazaar/lib/canonical';
 
 const canonical = getProductCanonical(
   process.env.NEXT_PUBLIC_BASE_URL || 'https://nearbybazaar.com',
-  slug
+  slug,
 );
 
-<SeoHead
-  title="Product Name"
-  description="Product description"
-  canonicalUrl={canonical}
-/>
+<SeoHead title="Product Name" description="Product description" canonicalUrl={canonical} />;
 ```
 
 ### Store Page
@@ -79,10 +75,10 @@ import { getStoreCanonical } from '@nearbybazaar/lib/canonical';
 const canonical = getStoreCanonical(
   baseUrl,
   vendor.slug,
-  currentTab !== 'products' ? { tab: currentTab } : undefined
+  currentTab !== 'products' ? { tab: currentTab } : undefined,
 );
 
-<SeoHead canonicalUrl={canonical} />
+<SeoHead canonicalUrl={canonical} />;
 ```
 
 ### Search Page
@@ -95,7 +91,7 @@ const canonical = getSearchCanonical(baseUrl, {
   type: type !== 'all' ? type : undefined,
 });
 
-<SeoHead canonicalUrl={canonical} noindex={true} />
+<SeoHead canonicalUrl={canonical} noindex={true} />;
 ```
 
 ## Options & Customization
@@ -104,10 +100,10 @@ const canonical = getSearchCanonical(baseUrl, {
 generateCanonicalUrl({
   baseUrl: 'https://nearbybazaar.com',
   path: '/p/laptop-stand',
-  params: { variant: 'black' },       // Optional query params
-  trailingSlash: false,               // Default: false
-  forceHttps: true,                   // Default: true
-  lowercasePath: true,                // Default: true
+  params: { variant: 'black' }, // Optional query params
+  trailingSlash: false, // Default: false
+  forceHttps: true, // Default: true
+  lowercasePath: true, // Default: true
 });
 ```
 
@@ -141,7 +137,7 @@ import { areCanonicalDuplicates } from '@nearbybazaar/lib/canonical';
 
 const isDupe = areCanonicalDuplicates(
   'https://example.com/page?utm_source=google',
-  'https://example.com/page?utm_source=facebook'
+  'https://example.com/page?utm_source=facebook',
 );
 // Returns: true (same canonical after stripping)
 ```
@@ -157,13 +153,13 @@ const normalized = normalizeUrl('HTTP://Example.COM/Path/?z=1&a=2');
 
 ## Troubleshooting
 
-| Problem | Solution |
-|---------|----------|
-| No canonical tag in HTML | Add `<SeoHead canonicalUrl={...} />` |
+| Problem                      | Solution                                       |
+| ---------------------------- | ---------------------------------------------- |
+| No canonical tag in HTML     | Add `<SeoHead canonicalUrl={...} />`           |
 | Tracking params in canonical | Use helper functions, don't construct manually |
-| Wrong domain in canonical | Set `NEXT_PUBLIC_BASE_URL` env variable |
-| Canonical tag duplicated | Remove duplicate `SeoHead` components |
-| Case mismatch | Use `lowercasePath: true` (default) |
+| Wrong domain in canonical    | Set `NEXT_PUBLIC_BASE_URL` env variable        |
+| Canonical tag duplicated     | Remove duplicate `SeoHead` components          |
+| Case mismatch                | Use `lowercasePath: true` (default)            |
 
 ## Environment Setup
 
@@ -175,6 +171,7 @@ NEXT_PUBLIC_BASE_URL=https://nearbybazaar.com
 ## SEO Best Practices
 
 ✅ **DO:**
+
 - Use absolute URLs with full domain
 - Strip tracking parameters
 - Be consistent with protocol/case
@@ -182,6 +179,7 @@ NEXT_PUBLIC_BASE_URL=https://nearbybazaar.com
 - Point to preferred URL version
 
 ❌ **DON'T:**
+
 - Use relative URLs (`/page` instead of `https://example.com/page`)
 - Include tracking parameters
 - Create circular canonicals
@@ -192,22 +190,25 @@ NEXT_PUBLIC_BASE_URL=https://nearbybazaar.com
 
 ```typescript
 // Strip tracking parameters
-expect(stripTrackingParams('https://example.com/page?utm_source=google&page=2'))
-  .toBe('https://example.com/page?page=2');
+expect(stripTrackingParams('https://example.com/page?utm_source=google&page=2')).toBe(
+  'https://example.com/page?page=2',
+);
 
 // Product canonical
-expect(getProductCanonical('https://example.com', 'laptop'))
-  .toBe('https://example.com/p/laptop');
+expect(getProductCanonical('https://example.com', 'laptop')).toBe('https://example.com/p/laptop');
 
 // Category with pagination
-expect(getCategoryCanonical('https://example.com', 'electronics', { page: 2 }))
-  .toBe('https://example.com/category/electronics?page=2');
+expect(getCategoryCanonical('https://example.com', 'electronics', { page: 2 })).toBe(
+  'https://example.com/category/electronics?page=2',
+);
 
 // Duplicate check
-expect(areCanonicalDuplicates(
-  'https://example.com/page?utm_source=google',
-  'https://example.com/page?utm_source=facebook'
-)).toBe(true);
+expect(
+  areCanonicalDuplicates(
+    'https://example.com/page?utm_source=google',
+    'https://example.com/page?utm_source=facebook',
+  ),
+).toBe(true);
 ```
 
 ## Files Location

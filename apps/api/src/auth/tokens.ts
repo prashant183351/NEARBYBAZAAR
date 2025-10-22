@@ -23,7 +23,9 @@ export async function rotateRefreshToken(oldToken: string, userId: string, devic
   return newToken;
 }
 
-export async function getRefreshData(token: string): Promise<{ userId: string; deviceId?: string } | null> {
+export async function getRefreshData(
+  token: string,
+): Promise<{ userId: string; deviceId?: string } | null> {
   const redis = getRedis();
   if (!redis) return null;
   const val = await redis.get(`${REFRESH_PREFIX}${token}`);

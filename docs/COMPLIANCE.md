@@ -1,20 +1,24 @@
 # Compliance Acceptance
 
 ## Overview
+
 The Compliance Acceptance feature ensures that vendors and suppliers accept required terms (SLAs, compliance terms, etc.) before performing certain actions in the dropshipping system.
 
 ## Features
 
 ### Versioned Agreements
+
 - Each agreement has a type (`sla`, `compliance`, `terms_of_service`, `privacy_policy`)
 - Agreements are versioned (e.g., "1.0", "2.0")
 - When a new version is released, users must accept it again
 
 ### Acceptance Tracking
+
 - Records who accepted, when, and from which IP/user agent
 - Provides full audit trail for compliance purposes
 
 ### Enforcement
+
 - Certain actions (e.g., receiving orders) can be blocked until agreements are accepted
 - Middleware automatically enforces compliance on protected routes
 
@@ -59,9 +63,11 @@ function App() {
 ## API Endpoints
 
 ### GET /api/agreements/pending
+
 Get all pending agreements for the current user.
 
 **Response:**
+
 ```json
 {
   "pending": [
@@ -76,9 +82,11 @@ Get all pending agreements for the current user.
 ```
 
 ### POST /api/agreements/:id/accept
+
 Record acceptance of a specific agreement.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -87,9 +95,11 @@ Record acceptance of a specific agreement.
 ```
 
 ### POST /api/agreements (Admin)
+
 Create a new agreement version.
 
 **Request:**
+
 ```json
 {
   "type": "sla",
@@ -101,15 +111,18 @@ Create a new agreement version.
 ```
 
 ### GET /api/agreements/acceptances (Audit)
+
 Get acceptance records for audit purposes.
 
 **Query Parameters:**
+
 - `acceptorId`: Filter by vendor/supplier ID
 - `acceptorType`: Filter by 'vendor' or 'supplier'
 
 ## Data Models
 
 ### Agreement
+
 ```typescript
 {
   type: 'sla' | 'compliance' | 'terms_of_service' | 'privacy_policy',
@@ -122,6 +135,7 @@ Get acceptance records for audit purposes.
 ```
 
 ### AgreementAcceptance
+
 ```typescript
 {
   agreementId: ObjectId,
@@ -146,6 +160,7 @@ Get acceptance records for audit purposes.
 ## Versioning Strategy
 
 When releasing a new version:
+
 1. Create new Agreement document with incremented version
 2. All users who accepted previous version will see the new prompt
 3. System enforces re-acceptance before allowing critical actions
@@ -153,11 +168,13 @@ When releasing a new version:
 ## Testing
 
 Run compliance tests:
+
 ```bash
 npm test -- compliance.test.ts
 ```
 
 Tests cover:
+
 - Acceptance status checking
 - Pending agreement retrieval
 - Version-based re-prompting
@@ -167,12 +184,15 @@ Tests cover:
 ## Edge Cases
 
 ### No Agreement Defined
+
 If no agreement exists for a type, it's considered accepted (allows system to operate before agreements are created).
 
 ### Multiple Pending Agreements
+
 UI displays them one at a time, requiring sequential acceptance.
 
 ### Blocking Behavior
+
 If enforcement fails, API returns 403 with code `COMPLIANCE_REQUIRED`.
 
 ## Migration

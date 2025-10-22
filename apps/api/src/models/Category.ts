@@ -13,14 +13,17 @@ export interface ICategory extends Document {
   updatedAt: Date;
 }
 
-const CategorySchema = new Schema<ICategory>({
-  name: { type: String, required: true, trim: true },
-  slug: { type: String, required: true, unique: true, index: true },
-  parent: { type: Schema.Types.ObjectId, ref: 'Category', default: null, index: true },
-  ancestors: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
-  isActive: { type: Boolean, default: true },
-  order: { type: Number, default: 0 },
-}, { timestamps: true });
+const CategorySchema = new Schema<ICategory>(
+  {
+    name: { type: String, required: true, trim: true },
+    slug: { type: String, required: true, unique: true, index: true },
+    parent: { type: Schema.Types.ObjectId, ref: 'Category', default: null, index: true },
+    ancestors: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
+    isActive: { type: Boolean, default: true },
+    order: { type: Number, default: 0 },
+  },
+  { timestamps: true },
+);
 
 CategorySchema.index({ parent: 1, order: 1 });
 CategorySchema.index({ ancestors: 1 });
@@ -52,7 +55,10 @@ CategorySchema.pre('save', async function (next) {
 export const Category = model<ICategory>('Category', CategorySchema);
 
 // Helper to retrieve all descendant ids (including the category itself if includeSelf)
-export async function getDescendantCategoryIds(categoryId: Types.ObjectId | string, includeSelf = true): Promise<string[]> {
+export async function getDescendantCategoryIds(
+  categoryId: Types.ObjectId | string,
+  includeSelf = true,
+): Promise<string[]> {
   const id = typeof categoryId === 'string' ? new Types.ObjectId(categoryId) : categoryId;
   const descendants = await Category.find({ ancestors: id }).select('_id').lean();
   const ids = descendants.map((d) => String(d._id));

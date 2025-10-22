@@ -1,5 +1,11 @@
 import { Router } from 'express';
-import { getUserRecommendations, getTrendingProducts, getVendorTrendingProducts, getFrequentlyBoughtTogether, getCustomersAlsoViewed } from '../services/recommendation';
+import {
+  getUserRecommendations,
+  getTrendingProducts,
+  getVendorTrendingProducts,
+  getFrequentlyBoughtTogether,
+  getCustomersAlsoViewed,
+} from '../services/recommendation';
 import { logger } from '../utils/logger';
 
 const router = Router();
@@ -52,24 +58,24 @@ router.get('/:userId', async (req, res) => {
 
 // GET /v1/recommendations/bought-together/:productId
 router.get('/bought-together/:productId', async (req, res) => {
-	const { productId } = req.params;
-	try {
-		const products = await getFrequentlyBoughtTogether(productId);
-		res.json({ success: true, products });
-	} catch (err) {
-		res.status(500).json({ error: 'Failed to get bought together recommendations' });
-	}
+  const { productId } = req.params;
+  try {
+    const products = await getFrequentlyBoughtTogether(productId);
+    res.json({ success: true, products });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to get bought together recommendations' });
+  }
 });
 
 // GET /v1/recommendations/also-viewed/:productId
 router.get('/also-viewed/:productId', async (req, res) => {
-	const { productId } = req.params;
-	try {
-		const products = await getCustomersAlsoViewed(productId);
-		res.json({ success: true, products });
-	} catch (err) {
-		res.status(500).json({ error: 'Failed to get also viewed recommendations' });
-	}
+  const { productId } = req.params;
+  try {
+    const products = await getCustomersAlsoViewed(productId);
+    res.json({ success: true, products });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to get also viewed recommendations' });
+  }
 });
 
 export default router;

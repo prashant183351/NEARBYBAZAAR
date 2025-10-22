@@ -8,10 +8,23 @@ const router = Router();
 router.post('/shipping/bid', async (req, res) => {
   try {
     const { origin, destination, weight, dimensions, value, orderId, criteria } = req.body;
-    if (!origin?.pincode || !origin?.country || !destination?.pincode || !destination?.country || !weight) {
+    if (
+      !origin?.pincode ||
+      !origin?.country ||
+      !destination?.pincode ||
+      !destination?.country ||
+      !weight
+    ) {
       return res.status(400).json({ success: false, error: 'Missing required fields' });
     }
-    const quotes = await getCourierQuotes({ origin, destination, weight, dimensions, value, orderId });
+    const quotes = await getCourierQuotes({
+      origin,
+      destination,
+      weight,
+      dimensions,
+      value,
+      orderId,
+    });
     const best = selectBestCourier(quotes, criteria);
     res.json({ success: true, data: { quotes, best } });
   } catch (err) {

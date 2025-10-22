@@ -23,19 +23,28 @@ export async function assignVariant(campaignId: Types.ObjectId | string): Promis
 
 // Track a view (e.g. banner shown)
 export async function trackCampaignView(campaignId: Types.ObjectId | string, variantKey: string) {
-  await Campaign.updateOne({ _id: campaignId, 'variants.key': variantKey }, { $inc: { 'variants.$.views': 1 } });
+  await Campaign.updateOne(
+    { _id: campaignId, 'variants.key': variantKey },
+    { $inc: { 'variants.$.views': 1 } },
+  );
 }
 
 // Track a conversion (e.g. order placed, coupon used)
-export async function trackCampaignConversion(campaignId: Types.ObjectId | string, variantKey: string) {
-  await Campaign.updateOne({ _id: campaignId, 'variants.key': variantKey }, { $inc: { 'variants.$.conversions': 1 } });
+export async function trackCampaignConversion(
+  campaignId: Types.ObjectId | string,
+  variantKey: string,
+) {
+  await Campaign.updateOne(
+    { _id: campaignId, 'variants.key': variantKey },
+    { $inc: { 'variants.$.conversions': 1 } },
+  );
 }
 
 // Get campaign stats for dashboard
 export async function getCampaignStats(campaignId: Types.ObjectId | string) {
   const campaign = await Campaign.findById(campaignId);
   if (!campaign) return null;
-  return campaign.variants.map(v => ({
+  return campaign.variants.map((v) => ({
     key: v.key,
     conversions: v.conversions,
     views: v.views,

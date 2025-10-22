@@ -1,12 +1,12 @@
 /**
  * Critical race condition tests for Feature #180: Multi-warehouse + Reservations
- * 
+ *
  * Purpose: Verify atomic stock operations prevent overselling when multiple
  *          users attempt to reserve the last available item simultaneously.
- * 
+ *
  * Spec requirement: "Simulate two parallel checkout attempts for the last item
  *                    to ensure one fails to reserve stock"
- * 
+ *
  * Note: These tests use mocked MongoDB operations to avoid MongoMemoryServer
  *       compatibility issues on Windows. Integration tests should be run in CI/staging.
  */
@@ -15,7 +15,7 @@ describe('Feature #180: Inventory Race Condition Tests (Unit)', () => {
   describe('CRITICAL: Atomic Operation Logic', () => {
     it('should demonstrate atomic findOneAndUpdate prevents race conditions', () => {
       // This test documents the atomic operation pattern used in StockItem.reserveStock()
-      
+
       const atomicReservePattern = {
         operation: 'findOneAndUpdate',
         filter: {
@@ -38,7 +38,7 @@ describe('Feature #180: Inventory Race Condition Tests (Unit)', () => {
       expect(atomicReservePattern.filter['quantity.available']).toEqual({ $gte: 5 });
       expect(atomicReservePattern.update.$inc['quantity.available']).toBe(-5);
       expect(atomicReservePattern.update.$inc['quantity.reserved']).toBe(5);
-      
+
       // If two concurrent requests try to reserve last 5 items:
       // - First request: Filter matches (available=5), update executes, returns updated doc
       // - Second request: Filter fails (available=0), update doesn't execute, returns null
@@ -70,7 +70,7 @@ describe('Feature #180: Inventory Race Condition Tests (Unit)', () => {
       ];
 
       expect(atomicGuarantees).toHaveLength(4);
-      
+
       // Expected outcomes:
       const outcomes = {
         user1: 'SUCCESS - Reserved 1 item',
@@ -215,7 +215,7 @@ describe('Feature #180: Inventory Race Condition Tests (Unit)', () => {
 
       if (!result) {
         const error = new Error(
-          `Insufficient stock available for product. Requested: ${scenario.requestedQuantity}, Available: ${scenario.available}`
+          `Insufficient stock available for product. Requested: ${scenario.requestedQuantity}, Available: ${scenario.available}`,
         );
         expect(error.message).toContain('Insufficient stock');
       }
@@ -229,7 +229,7 @@ describe('Feature #180: Inventory Race Condition Tests (Unit)', () => {
       // This ensures available can never go negative:
       // - If available = 3, trying to reserve 5 will NOT match filter
       // - Update won't execute, preventing available from becoming -2
-      
+
       expect(atomicFilter['quantity.available'].$gte).toBeGreaterThan(0);
     });
 
@@ -248,7 +248,7 @@ describe('Feature #180: Inventory Race Condition Tests (Unit)', () => {
 
       // Serial execution order matters (atomic updates process sequentially):
       let remainingStock = stock.available;
-      
+
       requests.forEach((req) => {
         if (remainingStock >= req.quantity) {
           remainingStock -= req.quantity;
@@ -299,4 +299,3 @@ describe('Feature #180: Inventory Race Condition Tests (Unit)', () => {
     });
   });
 });
-

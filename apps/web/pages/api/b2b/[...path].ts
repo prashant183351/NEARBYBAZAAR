@@ -1,7 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 
-const API_BASE = (process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:4000') + '/v1/b2b';
+const API_BASE =
+  (process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:4000') + '/v1/b2b';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const segments = (req.query.path as string[] | undefined) || [];

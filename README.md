@@ -3,6 +3,7 @@
 A multi-tenant marketplace platform with admin panel, vendor dashboard, and public storefront.
 
 ## Architecture
+
 - **Monorepo**: Multiple apps and shared packages managed with pnpm workspaces
 - **Apps**:
   - `admin`: Admin dashboard (Next.js)
@@ -15,6 +16,7 @@ A multi-tenant marketplace platform with admin panel, vendor dashboard, and publ
   - `ui`: Shared UI components
 
 ## Setup
+
 ```powershell
 # Install dependencies
 pnpm install
@@ -43,11 +45,13 @@ pnpm --filter @nearbybazaar/api seed:kaizen      # Example Kaizen ideas/decision
 ```
 
 Notes:
+
 - Configure your Mongo connection via `apps/api/.env` (MONGODB_URI). Defaults to `mongodb://localhost:27017/nearbybazaar`.
 - To run a local MongoDB/Redis stack quickly, see Docker docs and run: `docker compose up -d`.
 - All seeders use upsert logic and will update existing records without creating duplicates.
 
 **What gets seeded (Dropshipping)**:
+
 - 5 sample suppliers (various statuses: active, pending, suspended)
 - 15 SKU mappings across 3 active suppliers
 - 5 margin rules (percent and fixed, various priorities)
@@ -55,6 +59,7 @@ Notes:
 See `apps/api/src/seeders/dropship.ts` for details.
 
 ## Features
+
 - **Vendor Slugs**: URL-friendly slugs for vendor stores with collision handling and history (see [docs/VENDOR_SLUGS.md](./docs/VENDOR_SLUGS.md))
 - **Pricing**: Dynamic pricing with plan-based features
 - **Watermarking**: Image watermarking for classifieds
@@ -64,6 +69,7 @@ See `apps/api/src/seeders/dropship.ts` for details.
 - **Ad Management**: Vendor campaign dashboards and admin advertising analytics
 
 ## Documentation
+
 - [Forms](./docs/FORMS.md)
 - [Generators](./docs/GENERATORS.md)
 - [Kaizen](./docs/KAIZEN.md)
@@ -96,6 +102,7 @@ See `apps/api/src/seeders/dropship.ts` for details.
     - [🎓 Vendor Training Materials](./docs/VENDOR_TRAINING.md) - Interactive B2B sales training
 
 ## Testing
+
 ```powershell
 # Run all tests
 pnpm test
@@ -113,6 +120,7 @@ pnpm --filter @nearbybazaar/api test --coverage
 **Note**: Dropshipping tests are a critical CI gate. See [Testing Checklist](./docs/DROPSHIP_TESTING_CHECKLIST.md).
 
 ## License
+
 Private/Proprietary
 
 ### Bot Protection: Google reCAPTCHA v3
@@ -120,17 +128,20 @@ Private/Proprietary
 NearbyBazaar uses Google reCAPTCHA v3 to protect critical forms (signup, inquiry, booking, RFQ, password reset) from bots and abuse.
 
 **Setup:**
+
 - Register your site at [Google reCAPTCHA Admin](https://www.google.com/recaptcha/admin/create)
 - Add these keys to your `.env`:
   - `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` (frontend)
   - `RECAPTCHA_SECRET_KEY` (backend)
 
 **How it works:**
+
 - Frontend loads reCAPTCHA v3 script and gets a token on form submit
 - Backend verifies token with Google API and only accepts if score is above threshold (default: 0.5)
 - See docs/SECURITY.md for details
 
 **Environment Example:**
+
 ```env
 NEXT_PUBLIC_RECAPTCHA_SITE_KEY=your-recaptcha-site-key
 RECAPTCHA_SECRET_KEY=your-recaptcha-secret

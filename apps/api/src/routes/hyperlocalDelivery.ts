@@ -1,5 +1,9 @@
 import { Router } from 'express';
-import { isHyperlocalEligible, getHyperlocalProviders, scheduleHyperlocalDelivery } from '../services/shipping/hyperlocal';
+import {
+  isHyperlocalEligible,
+  getHyperlocalProviders,
+  scheduleHyperlocalDelivery,
+} from '../services/shipping/hyperlocal';
 import { logger } from '../utils/logger';
 
 const router = Router();
@@ -22,7 +26,13 @@ router.post('/shipping/hyperlocal/schedule', async (req, res) => {
     if (!origin?.pincode || !destination?.pincode || !provider || !orderId) {
       return res.status(400).json({ success: false, error: 'Missing required fields' });
     }
-    const result = await scheduleHyperlocalDelivery({ origin, destination, parcel, provider, orderId });
+    const result = await scheduleHyperlocalDelivery({
+      origin,
+      destination,
+      parcel,
+      provider,
+      orderId,
+    });
     res.json({ success: true, data: result });
   } catch (err) {
     logger.error('Hyperlocal schedule error', err);

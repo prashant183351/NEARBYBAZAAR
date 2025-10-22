@@ -12,9 +12,7 @@ const swaggerDefinition = {
     version: '0.1.0',
     description: 'OpenAPI documentation for NearbyBazaar API',
   },
-  servers: [
-    { url: '/v1', description: 'API v1 base' },
-  ],
+  servers: [{ url: '/v1', description: 'API v1 base' }],
   components: {
     securitySchemes: {
       bearerAuth: {

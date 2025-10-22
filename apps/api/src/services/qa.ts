@@ -25,11 +25,7 @@ export const postQuestion = async (productId: string, question: string, userId: 
 
 // Function to post an answer
 export const postAnswer = async (qaId: string, answer: string, userId: string) => {
-  return QA.findByIdAndUpdate(
-    qaId,
-    { $push: { answers: { answer, userId } } },
-    { new: true }
-  );
+  return QA.findByIdAndUpdate(qaId, { $push: { answers: { answer, userId } } }, { new: true });
 };
 
 // Function to fetch Q&A for a product

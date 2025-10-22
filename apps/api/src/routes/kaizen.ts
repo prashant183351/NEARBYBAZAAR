@@ -14,14 +14,14 @@ router.delete('/:id', kaizen.deleteKaizen);
 export default router;
 // Public Kaizen idea submission
 router.post('/submit', rateLimit({ windowMs: 60000, maxRequests: 3 }), async (req, res) => {
-    const { title, desc } = req.body;
-    // Save idea (stub)
-    // TODO: persist to DB
-    // Send notification/email
-    await sendMail({
-        to: 'kaizen@nearbybazaar.com',
-        subject: `New Kaizen Idea: ${title}`,
-        text: desc,
-    });
-    res.json({ ok: true });
+  const { title, desc } = req.body;
+  // Save idea (stub)
+  // TODO: persist to DB
+  // Send notification/email
+  await sendMail({
+    to: 'kaizen@nearbybazaar.com',
+    subject: `New Kaizen Idea: ${title}`,
+    text: desc,
+  });
+  res.json({ ok: true });
 });

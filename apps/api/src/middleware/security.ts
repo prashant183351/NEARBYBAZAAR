@@ -4,5 +4,5 @@ import { sendToSiem } from '../services/siem';
 import { Request } from 'express';
 
 export function logFailedLogin(req: Request, userEmail: string) {
-	sendToSiem({ event: 'failed_login', email: userEmail, ip: req.ip, time: new Date() });
+  sendToSiem({ event: 'failed_login', email: userEmail, ip: req.ip, time: new Date() });
 }

@@ -5,11 +5,18 @@ export async function generateInvoicePDF(params: {
   order: any;
   seller: { name: string; address?: string; gstin?: string };
   buyer: { name: string; address?: string; gstin?: string };
-  tax: { cgst: number; sgst: number; igst: number; taxable: number; totalTax: number; grandTotal: number };
+  tax: {
+    cgst: number;
+    sgst: number;
+    igst: number;
+    taxable: number;
+    totalTax: number;
+    grandTotal: number;
+  };
   invoiceNumber: string;
 }): Promise<Buffer> {
   // Lazy require to avoid dependency during tests that don't use this
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+
   const PDFDocument = require('pdfkit');
   const doc = new PDFDocument({ margin: 36 });
   const chunks: Buffer[] = [];
@@ -50,11 +57,10 @@ export async function generateInvoicePDF(params: {
  * Generate GST-compliant PDF from Invoice model
  */
 export async function generateGSTInvoicePDF(invoice: InvoiceType): Promise<Buffer> {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const PDFDocument = require('pdfkit');
   const doc = new PDFDocument({ size: 'A4', margin: 50 });
   const chunks: Buffer[] = [];
-  
+
   return await new Promise<Buffer>((resolve, reject) => {
     doc.on('data', (c: Buffer) => chunks.push(c));
     doc.on('end', () => resolve(Buffer.concat(chunks)));
@@ -63,35 +69,37 @@ export async function generateGSTInvoicePDF(invoice: InvoiceType): Promise<Buffe
     // Header
     doc.fontSize(20).font('Helvetica-Bold').text('TAX INVOICE', { align: 'center' });
     doc.moveDown(0.5);
-    
+
     // Invoice Details
     doc.fontSize(10).font('Helvetica');
     doc.text(`Invoice No: ${invoice.invoiceNumber}`, { align: 'right' });
-    doc.text(`Date: ${new Date(invoice.invoiceDate).toLocaleDateString('en-IN')}`, { align: 'right' });
+    doc.text(`Date: ${new Date(invoice.invoiceDate).toLocaleDateString('en-IN')}`, {
+      align: 'right',
+    });
     if (invoice.irn) {
       doc.fontSize(8).text(`IRN: ${invoice.irn}`, { align: 'right' });
     }
     doc.moveDown(1);
-    
+
     // Seller & Buyer Details
     const leftCol = 50;
     const rightCol = 320;
-    let y = doc.y;
-    
+    const y = doc.y;
+
     doc.fontSize(12).font('Helvetica-Bold').text('Seller:', leftCol, y);
     doc.fontSize(9).font('Helvetica');
     doc.text(invoice.seller.name, leftCol, y + 15);
     if (invoice.seller.gstin) doc.text(`GSTIN: ${invoice.seller.gstin}`, leftCol, y + 27);
     if (invoice.seller.address) doc.text(invoice.seller.address, leftCol, y + 39, { width: 240 });
-    
+
     doc.fontSize(12).font('Helvetica-Bold').text('Buyer:', rightCol, y);
     doc.fontSize(9).font('Helvetica');
     doc.text(invoice.buyer.name, rightCol, y + 15);
     if (invoice.buyer.gstin) doc.text(`GSTIN: ${invoice.buyer.gstin}`, rightCol, y + 27);
     if (invoice.buyer.address) doc.text(invoice.buyer.address, rightCol, y + 39, { width: 200 });
-    
+
     doc.moveDown(5);
-    
+
     // Line Items
     const tableY = doc.y;
     doc.fontSize(9).font('Helvetica-Bold');
@@ -101,7 +109,7 @@ export async function generateGSTInvoicePDF(invoice: InvoiceType): Promise<Buffe
     doc.text('Amount', leftCol + 360, tableY);
     doc.text('Tax', leftCol + 430, tableY);
     doc.text('Total', leftCol + 480, tableY);
-    
+
     let itemY = tableY + 20;
     doc.font('Helvetica');
     invoice.lineItems.forEach((item) => {
@@ -114,14 +122,14 @@ export async function generateGSTInvoicePDF(invoice: InvoiceType): Promise<Buffe
       doc.text(`₹${item.totalAmount.toFixed(2)}`, leftCol + 480, itemY);
       itemY += 20;
     });
-    
+
     // Totals
     itemY += 20;
     const totalsCol = leftCol + 360;
     doc.text('Subtotal:', totalsCol, itemY);
     doc.text(`₹${invoice.subtotal.toFixed(2)}`, totalsCol + 120, itemY, { align: 'right' });
     itemY += 15;
-    
+
     if (invoice.cgstTotal > 0) {
       doc.text('CGST:', totalsCol, itemY);
       doc.text(`₹${invoice.cgstTotal.toFixed(2)}`, totalsCol + 120, itemY, { align: 'right' });
@@ -137,17 +145,22 @@ export async function generateGSTInvoicePDF(invoice: InvoiceType): Promise<Buffe
       doc.text(`₹${invoice.igstTotal.toFixed(2)}`, totalsCol + 120, itemY, { align: 'right' });
       itemY += 15;
     }
-    
+
     doc.fontSize(11).font('Helvetica-Bold');
     doc.text('Grand Total:', totalsCol, itemY);
     doc.text(`₹${invoice.grandTotal.toFixed(2)}`, totalsCol + 120, itemY, { align: 'right' });
-    
+
     // Footer
     if (invoice.irn) {
-      doc.fontSize(8).font('Helvetica-Italic')
-         .text('Authenticated by GSTN via e-Invoice', leftCol, doc.page.height - 60, { align: 'center', width: 500 });
+      doc
+        .fontSize(8)
+        .font('Helvetica-Italic')
+        .text('Authenticated by GSTN via e-Invoice', leftCol, doc.page.height - 60, {
+          align: 'center',
+          width: 500,
+        });
     }
-    
+
     doc.end();
   });
 }

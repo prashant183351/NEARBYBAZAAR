@@ -72,5 +72,9 @@ export function computeGSTForLines(seller: Party, buyer: Party, lines: Line[]): 
 }
 
 export function formatINR(n: number): string {
-  return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2 }).format(n);
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    minimumFractionDigits: 2,
+  }).format(n);
 }

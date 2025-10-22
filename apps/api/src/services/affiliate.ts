@@ -7,7 +7,9 @@ import { AffiliateLedger } from '../models/AffiliateLedger';
 
 // Generate a unique referral code for a user
 export async function generateReferralCode(userId: Types.ObjectId | string): Promise<string> {
-  const code = (Math.random().toString(36).substring(2, 8) + userId.toString().slice(-4)).toUpperCase();
+  const code = (
+    Math.random().toString(36).substring(2, 8) + userId.toString().slice(-4)
+  ).toUpperCase();
   await Affiliate.create({ userId, code });
   return code;
 }
@@ -15,19 +17,39 @@ export async function generateReferralCode(userId: Types.ObjectId | string): Pro
 // Track a click on a referral link
 export async function trackAffiliateClick(code: string) {
   const affiliate = await Affiliate.findOneAndUpdate({ code }, { $inc: { clicks: 1 } });
-  if (affiliate) await AffiliateLedger.create({ affiliateId: affiliate._id, type: 'click', amount: 0 });
+  if (affiliate)
+    await AffiliateLedger.create({ affiliateId: affiliate._id, type: 'click', amount: 0 });
 }
 
 // Track a signup via referral
 export async function trackAffiliateSignup(code: string, newUserId: Types.ObjectId | string) {
   const affiliate = await Affiliate.findOneAndUpdate({ code }, { $inc: { signups: 1 } });
-  if (affiliate) await AffiliateLedger.create({ affiliateId: affiliate._id, type: 'signup', refId: newUserId, amount: 0 });
+  if (affiliate)
+    await AffiliateLedger.create({
+      affiliateId: affiliate._id,
+      type: 'signup',
+      refId: newUserId,
+      amount: 0,
+    });
 }
 
 // Track a sale via referral
-export async function trackAffiliateSale(code: string, orderId: Types.ObjectId | string, commission: number) {
-  const affiliate = await Affiliate.findOneAndUpdate({ code }, { $inc: { sales: 1, commissionEarned: commission } });
-  if (affiliate) await AffiliateLedger.create({ affiliateId: affiliate._id, type: 'sale', refId: orderId, amount: commission });
+export async function trackAffiliateSale(
+  code: string,
+  orderId: Types.ObjectId | string,
+  commission: number,
+) {
+  const affiliate = await Affiliate.findOneAndUpdate(
+    { code },
+    { $inc: { sales: 1, commissionEarned: commission } },
+  );
+  if (affiliate)
+    await AffiliateLedger.create({
+      affiliateId: affiliate._id,
+      type: 'sale',
+      refId: orderId,
+      amount: commission,
+    });
 }
 
 // Record a payout to affiliate

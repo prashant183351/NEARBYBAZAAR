@@ -1,6 +1,6 @@
 /**
  * ReviewReport Model
- * 
+ *
  * Tracks user reports of reviews for moderation.
  * Allows users to flag spam, offensive content, or fake reviews.
  */
@@ -23,10 +23,10 @@ export enum ReportReason {
  * Report Status
  */
 export enum ReportStatus {
-  PENDING = 'pending',       // Awaiting admin review
-  REVIEWED = 'reviewed',     // Admin has seen it
-  RESOLVED = 'resolved',     // Action taken (review removed/approved)
-  DISMISSED = 'dismissed',   // Report was invalid
+  PENDING = 'pending', // Awaiting admin review
+  REVIEWED = 'reviewed', // Admin has seen it
+  RESOLVED = 'resolved', // Action taken (review removed/approved)
+  DISMISSED = 'dismissed', // Report was invalid
 }
 
 /**
@@ -34,29 +34,29 @@ export enum ReportStatus {
  */
 export interface IReviewReport extends Document {
   _id: Types.ObjectId;
-  
+
   // Target review
   reviewId: Types.ObjectId;
-  
+
   // Reporter
   reportedBy: Types.ObjectId;
-  reporterEmail?: string;    // For follow-up if needed
-  reporterIP?: string;       // To prevent abuse of reporting
-  
+  reporterEmail?: string; // For follow-up if needed
+  reporterIP?: string; // To prevent abuse of reporting
+
   // Report details
   reason: ReportReason;
-  description?: string;      // Optional additional context
-  
+  description?: string; // Optional additional context
+
   // Moderation
   status: ReportStatus;
   reviewedBy?: Types.ObjectId; // Admin who reviewed
   reviewedAt?: Date;
-  adminNotes?: string;       // Admin's decision notes
-  actionTaken?: string;      // What action was taken (if any)
-  
+  adminNotes?: string; // Admin's decision notes
+  actionTaken?: string; // What action was taken (if any)
+
   createdAt: Date;
   updatedAt: Date;
-  
+
   // Instance methods
   review(adminId: Types.ObjectId, notes?: string): Promise<void>;
   resolve(adminId: Types.ObjectId, actionTaken: string, notes?: string): Promise<void>;
@@ -75,7 +75,7 @@ const reviewReportSchema = new Schema<IReviewReport>(
       required: [true, 'Review ID is required'],
       index: true,
     },
-    
+
     // Reporter
     reportedBy: {
       type: Schema.Types.ObjectId,
@@ -92,7 +92,7 @@ const reviewReportSchema = new Schema<IReviewReport>(
       type: String,
       trim: true,
     },
-    
+
     // Report details
     reason: {
       type: String,
@@ -105,7 +105,7 @@ const reviewReportSchema = new Schema<IReviewReport>(
       trim: true,
       maxlength: [500, 'Description cannot exceed 500 characters'],
     },
-    
+
     // Moderation
     status: {
       type: String,
@@ -133,7 +133,7 @@ const reviewReportSchema = new Schema<IReviewReport>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 /**
@@ -157,17 +157,17 @@ reviewReportSchema.index({ reviewId: 1, reportedBy: 1 }, { unique: true });
  */
 reviewReportSchema.methods.review = async function (
   adminId: Types.ObjectId,
-  notes?: string
+  notes?: string,
 ): Promise<void> {
   if (this.status !== ReportStatus.PENDING) {
     throw new Error('Can only review pending reports');
   }
-  
+
   this.status = ReportStatus.REVIEWED;
   this.reviewedBy = adminId;
   this.reviewedAt = new Date();
   this.adminNotes = notes;
-  
+
   await this.save();
 };
 
@@ -177,18 +177,18 @@ reviewReportSchema.methods.review = async function (
 reviewReportSchema.methods.resolve = async function (
   adminId: Types.ObjectId,
   actionTaken: string,
-  notes?: string
+  notes?: string,
 ): Promise<void> {
   if (!actionTaken || actionTaken.trim().length === 0) {
     throw new Error('Action taken description is required');
   }
-  
+
   this.status = ReportStatus.RESOLVED;
   this.reviewedBy = adminId;
   this.reviewedAt = new Date();
   this.actionTaken = actionTaken;
   this.adminNotes = notes;
-  
+
   await this.save();
 };
 
@@ -197,17 +197,17 @@ reviewReportSchema.methods.resolve = async function (
  */
 reviewReportSchema.methods.dismiss = async function (
   adminId: Types.ObjectId,
-  reason: string
+  reason: string,
 ): Promise<void> {
   if (!reason || reason.trim().length === 0) {
     throw new Error('Dismissal reason is required');
   }
-  
+
   this.status = ReportStatus.DISMISSED;
   this.reviewedBy = adminId;
   this.reviewedAt = new Date();
   this.adminNotes = `Dismissed: ${reason}`;
-  
+
   await this.save();
 };
 
@@ -219,7 +219,7 @@ reviewReportSchema.methods.dismiss = async function (
  * Get report count for a review
  */
 reviewReportSchema.statics.getReportCountForReview = async function (
-  reviewId: Types.ObjectId
+  reviewId: Types.ObjectId,
 ): Promise<number> {
   return await this.countDocuments({
     reviewId,
@@ -239,7 +239,7 @@ reviewReportSchema.statics.getPendingCount = async function (): Promise<number> 
  */
 reviewReportSchema.statics.hasUserReported = async function (
   reviewId: Types.ObjectId,
-  userId: Types.ObjectId
+  userId: Types.ObjectId,
 ): Promise<boolean> {
   const count = await this.countDocuments({ reviewId, reportedBy: userId });
   return count > 0;

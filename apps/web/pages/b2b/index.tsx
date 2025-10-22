@@ -44,9 +44,7 @@ export default function B2BDashboard() {
           <h3>Business Profile</h3>
           <pre>{JSON.stringify(profile?.businessProfile || {}, null, 2)}</pre>
           <ul>
-            <li>
-              Access wholesale-only products in listings and product detail pages.
-            </li>
+            <li>Access wholesale-only products in listings and product detail pages.</li>
             <li>Create RFQs for bulk orders and compare vendor quotes.</li>
           </ul>
         </div>

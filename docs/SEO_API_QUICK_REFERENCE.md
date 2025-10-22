@@ -18,14 +18,14 @@ DELETE /v1/seo/cache?path=/p/cool-gadget
 
 ## 📍 Supported Routes
 
-| Route Type | Pattern | Example |
-|------------|---------|---------|
-| Product | `/p/{slug}` | `/p/wireless-headphones` |
-| Store | `/s/{slug}` or `/store/{slug}` | `/s/awesome-store` |
-| Category | `/c/{slug}` | `/c/electronics` |
-| Home | `/` | `/` |
-| Search | `/search` | `/search` |
-| Static | Any other | `/about` |
+| Route Type | Pattern                        | Example                  |
+| ---------- | ------------------------------ | ------------------------ |
+| Product    | `/p/{slug}`                    | `/p/wireless-headphones` |
+| Store      | `/s/{slug}` or `/store/{slug}` | `/s/awesome-store`       |
+| Category   | `/c/{slug}`                    | `/c/electronics`         |
+| Home       | `/`                            | `/`                      |
+| Search     | `/search`                      | `/search`                |
+| Static     | Any other                      | `/about`                 |
 
 ---
 
@@ -34,10 +34,12 @@ DELETE /v1/seo/cache?path=/p/cool-gadget
 ### GET /v1/seo
 
 **Query Params:**
+
 - `path` (required): Route path
 - `lang` (optional): `en` or `hi` (default: `en`)
 
 **Response (200):**
+
 ```json
 {
   "title": "Cool Gadget | NearbyBazaar",
@@ -53,6 +55,7 @@ DELETE /v1/seo/cache?path=/p/cool-gadget
 ```
 
 **Status Codes:**
+
 - `200`: Success
 - `304`: Not Modified (ETag matches)
 - `400`: Bad Request
@@ -131,6 +134,7 @@ GET /v1/seo?path=/p/product&lang=hi
 ```
 
 **OG Locale Mapping:**
+
 - `en` → `en_US`
 - `hi` → `hi_IN`
 
@@ -139,6 +143,7 @@ GET /v1/seo?path=/p/product&lang=hi
 ## 📦 Structured Data
 
 ### Product
+
 ```json
 {
   "@context": "https://schema.org",
@@ -153,6 +158,7 @@ GET /v1/seo?path=/p/product&lang=hi
 ```
 
 ### Store
+
 ```json
 {
   "@context": "https://schema.org",
@@ -167,6 +173,7 @@ GET /v1/seo?path=/p/product&lang=hi
 ```
 
 ### Home
+
 ```json
 {
   "@context": "https://schema.org",
@@ -192,13 +199,13 @@ export const getServerSideProps = async (context) => {
       headers: {
         'If-None-Match': context.req.headers['if-none-match'] || '',
       },
-    }
+    },
   );
-  
+
   if (response.status === 304) {
     return { notModified: true };
   }
-  
+
   const seo = await response.json();
   return { props: { seo } };
 };
@@ -211,16 +218,14 @@ export const getServerSideProps = async (context) => {
   <title>{seo.title}</title>
   <meta name="description" content={seo.description} />
   <link rel="canonical" href={seo.canonical} />
-  
+
   {/* Open Graph */}
   <meta property="og:title" content={seo.ogTitle} />
   <meta property="og:type" content={seo.ogType} />
   <meta property="og:image" content={seo.ogImage} />
-  
+
   {/* Structured Data */}
-  <script type="application/ld+json">
-    {JSON.stringify(seo.structuredData)}
-  </script>
+  <script type="application/ld+json">{JSON.stringify(seo.structuredData)}</script>
 </Head>
 ```
 
@@ -230,11 +235,11 @@ export const getServerSideProps = async (context) => {
 
 ### Benchmarks
 
-| Scenario | Response Time |
-|----------|---------------|
-| Cache Miss (DB Query) | ~150ms |
-| Redis Cache Hit | ~5-10ms |
-| HTTP 304 (ETag) | ~1ms |
+| Scenario              | Response Time |
+| --------------------- | ------------- |
+| Cache Miss (DB Query) | ~150ms        |
+| Redis Cache Hit       | ~5-10ms       |
+| HTTP 304 (ETag)       | ~1ms          |
 
 ### Optimization
 
@@ -280,11 +285,13 @@ SEO_DEFAULT_IMAGE=/og-image.jpg
 ## 🚨 Common Issues
 
 ### Cache Not Working
+
 1. Check Redis connection
 2. Verify `initializeSeoService(redis)` called on startup
 3. Check cache stats: `GET /v1/seo/cache/stats`
 
 ### Stale Metadata
+
 1. Invalidate cache after updates:
    ```typescript
    ProductSchema.post('save', async (doc) => {
@@ -293,6 +300,7 @@ SEO_DEFAULT_IMAGE=/og-image.jpg
    ```
 
 ### 304 Not Working
+
 1. Client must send `If-None-Match` header
 2. ETag must match exactly
 3. Check response headers include `ETag`

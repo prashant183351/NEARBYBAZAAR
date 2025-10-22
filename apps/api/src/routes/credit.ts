@@ -10,7 +10,7 @@ import {
   listPaymentTermTemplates,
   createPaymentTermTemplate,
   markOverdueOrders,
-  recordOrderPayment
+  recordOrderPayment,
 } from '../services/creditLedger';
 import { BuyerCredit, PaymentTermTemplate } from '../models/CreditTerm';
 
@@ -23,25 +23,25 @@ const router = Router();
 router.post('/apply', async (req: Request, res: Response) => {
   try {
     const { userId, requestedAmount, notes } = req.body;
-    
+
     if (!userId || !requestedAmount) {
       return res.status(400).json({
         success: false,
-        error: 'userId and requestedAmount are required'
+        error: 'userId and requestedAmount are required',
       });
     }
-    
+
     const application = await applyForCredit(userId, requestedAmount, notes);
-    
+
     res.json({
       success: true,
       data: application,
-      message: 'Credit application submitted. Pending admin approval.'
+      message: 'Credit application submitted. Pending admin approval.',
     });
   } catch (error: any) {
     res.status(400).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -53,24 +53,24 @@ router.post('/apply', async (req: Request, res: Response) => {
 router.get('/summary/:userId', async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    
+
     const summary = await getBuyerCreditSummary(userId);
-    
+
     if (!summary) {
       return res.status(404).json({
         success: false,
-        error: 'No credit account found for this user'
+        error: 'No credit account found for this user',
       });
     }
-    
+
     res.json({
       success: true,
-      data: summary
+      data: summary,
     });
   } catch (error: any) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -82,24 +82,24 @@ router.get('/summary/:userId', async (req: Request, res: Response) => {
 router.post('/check', async (req: Request, res: Response) => {
   try {
     const { userId, orderAmount } = req.body;
-    
+
     if (!userId || !orderAmount) {
       return res.status(400).json({
         success: false,
-        error: 'userId and orderAmount are required'
+        error: 'userId and orderAmount are required',
       });
     }
-    
+
     const result = await checkCreditAvailability(userId, orderAmount);
-    
+
     res.json({
       success: true,
-      data: result
+      data: result,
     });
   } catch (error: any) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -111,25 +111,25 @@ router.post('/check', async (req: Request, res: Response) => {
 router.post('/payment', async (req: Request, res: Response) => {
   try {
     const { userId, orderId, paymentAmount } = req.body;
-    
+
     if (!userId || !orderId || !paymentAmount) {
       return res.status(400).json({
         success: false,
-        error: 'userId, orderId, and paymentAmount are required'
+        error: 'userId, orderId, and paymentAmount are required',
       });
     }
-    
+
     const result = await recordOrderPayment(userId, orderId, paymentAmount);
-    
+
     res.json({
       success: true,
       data: result,
-      message: 'Payment recorded successfully'
+      message: 'Payment recorded successfully',
     });
   } catch (error: any) {
     res.status(400).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -143,23 +143,23 @@ router.post('/payment', async (req: Request, res: Response) => {
 router.get('/admin/applications', async (req: Request, res: Response) => {
   try {
     const { status, page = 1, limit = 20 } = req.query;
-    
+
     const query: any = {};
     if (status) {
       query.status = status;
     }
-    
+
     const skip = (Number(page) - 1) * Number(limit);
-    
+
     const applications = await BuyerCredit.find(query)
       .populate('userId', 'name email businessProfile')
       .populate('approvedBy', 'name email')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(Number(limit));
-    
+
     const total = await BuyerCredit.countDocuments(query);
-    
+
     res.json({
       success: true,
       data: {
@@ -168,14 +168,14 @@ router.get('/admin/applications', async (req: Request, res: Response) => {
           page: Number(page),
           limit: Number(limit),
           total,
-          pages: Math.ceil(total / Number(limit))
-        }
-      }
+          pages: Math.ceil(total / Number(limit)),
+        },
+      },
     });
   } catch (error: any) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -186,40 +186,33 @@ router.get('/admin/applications', async (req: Request, res: Response) => {
  */
 router.post('/admin/approve', async (req: Request, res: Response) => {
   try {
-    const { 
-      userId, 
-      approvedBy, 
-      creditLimit, 
-      paymentTermId, 
-      maxNetDays, 
-      riskLevel 
-    } = req.body;
-    
+    const { userId, approvedBy, creditLimit, paymentTermId, maxNetDays, riskLevel } = req.body;
+
     if (!userId || !approvedBy || !creditLimit) {
       return res.status(400).json({
         success: false,
-        error: 'userId, approvedBy, and creditLimit are required'
+        error: 'userId, approvedBy, and creditLimit are required',
       });
     }
-    
+
     const approved = await approveCredit(
       userId,
       approvedBy,
       creditLimit,
       paymentTermId,
       maxNetDays,
-      riskLevel
+      riskLevel,
     );
-    
+
     res.json({
       success: true,
       data: approved,
-      message: 'Credit approved successfully'
+      message: 'Credit approved successfully',
     });
   } catch (error: any) {
     res.status(400).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -231,25 +224,25 @@ router.post('/admin/approve', async (req: Request, res: Response) => {
 router.post('/admin/reject', async (req: Request, res: Response) => {
   try {
     const { userId, reason } = req.body;
-    
+
     if (!userId || !reason) {
       return res.status(400).json({
         success: false,
-        error: 'userId and reason are required'
+        error: 'userId and reason are required',
       });
     }
-    
+
     const rejected = await rejectCredit(userId, reason);
-    
+
     res.json({
       success: true,
       data: rejected,
-      message: 'Credit application rejected'
+      message: 'Credit application rejected',
     });
   } catch (error: any) {
     res.status(400).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -261,25 +254,25 @@ router.post('/admin/reject', async (req: Request, res: Response) => {
 router.put('/admin/limit', async (req: Request, res: Response) => {
   try {
     const { userId, newLimit, updatedBy } = req.body;
-    
+
     if (!userId || !newLimit || !updatedBy) {
       return res.status(400).json({
         success: false,
-        error: 'userId, newLimit, and updatedBy are required'
+        error: 'userId, newLimit, and updatedBy are required',
       });
     }
-    
+
     const updated = await updateCreditLimit(userId, newLimit, updatedBy);
-    
+
     res.json({
       success: true,
       data: updated,
-      message: 'Credit limit updated successfully'
+      message: 'Credit limit updated successfully',
     });
   } catch (error: any) {
     res.status(400).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -291,25 +284,25 @@ router.put('/admin/limit', async (req: Request, res: Response) => {
 router.post('/admin/suspend', async (req: Request, res: Response) => {
   try {
     const { userId, reason } = req.body;
-    
+
     if (!userId || !reason) {
       return res.status(400).json({
         success: false,
-        error: 'userId and reason are required'
+        error: 'userId and reason are required',
       });
     }
-    
+
     const suspended = await suspendCredit(userId, reason);
-    
+
     res.json({
       success: true,
       data: suspended,
-      message: 'Credit suspended'
+      message: 'Credit suspended',
     });
   } catch (error: any) {
     res.status(400).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -321,16 +314,16 @@ router.post('/admin/suspend', async (req: Request, res: Response) => {
 router.post('/admin/mark-overdue', async (_req: Request, res: Response) => {
   try {
     const count = await markOverdueOrders();
-    
+
     res.json({
       success: true,
       data: { markedOverdue: count },
-      message: `Marked ${count} orders as overdue`
+      message: `Marked ${count} orders as overdue`,
     });
   } catch (error: any) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -345,15 +338,15 @@ router.get('/terms', async (req: Request, res: Response) => {
   try {
     const activeOnly = req.query.activeOnly !== 'false';
     const templates = await listPaymentTermTemplates(activeOnly);
-    
+
     res.json({
       success: true,
-      data: templates
+      data: templates,
     });
   } catch (error: any) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -365,16 +358,16 @@ router.get('/terms', async (req: Request, res: Response) => {
 router.post('/admin/terms', async (req: Request, res: Response) => {
   try {
     const template = await createPaymentTermTemplate(req.body);
-    
+
     res.json({
       success: true,
       data: template,
-      message: 'Payment term template created'
+      message: 'Payment term template created',
     });
   } catch (error: any) {
     res.status(400).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -386,22 +379,22 @@ router.post('/admin/terms', async (req: Request, res: Response) => {
 router.get('/terms/:id', async (req: Request, res: Response) => {
   try {
     const template = await PaymentTermTemplate.findById(req.params.id);
-    
+
     if (!template) {
       return res.status(404).json({
         success: false,
-        error: 'Payment term template not found'
+        error: 'Payment term template not found',
       });
     }
-    
+
     res.json({
       success: true,
-      data: template
+      data: template,
     });
   } catch (error: any) {
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
     });
   }
 });

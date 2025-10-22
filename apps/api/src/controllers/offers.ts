@@ -1,7 +1,7 @@
 /**
  * ProductOffer Controller
  * Feature #182 - Multi-seller marketplace
- * 
+ *
  * Handles CRUD operations for product offers with business rule enforcement:
  * - Vendors can create/update/delete their own offers
  * - One offer per vendor per product (enforced by unique index)
@@ -20,7 +20,6 @@ import { ProductOffer, IProductOffer } from '../models/ProductOffer';
 
 // Use the same Request.user type as defined in middleware/auth.ts
 // (UserClaims & { scopes?: string[] })
-
 
 interface CreateOfferRequest {
   productId: string;
@@ -73,7 +72,7 @@ const validateOwnership = (offer: IProductOffer, vendorId: string): boolean => {
 const validateInventory = async (
   _vendorId: string,
   _productId: string,
-  _requestedStock: number
+  _requestedStock: number,
 ): Promise<boolean> => {
   // Placeholder - in production, check against vendor's actual inventory
   // const vendor = await Vendor.findById(vendorId);
@@ -237,7 +236,7 @@ export const updateOffer = async (req: Request, res: Response): Promise<void> =>
       const hasInventory = await validateInventory(
         vendorId,
         offer.productId.toString(),
-        data.stock
+        data.stock,
       );
       if (!hasInventory) {
         res.status(400).json({

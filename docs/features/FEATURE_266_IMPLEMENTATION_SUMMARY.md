@@ -156,11 +156,13 @@ Implemented a comprehensive sponsored listings system that allows vendors to cre
 ### 1. Flexible Bidding System
 
 ✅ **CPC (Cost Per Click)**:
+
 - Vendor pays fixed amount per click
 - Minimum bid: ₹1
 - Direct cost tracking
 
 ✅ **CPM (Cost Per Mille - 1000 impressions)**:
+
 - Vendor pays per 1000 impressions
 - Minimum bid: ₹10
 - Estimated CPC calculated based on CTR
@@ -168,16 +170,19 @@ Implemented a comprehensive sponsored listings system that allows vendors to cre
 ### 2. Smart Auction Algorithm
 
 ✅ **Composite Scoring**:
+
 ```
 Score = Bid Amount × (Relevance/100) × (Quality/100)
 ```
 
 ✅ **Relevance Score Components**:
+
 - Keyword matching (0-50 points)
 - Category matching (0-30 points)
 - Placement matching (0-20 points)
 
 ✅ **Quality Score Components**:
+
 - CTR performance (0-30 points)
 - Recency boost (0-20 points)
 - Base score: 50 points
@@ -187,15 +192,18 @@ Score = Bid Amount × (Relevance/100) × (Quality/100)
 ### 3. Budget Management
 
 ✅ **Two-tier budgets**:
+
 - Daily budget (resets at midnight)
 - Total campaign budget
 
 ✅ **Auto-pause**:
+
 - When daily budget exhausted
 - When total budget exhausted
 - When campaign end date reached
 
 ✅ **Manual controls**:
+
 - Pause/resume anytime
 - Update budgets (draft or active)
 - Delete drafts only
@@ -203,16 +211,19 @@ Score = Bid Amount × (Relevance/100) × (Quality/100)
 ### 4. Fraud Prevention
 
 ✅ **Duplicate Click Detection**:
+
 - 5-minute window per user/session
 - TTL indexes for auto-cleanup
 - Prevents rapid-fire clicking
 
 ✅ **Pattern Analysis**:
+
 - IP abuse detection (>10 clicks/24h)
 - Session abuse (>5 clicks, no conversion)
 - Low conversion rate flagging (<0.1% with >50 clicks)
 
 ✅ **Admin Review**:
+
 - Fraud detection API endpoint
 - Suspicious pattern reports
 - Manual refund capability
@@ -220,6 +231,7 @@ Score = Bid Amount × (Relevance/100) × (Quality/100)
 ### 5. Performance Tracking
 
 ✅ **Campaign Metrics**:
+
 - Impressions (total views)
 - Clicks (total clicks)
 - CTR (click-through rate)
@@ -227,12 +239,14 @@ Score = Bid Amount × (Relevance/100) × (Quality/100)
 - Total spend (daily + cumulative)
 
 ✅ **Analytics Breakdowns**:
+
 - By date
 - By placement (search, category, etc.)
 - By keyword
 - Conversion tracking
 
 ✅ **Vendor Dashboard**:
+
 - Total campaigns
 - Active campaigns
 - Total impressions/clicks
@@ -244,17 +258,20 @@ Score = Bid Amount × (Relevance/100) × (Quality/100)
 ### 6. Targeting Options
 
 ✅ **Keywords**:
+
 - Array of target keywords
 - Fuzzy matching in auction
 - Performance per keyword
 
 ✅ **Placements**:
+
 - Search results
 - Category pages
 - Homepage
 - Product detail pages
 
 ✅ **Categories**:
+
 - Target specific categories
 - 30-point boost for category match
 
@@ -267,6 +284,7 @@ draft → active → paused/expired/completed
 ```
 
 ✅ **Statuses**:
+
 - `draft`: Being created, can edit/delete
 - `active`: Running, limited edits
 - `paused`: Manually stopped or budget exhausted
@@ -279,24 +297,24 @@ draft → active → paused/expired/completed
 
 ### Campaign Management (9 endpoints)
 
-| Method | Endpoint | Purpose | Auth |
-|--------|----------|---------|------|
-| GET | `/v1/campaigns` | List campaigns | Vendor |
-| POST | `/v1/campaigns` | Create campaign | Vendor |
-| GET | `/v1/campaigns/:id` | Get details | Vendor/Admin |
-| PUT | `/v1/campaigns/:id` | Update campaign | Vendor/Admin |
-| POST | `/v1/campaigns/:id/pause` | Pause campaign | Vendor/Admin |
-| POST | `/v1/campaigns/:id/resume` | Resume campaign | Vendor/Admin |
-| DELETE | `/v1/campaigns/:id` | Delete draft | Vendor/Admin |
-| GET | `/v1/campaigns/:id/stats` | Get analytics | Vendor/Admin |
-| POST | `/v1/campaigns/estimate` | Estimate performance | Public |
+| Method | Endpoint                   | Purpose              | Auth         |
+| ------ | -------------------------- | -------------------- | ------------ |
+| GET    | `/v1/campaigns`            | List campaigns       | Vendor       |
+| POST   | `/v1/campaigns`            | Create campaign      | Vendor       |
+| GET    | `/v1/campaigns/:id`        | Get details          | Vendor/Admin |
+| PUT    | `/v1/campaigns/:id`        | Update campaign      | Vendor/Admin |
+| POST   | `/v1/campaigns/:id/pause`  | Pause campaign       | Vendor/Admin |
+| POST   | `/v1/campaigns/:id/resume` | Resume campaign      | Vendor/Admin |
+| DELETE | `/v1/campaigns/:id`        | Delete draft         | Vendor/Admin |
+| GET    | `/v1/campaigns/:id/stats`  | Get analytics        | Vendor/Admin |
+| POST   | `/v1/campaigns/estimate`   | Estimate performance | Public       |
 
 ### Ad Tracking (2 endpoints)
 
-| Method | Endpoint | Purpose | Auth |
-|--------|----------|---------|------|
-| POST | `/v1/ad-tracking/impression` | Track impression | Public |
-| POST | `/v1/ad-tracking/click` | Track click | Public |
+| Method | Endpoint                     | Purpose          | Auth   |
+| ------ | ---------------------------- | ---------------- | ------ |
+| POST   | `/v1/ad-tracking/impression` | Track impression | Public |
+| POST   | `/v1/ad-tracking/click`      | Track click      | Public |
 
 ---
 
@@ -305,6 +323,7 @@ draft → active → paused/expired/completed
 ### Required for Full Implementation
 
 #### 1. **Wallet System** (Feature #275)
+
 - [ ] Implement actual wallet charging in `chargeVendorWallet()`
 - [ ] Add wallet balance checks before campaign activation
 - [ ] Deduct from wallet on each click
@@ -313,6 +332,7 @@ draft → active → paused/expired/completed
 **Current State**: Stub implementation logs charges but doesn't deduct
 
 #### 2. **Authentication** (Features #281-285)
+
 - [ ] Apply auth middleware to campaign routes
 - [ ] Implement `req.user` population
 - [ ] Enforce vendor-only access
@@ -321,6 +341,7 @@ draft → active → paused/expired/completed
 **Current State**: Routes defined with TODO comments
 
 #### 3. **Search Integration** (Feature #266 Task 6)
+
 - [ ] Modify search endpoint to call `getSearchAds()`
 - [ ] Modify category endpoint to call `getCategoryAds()`
 - [ ] Inject sponsored results with "Sponsored" label
@@ -329,6 +350,7 @@ draft → active → paused/expired/completed
 **Current State**: Auction service ready, endpoints need modification
 
 #### 4. **Frontend UI** (Features #266 Tasks 7-8)
+
 - [ ] Vendor campaign dashboard
 - [ ] Campaign creation wizard
 - [ ] Performance analytics charts
@@ -338,6 +360,7 @@ draft → active → paused/expired/completed
 **Current State**: Backend APIs complete, UI not started
 
 #### 5. **Conversion Tracking**
+
 - [ ] Store `lastAdClick` in session on click
 - [ ] Link to order on purchase
 - [ ] Call `recordConversion()` in order creation
@@ -345,6 +368,7 @@ draft → active → paused/expired/completed
 **Current State**: Service function ready, order integration pending
 
 #### 6. **Background Job Scheduler**
+
 - [ ] Set up cron for `resetAdBudgets()` daily at 00:00 UTC
 - [ ] Configure retry logic for failed resets
 - [ ] Add monitoring and alerts
@@ -386,6 +410,7 @@ draft → active → paused/expired/completed
 ### Database Indexes
 
 ✅ **AdCampaign Indexes**:
+
 ```javascript
 { vendor: 1, status: 1 }
 { status: 1, startDate: 1, endDate: 1 }
@@ -394,6 +419,7 @@ draft → active → paused/expired/completed
 ```
 
 ✅ **AdClick Indexes**:
+
 ```javascript
 { campaign: 1, clickedAt: -1 }
 { vendor: 1, clickedAt: -1 }
@@ -412,11 +438,13 @@ draft → active → paused/expired/completed
 ### Query Optimization
 
 ✅ **Implemented**:
+
 - Lean queries in auction (no populate)
 - Field selection (only needed fields)
 - Populate winners only
 
 **Pending**:
+
 - [ ] Archive old clicks (>90 days)
 - [ ] Aggregate click data for faster analytics
 - [ ] Implement read replicas for analytics
@@ -428,11 +456,13 @@ draft → active → paused/expired/completed
 ### Fraud Prevention
 
 ✅ **Click Fraud**:
+
 - 5-minute duplicate window
 - TTL indexes auto-cleanup
 - IP/session tracking
 
 ✅ **Pattern Detection**:
+
 - Rapid clicks from same IP
 - Multiple clicks without conversion
 - Abnormally low conversion rates
@@ -440,6 +470,7 @@ draft → active → paused/expired/completed
 ### Access Control
 
 ⚠️ **Pending Auth Integration**:
+
 - Campaign CRUD: Vendor owns resource
 - Analytics: Vendor sees own data only
 - Admin: Override all restrictions
@@ -448,11 +479,13 @@ draft → active → paused/expired/completed
 ### Data Privacy
 
 ✅ **User Data**:
+
 - IP addresses logged (for fraud)
 - User agent logged (for analytics)
 - No PII stored beyond user ID
 
 ⚠️ **Pending**:
+
 - [ ] GDPR compliance review
 - [ ] Data retention policy (90 days?)
 - [ ] User right to deletion
@@ -569,6 +602,7 @@ Feature #266 (Sponsored Listings) backend is **fully implemented** with:
 ✅ Extensive documentation (1,580 lines)
 
 **Remaining work**:
+
 - Search/category integration
 - Vendor UI (campaign dashboard)
 - Admin UI (ad revenue dashboard)

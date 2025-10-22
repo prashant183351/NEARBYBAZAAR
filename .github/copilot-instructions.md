@@ -1,87 +1,89 @@
-NearbyBazaar Feature Plan 300 chunks 
-You are a code generation tool. Your task is to implement the NearbyBazaar e-commerce 
-platform using a monorepo structure with pnpm workspaces. The project must be built in a 
-step-by-step, chunk-wise manner, following the instructions below. 
-Project Overview 
-Build the 'NearbyBazaar' e-commerce platform in a monorepo. 
-Technology Stack: Next.js (frontend), Node.js/Express (backend), MongoDB (database), 
-TypeScript. 
-Architecture: Monorepo with pnpm workspaces. 
-Module-Based Implementation Plan 
-1. Core Setup (chunks 1-15) 
-Initialize the monorepo and workspaces. 
-Set up configurations like Git, Prettier, ESLint, and Jest. 
-Create shared packages (types, libs, ui). 
-Create the base structure for all apps (api, web, vendor, admin). 
-2. Backend Development (API - chunks 16-100) 
-User Management: User model, registration, login, JWT tokens, and profile management. 
-Products and Services: Product schema, CRUD operations, search functionality. 
-Orders and Transactions: Cart management, order flow, and payment integration 
-(PhonePe/UPI). 
-Vendor Management: Vendor verification (KYC), vendor dashboard, and product listings. 
-Security: Rate-limiting, CORS, and data validation. 
-3. Frontend Development (WEB, VENDOR, ADMIN - chunks 101-250) 
-Consumer Web App: UI components with Next.js, authentication flow, product listing and 
-detail pages. 
-Vendor App: Vendor dashboard, product upload form, and order tracking. 
- 
-Admin Panel: Management panels for users, vendors, and content. 
- 
-UI/UX: Using Tailwind CSS and shared UI components. 
- 
-Integrations: Cloudinary for image uploads, Brevo for email. 
- 
-4.  Advanced Features and Improvements (chunks 251-300) 
- 
-SEO and Performance: Meta tags, sitemaps, and image optimization. 
- 
-Security: Bot protection (CAPTCHA) and logging. 
- 
-Social and Referrals: Referral system and user reviews. 
- 
-Push Notifications: Using Firebase. 
- 
-5. Additional and Final Steps (chunks 301-315) 
- 
-CI/CD Pipeline: Automated deployment with GitHub Actions. 
- 
-Logging and Monitoring: Structured logging with pino. 
- 
-Security Testing: End-to-end security testing with Playwright. 
- 
-Backup and Recovery: Database backup plan. 
- 
-**Project Context:** - **Framework:** Next.js (for PWA frontend), Node.js with Express (for backend API). - **Languages:** TypeScript throughout the codebase. - **Database:** MongoDB with Mongoose. - **Tools & Libraries:** Vite, Tailwind, Zod, Jest (unit tests), Playwright (E2E tests), 
-Cloudinary (image uploads), Brevo (email), and PhonePe/UPI (payments). - **Architecture:** Monorepo using `pnpm workspaces`. The directory structure must be 
-`apps/{api,web,vendor,admin}/` and `packages/{types,lib,ui}/`. 
- 
-**Environment Setup (PowerShell in VS Code):** 
-1.  **Prerequisites:** Ensure Node.js (v18 or higher) and pnpm are installed globally. 
-    `npm install -g pnpm` 
-2.  **Project Initialization:** Create the project directory and set up the monorepo. 
-    `mkdir NearbyBazaar` 
-    `cd NearbyBazaar` 
-    `New-Item pnpm-workspace.yaml -Type File` 
-    `'packages:' | Out-File pnpm-workspace.yaml` 
-    `'  - "apps/*"' | Add-Content pnpm-workspace.yaml` 
-    `'  - "packages/*"' | Add-Content pnpm-workspace.yaml` 
-    `pnpm init -w` 
-    `mkdir apps packages` 
-`mkdir apps/api apps/web apps/vendor apps/admin` 
-`mkdir packages/types packages/lib packages/ui` 
-**Task: Chunk-wise Code Generation (1 to 300)** 
-Generate the code for each chunk sequentially. For each chunk, provide the complete file 
-content, any new dependency installation commands (`pnpm add -w` or `pnpm add -D -w`), 
-and any necessary environment variables. The code must be production-ready and free of 
-errors when run with `pnpm -w build` after each step. 
-**Instructions for Each Chunk:** - **File Paths:** Use the full, correct monorepo path (e.g., 
-`apps\web\src\components\Header.tsx`). - **File Content:** Provide the complete code for new files. For existing files, provide the 
-logic to be appended or modified. Do not overwrite existing code unless explicitly instructed. - **Dependencies:** List all new dependencies with their `pnpm add` command. - **Notes:** Include any necessary notes for `README.md` or `.env` files. 
-**Example Chunk Structure to Follow:** 
-Chunk 001 - Workspace Scaffolding 
-Objective: Set up the monorepo skeleton. 
-File to Create: apps\web\package.json 
-Code: 
+NearbyBazaar Feature Plan 300 chunks
+You are a code generation tool. Your task is to implement the NearbyBazaar e-commerce
+platform using a monorepo structure with pnpm workspaces. The project must be built in a
+step-by-step, chunk-wise manner, following the instructions below.
+Project Overview
+Build the 'NearbyBazaar' e-commerce platform in a monorepo.
+Technology Stack: Next.js (frontend), Node.js/Express (backend), MongoDB (database),
+TypeScript.
+Architecture: Monorepo with pnpm workspaces.
+Module-Based Implementation Plan
+
+1. Core Setup (chunks 1-15)
+   Initialize the monorepo and workspaces.
+   Set up configurations like Git, Prettier, ESLint, and Jest.
+   Create shared packages (types, libs, ui).
+   Create the base structure for all apps (api, web, vendor, admin).
+2. Backend Development (API - chunks 16-100)
+   User Management: User model, registration, login, JWT tokens, and profile management.
+   Products and Services: Product schema, CRUD operations, search functionality.
+   Orders and Transactions: Cart management, order flow, and payment integration
+   (PhonePe/UPI).
+   Vendor Management: Vendor verification (KYC), vendor dashboard, and product listings.
+   Security: Rate-limiting, CORS, and data validation.
+3. Frontend Development (WEB, VENDOR, ADMIN - chunks 101-250)
+   Consumer Web App: UI components with Next.js, authentication flow, product listing and
+   detail pages.
+   Vendor App: Vendor dashboard, product upload form, and order tracking.
+
+Admin Panel: Management panels for users, vendors, and content.
+
+UI/UX: Using Tailwind CSS and shared UI components.
+
+Integrations: Cloudinary for image uploads, Brevo for email.
+
+4.  Advanced Features and Improvements (chunks 251-300)
+
+SEO and Performance: Meta tags, sitemaps, and image optimization.
+
+Security: Bot protection (CAPTCHA) and logging.
+
+Social and Referrals: Referral system and user reviews.
+
+Push Notifications: Using Firebase.
+
+5. Additional and Final Steps (chunks 301-315)
+
+CI/CD Pipeline: Automated deployment with GitHub Actions.
+
+Logging and Monitoring: Structured logging with pino.
+
+Security Testing: End-to-end security testing with Playwright.
+
+Backup and Recovery: Database backup plan.
+
+**Project Context:** - **Framework:** Next.js (for PWA frontend), Node.js with Express (for backend API). - **Languages:** TypeScript throughout the codebase. - **Database:** MongoDB with Mongoose. - **Tools & Libraries:** Vite, Tailwind, Zod, Jest (unit tests), Playwright (E2E tests),
+Cloudinary (image uploads), Brevo (email), and PhonePe/UPI (payments). - **Architecture:** Monorepo using `pnpm workspaces`. The directory structure must be
+`apps/{api,web,vendor,admin}/` and `packages/{types,lib,ui}/`.
+
+**Environment Setup (PowerShell in VS Code):**
+
+1.  **Prerequisites:** Ensure Node.js (v18 or higher) and pnpm are installed globally.
+    `npm install -g pnpm`
+2.  **Project Initialization:** Create the project directory and set up the monorepo.
+`mkdir NearbyBazaar`
+`cd NearbyBazaar`
+`New-Item pnpm-workspace.yaml -Type File`
+`'packages:' | Out-File pnpm-workspace.yaml`
+`'  - "apps/*"' | Add-Content pnpm-workspace.yaml`
+`'  - "packages/*"' | Add-Content pnpm-workspace.yaml`
+`pnpm init -w`
+`mkdir apps packages`
+`mkdir apps/api apps/web apps/vendor apps/admin`
+`mkdir packages/types packages/lib packages/ui`
+**Task: Chunk-wise Code Generation (1 to 300)**
+Generate the code for each chunk sequentially. For each chunk, provide the complete file
+content, any new dependency installation commands (`pnpm add -w` or `pnpm add -D -w`),
+and any necessary environment variables. The code must be production-ready and free of
+errors when run with `pnpm -w build` after each step.
+**Instructions for Each Chunk:** - **File Paths:** Use the full, correct monorepo path (e.g.,
+`apps\web\src\components\Header.tsx`). - **File Content:** Provide the complete code for new files. For existing files, provide the
+logic to be appended or modified. Do not overwrite existing code unless explicitly instructed. - **Dependencies:** List all new dependencies with their `pnpm add` command. - **Notes:** Include any necessary notes for `README.md` or `.env` files.
+**Example Chunk Structure to Follow:**
+Chunk 001 - Workspace Scaffolding
+Objective: Set up the monorepo skeleton.
+File to Create: apps\web\package.json
+Code:
 <!-- end list → 
 You will now begin generating the code starting with Chunk 002, and continuing sequentially 
 up to Chunk 300. 
@@ -2806,235 +2808,226 @@ Extra Chunks for NearbyBazaar (301–315)
 These chunks extend the roadmap. Each chunk has Objective, Paths, Tech, Deps, 
 Tests/Mig/Env, Agent and where relevant, actual starter code is included. --- 
 Phase 10: CI/CD & Security (301–307) 
-301 — CI/CD Pipeline Setup 
- 
-Objective: Add GitHub Actions pipeline for lint, build, test. 
- 
-Paths: .github/workflows/ci.yml 
- 
-Tech: GitHub Actions, pnpm caching 
- 
-Deps: none 
- 
-Tests/Mig/Env: Run pnpm -w build, pnpm -w lint, pnpm -w test in matrix (Node 18, 20) 
- 
-Agent: Block PR merges unless pipeline passes 
- 
- 
-# .github/workflows/ci.yml 
-name: CI 
-on: [push, pull_request] 
-jobs: 
-  build: 
-    runs-on: ubuntu-latest 
-    strategy: 
-      matrix: 
-        node-version: [18.x, 20.x] 
-    steps: 
-      - uses: actions/checkout@v3 
-      - uses: actions/setup-node@v3 
-        with: 
-          node-version: ${{ matrix.node-version }} 
-      - run: npm install -g pnpm 
-      - run: pnpm install --frozen-lockfile 
-      - run: pnpm -w lint 
-      - run: pnpm -w build 
-      - run: pnpm -w test 
- 
-302 — Secrets Management 
- 
-Objective: Centralize secrets handling 
- 
-Paths: apps/api/src/utils/secrets.ts 
- 
-Tech: dotenv-safe 
- 
-Deps: pnpm add dotenv-safe -w 
- 
-Tests/Mig/Env: Fail startup if required keys missing 
- 
-Agent: Document in .env.example 
- 
-// apps/api/src/utils/secrets.ts 
-import dotenvSafe from 'dotenv-safe'; 
-dotenvSafe.config({ 
-example: '.env.example', 
-}); 
-export const getEnv = (key: string): string => { 
-const val = process.env[key]; 
-if (!val) throw new Error(`Missing env var: ${key}`); 
-return val; 
-}; 
-303 — Security Middleware 
-Objective: Add OWASP protections 
-Paths: apps/api/src/middleware/security.ts 
-Tech: helmet, cors, express-rate-limit, csurf 
-Deps: pnpm add helmet cors express-rate-limit csurf -w 
-Tests/Mig/Env: Simulate CSRF, check headers 
-Agent: Apply globally in app.ts 
-// apps/api/src/middleware/security.ts 
-import helmet from 'helmet'; 
-import cors from 'cors'; 
-import csrf from 'csurf'; 
-import rateLimit from 'express-rate-limit'; 
-import { Express } from 'express'; 
-export const applySecurity = (app: Express) => { 
-app.use(helmet()); 
-app.use(cors({ origin: '*' })); 
-app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 })); 
-app.use(csrf()); 
-}; 
-304 — Input Sanitization 
-Objective: Sanitize input before DB 
-Paths: apps/api/src/middleware/sanitize.ts 
- 
-Tech: validator.js 
- 
-Deps: pnpm add validator -w 
- 
-Tests/Mig/Env: Test XSS payload rejection 
- 
-Agent: Attach middleware to all routes 
- 
- 
-// apps/api/src/middleware/sanitize.ts 
-import { sanitize } from 'validator'; 
-import { Request, Response, NextFunction } from 'express'; 
- 
-export function sanitizeInput(req: Request, _res: Response, next: NextFunction) { 
-  for (const key in req.body) { 
-    if (typeof req.body[key] === 'string') { 
-      req.body[key] = sanitize(req.body[key]); 
-    } 
-  } 
-  next(); 
-} 
- 
-305 — Audit Trail Hardening 
- 
-Objective: Immutable audit log chain 
- 
-Paths: apps/api/src/models/AuditLog.ts 
- 
-Tech: SHA-256 chaining 
- 
-Deps: crypto (built-in) 
- 
-Tests/Mig/Env: Tamper test 
- 
-Agent: Store hash pointers 
- 
- 
-// apps/api/src/models/AuditLog.ts 
-import { Schema, model } from 'mongoose'; 
-import crypto from 'crypto'; 
- 
-const auditSchema = new Schema({ 
-  user: String, 
-  action: String, 
-  prevHash: String, 
-  hash: String, 
-  timestamp: { type: Date, default: Date.now }, 
-}); 
-auditSchema.pre('save', function (next) { 
-const str = `${this.user}-${this.action}-${this.prevHash}-${this.timestamp}`; 
-this.hash = crypto.createHash('sha256').update(str).digest('hex'); 
-next(); 
-}); 
-export const AuditLog = model('AuditLog', auditSchema); 
-306 — Advanced Payment Flows 
-Objective: Escrow + disputes 
-Paths: apps/api/src/services/payments/escrow.ts 
-Tech: Escrow states in DB 
-Deps: none 
-Tests/Mig/Env: Simulate late refund 
-Agent: Admin can release/refund 
-// apps/api/src/services/payments/escrow.ts 
-export type EscrowState = 'HELD' | 'RELEASED' | 'REFUNDED'; 
-export interface EscrowRecord { 
-orderId: string; 
-amount: number; 
-state: EscrowState; 
-} 
-export const createEscrow = (orderId: string, amount: number): EscrowRecord => ({ 
-orderId, 
-amount, 
-state: 'HELD', 
-}); 
-307 — Refund Engine 
-Objective: Partial refunds + commission rollback 
-Paths: apps/api/src/services/payments/refund.ts 
-Tech: Refund logic with adjustments 
-Deps: none 
-Tests/Mig/Env: Multiple refunds 
-Agent: Connect with commission service 
-// apps/api/src/services/payments/refund.ts 
-export const calculateRefund = (orderTotal: number, refundAmount: number) => { 
-if (refundAmount > orderTotal) throw new Error('Refund exceeds total'); 
-return orderTotal - refundAmount; 
-}; --- 
-Phase 11: Ops & Vendor Compliance (308–312) 
-308 — Dispute Management 
-Objective: Vendor–customer disputes 
-Paths: apps/api/src/models/Dispute.ts, apps/admin/pages/disputes.tsx 
-Tech: Mongoose model + Admin UI 
-Deps: none 
-Tests/Mig/Env: Status transitions 
-Agent: Email alerts on open/close 
-309 — Vendor KYC Automation 
-Objective: PAN/Aadhaar/GST checks 
-Paths: apps/api/src/services/kyc.ts, apps/vendor/pages/kyc.tsx 
-Tech: External API stub 
-Deps: axios 
-Tests/Mig/Env: Mock API 
-Agent: Store KYC status in Vendor 
-310 — Enhanced Logging & Monitoring 
-Objective: Structured logs 
-Paths: apps/api/src/utils/logger.ts 
-Tech: pino 
-Deps: pnpm add pino -w 
-Tests/Mig/Env: Simulate error trace 
-Agent: JSON logs for ELK 
-// apps/api/src/utils/logger.ts 
-import pino from 'pino'; 
-export const logger = pino({ 
-level: process.env.LOG_LEVEL || 'info', 
-}); 
-311 — Rate-Limit Global 
-Objective: Apply global limits 
-Paths: apps/api/src/middleware/rateLimitGlobal.ts 
-Tech: express-rate-limit + Redis 
-Deps: rate-limit-redis 
-Tests/Mig/Env: Stress test 
-Agent: Configurable via env 
-312 — E2E Secure Testing 
-Objective: Security regression tests 
-Paths: apps/web/tests/security.spec.ts 
-Tech: Playwright 
-Deps: @playwright/test 
-Tests/Mig/Env: Simulate attacks 
-Agent: Run nightly in CI --- 
-Phase 12: Release & Recovery (313–315) 
-313 — CI Release Pipeline 
-Objective: Auto deploy web + API 
-Paths: .github/workflows/release.yml 
-Tech: GitHub Actions + Netlify CLI 
-Deps: netlify-cli 
-Tests/Mig/Env: Deploy on main 
-Agent: Add badge in README 
-314 — Backup & Recovery 
-Objective: Automated DB backups 
-Paths: scripts/backup.ts, scripts/restore.ts 
-Tech: mongodump 
-Deps: none 
-Tests/Mig/Env: Restore from backup 
-Agent: Encrypt backups 
-315 — Final Docs & Checklist 
-Objective: Consolidated production notes 
-Paths: docs/PRODUCTION.md 
-Tech: Markdown 
-Deps: none 
-Tests/Mig/Env: N/A 
+301 — CI/CD Pipeline Setup
+
+Objective: Add GitHub Actions pipeline for lint, build, test.
+
+Paths: .github/workflows/ci.yml
+
+Tech: GitHub Actions, pnpm caching
+
+Deps: none
+
+Tests/Mig/Env: Run pnpm -w build, pnpm -w lint, pnpm -w test in matrix (Node 18, 20)
+
+Agent: Block PR merges unless pipeline passes
+
+# .github/workflows/ci.yml
+
+name: CI
+on: [push, pull_request]
+jobs:
+build:
+runs-on: ubuntu-latest
+strategy:
+matrix:
+node-version: [18.x, 20.x]
+steps: - uses: actions/checkout@v3 - uses: actions/setup-node@v3
+with:
+node-version: ${{ matrix.node-version }} - run: npm install -g pnpm - run: pnpm install --frozen-lockfile - run: pnpm -w lint - run: pnpm -w build - run: pnpm -w test
+
+302 — Secrets Management
+
+Objective: Centralize secrets handling
+
+Paths: apps/api/src/utils/secrets.ts
+
+Tech: dotenv-safe
+
+Deps: pnpm add dotenv-safe -w
+
+Tests/Mig/Env: Fail startup if required keys missing
+
+Agent: Document in .env.example
+
+// apps/api/src/utils/secrets.ts
+import dotenvSafe from 'dotenv-safe';
+dotenvSafe.config({
+example: '.env.example',
+});
+export const getEnv = (key: string): string => {
+const val = process.env[key];
+if (!val) throw new Error(`Missing env var: ${key}`);
+return val;
+};
+303 — Security Middleware
+Objective: Add OWASP protections
+Paths: apps/api/src/middleware/security.ts
+Tech: helmet, cors, express-rate-limit, csurf
+Deps: pnpm add helmet cors express-rate-limit csurf -w
+Tests/Mig/Env: Simulate CSRF, check headers
+Agent: Apply globally in app.ts
+// apps/api/src/middleware/security.ts
+import helmet from 'helmet';
+import cors from 'cors';
+import csrf from 'csurf';
+import rateLimit from 'express-rate-limit';
+import { Express } from 'express';
+export const applySecurity = (app: Express) => {
+app.use(helmet());
+app.use(cors({ origin: '_' }));
+app.use(rateLimit({ windowMs: 15 _ 60 \* 1000, max: 100 }));
+app.use(csrf());
+};
+304 — Input Sanitization
+Objective: Sanitize input before DB
+Paths: apps/api/src/middleware/sanitize.ts
+
+Tech: validator.js
+
+Deps: pnpm add validator -w
+
+Tests/Mig/Env: Test XSS payload rejection
+
+Agent: Attach middleware to all routes
+
+// apps/api/src/middleware/sanitize.ts
+import { sanitize } from 'validator';
+import { Request, Response, NextFunction } from 'express';
+
+export function sanitizeInput(req: Request, \_res: Response, next: NextFunction) {
+for (const key in req.body) {
+if (typeof req.body[key] === 'string') {
+req.body[key] = sanitize(req.body[key]);
+}
+}
+next();
+}
+
+305 — Audit Trail Hardening
+
+Objective: Immutable audit log chain
+
+Paths: apps/api/src/models/AuditLog.ts
+
+Tech: SHA-256 chaining
+
+Deps: crypto (built-in)
+
+Tests/Mig/Env: Tamper test
+
+Agent: Store hash pointers
+
+// apps/api/src/models/AuditLog.ts
+import { Schema, model } from 'mongoose';
+import crypto from 'crypto';
+
+const auditSchema = new Schema({
+user: String,
+action: String,
+prevHash: String,
+hash: String,
+timestamp: { type: Date, default: Date.now },
+});
+auditSchema.pre('save', function (next) {
+const str = `${this.user}-${this.action}-${this.prevHash}-${this.timestamp}`;
+this.hash = crypto.createHash('sha256').update(str).digest('hex');
+next();
+});
+export const AuditLog = model('AuditLog', auditSchema);
+306 — Advanced Payment Flows
+Objective: Escrow + disputes
+Paths: apps/api/src/services/payments/escrow.ts
+Tech: Escrow states in DB
+Deps: none
+Tests/Mig/Env: Simulate late refund
+Agent: Admin can release/refund
+// apps/api/src/services/payments/escrow.ts
+export type EscrowState = 'HELD' | 'RELEASED' | 'REFUNDED';
+export interface EscrowRecord {
+orderId: string;
+amount: number;
+state: EscrowState;
+}
+export const createEscrow = (orderId: string, amount: number): EscrowRecord => ({
+orderId,
+amount,
+state: 'HELD',
+});
+307 — Refund Engine
+Objective: Partial refunds + commission rollback
+Paths: apps/api/src/services/payments/refund.ts
+Tech: Refund logic with adjustments
+Deps: none
+Tests/Mig/Env: Multiple refunds
+Agent: Connect with commission service
+// apps/api/src/services/payments/refund.ts
+export const calculateRefund = (orderTotal: number, refundAmount: number) => {
+if (refundAmount > orderTotal) throw new Error('Refund exceeds total');
+return orderTotal - refundAmount;
+}; ---
+Phase 11: Ops & Vendor Compliance (308–312)
+308 — Dispute Management
+Objective: Vendor–customer disputes
+Paths: apps/api/src/models/Dispute.ts, apps/admin/pages/disputes.tsx
+Tech: Mongoose model + Admin UI
+Deps: none
+Tests/Mig/Env: Status transitions
+Agent: Email alerts on open/close
+309 — Vendor KYC Automation
+Objective: PAN/Aadhaar/GST checks
+Paths: apps/api/src/services/kyc.ts, apps/vendor/pages/kyc.tsx
+Tech: External API stub
+Deps: axios
+Tests/Mig/Env: Mock API
+Agent: Store KYC status in Vendor
+310 — Enhanced Logging & Monitoring
+Objective: Structured logs
+Paths: apps/api/src/utils/logger.ts
+Tech: pino
+Deps: pnpm add pino -w
+Tests/Mig/Env: Simulate error trace
+Agent: JSON logs for ELK
+// apps/api/src/utils/logger.ts
+import pino from 'pino';
+export const logger = pino({
+level: process.env.LOG_LEVEL || 'info',
+});
+311 — Rate-Limit Global
+Objective: Apply global limits
+Paths: apps/api/src/middleware/rateLimitGlobal.ts
+Tech: express-rate-limit + Redis
+Deps: rate-limit-redis
+Tests/Mig/Env: Stress test
+Agent: Configurable via env
+312 — E2E Secure Testing
+Objective: Security regression tests
+Paths: apps/web/tests/security.spec.ts
+Tech: Playwright
+Deps: @playwright/test
+Tests/Mig/Env: Simulate attacks
+Agent: Run nightly in CI ---
+Phase 12: Release & Recovery (313–315)
+313 — CI Release Pipeline
+Objective: Auto deploy web + API
+Paths: .github/workflows/release.yml
+Tech: GitHub Actions + Netlify CLI
+Deps: netlify-cli
+Tests/Mig/Env: Deploy on main
+Agent: Add badge in README
+314 — Backup & Recovery
+Objective: Automated DB backups
+Paths: scripts/backup.ts, scripts/restore.ts
+Tech: mongodump
+Deps: none
+Tests/Mig/Env: Restore from backup
+Agent: Encrypt backups
+315 — Final Docs & Checklist
+Objective: Consolidated production notes
+Paths: docs/PRODUCTION.md
+Tech: Markdown
+Deps: none
+Tests/Mig/Env: N/A
 Agent: Include infra, monitoring, security, backups
 
 ---
@@ -3042,6 +3035,7 @@ Agent: Include infra, monitoring, security, backups
 ## Recent Feature Implementations
 
 ### Feature 151 – Server SEO API (Completed Oct 20, 2025)
+
 - **Endpoint**: `GET /v1/seo?path={path}&lang={locale}`
 - **Purpose**: Dynamic SEO metadata generation for SSR
 - **Features**:
@@ -3050,7 +3044,7 @@ Agent: Include infra, monitoring, security, backups
   - Multi-language support (en, hi)
   - Structured data generation (JSON-LD)
   - Support for 6 route types: product, store, category, home, search, static
-- **Files**: 
+- **Files**:
   - Service: `apps/api/src/services/seo/generator.ts`, `apps/api/src/services/seo/cache.ts`
   - Route: `apps/api/src/routes/seo.ts`
   - Tests: `apps/api/tests/seo.spec.ts`
@@ -3058,10 +3052,10 @@ Agent: Include infra, monitoring, security, backups
 - **Performance**: Sub-10ms with cache, ~150ms without
 
 ### Dropshipping Features (Chunk IDs 141–150, Completed Oct 2025)
+
 - Complete supplier management with rate limiting
 - SKU mapping and margin rules
 - Automated order push with retry queue
 - Redis-based sliding window rate limiter (per-supplier isolation)
 - **Docs**: `docs/DROPSHIP.md`, `docs/DROPSHIP_QUICK_REFERENCE.md`
 - **Tests**: 37 dropship tests + 15+ rate limiter tests
- 

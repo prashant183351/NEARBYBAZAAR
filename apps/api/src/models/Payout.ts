@@ -1,12 +1,12 @@
 /**
  * Payout Model
- * 
+ *
  * Manages vendor payout tracking and settlement.
  * Payouts can only be processed for KYC-verified vendors.
- * 
+ *
  * Calculation:
  * Payout Amount = Order Total - Platform Commission - Refunds - Adjustments
- * 
+ *
  * Status Flow:
  * pending → processing → completed OR failed
  */
@@ -17,22 +17,22 @@ import { Schema, model, Document, Types } from 'mongoose';
  * Payout Status Enum
  */
 export enum PayoutStatus {
-  PENDING = 'pending',         // Awaiting processing
-  PROCESSING = 'processing',   // Payment in progress
-  COMPLETED = 'completed',     // Successfully paid
-  FAILED = 'failed',           // Payment failed
-  CANCELLED = 'cancelled',     // Cancelled by admin
-  ON_HOLD = 'on_hold',        // Held due to dispute or investigation
+  PENDING = 'pending', // Awaiting processing
+  PROCESSING = 'processing', // Payment in progress
+  COMPLETED = 'completed', // Successfully paid
+  FAILED = 'failed', // Payment failed
+  CANCELLED = 'cancelled', // Cancelled by admin
+  ON_HOLD = 'on_hold', // Held due to dispute or investigation
 }
 
 /**
  * Payout Method Enum
  */
 export enum PayoutMethod {
-  BANK_TRANSFER = 'bank_transfer',     // NEFT/RTGS/IMPS
-  UPI = 'upi',                         // UPI transfer
-  WALLET = 'wallet',                   // Platform wallet
-  CHEQUE = 'cheque',                   // Physical cheque
+  BANK_TRANSFER = 'bank_transfer', // NEFT/RTGS/IMPS
+  UPI = 'upi', // UPI transfer
+  WALLET = 'wallet', // Platform wallet
+  CHEQUE = 'cheque', // Physical cheque
 }
 
 /**
@@ -53,11 +53,11 @@ export interface IPayoutLineItem {
   orderId: Types.ObjectId;
   orderNumber?: string;
   orderDate: Date;
-  orderTotal: number;          // Total order value
-  commission: number;          // Platform commission
-  tax: number;                 // Tax (GST if applicable)
-  refundAmount: number;        // Any refunds issued
-  netAmount: number;           // Final amount for this order
+  orderTotal: number; // Total order value
+  commission: number; // Platform commission
+  tax: number; // Tax (GST if applicable)
+  refundAmount: number; // Any refunds issued
+  netAmount: number; // Final amount for this order
 }
 
 /**
@@ -67,8 +67,8 @@ export interface IPayoutAdjustment {
   type: 'debit' | 'credit';
   amount: number;
   reason: string;
-  reference?: string;          // Reference ID (e.g., dispute ID)
-  createdBy: Types.ObjectId;   // Admin who created adjustment
+  reference?: string; // Reference ID (e.g., dispute ID)
+  createdBy: Types.ObjectId; // Admin who created adjustment
   createdAt: Date;
 }
 
@@ -80,7 +80,7 @@ export interface IPayoutStatusHistory {
   changedBy: Types.ObjectId;
   changedAt: Date;
   notes?: string;
-  failureReason?: string;      // If status is FAILED
+  failureReason?: string; // If status is FAILED
 }
 
 /**
@@ -89,53 +89,53 @@ export interface IPayoutStatusHistory {
 export interface IPayout extends Document {
   _id: Types.ObjectId;
   vendorId: Types.ObjectId;
-  
+
   // Payout Details
-  payoutNumber: string;        // Unique payout reference (e.g., PO-2025-000001)
+  payoutNumber: string; // Unique payout reference (e.g., PO-2025-000001)
   status: PayoutStatus;
   statusHistory: IPayoutStatusHistory[];
-  
+
   // Financial Breakdown
   lineItems: IPayoutLineItem[];
-  
-  grossAmount: number;         // Sum of all order totals
-  totalCommission: number;     // Sum of all commissions
-  totalRefunds: number;        // Sum of all refunds
+
+  grossAmount: number; // Sum of all order totals
+  totalCommission: number; // Sum of all commissions
+  totalRefunds: number; // Sum of all refunds
   adjustments: IPayoutAdjustment[];
-  totalAdjustments: number;    // Net adjustments (credits - debits)
-  netAmount: number;           // Final payout amount
-  
+  totalAdjustments: number; // Net adjustments (credits - debits)
+  netAmount: number; // Final payout amount
+
   // Payment Details
   method: PayoutMethod;
-  bankAccountId?: Types.ObjectId;  // Reference to vendor's bank account
+  bankAccountId?: Types.ObjectId; // Reference to vendor's bank account
   upiId?: string;
-  transactionId?: string;      // Bank/UPI transaction ID
+  transactionId?: string; // Bank/UPI transaction ID
   transactionDate?: Date;
-  
+
   // Period
-  periodStart: Date;           // Payout period start
-  periodEnd: Date;             // Payout period end
-  
+  periodStart: Date; // Payout period start
+  periodEnd: Date; // Payout period end
+
   // Processing
-  scheduledAt?: Date;          // When payout is scheduled
-  processedAt?: Date;          // When payment was initiated
-  completedAt?: Date;          // When payment was confirmed
+  scheduledAt?: Date; // When payout is scheduled
+  processedAt?: Date; // When payment was initiated
+  completedAt?: Date; // When payment was confirmed
   failedAt?: Date;
   failureReason?: string;
-  
+
   // Flags
-  isKYCVerified: boolean;      // Snapshot of KYC status at creation
+  isKYCVerified: boolean; // Snapshot of KYC status at creation
   requiresManualReview: boolean; // Flag for admin review
-  
+
   // Metadata
   notes?: string;
-  internalNotes?: string;      // Admin-only notes
-  
+  internalNotes?: string; // Admin-only notes
+
   // Audit
-  createdBy?: Types.ObjectId;  // Admin who created (for manual payouts)
+  createdBy?: Types.ObjectId; // Admin who created (for manual payouts)
   createdAt: Date;
   updatedAt: Date;
-  
+
   // Methods
   calculateTotals(): void;
   process(adminId: Types.ObjectId, transactionId: string): Promise<void>;
@@ -147,181 +147,193 @@ export interface IPayout extends Document {
 /**
  * Payout Schema
  */
-const payoutLineItemSchema = new Schema<IPayoutLineItem>({
-  orderId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Order',
-    required: true,
+const payoutLineItemSchema = new Schema<IPayoutLineItem>(
+  {
+    orderId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Order',
+      required: true,
+    },
+    orderNumber: String,
+    orderDate: {
+      type: Date,
+      required: true,
+    },
+    orderTotal: {
+      type: Number,
+      required: true,
+    },
+    commission: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    tax: {
+      type: Number,
+      default: 0,
+    },
+    refundAmount: {
+      type: Number,
+      default: 0,
+    },
+    netAmount: {
+      type: Number,
+      required: true,
+    },
   },
-  orderNumber: String,
-  orderDate: {
-    type: Date,
-    required: true,
-  },
-  orderTotal: {
-    type: Number,
-    required: true,
-  },
-  commission: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
-  tax: {
-    type: Number,
-    default: 0,
-  },
-  refundAmount: {
-    type: Number,
-    default: 0,
-  },
-  netAmount: {
-    type: Number,
-    required: true,
-  },
-}, { _id: false });
+  { _id: false },
+);
 
-const payoutAdjustmentSchema = new Schema<IPayoutAdjustment>({
-  type: {
-    type: String,
-    enum: ['debit', 'credit'],
-    required: true,
+const payoutAdjustmentSchema = new Schema<IPayoutAdjustment>(
+  {
+    type: {
+      type: String,
+      enum: ['debit', 'credit'],
+      required: true,
+    },
+    amount: {
+      type: Number,
+      required: true,
+    },
+    reason: {
+      type: String,
+      required: true,
+    },
+    reference: String,
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  amount: {
-    type: Number,
-    required: true,
-  },
-  reason: {
-    type: String,
-    required: true,
-  },
-  reference: String,
-  createdBy: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-}, { _id: false });
+  { _id: false },
+);
 
-const payoutStatusHistorySchema = new Schema<IPayoutStatusHistory>({
-  status: {
-    type: String,
-    enum: Object.values(PayoutStatus),
-    required: true,
+const payoutStatusHistorySchema = new Schema<IPayoutStatusHistory>(
+  {
+    status: {
+      type: String,
+      enum: Object.values(PayoutStatus),
+      required: true,
+    },
+    changedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    changedAt: {
+      type: Date,
+      default: Date.now,
+    },
+    notes: String,
+    failureReason: String,
   },
-  changedBy: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-  changedAt: {
-    type: Date,
-    default: Date.now,
-  },
-  notes: String,
-  failureReason: String,
-}, { _id: false });
+  { _id: false },
+);
 
-const payoutSchema = new Schema<IPayout>({
-  vendorId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Vendor',
-    required: true,
-    index: true,
+const payoutSchema = new Schema<IPayout>(
+  {
+    vendorId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Vendor',
+      required: true,
+      index: true,
+    },
+    payoutNumber: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+    status: {
+      type: String,
+      enum: Object.values(PayoutStatus),
+      default: PayoutStatus.PENDING,
+      index: true,
+    },
+    statusHistory: [payoutStatusHistorySchema],
+    lineItems: {
+      type: [payoutLineItemSchema],
+      default: [],
+    },
+    grossAmount: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    totalCommission: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    totalRefunds: {
+      type: Number,
+      default: 0,
+    },
+    adjustments: {
+      type: [payoutAdjustmentSchema],
+      default: [],
+    },
+    totalAdjustments: {
+      type: Number,
+      default: 0,
+    },
+    netAmount: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    method: {
+      type: String,
+      enum: Object.values(PayoutMethod),
+      default: PayoutMethod.BANK_TRANSFER,
+    },
+    bankAccountId: {
+      type: Schema.Types.ObjectId,
+    },
+    upiId: String,
+    transactionId: String,
+    transactionDate: Date,
+    periodStart: {
+      type: Date,
+      required: true,
+      index: true,
+    },
+    periodEnd: {
+      type: Date,
+      required: true,
+      index: true,
+    },
+    scheduledAt: Date,
+    processedAt: Date,
+    completedAt: Date,
+    failedAt: Date,
+    failureReason: String,
+    isKYCVerified: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    requiresManualReview: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    notes: String,
+    internalNotes: String,
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
   },
-  payoutNumber: {
-    type: String,
-    required: true,
-    unique: true,
-    index: true,
+  {
+    timestamps: true,
   },
-  status: {
-    type: String,
-    enum: Object.values(PayoutStatus),
-    default: PayoutStatus.PENDING,
-    index: true,
-  },
-  statusHistory: [payoutStatusHistorySchema],
-  lineItems: {
-    type: [payoutLineItemSchema],
-    default: [],
-  },
-  grossAmount: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
-  totalCommission: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
-  totalRefunds: {
-    type: Number,
-    default: 0,
-  },
-  adjustments: {
-    type: [payoutAdjustmentSchema],
-    default: [],
-  },
-  totalAdjustments: {
-    type: Number,
-    default: 0,
-  },
-  netAmount: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
-  method: {
-    type: String,
-    enum: Object.values(PayoutMethod),
-    default: PayoutMethod.BANK_TRANSFER,
-  },
-  bankAccountId: {
-    type: Schema.Types.ObjectId,
-  },
-  upiId: String,
-  transactionId: String,
-  transactionDate: Date,
-  periodStart: {
-    type: Date,
-    required: true,
-    index: true,
-  },
-  periodEnd: {
-    type: Date,
-    required: true,
-    index: true,
-  },
-  scheduledAt: Date,
-  processedAt: Date,
-  completedAt: Date,
-  failedAt: Date,
-  failureReason: String,
-  isKYCVerified: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
-  requiresManualReview: {
-    type: Boolean,
-    default: false,
-    index: true,
-  },
-  notes: String,
-  internalNotes: String,
-  createdBy: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-  },
-}, {
-  timestamps: true,
-});
+);
 
 /**
  * Indexes
@@ -338,20 +350,21 @@ payoutSchema.index({ createdAt: -1 });
 /**
  * Calculate all totals based on line items and adjustments
  */
-payoutSchema.methods.calculateTotals = function(this: IPayout): void {
+payoutSchema.methods.calculateTotals = function (this: IPayout): void {
   // Sum up line items
   this.grossAmount = this.lineItems.reduce((sum, item) => sum + item.orderTotal, 0);
   this.totalCommission = this.lineItems.reduce((sum, item) => sum + item.commission, 0);
   this.totalRefunds = this.lineItems.reduce((sum, item) => sum + item.refundAmount, 0);
-  
+
   // Calculate adjustments (credits increase, debits decrease)
   this.totalAdjustments = this.adjustments.reduce((sum, adj) => {
     return sum + (adj.type === 'credit' ? adj.amount : -adj.amount);
   }, 0);
-  
+
   // Net amount = Gross - Commission - Refunds + Adjustments
-  this.netAmount = this.grossAmount - this.totalCommission - this.totalRefunds + this.totalAdjustments;
-  
+  this.netAmount =
+    this.grossAmount - this.totalCommission - this.totalRefunds + this.totalAdjustments;
+
   // Ensure net amount is not negative
   if (this.netAmount < 0) {
     this.netAmount = 0;
@@ -361,10 +374,10 @@ payoutSchema.methods.calculateTotals = function(this: IPayout): void {
 /**
  * Process payout (initiate payment)
  */
-payoutSchema.methods.process = async function(
+payoutSchema.methods.process = async function (
   this: IPayout,
   adminId: Types.ObjectId,
-  transactionId: string
+  transactionId: string,
 ): Promise<void> {
   if (this.status !== PayoutStatus.PENDING) {
     throw new Error(`Cannot process payout from status: ${this.status}`);
@@ -398,9 +411,9 @@ payoutSchema.methods.process = async function(
 /**
  * Mark payout as completed
  */
-payoutSchema.methods.markCompleted = async function(
+payoutSchema.methods.markCompleted = async function (
   this: IPayout,
-  transactionDate: Date
+  transactionDate: Date,
 ): Promise<void> {
   if (this.status !== PayoutStatus.PROCESSING) {
     throw new Error(`Cannot complete payout from status: ${this.status}`);
@@ -426,10 +439,7 @@ payoutSchema.methods.markCompleted = async function(
 /**
  * Mark payout as failed
  */
-payoutSchema.methods.markFailed = async function(
-  this: IPayout,
-  reason: string
-): Promise<void> {
+payoutSchema.methods.markFailed = async function (this: IPayout, reason: string): Promise<void> {
   if (this.status !== PayoutStatus.PROCESSING) {
     throw new Error(`Cannot mark failed from status: ${this.status}`);
   }
@@ -458,9 +468,9 @@ payoutSchema.methods.markFailed = async function(
 /**
  * Add an adjustment to the payout
  */
-payoutSchema.methods.addAdjustment = async function(
+payoutSchema.methods.addAdjustment = async function (
   this: IPayout,
-  adjustment: Omit<IPayoutAdjustment, 'createdAt'>
+  adjustment: Omit<IPayoutAdjustment, 'createdAt'>,
 ): Promise<void> {
   if (this.status !== PayoutStatus.PENDING) {
     throw new Error('Can only add adjustments to pending payouts');
@@ -488,10 +498,10 @@ payoutSchema.methods.addAdjustment = async function(
 /**
  * Generate unique payout number
  */
-payoutSchema.statics.generatePayoutNumber = async function(): Promise<string> {
+payoutSchema.statics.generatePayoutNumber = async function (): Promise<string> {
   const year = new Date().getFullYear();
   const prefix = `PO-${year}-`;
-  
+
   // Find the last payout number for this year
   const lastPayout = await this.findOne({
     payoutNumber: new RegExp(`^${prefix}`),
@@ -513,7 +523,7 @@ payoutSchema.statics.generatePayoutNumber = async function(): Promise<string> {
 /**
  * Pre-save middleware
  */
-payoutSchema.pre('save', function(next) {
+payoutSchema.pre('save', function (next) {
   // Recalculate totals before saving
   if (this.isModified('lineItems') || this.isModified('adjustments')) {
     this.calculateTotals();

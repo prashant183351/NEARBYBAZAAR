@@ -13,7 +13,7 @@ export function getClient(): any | null {
   if (!isSearchEnabled()) return null;
   if (client) return client;
   // Lazy import to avoid adding to bundle if not enabled
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+
   const { MeiliSearch } = require('meilisearch');
   client = new MeiliSearch({
     host: process.env.MEILI_HOST,
@@ -25,8 +25,12 @@ export function getClient(): any | null {
 export async function ensureIndexes() {
   const c = getClient();
   if (!c) return;
-  productsIndex = await c.getIndex('products').catch(async () => c.createIndex('products', { primaryKey: 'id' }));
-  servicesIndex = await c.getIndex('services').catch(async () => c.createIndex('services', { primaryKey: 'id' }));
+  productsIndex = await c
+    .getIndex('products')
+    .catch(async () => c.createIndex('products', { primaryKey: 'id' }));
+  servicesIndex = await c
+    .getIndex('services')
+    .catch(async () => c.createIndex('services', { primaryKey: 'id' }));
 
   // Configure index settings (searchable/filterable attributes)
   await productsIndex!.updateSettings({
@@ -51,7 +55,7 @@ function buildProductRecord(p: ProductType) {
     const vn = a.valueNumber ?? (typeof a.value === 'number' ? a.value : undefined);
     const vb = a.valueBoolean ?? (typeof a.value === 'boolean' ? a.value : undefined);
     const val = vs ?? vn ?? vb ?? '';
-    if (key && (val !== undefined && val !== null && val !== '')) {
+    if (key && val !== undefined && val !== null && val !== '') {
       attrPairs.push(`${key}:${String(val)}`);
     }
   }
@@ -111,16 +115,30 @@ export async function removeService(id: string) {
   await servicesIndex!.deleteDocument(id);
 }
 
-export async function searchProducts(q: string, opts: { offset?: number; limit?: number; filters?: string } = {}) {
+export async function searchProducts(
+  q: string,
+  opts: { offset?: number; limit?: number; filters?: string } = {},
+) {
   if (!isSearchEnabled()) return { hits: [], estimatedTotalHits: 0 };
   await ensureIndexes();
-  return productsIndex!.search(q, { offset: opts.offset, limit: opts.limit ?? 20, filter: opts.filters });
+  return productsIndex!.search(q, {
+    offset: opts.offset,
+    limit: opts.limit ?? 20,
+    filter: opts.filters,
+  });
 }
 
-export async function searchServices(q: string, opts: { offset?: number; limit?: number; filters?: string } = {}) {
+export async function searchServices(
+  q: string,
+  opts: { offset?: number; limit?: number; filters?: string } = {},
+) {
   if (!isSearchEnabled()) return { hits: [], estimatedTotalHits: 0 };
   await ensureIndexes();
-  return servicesIndex!.search(q, { offset: opts.offset, limit: opts.limit ?? 20, filter: opts.filters });
+  return servicesIndex!.search(q, {
+    offset: opts.offset,
+    limit: opts.limit ?? 20,
+    filter: opts.filters,
+  });
 }
 
 export async function configureSynonyms() {

@@ -1,23 +1,27 @@
 # Dropship Notifications
 
 ## Overview
+
 Comprehensive notification system for dropship events with support for multiple channels (email, in-app, web push, SMS), user preferences, and intelligent aggregation to prevent spam.
 
 ## Features
 
 ### Multi-Channel Delivery
+
 - **In-App**: Notifications stored in database, displayed in inbox
 - **Email**: HTML/text templates for all event types
 - **Web Push**: Browser notifications (integration ready)
 - **SMS**: Text message alerts (integration ready)
 
 ### User Preferences
+
 - Per-event-type configuration
 - Channel selection (email, in-app, web push, SMS)
 - Enable/disable individual notification types
 - Aggregation settings per notification type
 
 ### Intelligent Aggregation
+
 - Rate-limiting to prevent spam
 - Configurable aggregation intervals (e.g., hourly summaries)
 - Automatic batching of similar notifications
@@ -26,21 +30,26 @@ Comprehensive notification system for dropship events with support for multiple 
 ### Notification Types
 
 #### Order Events
+
 - `order_received`: New order sent to supplier
 - `order_shipped`: Order shipped by supplier
 
 #### Stock Events
+
 - `stock_low`: Product stock below threshold
 - `stock_out`: Product completely out of stock
 
 #### Pricing Events
+
 - `price_updated`: Supplier price changes
 
 #### Integration Events
+
 - `supplier_sync_failed`: Failed to sync with supplier
 - `sku_mapping_conflict`: SKU mapping conflict detected
 
 #### Compliance Events
+
 - `compliance_required`: User must accept new terms
 
 ## Usage
@@ -108,14 +117,17 @@ function Settings() {
 ## API Endpoints
 
 ### GET /api/notifications
+
 Get notifications for current user.
 
 **Query Parameters:**
+
 - `page`: Page number (default: 1)
 - `limit`: Items per page (default: 20)
 - `unreadOnly`: 'true' or 'false' (default: 'false')
 
 **Response:**
+
 ```json
 {
   "notifications": [
@@ -136,15 +148,19 @@ Get notifications for current user.
 ```
 
 ### PUT /api/notifications/:id/read
+
 Mark a notification as read.
 
 ### PUT /api/notifications/read-all
+
 Mark all notifications as read for current user.
 
 ### GET /api/notifications/preferences
+
 Get notification preferences for current user.
 
 **Response:**
+
 ```json
 {
   "preferences": [
@@ -160,9 +176,11 @@ Get notification preferences for current user.
 ```
 
 ### PUT /api/notifications/preferences/:type
+
 Update preference for a specific notification type.
 
 **Request:**
+
 ```json
 {
   "channels": ["email", "in_app", "web_push"],
@@ -175,6 +193,7 @@ Update preference for a specific notification type.
 ## Data Models
 
 ### Notification
+
 ```typescript
 {
   userId: ObjectId,
@@ -190,6 +209,7 @@ Update preference for a specific notification type.
 ```
 
 ### NotificationPreference
+
 ```typescript
 {
   userId: ObjectId,
@@ -228,6 +248,7 @@ const text = template.text({ orderId: '123', orderUrl: '/orders/123' });
 ### Example
 
 Without aggregation:
+
 ```
 10:00 - Low stock: Product A
 10:05 - Low stock: Product B
@@ -236,6 +257,7 @@ Without aggregation:
 ```
 
 With aggregation (60 min interval):
+
 ```
 10:00 - Low stock: Product A (buffered)
 10:05 - Low stock: Product B (buffered)
@@ -261,6 +283,7 @@ await NotificationPreferenceModel.create({
 ## Integration Points
 
 ### Supplier Sync Job
+
 ```typescript
 // apps/api/src/jobs/supplierSync.ts
 import { notifyLowStock, notifySupplierSyncFailed } from '../services/dropshipNotifications';
@@ -271,13 +294,14 @@ if (syncFailed) {
 }
 
 // Check stock levels
-const lowStockProducts = products.filter(p => p.stock < threshold);
+const lowStockProducts = products.filter((p) => p.stock < threshold);
 if (lowStockProducts.length > 0) {
   await notifyLowStock(vendorId, lowStockProducts);
 }
 ```
 
 ### Outbound Order Webhook
+
 ```typescript
 // apps/api/src/services/dropship/outboundWebhook.ts
 import { notifyNewOrder } from '../services/dropshipNotifications';
@@ -287,6 +311,7 @@ await notifyNewOrder(supplierId, order._id, `/orders/${order._id}`);
 ```
 
 ### Fulfillment Webhook
+
 ```typescript
 // apps/api/src/routes/webhooks/supplier/fulfillment.ts
 import { notifyOrderShipped } from '../services/dropshipNotifications';
@@ -300,11 +325,13 @@ if (status === 'shipped') {
 ## Testing
 
 Run notification tests:
+
 ```bash
 npm test -- notifications.test.ts
 ```
 
 Tests cover:
+
 - Default notification creation
 - Preference-based filtering
 - Opt-out behavior
@@ -316,6 +343,7 @@ Tests cover:
 ## Best Practices
 
 ### 1. Use Aggregation for High-Frequency Events
+
 ```typescript
 // Good for events that happen frequently
 'stock_low', 'price_updated' → aggregateEnabled: true
@@ -325,7 +353,9 @@ Tests cover:
 ```
 
 ### 2. Default Preferences
+
 Create sensible defaults for new users:
+
 ```typescript
 const defaultPreferences = {
   order_received: { channels: ['email', 'in_app'], aggregateEnabled: false },
@@ -335,6 +365,7 @@ const defaultPreferences = {
 ```
 
 ### 3. Provide Context in Data
+
 ```typescript
 // Good - includes actionable data
 await sendNotification({
@@ -345,12 +376,13 @@ await sendNotification({
     orderId: '12345',
     orderUrl: '/orders/12345',
     itemCount: 5,
-    total: 125.50,
+    total: 125.5,
   },
 });
 ```
 
 ### 4. Rate Limit External Services
+
 ```typescript
 // For email/SMS, respect provider rate limits
 if (channel === 'email') {
@@ -375,18 +407,21 @@ if (channel === 'email') {
 ## Troubleshooting
 
 ### Notifications Not Appearing
+
 1. Check user preferences: `GET /api/notifications/preferences`
 2. Verify `enabled: true` for the notification type
 3. Check if aggregation is delaying delivery
 4. Verify user authentication in requests
 
 ### Too Many Notifications
+
 1. Enable aggregation for high-frequency events
 2. Increase `aggregateIntervalMinutes`
 3. Disable non-critical notification types
 4. Remove unused channels
 
 ### Aggregation Not Working
+
 1. Verify `aggregateEnabled: true` in preferences
 2. Check `aggregateIntervalMinutes` is set
 3. Wait for full interval before expecting delivery

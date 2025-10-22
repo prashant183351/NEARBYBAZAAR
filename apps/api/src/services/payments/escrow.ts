@@ -16,7 +16,11 @@ export interface EscrowRecord {
 // In-memory store for demo (replace with DB in prod)
 const escrowStore: Record<string, EscrowRecord> = {};
 
-export function createEscrow(orderId: Types.ObjectId | string, amount: number, autoReleaseDays = 7): EscrowRecord {
+export function createEscrow(
+  orderId: Types.ObjectId | string,
+  amount: number,
+  autoReleaseDays = 7,
+): EscrowRecord {
   const now = new Date();
   const record: EscrowRecord = {
     orderId,
@@ -53,7 +57,7 @@ export function getEscrow(orderId: Types.ObjectId | string): EscrowRecord | null
 
 // Auto-release funds after SLA if no dispute
 export function autoReleaseDueEscrows(now = new Date()) {
-  Object.values(escrowStore).forEach(record => {
+  Object.values(escrowStore).forEach((record) => {
     if (record.state === 'HELD' && record.autoReleaseAt && record.autoReleaseAt <= now) {
       releaseEscrow(record.orderId);
     }

@@ -51,16 +51,18 @@ export default function AdminB2BAnalytics() {
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState({
     startDate: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    endDate: new Date().toISOString().split('T')[0]
+    endDate: new Date().toISOString().split('T')[0],
   });
   const [exportFilters, setExportFilters] = useState({
     region: '',
-    industry: ''
+    industry: '',
   });
   const [availableRegions, setAvailableRegions] = useState<string[]>([]);
   const [availableIndustries, setAvailableIndustries] = useState<string[]>([]);
   const [exportLoading, setExportLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'regional' | 'industry' | 'types'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'regional' | 'industry' | 'types'>(
+    'overview',
+  );
 
   useEffect(() => {
     fetchBreakdown();
@@ -72,12 +74,12 @@ export default function AdminB2BAnalytics() {
       setLoading(true);
       const params = new URLSearchParams({
         startDate: dateRange.startDate,
-        endDate: dateRange.endDate
+        endDate: dateRange.endDate,
       });
-      
+
       const response = await fetch(`/api/analytics/admin/b2b/breakdown?${params}`);
       const result = await response.json();
-      
+
       if (result.success) {
         setBreakdown(result.data);
       } else {
@@ -94,12 +96,12 @@ export default function AdminB2BAnalytics() {
     try {
       const [regionsRes, industriesRes] = await Promise.all([
         fetch('/api/analytics/admin/b2b/regions'),
-        fetch('/api/analytics/admin/b2b/industries')
+        fetch('/api/analytics/admin/b2b/industries'),
       ]);
-      
+
       const regionsData = await regionsRes.json();
       const industriesData = await industriesRes.json();
-      
+
       if (regionsData.success) setAvailableRegions(regionsData.data);
       if (industriesData.success) setAvailableIndustries(industriesData.data);
     } catch (error) {
@@ -113,14 +115,14 @@ export default function AdminB2BAnalytics() {
       const params = new URLSearchParams({
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,
-        format
+        format,
       });
-      
+
       if (exportFilters.region) params.append('region', exportFilters.region);
       if (exportFilters.industry) params.append('industry', exportFilters.industry);
-      
+
       const response = await fetch(`/api/analytics/admin/b2b/export?${params}`);
-      
+
       if (format === 'csv') {
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
@@ -156,7 +158,7 @@ export default function AdminB2BAnalytics() {
       style: 'currency',
       currency: 'INR',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 0
+      maximumFractionDigits: 0,
     }).format(amount);
   };
 
@@ -174,7 +176,9 @@ export default function AdminB2BAnalytics() {
     <div className="p-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">B2B Platform Analytics</h1>
-        <p className="text-gray-600">Comprehensive breakdown of bulk order activity across regions and industries</p>
+        <p className="text-gray-600">
+          Comprehensive breakdown of bulk order activity across regions and industries
+        </p>
       </div>
 
       {/* Date Range Filter */}
@@ -185,7 +189,7 @@ export default function AdminB2BAnalytics() {
             <input
               type="date"
               value={dateRange.startDate}
-              onChange={(e) => setDateRange(prev => ({ ...prev, startDate: e.target.value }))}
+              onChange={(e) => setDateRange((prev) => ({ ...prev, startDate: e.target.value }))}
               className="px-3 py-2 border border-gray-300 rounded-md"
             />
           </div>
@@ -194,7 +198,7 @@ export default function AdminB2BAnalytics() {
             <input
               type="date"
               value={dateRange.endDate}
-              onChange={(e) => setDateRange(prev => ({ ...prev, endDate: e.target.value }))}
+              onChange={(e) => setDateRange((prev) => ({ ...prev, endDate: e.target.value }))}
               className="px-3 py-2 border border-gray-300 rounded-md"
             />
           </div>
@@ -215,17 +219,23 @@ export default function AdminB2BAnalytics() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <div className="text-sm font-medium text-gray-500 mb-1">Total B2B Revenue</div>
-              <div className="text-3xl font-bold text-blue-600">{formatCurrency(breakdown.totalBulkRevenue)}</div>
+              <div className="text-3xl font-bold text-blue-600">
+                {formatCurrency(breakdown.totalBulkRevenue)}
+              </div>
             </div>
 
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <div className="text-sm font-medium text-gray-500 mb-1">Total B2B Orders</div>
-              <div className="text-3xl font-bold text-green-600">{breakdown.totalBulkOrders.toLocaleString()}</div>
+              <div className="text-3xl font-bold text-green-600">
+                {breakdown.totalBulkOrders.toLocaleString()}
+              </div>
             </div>
 
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <div className="text-sm font-medium text-gray-500 mb-1">Avg Order Value</div>
-              <div className="text-3xl font-bold text-purple-600">{formatCurrency(breakdown.averageBulkOrderValue)}</div>
+              <div className="text-3xl font-bold text-purple-600">
+                {formatCurrency(breakdown.averageBulkOrderValue)}
+              </div>
             </div>
           </div>
 
@@ -284,12 +294,14 @@ export default function AdminB2BAnalytics() {
                   <div className="h-64 mb-6">
                     <div className="flex items-end justify-between h-full gap-1">
                       {breakdown.recentTrends.map((trend, index) => {
-                        const maxRevenue = Math.max(...breakdown.recentTrends.map(t => t.revenue));
+                        const maxRevenue = Math.max(
+                          ...breakdown.recentTrends.map((t) => t.revenue),
+                        );
                         const height = maxRevenue > 0 ? (trend.revenue / maxRevenue) * 100 : 0;
-                        
+
                         return (
                           <div key={index} className="flex-1 flex flex-col items-center">
-                            <div 
+                            <div
                               className="w-full bg-blue-500 hover:bg-blue-600 transition-colors rounded-t"
                               style={{ height: `${height}%` }}
                               title={`${trend.date}: ${formatCurrency(trend.revenue)} (${trend.orderCount} orders)`}
@@ -318,11 +330,21 @@ export default function AdminB2BAnalytics() {
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead className="bg-gray-50">
                         <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Region</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Orders</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Revenue</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Avg Order Value</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Top Industries</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Region
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Orders
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Revenue
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Avg Order Value
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Top Industries
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
@@ -359,11 +381,21 @@ export default function AdminB2BAnalytics() {
                     <table className="min-w-full divide-y divide-gray-200">
                       <thead className="bg-gray-50">
                         <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Industry</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Orders</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Revenue</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Avg Order Value</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Top Regions</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Industry
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Orders
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Revenue
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Avg Order Value
+                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Top Regions
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
@@ -395,14 +427,22 @@ export default function AdminB2BAnalytics() {
               {/* Order Types Tab */}
               {activeTab === 'types' && (
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Bulk Order Type Breakdown</h3>
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">
+                    Bulk Order Type Breakdown
+                  </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {breakdown.byBulkOrderType.map((type) => (
                       <div key={type.type} className="bg-gray-50 rounded-lg p-6">
-                        <div className="text-sm font-medium text-gray-500 mb-1 capitalize">{type.type}</div>
-                        <div className="text-2xl font-bold text-blue-600 mb-2">{formatCurrency(type.revenue)}</div>
+                        <div className="text-sm font-medium text-gray-500 mb-1 capitalize">
+                          {type.type}
+                        </div>
+                        <div className="text-2xl font-bold text-blue-600 mb-2">
+                          {formatCurrency(type.revenue)}
+                        </div>
                         <div className="text-sm text-gray-600">{type.orderCount} orders</div>
-                        <div className="text-xs text-gray-500 mt-1">Avg: {formatCurrency(type.averageOrderValue)}</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          Avg: {formatCurrency(type.averageOrderValue)}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -417,32 +457,44 @@ export default function AdminB2BAnalytics() {
             <p className="text-gray-600 mb-4">
               Download platform-wide B2B order data with optional region and industry filters.
             </p>
-            
+
             {/* Export Filters */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Filter by Region (optional)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Filter by Region (optional)
+                </label>
                 <select
                   value={exportFilters.region}
-                  onChange={(e) => setExportFilters(prev => ({ ...prev, region: e.target.value }))}
+                  onChange={(e) =>
+                    setExportFilters((prev) => ({ ...prev, region: e.target.value }))
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 >
                   <option value="">All Regions</option>
-                  {availableRegions.map(region => (
-                    <option key={region} value={region}>{region}</option>
+                  {availableRegions.map((region) => (
+                    <option key={region} value={region}>
+                      {region}
+                    </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Filter by Industry (optional)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Filter by Industry (optional)
+                </label>
                 <select
                   value={exportFilters.industry}
-                  onChange={(e) => setExportFilters(prev => ({ ...prev, industry: e.target.value }))}
+                  onChange={(e) =>
+                    setExportFilters((prev) => ({ ...prev, industry: e.target.value }))
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                 >
                   <option value="">All Industries</option>
-                  {availableIndustries.map(industry => (
-                    <option key={industry} value={industry}>{industry}</option>
+                  {availableIndustries.map((industry) => (
+                    <option key={industry} value={industry}>
+                      {industry}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -465,7 +517,8 @@ export default function AdminB2BAnalytics() {
               </button>
             </div>
             <p className="text-xs text-gray-500 mt-4">
-              * Export includes all order details, buyer information, payment status, and credit information for the selected filters.
+              * Export includes all order details, buyer information, payment status, and credit
+              information for the selected filters.
             </p>
           </div>
         </>

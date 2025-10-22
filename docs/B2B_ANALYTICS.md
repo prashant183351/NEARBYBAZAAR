@@ -28,7 +28,7 @@ The Order model has been enhanced with B2B-specific fields:
   businessAccount: Boolean,       // Is buyer a business account
   industry: String,               // Buyer's industry (for analytics)
   region: String,                 // Geographic region (for analytics)
-  
+
   // Existing payment terms, credit, etc.
   paymentTerms: {...},
   creditUsed: Number,
@@ -54,7 +54,7 @@ Provides core analytics calculation functions:
    - Returns vendor's bulk vs retail comparison
    - Calculates average order values
    - Identifies top bulk order type, industry, and region
-   
+
    ```typescript
    {
      vendorId: string;
@@ -79,7 +79,7 @@ Provides core analytics calculation functions:
    - Industry breakdown with top regions per industry
    - Bulk order type analysis
    - 30-day trend data
-   
+
    ```typescript
    {
      totalBulkRevenue: number;
@@ -128,11 +128,13 @@ All endpoints are prefixed with `/v1/analytics/`
 Get vendor's B2B sales summary.
 
 **Query Parameters:**
+
 - `vendorId` (required): Vendor ID
 - `startDate` (optional): ISO date string (default: 6 months ago)
 - `endDate` (optional): ISO date string (default: today)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -159,10 +161,12 @@ Get vendor's B2B sales summary.
 Get daily trend data for charts.
 
 **Query Parameters:**
+
 - `vendorId` (required): Vendor ID
 - `days` (optional): Number of days (default: 30)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -171,7 +175,7 @@ Get daily trend data for charts.
       "date": "2024-10-01",
       "orderCount": 2,
       "revenue": 45000
-    },
+    }
     // ... more days
   ]
 }
@@ -182,12 +186,14 @@ Get daily trend data for charts.
 Export vendor's bulk orders.
 
 **Query Parameters:**
+
 - `vendorId` (required): Vendor ID
 - `startDate` (optional): ISO date string
 - `endDate` (optional): ISO date string
 - `format` (optional): 'csv' or 'json' (default: 'csv')
 
 **Response:**
+
 - CSV: Downloads file with `Content-Type: text/csv`
 - JSON: Returns `{ success: true, data: [...], count: N }`
 
@@ -201,10 +207,12 @@ Order ID, Date, Buyer Name, Company, Industry, Region, Order Type, Subtotal, Tax
 Get platform-wide B2B analytics (admin only).
 
 **Query Parameters:**
+
 - `startDate` (optional): ISO date string (default: 6 months ago)
 - `endDate` (optional): ISO date string (default: today)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -256,6 +264,7 @@ Get platform-wide B2B analytics (admin only).
 Export platform-wide bulk orders (admin only).
 
 **Query Parameters:**
+
 - `startDate` (optional): ISO date string
 - `endDate` (optional): ISO date string
 - `region` (optional): Filter by specific region
@@ -270,6 +279,7 @@ Same format as vendor export endpoint but includes all platform orders.
 Get list of all regions with B2B activity.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -282,6 +292,7 @@ Get list of all regions with B2B activity.
 Get list of all industries with B2B activity.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -313,12 +324,12 @@ A comprehensive B2B analytics dashboard for vendors.
 
 ```typescript
 // Navigate to vendor dashboard
-http://localhost:3002/analytics/b2b
+//localhost:3002/analytics/b2b
 
 // Date range is applied via state
-const [dateRange, setDateRange] = useState({
+http: const [dateRange, setDateRange] = useState({
   startDate: '2024-04-20',
-  endDate: '2024-10-20'
+  endDate: '2024-10-20',
 });
 
 // Export handlers
@@ -362,13 +373,13 @@ Platform-wide B2B analytics with multiple views.
 
 ```typescript
 // Navigate to admin dashboard
-http://localhost:3003/analytics/b2b
+//localhost:3003/analytics/b2b
 
 // Tab navigation
-setActiveTab('overview');  // Trends chart
-setActiveTab('regional');  // Regional breakdown table
-setActiveTab('industry');  // Industry breakdown table
-setActiveTab('types');     // Order type cards
+http: setActiveTab('overview'); // Trends chart
+setActiveTab('regional'); // Regional breakdown table
+setActiveTab('industry'); // Industry breakdown table
+setActiveTab('types'); // Order type cards
 
 // Export with filters
 setExportFilters({ region: 'north', industry: 'manufacturing' });
@@ -388,23 +399,23 @@ handleExport('csv');
 
 ### Columns
 
-| Column | Description |
-|--------|-------------|
-| Order ID | Unique order identifier |
-| Date | Order creation date (YYYY-MM-DD) |
-| Buyer Name | Customer name |
-| Company | Business name (if B2B account) |
-| Industry | Buyer's industry classification |
-| Region | Geographic region |
-| Order Type | wholesale/rfq/contract/custom |
-| Subtotal | Order subtotal before tax |
-| Tax | Tax amount (GST breakdown) |
-| Total | Final order total |
-| Payment Status | unpaid/partial/paid/overdue |
-| Paid Amount | Amount paid to date |
-| Outstanding | Remaining unpaid amount |
-| Credit Used | Credit allocated for this order |
-| Due Date | Payment due date (if applicable) |
+| Column         | Description                      |
+| -------------- | -------------------------------- |
+| Order ID       | Unique order identifier          |
+| Date           | Order creation date (YYYY-MM-DD) |
+| Buyer Name     | Customer name                    |
+| Company        | Business name (if B2B account)   |
+| Industry       | Buyer's industry classification  |
+| Region         | Geographic region                |
+| Order Type     | wholesale/rfq/contract/custom    |
+| Subtotal       | Order subtotal before tax        |
+| Tax            | Tax amount (GST breakdown)       |
+| Total          | Final order total                |
+| Payment Status | unpaid/partial/paid/overdue      |
+| Paid Amount    | Amount paid to date              |
+| Outstanding    | Remaining unpaid amount          |
+| Credit Used    | Credit allocated for this order  |
+| Due Date       | Payment due date (if applicable) |
 
 ### Example CSV
 
@@ -449,6 +460,7 @@ handleExport('csv');
 ### Database Queries
 
 All analytics queries use indexed fields:
+
 - `isBulkOrder` (Boolean index)
 - `bulkOrderType` (String index)
 - `industry` (String index)
@@ -469,16 +481,19 @@ All analytics queries use indexed fields:
 ### Manual Testing Scenarios
 
 1. **Vendor Summary**:
+
    ```bash
    curl "http://localhost:5000/v1/analytics/vendor/b2b/summary?vendorId=VENDOR_ID&startDate=2024-04-20&endDate=2024-10-20"
    ```
 
 2. **Admin Breakdown**:
+
    ```bash
    curl "http://localhost:5000/v1/analytics/admin/b2b/breakdown?startDate=2024-04-20&endDate=2024-10-20"
    ```
 
 3. **Export CSV**:
+
    ```bash
    curl "http://localhost:5000/v1/analytics/vendor/b2b/export?vendorId=VENDOR_ID&format=csv" -o export.csv
    ```
@@ -491,6 +506,7 @@ All analytics queries use indexed fields:
 ### Test Data Setup
 
 Create sample bulk orders with varied:
+
 - `isBulkOrder: true`
 - `bulkOrderType`: wholesale, rfq, contract
 - `industry`: manufacturing, retail, services
@@ -566,6 +582,7 @@ it('should format export data correctly', async () => {
 ### Issue: "No data showing in vendor dashboard"
 
 **Solution**:
+
 - Verify orders have `isBulkOrder: true` flag
 - Check date range is correct
 - Ensure vendor has bulk orders in the period
@@ -574,6 +591,7 @@ it('should format export data correctly', async () => {
 ### Issue: "Export file is empty"
 
 **Solution**:
+
 - Verify query parameters are correct
 - Check if orders exist for filters applied
 - Ensure API route is returning data (check network tab)
@@ -582,6 +600,7 @@ it('should format export data correctly', async () => {
 ### Issue: "Regional breakdown shows 'Unknown'"
 
 **Solution**:
+
 - Orders missing `region` field
 - Update order creation flow to capture region from buyer address
 - Backfill existing orders with region data
@@ -589,6 +608,7 @@ it('should format export data correctly', async () => {
 ### Issue: "Trends chart not rendering"
 
 **Solution**:
+
 - Check if trends API returns data
 - Verify date format is correct (YYYY-MM-DD)
 - Ensure CSS height is set on chart container
@@ -619,8 +639,8 @@ export const config = {
   b2bAnalytics: {
     enableCache: process.env.B2B_ANALYTICS_CACHE === 'true',
     defaultDays: parseInt(process.env.B2B_ANALYTICS_DEFAULT_DAYS || '180'),
-    exportMaxRecords: parseInt(process.env.B2B_EXPORT_MAX_RECORDS || '50000')
-  }
+    exportMaxRecords: parseInt(process.env.B2B_EXPORT_MAX_RECORDS || '50000'),
+  },
 };
 ```
 
@@ -649,13 +669,13 @@ export const config = {
 
 ### Key Metrics
 
-| Metric | Description | Formula |
-|--------|-------------|---------|
-| Bulk Revenue | Total revenue from bulk orders | Sum of order.total where isBulkOrder=true |
-| Retail Revenue | Total revenue from retail orders | Sum of order.total where isBulkOrder=false |
-| Bulk vs Retail Ratio | % of revenue from bulk | (bulkRevenue / totalRevenue) * 100 |
-| Avg Bulk Order Value | Average bulk order size | bulkRevenue / bulkOrderCount |
-| Avg Retail Order Value | Average retail order size | retailRevenue / retailOrderCount |
+| Metric                 | Description                      | Formula                                    |
+| ---------------------- | -------------------------------- | ------------------------------------------ |
+| Bulk Revenue           | Total revenue from bulk orders   | Sum of order.total where isBulkOrder=true  |
+| Retail Revenue         | Total revenue from retail orders | Sum of order.total where isBulkOrder=false |
+| Bulk vs Retail Ratio   | % of revenue from bulk           | (bulkRevenue / totalRevenue) \* 100        |
+| Avg Bulk Order Value   | Average bulk order size          | bulkRevenue / bulkOrderCount               |
+| Avg Retail Order Value | Average retail order size        | retailRevenue / retailOrderCount           |
 
 ### API Quick Reference
 
@@ -696,6 +716,7 @@ order.region = 'north';
 ## Support
 
 For issues or questions:
+
 - Check troubleshooting section above
 - Review API responses in browser network tab
 - Enable debug logs: `LOG_LEVEL=debug`
@@ -704,6 +725,7 @@ For issues or questions:
 ---
 
 **Feature #244 Implementation Complete**
+
 - Vendor analytics dashboard ✅
 - Admin platform-wide analytics ✅
 - CSV/JSON export functionality ✅

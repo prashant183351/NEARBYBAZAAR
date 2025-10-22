@@ -37,7 +37,7 @@ export async function scheduleHyperlocalDelivery({
   orderId: string;
 }): Promise<{ success: boolean; trackingId: string; etaMinutes: number; provider: string }> {
   logger.info(
-    `[Hyperlocal] Scheduling delivery with ${provider} for order ${orderId} (parcel: ${JSON.stringify(parcel)}) from ${origin.pincode} to ${destination.pincode} (${destination.address})`
+    `[Hyperlocal] Scheduling delivery with ${provider} for order ${orderId} (parcel: ${JSON.stringify(parcel)}) from ${origin.pincode} to ${destination.pincode} (${destination.address})`,
   );
   // Simulate API call to provider
   return {

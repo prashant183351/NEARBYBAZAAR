@@ -7,7 +7,7 @@
 
 Canonical URLs are essential for SEO to prevent duplicate content penalties and consolidate page authority. This implementation ensures every page on NearbyBazaar has a proper canonical URL that:
 
-- Strips tracking parameters (utm_*, fbclid, gclid, etc.)
+- Strips tracking parameters (utm\_\*, fbclid, gclid, etc.)
 - Normalizes URL structure (protocol, case, trailing slashes)
 - Handles multi-path scenarios (same content, different URLs)
 - Provides consistent canonical hints across the platform
@@ -41,16 +41,19 @@ Canonical URLs are essential for SEO to prevent duplicate content penalties and 
 Automatically strips marketing and analytics tracking parameters:
 
 **UTM Parameters:**
+
 - `utm_source`, `utm_medium`, `utm_campaign`
 - `utm_term`, `utm_content`, `utm_id`
 
 **Social Media Tracking:**
+
 - `fbclid` (Facebook Click ID)
 - `gclid` (Google Click ID)
 - `msclkid` (Microsoft/Bing Click ID)
 - `twclid` (Twitter Click ID)
 
 **Email & Other Tracking:**
+
 - `mc_cid`, `mc_eid` (Mailchimp)
 - `ref`, `referrer`
 - `sessionid`, `sid`
@@ -58,6 +61,7 @@ Automatically strips marketing and analytics tracking parameters:
 ### 2. URL Normalization
 
 Ensures consistent URL structure:
+
 - **Protocol:** Forces HTTPS (configurable)
 - **Hostname:** Lowercases domain
 - **Path:** Optional lowercasing
@@ -69,15 +73,15 @@ Ensures consistent URL structure:
 
 Dedicated canonical generators for each content type:
 
-| Content Type | Pattern | Example |
-|-------------|---------|---------|
-| Products | `/p/{slug}` | `/p/laptop-stand` |
-| Services | `/s/{slug}` | `/s/home-cleaning` |
-| Stores | `/store/{slug}` | `/store/johns-electronics` |
-| Classifieds | `/c/{slug}` | `/c/used-bike` |
-| Categories | `/category/{slug}` | `/category/electronics` |
-| Search | `/search` | `/search?q=laptop` |
-| Home | `/` | `/` |
+| Content Type | Pattern            | Example                    |
+| ------------ | ------------------ | -------------------------- |
+| Products     | `/p/{slug}`        | `/p/laptop-stand`          |
+| Services     | `/s/{slug}`        | `/s/home-cleaning`         |
+| Stores       | `/store/{slug}`    | `/store/johns-electronics` |
+| Classifieds  | `/c/{slug}`        | `/c/used-bike`             |
+| Categories   | `/category/{slug}` | `/category/electronics`    |
+| Search       | `/search`          | `/search?q=laptop`         |
+| Home         | `/`                | `/`                        |
 
 ## Implementation
 
@@ -108,10 +112,10 @@ const clean = stripTrackingParams(url);
 
 ```typescript
 const normalized = normalizeUrl('HTTP://Example.COM/Path/?foo=bar', {
-  forceHttps: true,      // Convert to HTTPS
-  lowercasePath: true,   // Lowercase path
-  trailingSlash: false,  // Remove trailing slash
-  stripHash: true,       // Remove #fragments
+  forceHttps: true, // Convert to HTTPS
+  lowercasePath: true, // Lowercase path
+  trailingSlash: false, // Remove trailing slash
+  stripHash: true, // Remove #fragments
 });
 // Returns: 'https://example.com/path?foo=bar'
 ```
@@ -173,18 +177,11 @@ import { SeoHead } from '@/components/SeoHead';
 import { getProductCanonical } from '@nearbybazaar/lib/canonical';
 
 export default function ProductPage({ slug }) {
-  const canonicalUrl = getProductCanonical(
-    process.env.NEXT_PUBLIC_BASE_URL,
-    slug
-  );
+  const canonicalUrl = getProductCanonical(process.env.NEXT_PUBLIC_BASE_URL, slug);
 
   return (
     <>
-      <SeoHead
-        title="Product Name"
-        description="Product description"
-        canonicalUrl={canonicalUrl}
-      />
+      <SeoHead title="Product Name" description="Product description" canonicalUrl={canonicalUrl} />
       {/* Page content */}
     </>
   );
@@ -218,10 +215,10 @@ import { getProductCanonical } from '@nearbybazaar/lib/canonical';
 
 const canonicalUrl = getProductCanonical(
   process.env.NEXT_PUBLIC_BASE_URL || 'https://nearbybazaar.com',
-  slug
+  slug,
 );
 
-<SeoHead canonicalUrl={canonicalUrl} />
+<SeoHead canonicalUrl={canonicalUrl} />;
 ```
 
 ### Store Pages (`/store/[slug].tsx`)
@@ -233,10 +230,10 @@ import { getStoreCanonical } from '@nearbybazaar/lib/canonical';
 const canonicalUrl = getStoreCanonical(
   baseUrl,
   vendor.slug,
-  currentTab !== 'products' ? { tab: currentTab } : undefined
+  currentTab !== 'products' ? { tab: currentTab } : undefined,
 );
 
-<SeoHead canonicalUrl={canonicalUrl} />
+<SeoHead canonicalUrl={canonicalUrl} />;
 ```
 
 ### Search Pages (`/search.tsx`)
@@ -249,7 +246,7 @@ const canonicalUrl = getSearchCanonical(baseUrl, {
   type: selectedTypes.length !== types.length ? selectedTypes.join(',') : undefined,
 });
 
-<SeoHead canonicalUrl={canonicalUrl} noindex={true} />
+<SeoHead canonicalUrl={canonicalUrl} noindex={true} />;
 ```
 
 Note: Search pages use `noindex` to prevent indexing dynamic search results.
@@ -267,6 +264,7 @@ If the same product can be accessed via multiple URLs:
 ```
 
 **Solution:** All variations should either:
+
 1. 301 redirect to canonical URL, OR
 2. Include the same canonical tag pointing to `/p/laptop-stand`
 
@@ -295,6 +293,7 @@ URL normalization lowercases paths by default.
 ### Test Coverage
 
 62 comprehensive tests covering:
+
 - Tracking parameter stripping (8 tests)
 - URL normalization (9 tests)
 - Canonical URL generation (9 tests)
@@ -409,32 +408,33 @@ generateCanonicalUrl({
 
 ### Common Issues
 
-| Issue | Detection | Solution |
-|-------|-----------|----------|
-| Missing canonical | No `<link rel="canonical">` in HTML | Add `SeoHead` component |
-| Relative URL | `href="/p/product"` instead of full URL | Use `generateCanonicalUrl` with baseUrl |
-| Tracking params | Canonical includes `?utm_source=...` | Use `stripTrackingParams` |
-| Case mismatch | Canonical differs in case from actual URL | Enable `lowercasePath` option |
-| Circular canonical | Page A → B → A | Review canonical logic |
+| Issue              | Detection                                 | Solution                                |
+| ------------------ | ----------------------------------------- | --------------------------------------- |
+| Missing canonical  | No `<link rel="canonical">` in HTML       | Add `SeoHead` component                 |
+| Relative URL       | `href="/p/product"` instead of full URL   | Use `generateCanonicalUrl` with baseUrl |
+| Tracking params    | Canonical includes `?utm_source=...`      | Use `stripTrackingParams`               |
+| Case mismatch      | Canonical differs in case from actual URL | Enable `lowercasePath` option           |
+| Circular canonical | Page A → B → A                            | Review canonical logic                  |
 
 ## Performance
 
 ### Caching Strategy
 
 The SEO API caches canonical URLs with:
+
 - **Redis TTL:** 1 hour
 - **HTTP Cache-Control:** `max-age=3600, s-maxage=7200, stale-while-revalidate=86400`
 - **ETag:** For conditional requests
 
 ### Benchmarks
 
-| Operation | Time | Notes |
-|-----------|------|-------|
-| stripTrackingParams | <1ms | Simple parameter filtering |
-| normalizeUrl | <1ms | URL parsing and normalization |
-| generateCanonicalUrl | <1ms | Composition of normalized URL |
-| SEO API (cached) | ~5ms | Redis cache hit |
-| SEO API (uncached) | ~50ms | Database query + generation |
+| Operation            | Time  | Notes                         |
+| -------------------- | ----- | ----------------------------- |
+| stripTrackingParams  | <1ms  | Simple parameter filtering    |
+| normalizeUrl         | <1ms  | URL parsing and normalization |
+| generateCanonicalUrl | <1ms  | Composition of normalized URL |
+| SEO API (cached)     | ~5ms  | Redis cache hit               |
+| SEO API (uncached)   | ~50ms | Database query + generation   |
 
 ## Future Enhancements
 
@@ -461,6 +461,7 @@ Potential improvements for future iterations:
 ### Canonical not appearing in HTML
 
 **Check:**
+
 1. `SeoHead` component is used on the page
 2. `canonicalUrl` prop is passed to `SeoHead`
 3. Next.js is rendering the component server-side
@@ -468,6 +469,7 @@ Potential improvements for future iterations:
 ### Wrong canonical URL
 
 **Check:**
+
 1. `NEXT_PUBLIC_BASE_URL` environment variable is set correctly
 2. Slug parameter is correct
 3. No typos in helper function calls
@@ -475,6 +477,7 @@ Potential improvements for future iterations:
 ### Tracking parameters in canonical
 
 **Check:**
+
 1. Using `stripTrackingParams` or `generateCanonicalUrl` helpers
 2. Not manually constructing canonical URLs with tracking params
 3. SEO API is being used (it auto-strips)
@@ -484,6 +487,7 @@ Potential improvements for future iterations:
 **Issue:** Only one canonical tag should exist per page.
 
 **Solution:**
+
 - Remove duplicate `SeoHead` components
 - Check for conflicting Next.js plugins
 - Ensure custom head tags don't add canonicals
@@ -491,10 +495,12 @@ Potential improvements for future iterations:
 ## Files Modified/Created
 
 ### New Files (1)
+
 - `packages/lib/src/canonical.ts` (496 lines) - Canonical URL utilities
 - `packages/lib/__tests__/canonical.test.ts` (442 lines) - Comprehensive tests
 
 ### Modified Files (7)
+
 - `packages/lib/src/index.ts` - Export canonical utilities
 - `packages/lib/package.json` - Add test scripts
 - `packages/lib/jest.config.js` - Jest configuration
@@ -522,6 +528,7 @@ Potential improvements for future iterations:
 ## Conclusion
 
 Feature #153 provides a robust canonical URL system that:
+
 - **Prevents duplicate content penalties** through consistent canonicals
 - **Handles tracking parameters** automatically
 - **Normalizes URLs** for consistency

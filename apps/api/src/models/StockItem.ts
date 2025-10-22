@@ -51,7 +51,7 @@ const stockItemSchema = new Schema<IStockItem>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Compound unique index: one stock record per product per warehouse
@@ -81,7 +81,7 @@ stockItemSchema.pre('save', function (next) {
 stockItemSchema.statics.reserveStock = async function (
   productId: Types.ObjectId | string,
   warehouseId: Types.ObjectId | string,
-  quantity: number
+  quantity: number,
 ): Promise<IStockItem | null> {
   if (quantity <= 0) throw new Error('Quantity must be positive');
 
@@ -100,7 +100,7 @@ stockItemSchema.statics.reserveStock = async function (
     {
       new: true, // Return updated document
       runValidators: true,
-    }
+    },
   );
 
   return result;
@@ -112,7 +112,7 @@ stockItemSchema.statics.reserveStock = async function (
 stockItemSchema.statics.releaseReservation = async function (
   productId: Types.ObjectId | string,
   warehouseId: Types.ObjectId | string,
-  quantity: number
+  quantity: number,
 ): Promise<IStockItem | null> {
   if (quantity <= 0) throw new Error('Quantity must be positive');
 
@@ -131,7 +131,7 @@ stockItemSchema.statics.releaseReservation = async function (
     {
       new: true,
       runValidators: true,
-    }
+    },
   );
 
   return result;
@@ -144,7 +144,7 @@ stockItemSchema.statics.releaseReservation = async function (
 stockItemSchema.statics.commitReservation = async function (
   productId: Types.ObjectId | string,
   warehouseId: Types.ObjectId | string,
-  quantity: number
+  quantity: number,
 ): Promise<IStockItem | null> {
   if (quantity <= 0) throw new Error('Quantity must be positive');
 
@@ -163,7 +163,7 @@ stockItemSchema.statics.commitReservation = async function (
     {
       new: true,
       runValidators: true,
-    }
+    },
   );
 
   return result;
@@ -175,7 +175,7 @@ stockItemSchema.statics.commitReservation = async function (
 stockItemSchema.statics.addStock = async function (
   productId: Types.ObjectId | string,
   warehouseId: Types.ObjectId | string,
-  quantity: number
+  quantity: number,
 ): Promise<IStockItem> {
   if (quantity <= 0) throw new Error('Quantity must be positive');
 
@@ -192,7 +192,7 @@ stockItemSchema.statics.addStock = async function (
       new: true,
       upsert: true, // Create if doesn't exist
       runValidators: true,
-    }
+    },
   );
 
   return result;
@@ -204,7 +204,7 @@ stockItemSchema.statics.addStock = async function (
 stockItemSchema.statics.markDamaged = async function (
   productId: Types.ObjectId | string,
   warehouseId: Types.ObjectId | string,
-  quantity: number
+  quantity: number,
 ): Promise<IStockItem | null> {
   if (quantity <= 0) throw new Error('Quantity must be positive');
 
@@ -223,7 +223,7 @@ stockItemSchema.statics.markDamaged = async function (
     {
       new: true,
       runValidators: true,
-    }
+    },
   );
 
   return result;
@@ -233,7 +233,7 @@ stockItemSchema.statics.markDamaged = async function (
  * Get total available stock across all warehouses for a product
  */
 stockItemSchema.statics.getTotalAvailable = async function (
-  productId: Types.ObjectId | string
+  productId: Types.ObjectId | string,
 ): Promise<number> {
   const result = await this.aggregate([
     { $match: { productId: new Types.ObjectId(productId as string) } },
@@ -249,7 +249,7 @@ stockItemSchema.statics.getTotalAvailable = async function (
 stockItemSchema.statics.findBestWarehouse = async function (
   productId: Types.ObjectId | string,
   quantity: number,
-  preferredPincode?: string
+  preferredPincode?: string,
 ): Promise<IStockItem | null> {
   const query: any = {
     productId,
@@ -258,15 +258,13 @@ stockItemSchema.statics.findBestWarehouse = async function (
 
   // If preferred pincode provided, prioritize nearby warehouses
   // (simplified: just check exact match, real impl would use geo proximity)
-  const items = await this.find(query)
-    .populate('warehouseId')
-    .sort({ 'quantity.available': -1 }); // Sort by available stock
+  const items = await this.find(query).populate('warehouseId').sort({ 'quantity.available': -1 }); // Sort by available stock
 
   if (!items.length) return null;
 
   if (preferredPincode) {
     const match = items.find(
-      (item: any) => item.warehouseId?.address?.pincode === preferredPincode
+      (item: any) => item.warehouseId?.address?.pincode === preferredPincode,
     );
     if (match) return match;
   }

@@ -2,25 +2,30 @@
 
 ## Model Summary
 
-| Model | Purpose | ID Type | TTL | Key Features |
-|-------|---------|---------|-----|--------------|
-| **Address** | User addresses | ObjectId | No | Validation, default flag, GPS coords |
-| **Cart** | Shopping cart | ObjectId | 7 days | Guest support, auto-totals, TTL |
-| **Shipment** | Order tracking | ULID | No | Multi-package, event timeline |
-| **PaymentIntent** | Payment processing | ULID | 15 min | Multi-gateway, refunds, capture |
-| **StockReservation** | Inventory hold | ULID | 15 min | TTL auto-expire, extend, confirm |
+| Model                | Purpose            | ID Type  | TTL    | Key Features                         |
+| -------------------- | ------------------ | -------- | ------ | ------------------------------------ |
+| **Address**          | User addresses     | ObjectId | No     | Validation, default flag, GPS coords |
+| **Cart**             | Shopping cart      | ObjectId | 7 days | Guest support, auto-totals, TTL      |
+| **Shipment**         | Order tracking     | ULID     | No     | Multi-package, event timeline        |
+| **PaymentIntent**    | Payment processing | ULID     | 15 min | Multi-gateway, refunds, capture      |
+| **StockReservation** | Inventory hold     | ULID     | 15 min | TTL auto-expire, extend, confirm     |
 
 ## Quick Actions
 
 ### Address
+
 ```typescript
 // Create address
 const addr = await Address.create({
-  userId, type: AddressType.SHIPPING,
-  fullName: 'John Doe', phone: '9876543210',
+  userId,
+  type: AddressType.SHIPPING,
+  fullName: 'John Doe',
+  phone: '9876543210',
   addressLine1: '123 Main St',
-  city: 'Mumbai', state: 'Maharashtra',
-  pincode: '400001', country: 'IN'
+  city: 'Mumbai',
+  state: 'Maharashtra',
+  pincode: '400001',
+  country: 'IN',
 });
 
 // Get full address string
@@ -31,6 +36,7 @@ await addr.isServiceable();
 ```
 
 ### Cart
+
 ```typescript
 // Get or create cart
 const cart = await Cart.findOrCreate(userId, sessionId);
@@ -41,7 +47,7 @@ await cart.addItem({
   itemType: 'product',
   quantity: 2,
   price: 999,
-  tax: 179.82
+  tax: 179.82,
 });
 
 // Update quantity
@@ -58,41 +64,45 @@ console.log(cart.total, cart.itemCount);
 ```
 
 ### Shipment
+
 ```typescript
 // Create shipment
 const shipment = await Shipment.create({
-  orderId, vendorId, userId,
+  orderId,
+  vendorId,
+  userId,
   carrier: 'Delhivery',
   shippingMethod: 'Standard',
   shippingCost: 50,
-  shippingAddress: { /* address object */ }
+  shippingAddress: {
+    /* address object */
+  },
 });
 
 // Add tracking event
 await shipment.addTrackingEvent({
   status: ShipmentStatus.IN_TRANSIT,
   location: 'Mumbai Hub',
-  description: 'In transit'
+  description: 'In transit',
 });
 
 // Update status
-await shipment.updateStatus(
-  ShipmentStatus.DELIVERED,
-  'Package delivered'
-);
+await shipment.updateStatus(ShipmentStatus.DELIVERED, 'Package delivered');
 
 // Check status
 console.log(shipment.isDelivered, shipment.isInTransit);
 ```
 
 ### PaymentIntent
+
 ```typescript
 // Create payment intent
 const payment = await PaymentIntent.create({
-  orderId, userId,
+  orderId,
+  userId,
   amount: 1000,
   currency: 'INR',
-  gateway: PaymentGateway.PHONEPE
+  gateway: PaymentGateway.PHONEPE,
 });
 
 // Check capabilities
@@ -113,18 +123,14 @@ console.log(payment.isExpired, payment.availableRefundAmount);
 ```
 
 ### StockReservation
+
 ```typescript
 // Reserve stock
-const reservation = await StockReservation.reserveStock(
-  productId,
-  quantity,
-  userId,
-  {
-    variantId: 'size-M',
-    cartId: cart._id,
-    expiryMinutes: 15
-  }
-);
+const reservation = await StockReservation.reserveStock(productId, quantity, userId, {
+  variantId: 'size-M',
+  cartId: cart._id,
+  expiryMinutes: 15,
+});
 
 // Confirm reservation
 await reservation.confirm(orderId);
@@ -139,26 +145,25 @@ await reservation.extend(10); // 10 more minutes
 console.log(reservation.isActive, reservation.timeRemaining);
 
 // Get active reservations for product
-const count = await StockReservation.getActiveReservations(
-  productId,
-  variantId
-);
+const count = await StockReservation.getActiveReservations(productId, variantId);
 ```
 
 ## Status Enums
 
 ### AddressType
+
 ```typescript
 enum AddressType {
   HOME = 'home',
   WORK = 'work',
   BILLING = 'billing',
   SHIPPING = 'shipping',
-  OTHER = 'other'
+  OTHER = 'other',
 }
 ```
 
 ### ShipmentStatus
+
 ```typescript
 enum ShipmentStatus {
   PENDING = 'pending',
@@ -169,11 +174,12 @@ enum ShipmentStatus {
   DELIVERED = 'delivered',
   FAILED = 'failed',
   RETURNED = 'returned',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 ```
 
 ### PaymentStatus
+
 ```typescript
 enum PaymentStatus {
   PENDING = 'pending',
@@ -184,29 +190,31 @@ enum PaymentStatus {
   FAILED = 'failed',
   CANCELLED = 'cancelled',
   REFUNDED = 'refunded',
-  PARTIALLY_REFUNDED = 'partially_refunded'
+  PARTIALLY_REFUNDED = 'partially_refunded',
 }
 ```
 
 ### PaymentGateway
+
 ```typescript
 enum PaymentGateway {
   PHONEPE = 'phonepe',
   RAZORPAY = 'razorpay',
   STRIPE = 'stripe',
   COD = 'cod',
-  WALLET = 'wallet'
+  WALLET = 'wallet',
 }
 ```
 
 ### ReservationStatus
+
 ```typescript
 enum ReservationStatus {
   RESERVED = 'reserved',
   CONFIRMED = 'confirmed',
   RELEASED = 'released',
   EXPIRED = 'expired',
-  CANCELLED = 'cancelled'
+  CANCELLED = 'cancelled',
 }
 ```
 
@@ -240,16 +248,16 @@ Cart.findOne({ userId, expiresAt: { $gt: new Date() } });
 Shipment.find({ userId }).sort({ createdAt: -1 });
 
 // Pending payments
-PaymentIntent.find({ 
-  userId, 
-  status: PaymentStatus.PENDING 
+PaymentIntent.find({
+  userId,
+  status: PaymentStatus.PENDING,
 });
 
 // Active reservations for product
 StockReservation.find({
   productId,
   status: ReservationStatus.RESERVED,
-  expiresAt: { $gt: new Date() }
+  expiresAt: { $gt: new Date() },
 });
 
 // Release expired reservations (cron)
@@ -258,14 +266,14 @@ await StockReservation.releaseExpired();
 
 ## Validation Rules
 
-| Field | Rule |
-|-------|------|
-| phone | `/^[0-9]{10}$/` (10 digits) |
-| pincode | `/^[0-9]{6}$/` (6 digits) |
-| quantity | min: 1 |
-| amount | min: 0 |
+| Field     | Rule                                          |
+| --------- | --------------------------------------------- |
+| phone     | `/^[0-9]{10}$/` (10 digits)                   |
+| pincode   | `/^[0-9]{6}$/` (6 digits)                     |
+| quantity  | min: 1                                        |
+| amount    | min: 0                                        |
 | expiresAt | Auto-set (7 days for cart, 15 min for others) |
-| ULID | 26 characters (time-sortable) |
+| ULID      | 26 characters (time-sortable)                 |
 
 ## Key Indexes
 
@@ -303,15 +311,15 @@ RUN_INTEGRATION=true pnpm test checkout.spec.ts
 
 ## Files
 
-| File | Lines | Purpose |
-|------|-------|---------|
-| `src/models/Address.ts` | ~170 | Address model with validation |
-| `src/models/Cart.ts` | ~330 | Cart with auto-totals |
-| `src/models/Shipment.ts` | ~310 | Shipment tracking |
-| `src/models/PaymentIntent.ts` | ~400 | Payment processing |
-| `src/models/StockReservation.ts` | ~330 | Inventory reservation |
-| `tests/checkout.spec.ts` | ~460 | Comprehensive tests |
-| `docs/CHECKOUT_MODELS.md` | ~700 | Full documentation |
+| File                             | Lines | Purpose                       |
+| -------------------------------- | ----- | ----------------------------- |
+| `src/models/Address.ts`          | ~170  | Address model with validation |
+| `src/models/Cart.ts`             | ~330  | Cart with auto-totals         |
+| `src/models/Shipment.ts`         | ~310  | Shipment tracking             |
+| `src/models/PaymentIntent.ts`    | ~400  | Payment processing            |
+| `src/models/StockReservation.ts` | ~330  | Inventory reservation         |
+| `tests/checkout.spec.ts`         | ~460  | Comprehensive tests           |
+| `docs/CHECKOUT_MODELS.md`        | ~700  | Full documentation            |
 
 ---
 

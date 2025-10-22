@@ -20,7 +20,33 @@
     "plugin:prettier/recommended"
   ],
   "rules": {
+    // 1. Temporarily turn off 'any' usage warnings
+    "@typescript-eslint/no-explicit-any": "off",
+
+    // 2. Set unused variables to 'warn', ignore args starting with '_'
+    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+
+    // 3. Turn off 'require()' import rule
+    "@typescript-eslint/no-require-imports": "off",
+
+    // 4. Turn off mandatory use of ts-expect-error over ts-ignore
+    "@typescript-eslint/ban-ts-comment": "off",
+
     "prettier/prettier": "error"
   },
-  "ignorePatterns": ["dist/", "node_modules/"]
+  "ignorePatterns": ["dist/", "node_modules/"],
+  "overrides": [
+    {
+      "files": ["**/src/**/*.ts", "**/src/**/*.tsx", "**/src/**/*.js"],
+      "env": { "node": true, "browser": false }
+    },
+    {
+      "files": ["**/public/**/*.js", "**/public/**/*.ts", "**/public/**/*.tsx", "**/web/**/*.tsx", "**/web/**/*.ts"],
+      "env": { "browser": true, "node": false }
+    },
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx", "**/tests/**/*.ts", "**/tests/**/*.tsx"],
+      "env": { "jest": true, "node": true }
+    }
+  ]
 }

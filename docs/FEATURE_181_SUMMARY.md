@@ -63,8 +63,8 @@ Implemented a flexible pricing engine that supports coupons, automatic promotion
 ```typescript
 interface IPricingRule {
   type: 'coupon' | 'promotion' | 'tiered' | 'bundle';
-  code?: string;  // For coupons (e.g., "SAVE10")
-  
+  code?: string; // For coupons (e.g., "SAVE10")
+
   applicableTo: {
     type: 'all' | 'category' | 'product' | 'vendor' | 'brand';
     categoryIds?: ObjectId[];
@@ -72,19 +72,19 @@ interface IPricingRule {
     vendorIds?: ObjectId[];
     brandIds?: ObjectId[];
   };
-  
+
   discount: {
     type: 'percentage' | 'fixed' | 'tiered';
-    value?: number;  // For percentage (0-100) or fixed amount
+    value?: number; // For percentage (0-100) or fixed amount
     tiers?: Array<{
       minQuantity: number;
       maxQuantity?: number;
       discountPercentage?: number;
       discountFixed?: number;
-      pricePerUnit?: number;  // Override price for bulk
+      pricePerUnit?: number; // Override price for bulk
     }>;
   };
-  
+
   usageLimits: {
     maxUsageTotal?: number;
     maxUsagePerUser?: number;
@@ -92,11 +92,11 @@ interface IPricingRule {
     maxDiscountAmount?: number;
     minCartValue?: number;
   };
-  
+
   stackable: boolean;
-  stackableWith?: ObjectId[];  // Whitelist of compatible rules
-  priority: number;  // 1-100, higher applies first
-  
+  stackableWith?: ObjectId[]; // Whitelist of compatible rules
+  priority: number; // 1-100, higher applies first
+
   excludeDiscountedItems: boolean;
   excludeSaleItems: boolean;
 }
@@ -123,16 +123,19 @@ interface IPricingRule {
 ### Stacking Logic (CRITICAL)
 
 **Non-Stackable Rules**:
+
 - If `stackable: false`, rule cannot combine with any other rules
 - Once a non-stackable rule applies (by priority), all subsequent rules are blocked
 - Warning generated: "Rule X cannot be stacked with other discounts"
 
 **Stackable Rules**:
+
 - If `stackable: true` with no whitelist, can combine with any other stackable rules
 - If `stackableWith` array present, can ONLY stack with rules in that whitelist
 - Bidirectional check: both rules must allow each other
 
 **Priority System**:
+
 - Rules sorted by priority (1-100, higher first)
 - Higher priority rules apply before lower priority
 - Non-stackable higher priority rule blocks lower priority rules
@@ -140,21 +143,24 @@ interface IPricingRule {
 ### Tiered Pricing (CRITICAL)
 
 **Tier Selection**:
+
 ```typescript
 // Example: Bulk discount tiers
 tiers: [
-  { minQuantity: 10, maxQuantity: 24, discountPercentage: 10 },  // 10-24 units: 10% off
-  { minQuantity: 25, maxQuantity: 49, discountPercentage: 15 },  // 25-49 units: 15% off
-  { minQuantity: 50, discountPercentage: 20 },                   // 50+ units: 20% off
-]
+  { minQuantity: 10, maxQuantity: 24, discountPercentage: 10 }, // 10-24 units: 10% off
+  { minQuantity: 25, maxQuantity: 49, discountPercentage: 15 }, // 25-49 units: 15% off
+  { minQuantity: 50, discountPercentage: 20 }, // 50+ units: 20% off
+];
 ```
 
 **Tier Types**:
+
 1. **Percentage discount**: Apply X% off to item total
 2. **Fixed discount**: Subtract ₹X from item total
 3. **Price override**: Set new price per unit (₹Y/unit)
 
 **Application**:
+
 - Each cart item evaluated separately
 - Correct tier selected based on `quantity`
 - If no tier matches (quantity too low), no discount applied
@@ -163,6 +169,7 @@ tiers: [
 ### Explanation Breakdown (CRITICAL)
 
 **Format** (per spec requirement):
+
 ```
 Subtotal: ₹21,000.00
 
@@ -179,6 +186,7 @@ Notes:
 ```
 
 **Per-Rule Explanation**:
+
 - Coupon: "Applied Coupon {CODE}: {DESCRIPTION} (-₹{AMOUNT})"
 - Promotion: "{NAME}: {DESCRIPTION} (-₹{AMOUNT})"
 - Tiered: "{PERCENTAGE}% off for {QUANTITY}+ units (-₹{AMOUNT})"
@@ -188,31 +196,37 @@ Notes:
 ### CRITICAL Tests (Per Spec)
 
 #### Stacking Rules (3 tests)
+
 1. ✅ **Multiple stackable rules**: Apply 10% promo + ₹500 coupon = ₹2,600 total discount
 2. ✅ **Non-stackable coupon blocks promo**: Only 20% exclusive coupon applies, 5% promo blocked
 3. ✅ **Whitelist enforcement**: Rule1 only stackable with Rule2, Rule3 rejected
 
 #### Tiered Pricing (3 tests)
+
 1. ✅ **Correct tier based on quantity**: 25 units → Tier 2 (15% off) applied
 2. ✅ **Price override tier**: 100 units → ₹120/unit (was ₹150), save ₹3,000
 3. ✅ **No matching tier**: 5 units (min is 10), no discount applied
 
 #### Explanation Breakdown (2 tests)
+
 1. ✅ **UI-friendly coupon explanation**: "Applied Coupon SAVE10: 10% off (-₹2100)"
 2. ✅ **Formatted breakdown**: Multi-line output with subtotal, discounts, savings, total
 
 ### Additional Tests (9 tests)
 
 #### Usage Limits (3 tests)
+
 1. ✅ **Reject exhausted coupon**: 100/100 uses, error "usage limit reached"
 2. ✅ **Enforce min cart value**: ₹21k cart < ₹50k required, error shown
 3. ✅ **Cap at maxDiscountAmount**: 50% of ₹21k = ₹10.5k capped at ₹5k
 
 #### Exclusions (2 tests)
+
 1. ✅ **Exclude already-discounted**: Only applies to non-discounted items
 2. ✅ **Exclude sale items**: Only applies to non-sale items
 
 #### Edge Cases (4 tests)
+
 1. ✅ **Empty cart**: Returns ₹0 totals, no errors
 2. ✅ **Never negative total**: Huge discount → final total = ₹0 (not negative)
 3. ✅ **Invalid coupon code**: Error "not found or expired"
@@ -274,7 +288,7 @@ const bulkItems = [
     productId: widgetId,
     sku: 'WIDGET-001',
     name: 'Widget',
-    quantity: 100,  // Qualifies for tier 3
+    quantity: 100, // Qualifies for tier 3
     unitPrice: 150,
     originalTotal: 15000,
   },
@@ -339,20 +353,16 @@ import { PricingEngine } from '../services/pricingEngine';
 
 router.post('/checkout/calculate', async (req, res) => {
   const { items, couponCodes, userId } = req.body;
-  
-  const result = await PricingEngine.evaluateCart(
-    items,
-    couponCodes,
-    userId
-  );
-  
+
+  const result = await PricingEngine.evaluateCart(items, couponCodes, userId);
+
   if (result.errors.length > 0) {
     return res.status(400).json({
       success: false,
       errors: result.errors,
     });
   }
-  
+
   res.json({
     success: true,
     data: {
@@ -371,7 +381,7 @@ router.post('/checkout/calculate', async (req, res) => {
 ```typescript
 router.post('/admin/pricing-rules', rbacGuard('admin'), async (req, res) => {
   const ruleData = req.body;
-  
+
   // Validation happens via pre-save hooks
   const rule = new PricingRule({
     ...ruleData,
@@ -382,9 +392,9 @@ router.post('/admin/pricing-rules', rbacGuard('admin'), async (req, res) => {
       currentUsageTotal: 0,
     },
   });
-  
+
   await rule.save();
-  
+
   res.json({ success: true, data: rule });
 });
 ```
@@ -467,7 +477,7 @@ db.pricingrules.createIndex({ 'applicableTo.type': 1, status: 1 });
 db.pricingrules.createIndex({ isVendorRule: 1, vendorId: 1, status: 1 });
 db.pricingrules.createIndex(
   { code: 1 },
-  { unique: true, partialFilterExpression: { status: { $in: ['active', 'scheduled'] } } }
+  { unique: true, partialFilterExpression: { status: { $in: ['active', 'scheduled'] } } },
 );
 ```
 
@@ -521,6 +531,7 @@ await PricingRule.insertMany(sampleRules);
 ## Conclusion
 
 ✅ **Feature #181 is COMPLETE** with all spec requirements met:
+
 - 17/17 tests passing (100% coverage)
 - All CRITICAL requirements implemented and tested
 - Full monorepo build passes
@@ -529,6 +540,7 @@ await PricingRule.insertMany(sampleRules);
 - Performance optimizations in place (indexed queries, atomic updates)
 
 **Next Steps** (for future iterations):
+
 1. Integrate with checkout flow (add API endpoints)
 2. Build admin UI for rule management
 3. Implement per-user usage tracking

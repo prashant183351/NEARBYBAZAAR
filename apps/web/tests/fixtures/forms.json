@@ -1,24 +1,21 @@
 [
-    {
-        "id": "test",
-        "name": "Test Form",
-        "fields": [
-            {
-                "id": "name",
-                "type": "text",
-                "label": "Name",
-                "required": true
-            },
-            {
-                "id": "color",
-                "type": "select",
-                "label": "Favorite Color",
-                "options": [
-                    "red",
-                    "blue"
-                ],
-                "required": true
-            }
-        ]
-    }
+  {
+    "id": "test",
+    "name": "Test Form",
+    "fields": [
+      {
+        "id": "name",
+        "type": "text",
+        "label": "Name",
+        "required": true
+      },
+      {
+        "id": "color",
+        "type": "select",
+        "label": "Favorite Color",
+        "options": ["red", "blue"],
+        "required": true
+      }
+    ]
+  }
 ]

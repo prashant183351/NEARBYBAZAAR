@@ -41,7 +41,9 @@ router.post('/referral/redeem', async (req, res) => {
 
     await referral.save();
 
-    res.status(200).json({ success: true, message: 'Referral redeemed successfully', reward: referral.reward });
+    res
+      .status(200)
+      .json({ success: true, message: 'Referral redeemed successfully', reward: referral.reward });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }

@@ -6,7 +6,10 @@ export default class MyDocument extends Document {
       <Html lang="en">
         <Head>
           {/* model-viewer web component for 3D/AR */}
-          <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js" />
+          <script
+            type="module"
+            src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
+          />
         </Head>
         <body>
           <Main />

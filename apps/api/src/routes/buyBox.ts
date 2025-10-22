@@ -1,6 +1,6 @@
 /**
  * Buy Box Routes - Feature #183
- * 
+ *
  * Routes for buy box calculation and admin management
  */
 
@@ -21,7 +21,7 @@ const router = Router();
 
 /**
  * GET /product/:productId
- * 
+ *
  * Get buy box winner for a specific product
  * Query params:
  * - forceRecalculate: boolean (skip cache)
@@ -31,7 +31,7 @@ router.get('/product/:productId', getBuyBoxForProduct);
 
 /**
  * POST /batch
- * 
+ *
  * Batch calculate buy boxes for multiple products
  * Body: { productIds: string[] }
  */
@@ -42,7 +42,7 @@ router.post('/batch', batchGetBuyBox);
 
 /**
  * POST /admin/override
- * 
+ *
  * Set manual buy box winner for a product
  * Body: {
  *   productId: string,
@@ -55,36 +55,36 @@ router.post(
   '/admin/override',
   // requireAuth,
   // rbacGuard('admin'),
-  setAdminBuyBoxOverride
+  setAdminBuyBoxOverride,
 );
 
 /**
  * DELETE /admin/override/:productId
- * 
+ *
  * Clear manual override for a product
  */
 router.delete(
   '/admin/override/:productId',
   // requireAuth,
   // rbacGuard('admin'),
-  clearAdminBuyBoxOverride
+  clearAdminBuyBoxOverride,
 );
 
 /**
  * POST /admin/invalidate/:productId
- * 
+ *
  * Force cache invalidation for a product's buy box
  */
 router.post(
   '/admin/invalidate/:productId',
   // requireAuth,
   // rbacGuard('admin'),
-  invalidateBuyBoxCacheEndpoint
+  invalidateBuyBoxCacheEndpoint,
 );
 
 /**
  * GET /admin/scoring-weights
- * 
+ *
  * View current scoring algorithm weights and configuration
  */
 router.get('/admin/scoring-weights', getScoringWeights);

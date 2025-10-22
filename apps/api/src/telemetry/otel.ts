@@ -13,6 +13,6 @@ const sdk = new NodeSDK({
 
 export function startOtel() {
   sdk.start();
-  // eslint-disable-next-line no-console
+
   console.log('OpenTelemetry started');
 }

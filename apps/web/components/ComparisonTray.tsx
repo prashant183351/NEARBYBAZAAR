@@ -33,7 +33,9 @@ const ComparisonTray = () => {
       ) : (
         <ul>
           {comparisonItems.map((item, index) => (
-            <li key={index}>{item.itemType}: {item.itemId}</li>
+            <li key={index}>
+              {item.itemType}: {item.itemId}
+            </li>
           ))}
         </ul>
       )}

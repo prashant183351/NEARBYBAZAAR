@@ -22,7 +22,10 @@ describe('Catalog: Category hierarchy and attributes filters', () => {
       mongo = await MongoMemoryServer.create();
       await mongoose.connect(mongo.getUri());
     } catch (err) {
-      console.warn('Skipping taxonomy tests due to MongoMemoryServer start failure:', err?.message || err);
+      console.warn(
+        'Skipping taxonomy tests due to MongoMemoryServer start failure:',
+        err?.message || err,
+      );
       // Mark suite as skipped
       // @ts-ignore
       (global as any).__SKIP_TAXONOMY__ = true;
@@ -31,7 +34,6 @@ describe('Catalog: Category hierarchy and attributes filters', () => {
 
     // Define Vendor model if not already defined
     try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
       Vendor = require('../src/models/Vendor').Vendor;
     } catch {
       const vendorSchema = new Schema({ name: String });

@@ -5,7 +5,7 @@ import {
   getVendorB2BExport,
   getAdminB2BExport,
   exportDataToCSV,
-  getVendorB2BTrends
+  getVendorB2BTrends,
 } from '../services/analytics/b2bAnalytics';
 
 const router = Router();
@@ -30,26 +30,26 @@ router.post('/analytics/web-vitals', (req, res) => {
  */
 router.get('/vendor/b2b/summary', async (req: Request, res: Response) => {
   try {
-    const vendorId = req.query.vendorId as string || 'VENDOR_ID'; // Replace with req.user.vendorId
+    const vendorId = (req.query.vendorId as string) || 'VENDOR_ID'; // Replace with req.user.vendorId
 
     if (!vendorId) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'vendorId is required' 
+      return res.status(400).json({
+        success: false,
+        error: 'vendorId is required',
       });
     }
 
-  const summary = await getVendorB2BSummary(vendorId);
+    const summary = await getVendorB2BSummary(vendorId);
 
     res.json({
       success: true,
-      data: summary
+      data: summary,
     });
   } catch (error: any) {
     console.error('Error getting vendor B2B summary:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to get B2B summary'
+      error: error.message || 'Failed to get B2B summary',
     });
   }
 });
@@ -60,13 +60,13 @@ router.get('/vendor/b2b/summary', async (req: Request, res: Response) => {
  */
 router.get('/vendor/b2b/trends', async (req: Request, res: Response) => {
   try {
-    const vendorId = req.query.vendorId as string || 'VENDOR_ID';
+    const vendorId = (req.query.vendorId as string) || 'VENDOR_ID';
     const days = parseInt(req.query.days as string) || 30;
 
     if (!vendorId) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'vendorId is required' 
+      return res.status(400).json({
+        success: false,
+        error: 'vendorId is required',
       });
     }
 
@@ -74,13 +74,13 @@ router.get('/vendor/b2b/trends', async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      data: trends
+      data: trends,
     });
   } catch (error: any) {
     console.error('Error getting vendor B2B trends:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to get B2B trends'
+      error: error.message || 'Failed to get B2B trends',
     });
   }
 });
@@ -91,15 +91,15 @@ router.get('/vendor/b2b/trends', async (req: Request, res: Response) => {
  */
 router.get('/vendor/b2b/export', async (req: Request, res: Response) => {
   try {
-    const vendorId = req.query.vendorId as string || 'VENDOR_ID';
+    const vendorId = (req.query.vendorId as string) || 'VENDOR_ID';
     const startDate = req.query.startDate ? new Date(req.query.startDate as string) : undefined;
     const endDate = req.query.endDate ? new Date(req.query.endDate as string) : undefined;
     const format = (req.query.format as string) || 'csv';
 
     if (!vendorId) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'vendorId is required' 
+      return res.status(400).json({
+        success: false,
+        error: 'vendorId is required',
       });
     }
 
@@ -108,21 +108,24 @@ router.get('/vendor/b2b/export', async (req: Request, res: Response) => {
     if (format === 'csv') {
       const csv = exportDataToCSV(exportData);
       res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', `attachment; filename=b2b_orders_${vendorId}_${Date.now()}.csv`);
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename=b2b_orders_${vendorId}_${Date.now()}.csv`,
+      );
       res.send(csv);
     } else {
       // JSON format
       res.json({
         success: true,
         data: exportData,
-        count: exportData.length
+        count: exportData.length,
       });
     }
   } catch (error: any) {
     console.error('Error exporting vendor B2B data:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to export B2B data'
+      error: error.message || 'Failed to export B2B data',
     });
   }
 });
@@ -141,13 +144,13 @@ router.get('/admin/b2b/breakdown', async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      data: breakdown
+      data: breakdown,
     });
   } catch (error: any) {
     console.error('Error getting admin B2B breakdown:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to get B2B breakdown'
+      error: error.message || 'Failed to get B2B breakdown',
     });
   }
 });
@@ -170,21 +173,24 @@ router.get('/admin/b2b/export', async (req: Request, res: Response) => {
     if (format === 'csv') {
       const csv = exportDataToCSV(exportData);
       res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', `attachment; filename=b2b_orders_platform_${Date.now()}.csv`);
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename=b2b_orders_platform_${Date.now()}.csv`,
+      );
       res.send(csv);
     } else {
       // JSON format
       res.json({
         success: true,
         data: exportData,
-        count: exportData.length
+        count: exportData.length,
       });
     }
   } catch (error: any) {
     console.error('Error exporting admin B2B data:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to export B2B data'
+      error: error.message || 'Failed to export B2B data',
     });
   }
 });
@@ -196,22 +202,22 @@ router.get('/admin/b2b/export', async (req: Request, res: Response) => {
 router.get('/admin/b2b/regions', async (_req: Request, res: Response) => {
   try {
     const { Order } = await import('../models/Order');
-    
-    const regions = await Order.distinct('region', { 
-      isBulkOrder: true, 
+
+    const regions = await Order.distinct('region', {
+      isBulkOrder: true,
       deleted: false,
-      region: { $exists: true, $ne: null }
+      region: { $exists: true, $ne: null },
     });
 
     res.json({
       success: true,
-      data: regions.sort()
+      data: regions.sort(),
     });
   } catch (error: any) {
     console.error('Error getting regions:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to get regions'
+      error: error.message || 'Failed to get regions',
     });
   }
 });
@@ -223,22 +229,22 @@ router.get('/admin/b2b/regions', async (_req: Request, res: Response) => {
 router.get('/admin/b2b/industries', async (_req: Request, res: Response) => {
   try {
     const { Order } = await import('../models/Order');
-    
-    const industries = await Order.distinct('industry', { 
-      isBulkOrder: true, 
+
+    const industries = await Order.distinct('industry', {
+      isBulkOrder: true,
       deleted: false,
-      industry: { $exists: true, $ne: null }
+      industry: { $exists: true, $ne: null },
     });
 
     res.json({
       success: true,
-      data: industries.sort()
+      data: industries.sort(),
     });
   } catch (error: any) {
     console.error('Error getting industries:', error);
     res.status(500).json({
       success: false,
-      error: error.message || 'Failed to get industries'
+      error: error.message || 'Failed to get industries',
     });
   }
 });

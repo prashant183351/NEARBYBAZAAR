@@ -11,6 +11,7 @@ Implemented a comprehensive Server SEO API endpoint that provides dynamic SEO me
 **Purpose**: Generate SEO metadata for different route types
 
 **Key Components**:
+
 - `SeoGenerator` class with route-specific metadata generation
 - `parseRoute()` function to identify route types (product, store, category, home, search, static)
 - Support for all major route patterns:
@@ -28,6 +29,7 @@ Implemented a comprehensive Server SEO API endpoint that provides dynamic SEO me
   - Alternate locale links
 
 **Features**:
+
 - Database integration with Product and Vendor models
 - Automatic 404 handling for non-existent content
 - Multi-language support (en, hi) with alternate locale URLs
@@ -44,6 +46,7 @@ Implemented a comprehensive Server SEO API endpoint that provides dynamic SEO me
 **Purpose**: Redis-based caching to reduce database queries
 
 **Key Components**:
+
 - `SeoMetadataCache` class with Redis integration
 - Cache operations:
   - `get()`: Retrieve cached metadata
@@ -61,6 +64,7 @@ Implemented a comprehensive Server SEO API endpoint that provides dynamic SEO me
   - `invalidateProduct()`, `invalidateStore()`, etc.
 
 **Features**:
+
 - Configurable TTL (default: 1 hour)
 - Per-locale caching (en, hi)
 - Graceful fallback if Redis unavailable
@@ -101,6 +105,7 @@ Implemented a comprehensive Server SEO API endpoint that provides dynamic SEO me
    - Returns: `{ enabled: true, keys: 1523, memory: 2456789 }`
 
 **Features**:
+
 - ETag support for conditional requests
 - Stale-while-revalidate strategy
 - Locale-based caching with Vary header
@@ -144,6 +149,7 @@ Implemented a comprehensive Server SEO API endpoint that provides dynamic SEO me
    - Cache isolation between route types
 
 **Features**:
+
 - MongoDB integration for realistic testing
 - Redis test instance (DB 15)
 - Cleanup between tests
@@ -183,12 +189,14 @@ Implemented a comprehensive Server SEO API endpoint that provides dynamic SEO me
 ### 1. Two-Tier Caching Strategy
 
 **Redis Cache (Server-Side)**:
+
 - 1-hour TTL
 - Reduces database queries by ~95%
 - Per-locale caching
 - Pattern-based invalidation
 
 **HTTP Cache (Client-Side)**:
+
 - ETag-based conditional requests
 - `max-age=3600` (1 hour)
 - `stale-while-revalidate=86400` (24 hours)
@@ -205,6 +213,7 @@ Implemented a comprehensive Server SEO API endpoint that provides dynamic SEO me
 ### 3. Structured Data Generation
 
 Automatically generates JSON-LD for:
+
 - **Product**: Schema.org Product with offers, brand, SKU
 - **Store**: Schema.org Store with ratings
 - **Home**: Schema.org WebSite with SearchAction
@@ -213,11 +222,13 @@ Automatically generates JSON-LD for:
 ### 4. Performance Optimization
 
 **Benchmarks**:
+
 - Without cache: ~150ms (DB queries)
 - With Redis cache: ~5-10ms
 - With HTTP 304: ~1ms (no body transfer)
 
 **Optimization Features**:
+
 - Precomputation support for popular pages
 - CDN-friendly caching headers
 - Fail-safe operation (continues without Redis)
@@ -239,6 +250,7 @@ Automatically generates JSON-LD for:
 ### Routes Integration
 
 Added to `apps/api/src/routes/index.ts`:
+
 ```typescript
 import seoRouter from './seo';
 router.use('/seo', seoRouter);
@@ -247,6 +259,7 @@ router.use('/seo', seoRouter);
 ### Package.json Script
 
 Added to `apps/api/package.json`:
+
 ```json
 "test:seo": "jest seo.spec.ts --passWithNoTests"
 ```
@@ -269,13 +282,13 @@ export const getServerSideProps = async (context) => {
       headers: {
         'If-None-Match': context.req.headers['if-none-match'] || '',
       },
-    }
+    },
   );
-  
+
   if (response.status === 304) {
     return { notModified: true };
   }
-  
+
   const seo = await response.json();
   return { props: { seo } };
 };
@@ -285,7 +298,7 @@ export const getServerSideProps = async (context) => {
 
 ```typescript
 // In Product model
-ProductSchema.post('save', async function(doc) {
+ProductSchema.post('save', async function (doc) {
   await SeoCacheInvalidation.invalidateProduct(doc.slug);
 });
 ```

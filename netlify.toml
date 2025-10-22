@@ -1,4 +1,5 @@
 # netlify.toml - build from repo root for NearbyBazaar monorepo
+<<<<<<< Updated upstream
 # Builds only the web app and publishes apps/web/.next
 
 [build]
@@ -10,5 +11,14 @@
   environment = { NODE_VERSION = "18" }
 
 # Use Netlify's Next.js plugin to support SSR, ISR, and image optimizations
+=======
+# (builds only the web app and publishes apps/web/.next)
+[build]
+  command   = "pnpm --filter @nearbybazaar/web build"
+  publish   = "apps/web/.next"
+  environment = { NODE_VERSION = "18" }
+
+# Use the official Netlify Next.js plugin to support SSR/ISR/image optimizations
+>>>>>>> Stashed changes
 [[plugins]]
   package = "@netlify/plugin-nextjs"
