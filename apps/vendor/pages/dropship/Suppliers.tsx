@@ -1,4 +1,4 @@
-import React from 'react';
+// ...existing code...
 
 const dummySuppliers = [
   { id: 's1', companyName: 'Acme Corp', status: 'active', products: 12 },

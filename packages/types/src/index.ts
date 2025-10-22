@@ -1,3 +1,15 @@
+export type FormFieldType = 'text' | 'textarea' | 'select' | 'checkbox' | 'radio';
+
+export interface FormField {
+  id: string;
+  type: FormFieldType;
+  label: string;
+  options?: string[];
+  required?: boolean;
+  maxFiles?: number;
+  maxFileSize?: number;
+  accept?: string;
+}
 export interface WholesalePriceTier {
   minQty: number;
   price: number;

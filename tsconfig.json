@@ -15,11 +15,14 @@
     "resolveJsonModule": true,
     "outDir": "dist",
     "baseUrl": ".",
+    "jsx": "react-jsx",
     "paths": {
       "@nearbybazaar/lib": ["packages/lib/src/index.ts"],
       "@nearbybazaar/lib/*": ["packages/lib/src/*"],
       "@nearbybazaar/ui": ["packages/ui/src/index.ts"],
       "@nearbybazaar/ui/*": ["packages/ui/src/*"],
+      "@nearbybazaar/types": ["packages/types/src/index.ts"],
+      "@nearbybazaar/types/*": ["packages/types/src/*"],
       "@routes/*": ["apps/api/src/routes/*"],
       "@middleware/*": ["apps/api/src/middleware/*"]
     }

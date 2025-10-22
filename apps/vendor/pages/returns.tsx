@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+// ...existing code...
 
 /**
  * STUB: Vendor Returns Management Page

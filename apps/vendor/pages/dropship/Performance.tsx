@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+// ...existing code...
 
 const dummyStats = [
   { supplier: 'Acme Corp', products: 12, sales: 1200 },

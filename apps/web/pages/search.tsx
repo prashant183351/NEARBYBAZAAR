@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+// ...existing code...
 import { useRouter } from 'next/router';
 import { SearchBar } from '../components/SearchBar';
 import { SeoHead } from '../components/SeoHead';

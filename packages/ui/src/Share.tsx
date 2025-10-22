@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import QRCode from 'qrcode.react';
+import { useState } from 'react';
+// ...existing code...
+import QRCode from 'react-qr-code';
 
 interface ShareProps {
   url: string;

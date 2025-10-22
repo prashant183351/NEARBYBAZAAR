@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react';
+import { useState, useCallback } from 'react';
+// ...existing code...
 import { useDropzone } from 'react-dropzone';
 import { applyWatermark, WatermarkOptions } from '@nearbybazaar/lib/src/watermark.client';
 

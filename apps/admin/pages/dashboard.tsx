@@ -1,4 +1,5 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
+// ...existing code...
 import KpiCard from '../components/KpiCard';
 
 const sections = [
@@ -8,14 +9,14 @@ const sections = [
 ];
 
 export default function AdminDashboard() {
-  const [active, setActive] = React.useState('strategic');
-  const [stats, setStats] = React.useState<any>(null);
-  const [loading, setLoading] = React.useState(true);
-  const [kaizenFeed, setKaizenFeed] = React.useState<any>(null);
-  const [notifications, setNotifications] = React.useState<any>(null);
+  const [active, setActive] = useState('strategic');
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [kaizenFeed, setKaizenFeed] = useState<any>(null);
+  const [notifications, setNotifications] = useState<any>(null);
 
   // Initial fetch for stats, kaizen, notifications
-  React.useEffect(() => {
+  useEffect(() => {
     setLoading(true);
     Promise.all([
       fetch('/admin/api/admin-stats').then((r) => r.json()),

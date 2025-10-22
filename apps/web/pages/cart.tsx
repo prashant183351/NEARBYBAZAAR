@@ -1,4 +1,4 @@
-import React from 'react';
+// ...existing code...
 import { useCart } from '../context/CartContext';
 
 export default function CartPage() {

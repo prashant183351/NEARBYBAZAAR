@@ -3,7 +3,8 @@
  * Shows bulk sales summary, trends, and export options
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+// ...existing code...
 
 interface B2BSummary {
   vendorId: string;

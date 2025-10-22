@@ -10,11 +10,7 @@ export function buildZodSchema(fields: FormField[]): z.ZodObject<any> {
         validator = z.string();
         if (field.required) validator = validator.min(1);
         break;
-      case 'number':
-        validator = z.number();
-        if (field.required)
-          validator = validator.refine((val) => val !== undefined && val !== null);
-        break;
+      // 'number' is not a valid FormFieldType, so skip
       case 'textarea':
         validator = z.string();
         if (field.required) validator = validator.min(1);
@@ -22,7 +18,8 @@ export function buildZodSchema(fields: FormField[]): z.ZodObject<any> {
       case 'select':
       case 'radio':
         validator = z.string();
-        if (field.options) validator = validator.refine((val) => field.options!.includes(val));
+        if (field.options)
+          validator = validator.refine((val: string) => field.options!.includes(val));
         if (field.required) validator = validator.min(1);
         break;
       case 'checkbox':

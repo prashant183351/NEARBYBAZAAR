@@ -1,4 +1,4 @@
-import React from 'react';
+// ...existing code...
 import Link from 'next/link';
 
 type Item = {

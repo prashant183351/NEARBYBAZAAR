@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+// ...existing code...
 import Script from 'next/script';
 import { getClientFingerprint } from '../../lib/fingerprint';
 import axios from 'axios';

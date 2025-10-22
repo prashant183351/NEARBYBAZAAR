@@ -11,5 +11,9 @@
     "clean": "echo 'clean lib'",
     "test": "jest",
     "test:canonical": "jest canonical.test.ts"
+  },
+  "dependencies": {
+    "@nearbybazaar/types": "workspace:*",
+    "zod": "^3.22.4"
   }
 }

@@ -91,8 +91,8 @@ describe('JSON-LD Schema Generation', () => {
       expect(schema['@type']).toBe('Product');
       expect(schema.name).toBe('Test Product');
       expect(schema.offers).toBeDefined();
-      expect(schema.offers['@type']).toBe('Offer');
-      expect(schema.offers.priceCurrency).toBe('INR');
+      expect(schema.offers && schema.offers['@type']).toBe('Offer');
+      expect(schema.offers && schema.offers.priceCurrency).toBe('INR');
     });
 
     it('should include optional fields when provided', () => {
@@ -111,11 +111,15 @@ describe('JSON-LD Schema Generation', () => {
       expect(schema.description).toBe('A complete product');
       expect(schema.sku).toBe('TEST-001');
       expect(schema.brand).toBeDefined();
-      expect(schema.brand.name).toBe('TestBrand');
+      expect(schema.brand && schema.brand.name).toBe('TestBrand');
       expect(schema.url).toBe('https://example.com/product');
       expect(Array.isArray(schema.image)).toBe(true);
-      expect(schema.image[0]).toBe('https://example.com/image.jpg');
-      expect(schema.offers.availability).toContain('InStock');
+      expect(schema.image && schema.image[0]).toBe('https://example.com/image.jpg');
+      expect(
+        schema.offers &&
+          schema.offers.availability &&
+          schema.offers.availability.includes('InStock'),
+      ).toBe(true);
     });
 
     it('should handle seller information', () => {
@@ -128,8 +132,10 @@ describe('JSON-LD Schema Generation', () => {
         },
       });
 
-      expect(schema.offers.seller).toBeDefined();
-      expect(schema.offers.seller.name).toBe('Test Vendor');
+      expect(schema.offers && schema.offers.seller).toBeDefined();
+      expect(schema.offers && schema.offers.seller && schema.offers.seller.name).toBe(
+        'Test Vendor',
+      );
     });
 
     it('should include aggregateRating', () => {
@@ -143,7 +149,7 @@ describe('JSON-LD Schema Generation', () => {
       });
 
       expect(schema.aggregateRating).toBeDefined();
-      expect(schema.aggregateRating.reviewCount).toBe(100);
+      expect(schema.aggregateRating && schema.aggregateRating.reviewCount).toBe(100);
     });
   });
 
@@ -174,7 +180,7 @@ describe('JSON-LD Schema Generation', () => {
       });
 
       expect(schema.offers).toBeDefined();
-      expect(schema.offers.priceCurrency).toBe('INR');
+      expect(schema.offers && schema.offers.priceCurrency).toBe('INR');
     });
 
     it('should include areaServed', () => {
@@ -209,7 +215,7 @@ describe('JSON-LD Schema Generation', () => {
       });
 
       expect(schema.address).toBeDefined();
-      expect(schema.address.addressLocality).toBe('Mumbai');
+      expect(schema.address && schema.address.addressLocality).toBe('Mumbai');
     });
 
     it('should include geo coordinates', () => {
@@ -222,7 +228,7 @@ describe('JSON-LD Schema Generation', () => {
       });
 
       expect(schema.geo).toBeDefined();
-      expect(schema.geo.latitude).toBe(19.076);
+      expect(schema.geo && schema.geo.latitude).toBe(19.076);
     });
 
     it('should include priceRange', () => {

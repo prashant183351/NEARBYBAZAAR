@@ -3,8 +3,9 @@
   "private": true,
   "version": "0.1.0",
   "main": "index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "echo 'build types'",
+    "build": "tsc",
     "dev": "echo 'dev types'",
     "clean": "echo 'clean types'"
   }

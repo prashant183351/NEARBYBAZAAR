@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+// ...existing code...
 
 export default function ManualERPSyncPage() {
   const [status, setStatus] = useState<'idle' | 'triggered' | 'error'>('idle');

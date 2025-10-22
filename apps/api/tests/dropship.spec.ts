@@ -419,12 +419,12 @@ describe('Dropshipping Module Tests', () => {
     });
 
     it('should sync stock from supplier', async () => {
-      const stock = await mockSupplier.syncStock('TEST-SKU');
+      const stock = await mockSupplier.syncStock();
       expect(stock).toBe(100);
     });
 
     it('should sync price from supplier', async () => {
-      const price = await mockSupplier.syncPrice('TEST-SKU');
+      const price = await mockSupplier.syncPrice();
       expect(price).toBe(9.99);
     });
 

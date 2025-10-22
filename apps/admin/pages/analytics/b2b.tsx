@@ -3,7 +3,8 @@
  * Platform-wide B2B breakdown by region, industry, and trends
  */
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+// ...existing code...
 
 interface RegionalStats {
   region: string;

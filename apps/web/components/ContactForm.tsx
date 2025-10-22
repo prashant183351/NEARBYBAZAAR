@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+// ...existing code...
 
 interface ContactFormProps {
   vendorId: string;

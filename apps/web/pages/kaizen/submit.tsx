@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+// ...existing code...
 
 export default function KaizenSubmitPage() {
   const [title, setTitle] = useState('');

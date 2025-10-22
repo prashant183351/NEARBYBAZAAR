@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
+// ...existing code...
 import { CartProvider } from '../context/CartContext';
 import { ToastProvider } from '@nearbybazaar/ui';
 

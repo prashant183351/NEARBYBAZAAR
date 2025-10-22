@@ -3,7 +3,8 @@
  * Vendor portal help section with documentation, FAQs, and training materials
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
+// ...existing code...
 import Link from 'next/link';
 
 interface FAQItem {

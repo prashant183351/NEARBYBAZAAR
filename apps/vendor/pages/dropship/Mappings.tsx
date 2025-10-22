@@ -1,4 +1,4 @@
-import React from 'react';
+// ...existing code...
 
 const dummyMappings = [
   { supplier: 'Acme Corp', supplierSku: 'A123', ourSku: 'NB-001' },

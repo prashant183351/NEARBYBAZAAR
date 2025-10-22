@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const ROLES = ['admin', 'vendor', 'user', 'guest'];
 const PERMISSIONS = [
@@ -18,7 +18,7 @@ export default function FormPermissions({
   const [permissions, setPermissions] = useState(form.permissions || {});
 
   function handleToggle(role: string, perm: string) {
-    setPermissions((p) => ({
+    setPermissions((p: typeof permissions) => ({
       ...p,
       [role]: { ...p[role], [perm]: !p[role]?.[perm] },
     }));

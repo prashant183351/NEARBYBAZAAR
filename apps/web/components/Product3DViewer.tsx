@@ -1,4 +1,4 @@
-import React from 'react';
+// ...existing code...
 
 // Use model-viewer web component (https://modelviewer.dev/)
 // You may need to add <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script> in _document.tsx or _app.tsx

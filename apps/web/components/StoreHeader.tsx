@@ -1,4 +1,4 @@
-import React from 'react';
+// ...existing code...
 import { ProBadge } from './ProBadge';
 
 type StoreHeaderProps = {
