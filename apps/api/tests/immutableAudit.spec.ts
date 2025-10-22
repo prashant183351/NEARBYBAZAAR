@@ -1,5 +1,5 @@
 import {
-  AuditLog,
+  ImmutableAudit,
   verifyAuditChain,
   logAuditEvent,
   getLatestAuditHash,
@@ -22,7 +22,7 @@ describe('ImmutableAudit', () => {
   });
 
   afterEach(async () => {
-    await AuditLog.deleteMany({});
+    await ImmutableAudit.deleteMany({});
   });
 
   it('should create audit log with hash chain', async () => {
@@ -67,9 +67,9 @@ describe('ImmutableAudit', () => {
       resource: 'auth',
     });
 
-    await expect(AuditLog.findOneAndUpdate({ _id: log._id }, { action: 'logout' })).rejects.toThrow(
-      'Audit logs cannot be updated',
-    );
+    await expect(
+      ImmutableAudit.findOneAndUpdate({ _id: log._id }, { action: 'logout' }),
+    ).rejects.toThrow('Audit logs cannot be updated');
   });
 
   it('should prevent deletion', async () => {
@@ -79,7 +79,7 @@ describe('ImmutableAudit', () => {
       resource: 'auth',
     });
 
-    await expect(AuditLog.findOneAndDelete({ _id: log._id })).rejects.toThrow(
+    await expect(ImmutableAudit.findOneAndDelete({ _id: log._id })).rejects.toThrow(
       'Audit logs cannot be deleted',
     );
   });
@@ -99,7 +99,10 @@ describe('ImmutableAudit', () => {
     await logAuditEvent({ userId: 'u2', action: 'a2', resource: 'r2' });
 
     // Directly modify DB (simulating tampering)
-    await AuditLog.collection.updateOne({ _id: log1._id as any }, { $set: { action: 'tampered' } });
+    await ImmutableAudit.collection.updateOne(
+      { _id: log1._id as any },
+      { $set: { action: 'tampered' } },
+    );
 
     const result = await verifyAuditChain();
     expect(result.valid).toBe(false);
@@ -112,7 +115,7 @@ describe('ImmutableAudit', () => {
     const log2 = await logAuditEvent({ userId: 'u2', action: 'a2', resource: 'r2' });
 
     // Break the chain by modifying prevHash
-    await AuditLog.collection.updateOne(
+    await ImmutableAudit.collection.updateOne(
       { _id: log2._id as any },
       { $set: { prevHash: 'invalid' } },
     );

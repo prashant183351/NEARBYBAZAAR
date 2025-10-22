@@ -1,8 +1,8 @@
 if (!self.define) {
   let e,
     s = {};
-  const n = (n, t) => (
-    (n = new URL(n + '.js', t).href),
+  const n = (n, a) => (
+    (n = new URL(n + '.js', a).href),
     s[n] ||
       new Promise((s) => {
         if ('document' in self) {
@@ -15,13 +15,13 @@ if (!self.define) {
         return e;
       })
   );
-  self.define = (t, i) => {
+  self.define = (a, t) => {
     const c = e || ('document' in self ? document.currentScript.src : '') || location.href;
     if (s[c]) return;
-    let a = {};
+    let i = {};
     const r = (e) => n(e, c),
-      o = { module: { uri: c }, exports: a, require: r };
-    s[c] = Promise.all(t.map((e) => o[e] || r(e))).then((e) => (i(...e), a));
+      o = { module: { uri: c }, exports: i, require: r };
+    s[c] = Promise.all(a.map((e) => o[e] || r(e))).then((e) => (t(...e), i));
   };
 }
 define(['./workbox-01fd22c6'], function (e) {
@@ -32,14 +32,15 @@ define(['./workbox-01fd22c6'], function (e) {
     e.precacheAndRoute(
       [
         {
-          url: '/_next/static/TDx_i9FeOCXGz4_2NY3OS/_buildManifest.js',
-          revision: '780c8359addc54e06e1877c0fcfb4196',
+          url: '/_next/static/_geS53F-2hZyJgzN3D5W8/_buildManifest.js',
+          revision: 'cb3fa37bd31e76f59e943c6ac7c2074d',
         },
         {
-          url: '/_next/static/TDx_i9FeOCXGz4_2NY3OS/_ssgManifest.js',
+          url: '/_next/static/_geS53F-2hZyJgzN3D5W8/_ssgManifest.js',
           revision: 'b6652df95db52feb4daf4eca35380933',
         },
         { url: '/_next/static/chunks/12-d2c0f104336b97f5.js', revision: 'd2c0f104336b97f5' },
+        { url: '/_next/static/chunks/532-afe4001028092c19.js', revision: 'afe4001028092c19' },
         { url: '/_next/static/chunks/framework-8051a8b17472378c.js', revision: '8051a8b17472378c' },
         { url: '/_next/static/chunks/main-12c642f9623cffef.js', revision: '12c642f9623cffef' },
         {
@@ -49,6 +50,30 @@ define(['./workbox-01fd22c6'], function (e) {
         {
           url: '/_next/static/chunks/pages/_error-a96a6d1e5847d9c0.js',
           revision: 'a96a6d1e5847d9c0',
+        },
+        {
+          url: '/_next/static/chunks/pages/account/actions-538d40a5018350d3.js',
+          revision: '538d40a5018350d3',
+        },
+        {
+          url: '/_next/static/chunks/pages/analytics/b2b-8062e6b0d5fa598f.js',
+          revision: '8062e6b0d5fa598f',
+        },
+        {
+          url: '/_next/static/chunks/pages/campaigns-3bb43147c85a8dfb.js',
+          revision: '3bb43147c85a8dfb',
+        },
+        {
+          url: '/_next/static/chunks/pages/campaigns/create-eff7342fcde920e4.js',
+          revision: 'eff7342fcde920e4',
+        },
+        {
+          url: '/_next/static/chunks/pages/dashboard/recommendations-9d097a055f8439e6.js',
+          revision: '9d097a055f8439e6',
+        },
+        {
+          url: '/_next/static/chunks/pages/dashboard/reputation-bee35e3932fb2baf.js',
+          revision: 'bee35e3932fb2baf',
         },
         {
           url: '/_next/static/chunks/pages/dropship/Mappings-720f799b65097fb2.js',
@@ -66,7 +91,11 @@ define(['./workbox-01fd22c6'], function (e) {
           url: '/_next/static/chunks/pages/dropship/__tests__/dropship.smoke.test-2b444c535253929d.js',
           revision: '2b444c535253929d',
         },
-        { url: '/_next/static/chunks/pages/gst-b4a6d7bdab182527.js', revision: 'b4a6d7bdab182527' },
+        { url: '/_next/static/chunks/pages/gst-b0c9e7d5cc3b9384.js', revision: 'b0c9e7d5cc3b9384' },
+        {
+          url: '/_next/static/chunks/pages/help/b2b-d593d74ed9d7031a.js',
+          revision: 'd593d74ed9d7031a',
+        },
         {
           url: '/_next/static/chunks/pages/index-7bfdc12cca64f440.js',
           revision: '7bfdc12cca64f440',
@@ -84,8 +113,8 @@ define(['./workbox-01fd22c6'], function (e) {
           revision: '58f646c0b4f7918b',
         },
         {
-          url: '/_next/static/chunks/pages/products/%5Bid%5D-b39bd2065f679b8b.js',
-          revision: 'b39bd2065f679b8b',
+          url: '/_next/static/chunks/pages/products/%5Bid%5D-b0b3a1e3809a5a37.js',
+          revision: 'b0b3a1e3809a5a37',
         },
         {
           url: '/_next/static/chunks/pages/returns-04e3c93e5dcbe498.js',
@@ -104,7 +133,7 @@ define(['./workbox-01fd22c6'], function (e) {
         { url: '/_next/static/css/111300f51b960d06.css', revision: '111300f51b960d06' },
         { url: '/icon-192.png', revision: 'd41d8cd98f00b204e9800998ecf8427e' },
         { url: '/icon-512.png', revision: 'd41d8cd98f00b204e9800998ecf8427e' },
-        { url: '/manifest.json', revision: '8ff7f8c4d5c3354f1c0e165a717a35b4' },
+        { url: '/manifest.json', revision: '6399f519cbaa2ef13d02a5442128a361' },
       ],
       { ignoreURLParametersMatching: [] },
     ),
@@ -115,7 +144,7 @@ define(['./workbox-01fd22c6'], function (e) {
         cacheName: 'start-url',
         plugins: [
           {
-            cacheWillUpdate: async ({ request: e, response: s, event: n, state: t }) =>
+            cacheWillUpdate: async ({ request: e, response: s, event: n, state: a }) =>
               s && 'opaqueredirect' === s.type
                 ? new Response(s.body, { status: 200, statusText: 'OK', headers: s.headers })
                 : s,

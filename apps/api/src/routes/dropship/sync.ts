@@ -15,7 +15,7 @@ const triggerSyncSchema = z.object({
  */
 router.post('/trigger', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
     const { userId, userType } = req.user;
 
     // Validate request body
@@ -38,9 +38,11 @@ router.post('/trigger', async (req, res) => {
     });
   } catch (error: unknown) {
     if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
-      return res.status(400).json({ error: 'Validation failed', details: (error as z.ZodError).errors });
+      return res
+        .status(400)
+        .json({ error: 'Validation failed', details: (error as z.ZodError).errors });
     }
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });
@@ -66,7 +68,7 @@ router.get('/status/:jobId', async (req, res) => {
       },
     });
   } catch (error: unknown) {
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });
@@ -77,7 +79,7 @@ router.get('/status/:jobId', async (req, res) => {
  */
 router.get('/history', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
     const { userId, userType } = req.user;
     const { supplierId, page = 1, limit = 20 } = req.query;
 
@@ -97,7 +99,7 @@ router.get('/history', async (req, res) => {
       limit: Number(limit),
     });
   } catch (error: unknown) {
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });
@@ -108,7 +110,7 @@ router.get('/history', async (req, res) => {
  */
 router.get('/schedule/:supplierId', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
     const { userId, userType } = req.user;
 
     // TODO: Get supplier sync schedule from Supplier model
@@ -122,7 +124,7 @@ router.get('/schedule/:supplierId', async (req, res) => {
       nextSync: null,
     });
   } catch (error: unknown) {
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });
@@ -133,7 +135,7 @@ router.get('/schedule/:supplierId', async (req, res) => {
  */
 router.put('/schedule/:supplierId', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
     const { userId, userType } = req.user;
     const { schedule, enabled } = req.body;
 
@@ -152,7 +154,7 @@ router.put('/schedule/:supplierId', async (req, res) => {
       message: 'Schedule updated successfully',
     });
   } catch (error: unknown) {
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });

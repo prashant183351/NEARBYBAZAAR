@@ -21,47 +21,53 @@ describe('JSON-LD Schema Generation', () => {
         'Product name is required',
         'Product price is required',
       ]);
-      expect(validateProductSchema({ name: 'X' })).toEqual([
-        'Product price is required',
-      ]);
-      expect(validateProductSchema({ price: 1 })).toEqual([
-        'Product name is required',
-      ]);
+      expect(validateProductSchema({ name: 'X' })).toEqual(['Product price is required']);
+      expect(validateProductSchema({ price: 1 })).toEqual(['Product name is required']);
     });
     it('validateServiceSchema returns errors for missing fields', () => {
       expect(validateServiceSchema({})).toEqual([
         'Service name is required',
         'Service provider name is required',
       ]);
-      expect(validateServiceSchema({ name: 'X' })).toEqual([
-        'Service provider name is required',
-      ]);
+      expect(validateServiceSchema({ name: 'X' })).toEqual(['Service provider name is required']);
       expect(validateServiceSchema({ provider: { name: 'Y' } })).toEqual([
         'Service name is required',
       ]);
     });
     it('validateLocalBusinessSchema returns errors for missing fields', () => {
-      expect(validateLocalBusinessSchema({})).toEqual([
-        'Business name is required',
-      ]);
+      expect(validateLocalBusinessSchema({})).toEqual(['Business name is required']);
     });
   });
 
   describe('Edge cases for optional/empty fields', () => {
     it('generateProductSchema omits aggregateRating if reviewCount is 0', () => {
-      const schema = generateProductSchema({ name: 'P', price: 1, aggregateRating: { ratingValue: 4.5, reviewCount: 0 } });
+      const schema = generateProductSchema({
+        name: 'P',
+        price: 1,
+        aggregateRating: { ratingValue: 4.5, reviewCount: 0 },
+      });
       expect(schema.aggregateRating).toBeUndefined();
     });
     it('generateServiceSchema omits aggregateRating if reviewCount is 0', () => {
-      const schema = generateServiceSchema({ name: 'S', provider: { name: 'P' }, aggregateRating: { ratingValue: 4.5, reviewCount: 0 } });
+      const schema = generateServiceSchema({
+        name: 'S',
+        provider: { name: 'P' },
+        aggregateRating: { ratingValue: 4.5, reviewCount: 0 },
+      });
       expect(schema.aggregateRating).toBeUndefined();
     });
     it('generateLocalBusinessSchema omits aggregateRating if reviewCount is 0', () => {
-      const schema = generateLocalBusinessSchema({ name: 'B', aggregateRating: { ratingValue: 4.5, reviewCount: 0 } });
+      const schema = generateLocalBusinessSchema({
+        name: 'B',
+        aggregateRating: { ratingValue: 4.5, reviewCount: 0 },
+      });
       expect(schema.aggregateRating).toBeUndefined();
     });
     it('generateOrganizationSchema includes sameAs if present and non-empty', () => {
-      const schema = generateOrganizationSchema({ name: 'Org', sameAs: ['https://twitter.com/org'] });
+      const schema = generateOrganizationSchema({
+        name: 'Org',
+        sameAs: ['https://twitter.com/org'],
+      });
       expect(schema.sameAs).toEqual(['https://twitter.com/org']);
     });
     it('generateOrganizationSchema omits sameAs if empty', () => {

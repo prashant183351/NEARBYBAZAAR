@@ -49,7 +49,7 @@ const updateSupplierSchema = createSupplierSchema.partial();
  */
 router.post('/', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
     const { userId, userType } = req.user;
 
     // Validate request body
@@ -74,9 +74,11 @@ router.post('/', async (req, res) => {
     res.status(201).json({ supplier });
   } catch (error: unknown) {
     if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
-      return res.status(400).json({ error: 'Validation failed', details: (error as z.ZodError).errors });
+      return res
+        .status(400)
+        .json({ error: 'Validation failed', details: (error as z.ZodError).errors });
     }
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });
@@ -87,11 +89,11 @@ router.post('/', async (req, res) => {
  */
 router.get('/', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
-  const { userId, userType } = req.user;
-  const { page = 1, limit = 20, status, search } = req.query;
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    const { userId, userType } = req.user;
+    const { page = 1, limit = 20, status, search } = req.query;
 
-  const filter: Record<string, unknown> = {};
+    const filter: Record<string, unknown> = {};
 
     // RBAC: Vendors can only see their own suppliers
     if (userType === 'vendor') {
@@ -130,7 +132,7 @@ router.get('/', async (req, res) => {
       pages: Math.ceil(total / Number(limit)),
     });
   } catch (error: unknown) {
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });
@@ -141,7 +143,7 @@ router.get('/', async (req, res) => {
  */
 router.get('/:id', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
     const { userId, userType } = req.user;
 
     const supplier = await SupplierModel.findById(req.params.id).select('-apiKey -webhookSecret'); // Don't expose secrets in GET
@@ -157,7 +159,7 @@ router.get('/:id', async (req, res) => {
 
     res.json({ supplier });
   } catch (error: unknown) {
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });
@@ -168,7 +170,7 @@ router.get('/:id', async (req, res) => {
  */
 router.put('/:id', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
     const { userId, userType } = req.user;
 
     // Validate request body
@@ -191,9 +193,11 @@ router.put('/:id', async (req, res) => {
     res.json({ supplier });
   } catch (error: unknown) {
     if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
-      return res.status(400).json({ error: 'Validation failed', details: (error as z.ZodError).errors });
+      return res
+        .status(400)
+        .json({ error: 'Validation failed', details: (error as z.ZodError).errors });
     }
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });
@@ -204,7 +208,7 @@ router.put('/:id', async (req, res) => {
  */
 router.put('/:id/status', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
     const { userType } = req.user;
 
     // RBAC: Only admins can change status to active/suspended
@@ -225,7 +229,7 @@ router.put('/:id/status', async (req, res) => {
 
     res.json({ supplier });
   } catch (error: unknown) {
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });
@@ -236,7 +240,7 @@ router.put('/:id/status', async (req, res) => {
  */
 router.delete('/:id', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
     const { userId, userType } = req.user;
 
     const supplier = await SupplierModel.findById(req.params.id);
@@ -255,7 +259,7 @@ router.delete('/:id', async (req, res) => {
 
     res.json({ message: 'Supplier deactivated successfully' });
   } catch (error: unknown) {
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });
@@ -266,7 +270,7 @@ router.delete('/:id', async (req, res) => {
  */
 router.get('/:id/stats', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
     const { userId, userType } = req.user;
 
     const supplier = await SupplierModel.findById(req.params.id);
@@ -293,7 +297,7 @@ router.get('/:id/stats', async (req, res) => {
 
     res.json({ stats });
   } catch (error: unknown) {
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });

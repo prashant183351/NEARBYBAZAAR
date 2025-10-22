@@ -36,17 +36,17 @@ Sample ERP import/export files are available in `/samples/erp/` for testing and 
 
 - **orders_sample.csv** - Columns: `id`, `customer_name`, `customer_email`, `sku`, `quantity`, `total`, `created_at` - Example:
   `csv
-          id,customer_name,customer_email,sku,quantity,total,created_at
-          1,Alice,alice@example.com,SKU1,2,100,2025-10-19T10:00:00Z
-          2,Bob,bob@example.com,SKU2,1,50,2025-10-19T11:00:00Z
-          `
+      id,customer_name,customer_email,sku,quantity,total,created_at
+      1,Alice,alice@example.com,SKU1,2,100,2025-10-19T10:00:00Z
+      2,Bob,bob@example.com,SKU2,1,50,2025-10-19T11:00:00Z
+      `
 
 - **inventory_sample.csv** - Columns: `sku`, `quantity`, `updated_at` - Example:
   `csv
-          sku,quantity,updated_at
-          SKU1,10,2025-10-19T12:00:00Z
-          SKU2,5,2025-10-19T12:05:00Z
-          `
+      sku,quantity,updated_at
+      SKU1,10,2025-10-19T12:00:00Z
+      SKU2,5,2025-10-19T12:05:00Z
+      `
 
 - **orders_sample.xlsx** / **inventory_sample.xlsx** - XLSX files with similar columns as above. Generate real XLSX files using the ERP export logic or Excel for testing.
 

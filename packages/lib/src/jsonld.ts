@@ -1,3 +1,43 @@
+/**
+ * Generate Product schema for product offerings
+ */
+export function generateProductSchema(input: ProductSchemaInput): ProductSchema {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: input.name,
+    description: input.description,
+    image: Array.isArray(input.image) ? input.image : input.image ? [input.image] : undefined,
+    brand: input.brand ? { '@type': 'Brand', name: input.brand } : undefined,
+    sku: input.sku,
+    url: input.url,
+    offers:
+      input.price !== undefined
+        ? {
+            '@type': 'Offer',
+            price: input.price.toString(),
+            priceCurrency: input.priceCurrency || 'INR',
+            availability: input.availability
+              ? `https://schema.org/${input.availability}`
+              : 'https://schema.org/InStock',
+            url: input.url,
+            seller: input.seller
+              ? { '@type': 'Organization', name: input.seller.name, url: input.seller.url }
+              : undefined,
+          }
+        : undefined,
+    aggregateRating:
+      input.aggregateRating && input.aggregateRating.reviewCount > 0
+        ? {
+            '@type': 'AggregateRating',
+            ratingValue: input.aggregateRating.ratingValue.toString(),
+            reviewCount: input.aggregateRating.reviewCount,
+            bestRating: '5',
+            worstRating: '1',
+          }
+        : undefined,
+  };
+}
 export interface ProductSchema {
   '@context': string;
   '@type': 'Product';
@@ -369,7 +409,6 @@ export interface LocalBusinessSchema {
   }>;
 }
 
-
 /**
  * Generate Service schema for service offerings
  */
@@ -461,7 +500,7 @@ export function generateLocalBusinessSchema(input: LocalBusinessSchemaInput): Lo
 
   // Opening hours
   if (input.openingHours && input.openingHours.length > 0) {
-  schema.openingHoursSpecification = input.openingHours.map((hours: string) => ({
+    schema.openingHoursSpecification = input.openingHours.map((hours: string) => ({
       '@type': 'OpeningHoursSpecification',
       dayOfWeek: hours.split(' ')[0], // e.g., "Mo-Fr"
       opens: hours.split(' ')[1]?.split('-')[0], // e.g., "09:00"

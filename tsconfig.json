@@ -24,5 +24,18 @@
       "@middleware/*": ["apps/api/src/middleware/*"]
     }
   },
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist"],
+  "include": [
+    "apps/web/**/*",
+    "apps/vendor/**/*",
+    "apps/admin/**/*",
+    "apps/api/**/*",
+    "packages/lib/**/*",
+    "packages/ui/**/*",
+    "packages/types/**/*",
+    "packages/sdk/sample.ts",
+    "packages/ui/src/index.tsx",
+    "playwright.config.ts",
+    "scripts/*.js"
+  ]
 }

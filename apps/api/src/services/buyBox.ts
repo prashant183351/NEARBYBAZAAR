@@ -258,19 +258,6 @@ export const calculateOfferScore = (
  *
  * @param vendorId - Vendor ID to fetch metrics for
  */
-export const fetchVendorMetrics = async (): Promise<VendorMetrics> => {
-  // TODO: Replace with actual Vendor model query
-  // const vendor = await Vendor.findById(vendorId);
-  // const metrics = await OrderMetrics.aggregate([...]);
-
-  // Mock data for now (would come from Vendor model + analytics)
-  return {
-    rating: 4.2, // Default: good but not perfect
-    totalReviews: 150,
-    cancellationRate: 0.02, // 2% cancellation rate
-    orderDefectRate: 0.01, // 1% defect rate
-  };
-};
 
 /**
  * Check if admin has set a manual override for this product
@@ -482,7 +469,7 @@ export const calculateBuyBox = async (
 
   const scoredOffers = await Promise.all(
     offers.map(async (offer) => {
-      const vendorMetrics = await fetchVendorMetrics();
+      const vendorMetrics = await fetchVendorMetrics(offer.vendorId);
       const breakdown = calculateOfferScore(offer, vendorMetrics, minPrice, maxPrice);
 
       return {
@@ -563,6 +550,20 @@ export const invalidateBuyBoxCache = async (productId: Types.ObjectId): Promise<
   } catch (error) {
     console.error('Error invalidating buy box cache:', error);
   }
+};
+
+export const fetchVendorMetrics = async (_vendorId?: Types.ObjectId): Promise<VendorMetrics> => {
+  // TODO: Replace with actual Vendor model query
+  // const vendor = await Vendor.findById(vendorId);
+  // const metrics = await OrderMetrics.aggregate([...]);
+
+  // Mock data for now (would come from Vendor model + analytics)
+  return {
+    rating: 4.2, // Default: good but not perfect
+    totalReviews: 150,
+    cancellationRate: 0.02, // 2% cancellation rate
+    orderDefectRate: 0.01, // 1% defect rate
+  };
 };
 
 /**

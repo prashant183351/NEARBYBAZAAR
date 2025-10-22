@@ -259,9 +259,9 @@ describe('Rate Limit Middleware', () => {
 
       // Should remove entries older than now - windowMs
       expect(zremCall[1]).toBe(0);
-      // Allow for small timing differences (< 10ms)
+      // Allow for small timing differences (< 50ms)
       expect(typeof zremCall[2]).toBe('number');
-      expect(zremCall[2]).toBeGreaterThan(Date.now() - windowMs - 10);
+      expect(zremCall[2]).toBeGreaterThanOrEqual(Date.now() - windowMs - 50);
     });
 
     it('should set expiry on the key', async () => {

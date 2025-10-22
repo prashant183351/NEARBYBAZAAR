@@ -190,6 +190,7 @@ pnpm test:e2e:debug
   ```
 
 - **Use page object pattern for complex flows:**
+
   ```typescript
   // tests/e2e/fixtures/pages/product.page.ts
   export class ProductPage {

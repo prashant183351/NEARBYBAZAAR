@@ -33,7 +33,6 @@ export default function SearchPage() {
     if (query) params.set('q', query);
     if (selectedTypes.length !== types.length) params.set('type', selectedTypes.join(','));
     router.replace({ pathname: '/search', query: params.toString() }, undefined, { shallow: true });
-     
   }, [query, selectedTypes]);
 
   const filtered = sampleData.filter(

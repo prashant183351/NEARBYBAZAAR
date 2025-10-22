@@ -22,9 +22,10 @@ describe('Catalog: Category hierarchy and attributes filters', () => {
       mongo = await MongoMemoryServer.create();
       await mongoose.connect(mongo.getUri());
     } catch (err) {
+      const error = err as Error;
       console.warn(
         'Skipping taxonomy tests due to MongoMemoryServer start failure:',
-        err?.message || err,
+        error.message || error,
       );
       // Mark suite as skipped
       // @ts-ignore

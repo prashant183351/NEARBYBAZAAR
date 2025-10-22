@@ -35,7 +35,7 @@ router.use('/sync', syncRouter);
  */
 router.get('/', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
     const { userId, userType } = req.user;
 
     // RBAC: Only vendors and admins
@@ -63,7 +63,7 @@ router.get('/', async (req, res) => {
 
     res.json({ stats });
   } catch (error: unknown) {
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });

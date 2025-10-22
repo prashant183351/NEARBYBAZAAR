@@ -1,4 +1,3 @@
-
 import { applyWatermark } from '../src/watermark.client';
 
 describe.skip('applyWatermark', () => {
@@ -49,12 +48,21 @@ describe.skip('applyWatermark', () => {
   });
 
   it('should apply watermark text', async () => {
-    const canvas = await applyWatermark('fake.png', { text: 'Test', font: '20px Arial', color: '#fff', position: 'center' });
+    const canvas = await applyWatermark('fake.png', {
+      text: 'Test',
+      font: '20px Arial',
+      color: '#fff',
+      position: 'center',
+    });
     expect(canvas).toBeDefined();
   });
 
   it('should apply watermark image', async () => {
-    const canvas = await applyWatermark('fake.png', { imageSrc: 'wm.png', opacity: 0.8, position: 'top-left' });
+    const canvas = await applyWatermark('fake.png', {
+      imageSrc: 'wm.png',
+      opacity: 0.8,
+      position: 'top-left',
+    });
     expect(canvas).toBeDefined();
   });
 

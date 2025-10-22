@@ -42,7 +42,7 @@ const bulkMappingSchema = z.object({
  */
 router.post('/', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
     const { userId, userType } = req.user;
 
     // Validate request body
@@ -86,9 +86,11 @@ router.post('/', async (req, res) => {
     res.status(201).json({ mapping });
   } catch (error: unknown) {
     if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
-      return res.status(400).json({ error: 'Validation failed', details: (error as z.ZodError).errors });
+      return res
+        .status(400)
+        .json({ error: 'Validation failed', details: (error as z.ZodError).errors });
     }
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });
@@ -99,7 +101,7 @@ router.post('/', async (req, res) => {
  */
 router.post('/bulk', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
     const { userId, userType } = req.user;
 
     // Validate request body
@@ -141,10 +143,12 @@ router.post('/bulk', async (req, res) => {
           productId: new Types.ObjectId(item.productId),
           status: 'active',
         });
-
-        results.created.push(mapping);
+        // Push plain object to results.created to satisfy Record<string, unknown>
+        results.created.push(
+          mapping.toObject({ depopulate: true, versionKey: false }) as Record<string, unknown>,
+        );
       } catch (error: unknown) {
-        const message = (error instanceof Error) ? error.message : String(error);
+        const message = error instanceof Error ? error.message : String(error);
         results.errors.push({ supplierSku: item.supplierSku, error: message });
       }
     }
@@ -152,9 +156,11 @@ router.post('/bulk', async (req, res) => {
     res.status(201).json(results);
   } catch (error: unknown) {
     if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
-      return res.status(400).json({ error: 'Validation failed', details: (error as z.ZodError).errors });
+      return res
+        .status(400)
+        .json({ error: 'Validation failed', details: (error as z.ZodError).errors });
     }
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });
@@ -165,11 +171,11 @@ router.post('/bulk', async (req, res) => {
  */
 router.get('/', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
-  const { userId, userType } = req.user;
-  const { page = 1, limit = 20, supplierId, status, search } = req.query;
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    const { userId, userType } = req.user;
+    const { page = 1, limit = 20, supplierId, status, search } = req.query;
 
-  const filter: Record<string, unknown> = {};
+    const filter: Record<string, unknown> = {};
 
     // RBAC: Vendors can only see their own mappings
     if (userType === 'vendor') {
@@ -213,7 +219,7 @@ router.get('/', async (req, res) => {
       pages: Math.ceil(total / Number(limit)),
     });
   } catch (error: unknown) {
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });
@@ -224,7 +230,7 @@ router.get('/', async (req, res) => {
  */
 router.get('/:id', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
     const { userId, userType } = req.user;
 
     const mapping = await SkuMappingModel.findById(req.params.id)
@@ -242,7 +248,7 @@ router.get('/:id', async (req, res) => {
 
     res.json({ mapping });
   } catch (error: unknown) {
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });
@@ -253,7 +259,7 @@ router.get('/:id', async (req, res) => {
  */
 router.put('/:id', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
     const { userId, userType } = req.user;
 
     // Validate request body
@@ -277,9 +283,11 @@ router.put('/:id', async (req, res) => {
     res.json({ mapping });
   } catch (error: unknown) {
     if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
-      return res.status(400).json({ error: 'Validation failed', details: (error as z.ZodError).errors });
+      return res
+        .status(400)
+        .json({ error: 'Validation failed', details: (error as z.ZodError).errors });
     }
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });
@@ -290,7 +298,7 @@ router.put('/:id', async (req, res) => {
  */
 router.delete('/:id', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
     const { userId, userType } = req.user;
 
     const mapping = await SkuMappingModel.findById(req.params.id);
@@ -310,7 +318,7 @@ router.delete('/:id', async (req, res) => {
 
     res.json({ message: 'Mapping deactivated successfully' });
   } catch (error: unknown) {
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });
@@ -321,7 +329,7 @@ router.delete('/:id', async (req, res) => {
  */
 router.get('/resolve/:supplierSku', async (req, res) => {
   try {
-  // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
+    // @ts-expect-error: req.user is injected by auth middleware and not typed in Express.Request
     const { userId, userType } = req.user;
     const { supplierId } = req.query;
 
@@ -348,7 +356,7 @@ router.get('/resolve/:supplierSku', async (req, res) => {
 
     res.json({ mapping });
   } catch (error: unknown) {
-    const message = (error instanceof Error) ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
   }
 });
