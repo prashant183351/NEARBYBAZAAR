@@ -27,22 +27,8 @@ jest.mock('../src/models/Order', () => ({
   __esModule: true,
   Order: Object.assign(jest.fn(), {
     find: (...args) => {
-      const data = mockFind(...args);
-      // Return a chainable object with .populate and .sort, and .exec always returns an array
-      return {
-        populate: function () {
-          return this;
-        },
-        sort: function () {
-          return this;
-        },
-        exec: function () {
-          // Always return an array (even if data is undefined/null)
-          if (Array.isArray(data)) return Promise.resolve(data);
-          if (data == null) return Promise.resolve([]);
-          return Promise.resolve([data]);
-        },
-      };
+      // The real code does not call .exec(), so just return the array directly
+      return mockFind(...args);
     },
   }),
 }));
