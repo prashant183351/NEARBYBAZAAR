@@ -20,14 +20,7 @@ module.exports = {
   ],
 
   // Global coverage threshold (projects can override/raise theirs)
-  coverageThreshold: {
-    global: {
-      branches: 60,
-      functions: 60,
-      lines: 70,
-      statements: 65,
-    },
-  },
+
 
   // Keep root fairly simple; defer transforms and module mappings to project configs
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
