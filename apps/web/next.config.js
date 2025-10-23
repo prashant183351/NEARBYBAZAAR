@@ -14,4 +14,7 @@ module.exports = withPWA({
   images: {
     unoptimized: true,
   },
+  experimental: {
+    outputFileTracing: false,
+  },
 });

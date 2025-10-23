@@ -27,29 +27,23 @@ jest.mock('../src/models/Order', () => ({
   __esModule: true,
   Order: Object.assign(jest.fn(), {
     find: (...args) => {
-      // Return a chainable object with .populate and .sort, both returning 'this', and valueOf returns the array
-      const chain = {
+      // Return an object with .populate and .sort that returns a Promise resolving to the array
+      return {
         populate() {
           return this;
         },
         sort() {
           return this;
         },
-        // When used as a value, return the array
-        valueOf() {
-          return mockFind(...args);
+        then(resolve) {
+          // Support await: await Order.find(...).populate().sort()
+          return Promise.resolve(mockFind(...args)).then(resolve);
         },
-        // When spread or iterated, return the array
-        [Symbol.iterator]: function* () {
-          const arr = mockFind(...args) || [];
-          for (const item of arr) yield item;
-        },
-        // When accessed as an array, return the array
-        toJSON() {
-          return mockFind(...args);
+        catch() {
+          // For completeness, allow .catch chaining
+          return this;
         },
       };
-      return chain;
     },
   }),
 }));

@@ -42,3 +42,6 @@ playwright/.cache/
 tmp/
 temp/
 *.tsbuildinfo
+
+# Local Netlify folder
+.netlify
