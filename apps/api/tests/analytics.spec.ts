@@ -6,12 +6,12 @@ import * as b2b from '../src/services/analytics/b2bAnalytics';
 // If you have a real fixture file, import it. Otherwise, define a minimal mockOrders array for test to pass:
 const mockOrders = [
   {
-    orderId: '1',
-    buyerName: 'Buyer1',
-    buyerCompany: 'CompA',
+    _id: '1',
+    createdAt: new Date('2025-10-10T00:00:00Z'),
+    user: { name: 'Buyer1', companyName: 'CompA' },
     industry: 'Retail',
     region: 'North',
-    orderType: 'wholesale',
+    bulkOrderType: 'wholesale',
     subtotal: 900,
     tax: 100,
     total: 1000,
@@ -19,7 +19,7 @@ const mockOrders = [
     paidAmount: 1000,
     outstandingAmount: 0,
     creditUsed: 0,
-    dueDate: '2025-10-10',
+    paymentTerms: { dueDate: new Date('2025-10-10T00:00:00Z') },
   },
 ];
 const mockFind = jest.fn();
