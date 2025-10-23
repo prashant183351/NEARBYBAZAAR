@@ -1,13 +1,13 @@
 # netlify.toml - build from repo root for NearbyBazaar monorepo
-# Builds only the web app and publishes apps/web/.next
+# Builds only the web app and publishes apps/web/out
 
 [build]
-  # Build the web app using pnpm filter so workspaces resolve correctly
-  command = "pnpm --filter @nearbybazaar/web build"
-  # Publish the Next.js output for the web app
-  publish = "apps/web/.next"
-  # Ensure Node 18 during build
-  environment = { NODE_VERSION = "18" }
+  # Install dependencies and build the web app using pnpm filter
+  command = "pnpm install && pnpm --filter @nearbybazaar/web build"
+  # Publish the Next.js static export output
+  publish = "apps/web/out"
+  # Ensure Node 18 and PNPM 8 during build
+  environment = { NODE_VERSION = "18", PNPM_VERSION = "8" }
 
 # Use Netlify's Next.js plugin to support SSR, ISR, and image optimizations
 [[plugins]]

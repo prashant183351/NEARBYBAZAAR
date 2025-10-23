@@ -4,11 +4,14 @@ const withPWA = require('next-pwa')({
 });
 
 module.exports = withPWA({
+  output: 'export',
   reactStrictMode: true,
   swcMinify: true,
-  // Use Next.js built-in transpilation for monorepo packages
   transpilePackages: ['@nearbybazaar/ui', '@nearbybazaar/lib'],
   eslint: {
     ignoreDuringBuilds: true,
+  },
+  images: {
+    unoptimized: true,
   },
 });
