@@ -1,22 +1,32 @@
 // @ts-nocheck
 // Mock Order model with chainable .populate and .sort
-let mockFind = jest.fn();
+const mockFind = jest.fn();
 jest.mock('../src/models/Order', () => ({
   __esModule: true,
   Order: Object.assign(jest.fn(), {
     find: (...args) => {
       const data = mockFind(...args);
       const chain = {
-        populate: function () { return this; },
-        sort: function () { return this; },
-        exec: function () { return Promise.resolve(data); },
-        then: function (resolve, reject) { return Promise.resolve(data).then(resolve, reject); }
+        populate: function () {
+          return this;
+        },
+        sort: function () {
+          return this;
+        },
+        exec: function () {
+          return Promise.resolve(data);
+        },
+        then: function (resolve, reject) {
+          return Promise.resolve(data).then(resolve, reject);
+        },
       };
       return chain;
-    }
-  })
+    },
+  }),
 }));
-let { Order } = require('../src/models/Order');
+const { Order } = require('../src/models/Order');
+// Import all b2bAnalytics functions as 'b2b'
+import * as b2b from '../src/services/analytics/b2bAnalytics';
 /**
  * Test Plan for b2bAnalytics Service (apps/api/src/services/analytics/b2bAnalytics.ts)
  *
@@ -167,40 +177,45 @@ describe('b2bAnalytics Service', () => {
       expect(res.byIndustry).toEqual([]);
       expect(res.byBulkOrderType).toEqual([]);
     });
-    //   Order.find.mockRejectedValueOnce(new Error('DB fail'));
-    //   await expect(b2b.getAdminB2BBreakdown()).rejects.toThrow('DB fail');
-// Removed stray bracket causing syntax error
-    // });
-  });
-
-  describe('getVendorB2BExport', () => {
-    it('returns correct export data', async () => {
-      mockFind.mockReturnValueOnce([mockOrders[0]]);
-      const res = await b2b.getVendorB2BExport('v1');
-      expect(res[0].orderId).toBe('1');
-      expect(res[0].buyerName).toBe('Buyer1');
-      expect(res[0].buyerCompany).toBe('CompA');
-      expect(res[0].industry).toBe('Retail');
-      expect(res[0].region).toBe('North');
-      expect(res[0].dueDate).toBe('2025-10-10');
-    });
-    it('handles missing optional fields', async () => {
-      const order = { ...mockOrders[0], industry: undefined, region: undefined, paymentTerms: undefined };
-      mockFind.mockReturnValueOnce([order]);
-      const res = await b2b.getVendorB2BExport('v1');
-      expect(res[0].industry).toBeUndefined();
-      expect(res[0].region).toBeUndefined();
-    });
-    it('handles no orders', async () => {
-      mockFind.mockReturnValueOnce([]);
-      const res = await b2b.getVendorB2BExport('v1');
-      expect(res).toEqual([]);
-    });
     // it('handles DB error', async () => {
     //   Order.find.mockRejectedValueOnce(new Error('DB fail'));
-    //   await expect(b2b.getVendorB2BExport('v1')).rejects.toThrow('DB fail');
+    //   await expect(b2b.getAdminB2BBreakdown()).rejects.toThrow('DB fail');
     // });
+  });
+});
 
+describe('getVendorB2BExport', () => {
+  it('returns correct export data', async () => {
+    mockFind.mockReturnValueOnce([mockOrders[0]]);
+    const res = await b2b.getVendorB2BExport('v1');
+    expect(res[0].orderId).toBe('1');
+    expect(res[0].buyerName).toBe('Buyer1');
+    expect(res[0].buyerCompany).toBe('CompA');
+    expect(res[0].industry).toBe('Retail');
+    expect(res[0].region).toBe('North');
+    expect(res[0].dueDate).toBe('2025-10-10');
+  });
+  it('handles missing optional fields', async () => {
+    const order = {
+      ...mockOrders[0],
+      industry: undefined,
+      region: undefined,
+      paymentTerms: undefined,
+    };
+    mockFind.mockReturnValueOnce([order]);
+    const res = await b2b.getVendorB2BExport('v1');
+    expect(res[0].industry).toBeUndefined();
+    expect(res[0].region).toBeUndefined();
+  });
+  it('handles no orders', async () => {
+    mockFind.mockReturnValueOnce([]);
+    const res = await b2b.getVendorB2BExport('v1');
+    expect(res).toEqual([]);
+  });
+  // it('handles DB error', async () => {
+  //   Order.find.mockRejectedValueOnce(new Error('DB fail'));
+  //   await expect(b2b.getVendorB2BExport('v1')).rejects.toThrow('DB fail');
+  // });
 
   describe('exportDataToCSV', () => {
     it('produces correct CSV for normal data', () => {
@@ -259,10 +274,8 @@ describe('b2bAnalytics Service', () => {
       process.stdout.write(`\nCSV OUTPUT:\n${csv}\n`);
       // Failing assertion to show actual output if it doesn't match
       // Update expectation to match actual output
-  // The actual output is: "Buyer, \"The Great\""
-  expect(csv).toContain('"Buyer, \"The Great\""');
-
+      // The actual output is: "Buyer, "The Great""
+      expect(csv).toContain('"Buyer, "The Great""');
     });
   });
 });
-
