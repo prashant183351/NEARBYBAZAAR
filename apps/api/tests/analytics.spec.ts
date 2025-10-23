@@ -27,8 +27,29 @@ jest.mock('../src/models/Order', () => ({
   __esModule: true,
   Order: Object.assign(jest.fn(), {
     find: (...args) => {
-      // The real code does not call .exec(), so just return the array directly
-      return mockFind(...args);
+      // Return a chainable object with .populate and .sort, both returning 'this', and valueOf returns the array
+      const chain = {
+        populate() {
+          return this;
+        },
+        sort() {
+          return this;
+        },
+        // When used as a value, return the array
+        valueOf() {
+          return mockFind(...args);
+        },
+        // When spread or iterated, return the array
+        [Symbol.iterator]: function* () {
+          const arr = mockFind(...args) || [];
+          for (const item of arr) yield item;
+        },
+        // When accessed as an array, return the array
+        toJSON() {
+          return mockFind(...args);
+        },
+      };
+      return chain;
     },
   }),
 }));
