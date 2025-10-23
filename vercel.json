@@ -1,8 +1,0 @@
-{
-  "version": 2,
-  "buildCommand": "pnpm install && pnpm --filter @nearbybazaar/web build",
-  "devCommand": "pnpm --filter @nearbybazaar/web dev",
-  "installCommand": "pnpm install",
-  "framework": "nextjs",
-  "outputDirectory": "apps/web/.next"
-}

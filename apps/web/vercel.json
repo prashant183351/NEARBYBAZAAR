@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd ../.. && pnpm install && pnpm --filter @nearbybazaar/web build",
+  "devCommand": "cd ../.. && pnpm --filter @nearbybazaar/web dev",
+  "installCommand": "cd ../.. && pnpm install"
+}
