@@ -1,5 +1,4 @@
-import { createContext, useContext, useState, useCallback } from 'react';
-// ...existing code...
+import React, { createContext, useContext, useState, useCallback } from 'react';
 
 interface Toast {
   id: number;
