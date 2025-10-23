@@ -28,7 +28,7 @@ jest.mock('../src/models/Order', () => ({
   Order: Object.assign(jest.fn(), {
     find: (...args) => {
       const data = mockFind(...args);
-      // Return a chainable object with .populate
+      // Return a chainable object with .populate and .sort, and .exec always returns an array
       return {
         populate: function () {
           return this;
@@ -37,10 +37,11 @@ jest.mock('../src/models/Order', () => ({
           return this;
         },
         exec: function () {
-          // If data is undefined, return [] to match expected array
-          return Promise.resolve(Array.isArray(data) ? data : data == null ? [] : [data]);
+          // Always return an array (even if data is undefined/null)
+          if (Array.isArray(data)) return Promise.resolve(data);
+          if (data == null) return Promise.resolve([]);
+          return Promise.resolve([data]);
         },
-        // Add more chainable methods if needed
       };
     },
   }),
@@ -51,6 +52,7 @@ describe('getVendorB2BExport', () => {
   it('returns correct export data', async () => {
     mockFind.mockReturnValueOnce([mockOrders[0]]);
     const res = await b2b.getVendorB2BExport('v1');
+    expect(Array.isArray(res)).toBe(true);
     expect(res[0].orderId).toBe('1');
     expect(res[0].buyerName).toBe('Buyer1');
     expect(res[0].buyerCompany).toBe('CompA');
@@ -67,12 +69,14 @@ describe('getVendorB2BExport', () => {
     };
     mockFind.mockReturnValueOnce([order]);
     const res = await b2b.getVendorB2BExport('v1');
+    expect(Array.isArray(res)).toBe(true);
     expect(res[0].industry).toBeUndefined();
     expect(res[0].region).toBeUndefined();
   });
   it('handles no orders', async () => {
     mockFind.mockReturnValueOnce([]);
     const res = await b2b.getVendorB2BExport('v1');
+    expect(Array.isArray(res)).toBe(true);
     expect(res).toEqual([]);
   });
   // it('handles DB error', async () => {
