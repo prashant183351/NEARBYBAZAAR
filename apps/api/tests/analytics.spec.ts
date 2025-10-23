@@ -2,7 +2,7 @@
 // Mock Order model with chainable .populate and .sort
 
 // Import the b2b analytics module and mockOrders fixture
-import * as b2b from '../src/services/b2bAnalytics';
+import * as b2b from '../src/services/analytics/b2bAnalytics';
 // If you have a real fixture file, import it. Otherwise, define a minimal mockOrders array for test to pass:
 const mockOrders = [
   {
