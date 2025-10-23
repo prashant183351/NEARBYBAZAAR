@@ -4,7 +4,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   roots: ['<rootDir>/tests'],
-  testMatch: ['**/*.spec.ts', '**/*.test.ts'],
+  testMatch: ['**/*.spec.ts', '**/*.test.ts', '**/*.spec.js', '**/*.test.js'],
   // Skip heavy integration suites (Mongo/Redis dependent) by default to keep fast unit runs green.
   // Opt-in to full integration tests by setting RUN_INTEGRATION=true when running Jest.
   testPathIgnorePatterns:

@@ -1,0 +1,939 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="420" failures="0" errors="0" time="58.549">
+  <testsuite name="applyWatermark" errors="0" failures="0" skipped="4" timestamp="2025-10-22T22:31:49" time="8.014" tests="4">
+    <testcase classname="applyWatermark should apply watermark text" name="applyWatermark should apply watermark text" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="applyWatermark should apply watermark image" name="applyWatermark should apply watermark image" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="applyWatermark should resize image if width/height provided" name="applyWatermark should resize image if width/height provided" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="applyWatermark should use pica if provided" name="applyWatermark should use pica if provided" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="CommissionService Integration" errors="0" failures="0" skipped="1" timestamp="2025-10-22T22:31:48" time="14.747" tests="1">
+    <testcase classname="CommissionService Integration should calculate commission for a real order (integration)" name="CommissionService Integration should calculate commission for a real order (integration)" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="b2bAnalytics Service" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:31:48" time="22.448" tests="10">
+    <testcase classname="b2bAnalytics Service getVendorB2BSummary returns correct summary for mixed bulk/retail orders" name="b2bAnalytics Service getVendorB2BSummary returns correct summary for mixed bulk/retail orders" time="0.015">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BSummary handles no orders" name="b2bAnalytics Service getVendorB2BSummary handles no orders" time="0.002">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getAdminB2BBreakdown returns correct breakdown for regions/industries/types" name="b2bAnalytics Service getAdminB2BBreakdown returns correct breakdown for regions/industries/types" time="0.007">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getAdminB2BBreakdown handles no orders" name="b2bAnalytics Service getAdminB2BBreakdown handles no orders" time="0.003">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport returns correct export data" name="b2bAnalytics Service getVendorB2BExport returns correct export data" time="0.007">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport handles missing optional fields" name="b2bAnalytics Service getVendorB2BExport handles missing optional fields" time="0.002">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport handles no orders" name="b2bAnalytics Service getVendorB2BExport handles no orders" time="0.002">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport exportDataToCSV produces correct CSV for normal data" name="b2bAnalytics Service getVendorB2BExport exportDataToCSV produces correct CSV for normal data" time="0.002">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport exportDataToCSV handles empty data array" name="b2bAnalytics Service getVendorB2BExport exportDataToCSV handles empty data array" time="0.002">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport exportDataToCSV handles special characters" name="b2bAnalytics Service getVendorB2BExport exportDataToCSV handles special characters" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Invoice Service" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:31:48" time="23.523" tests="9">
+    <testcase classname="Invoice Service buildInvoice calculates totals, commission, and tax correctly" name="Invoice Service buildInvoice calculates totals, commission, and tax correctly" time="0.035">
+    </testcase>
+    <testcase classname="Invoice Service buildInvoice handles missing commission and tax breakdown" name="Invoice Service buildInvoice handles missing commission and tax breakdown" time="0.002">
+    </testcase>
+    <testcase classname="Invoice Service formatInvoice formats invoice as string" name="Invoice Service formatInvoice formats invoice as string" time="0.075">
+    </testcase>
+    <testcase classname="Invoice Service getFY returns correct FY for April" name="Invoice Service getFY returns correct FY for April" time="0.004">
+    </testcase>
+    <testcase classname="Invoice Service getFY returns correct FY for March" name="Invoice Service getFY returns correct FY for March" time="0.009">
+    </testcase>
+    <testcase classname="Invoice Service isEInvoicingRequired returns false if GSTINs missing" name="Invoice Service isEInvoicingRequired returns false if GSTINs missing" time="0.001">
+    </testcase>
+    <testcase classname="Invoice Service isEInvoicingRequired returns true if both GSTINs present" name="Invoice Service isEInvoicingRequired returns true if both GSTINs present" time="0.001">
+    </testcase>
+    <testcase classname="Invoice Service generateEInvoice returns mock IRN in dev" name="Invoice Service generateEInvoice returns mock IRN in dev" time="0.002">
+    </testcase>
+    <testcase classname="Invoice Service cancelEInvoice returns true (stub)" name="Invoice Service cancelEInvoice returns true (stub)" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="Dropship OutboundWebhook Rate Limit &amp; Retry" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:31:48" time="23.822" tests="5">
+    <testcase classname="Dropship OutboundWebhook Rate Limit &amp; Retry should rate limit and enqueue retry if limit exceeded" name="Dropship OutboundWebhook Rate Limit &amp; Retry should rate limit and enqueue retry if limit exceeded" time="0.032">
+    </testcase>
+    <testcase classname="Dropship OutboundWebhook Rate Limit &amp; Retry should process retry queue and push ready orders" name="Dropship OutboundWebhook Rate Limit &amp; Retry should process retry queue and push ready orders" time="0.006">
+    </testcase>
+    <testcase classname="Dropship OutboundWebhook Rate Limit &amp; Retry should skip processing if Redis not initialized" name="Dropship OutboundWebhook Rate Limit &amp; Retry should skip processing if Redis not initialized" time="0.004">
+    </testcase>
+    <testcase classname="Dropship OutboundWebhook Rate Limit &amp; Retry should keep in queue if still rate limited on retry" name="Dropship OutboundWebhook Rate Limit &amp; Retry should keep in queue if still rate limited on retry" time="0.633">
+    </testcase>
+    <testcase classname="Dropship OutboundWebhook Rate Limit &amp; Retry should handle errors in retry processing gracefully" name="Dropship OutboundWebhook Rate Limit &amp; Retry should handle errors in retry processing gracefully" time="0.569">
+    </testcase>
+  </testsuite>
+  <testsuite name="getBaseUrl" errors="0" failures="0" skipped="1" timestamp="2025-10-22T22:32:05" time="8.225" tests="63">
+    <testcase classname="getBaseUrl should return the default URL if no env or window" name="getBaseUrl should return the default URL if no env or window" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="Canonical URL Utilities stripTrackingParams should remove UTM parameters" name="Canonical URL Utilities stripTrackingParams should remove UTM parameters" time="0.017">
+    </testcase>
+    <testcase classname="Canonical URL Utilities stripTrackingParams should remove Facebook tracking parameters" name="Canonical URL Utilities stripTrackingParams should remove Facebook tracking parameters" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities stripTrackingParams should remove Google Ads tracking parameters" name="Canonical URL Utilities stripTrackingParams should remove Google Ads tracking parameters" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities stripTrackingParams should remove Microsoft/Bing tracking parameters" name="Canonical URL Utilities stripTrackingParams should remove Microsoft/Bing tracking parameters" time="0.006">
+    </testcase>
+    <testcase classname="Canonical URL Utilities stripTrackingParams should preserve functional parameters" name="Canonical URL Utilities stripTrackingParams should preserve functional parameters" time="0.003">
+    </testcase>
+    <testcase classname="Canonical URL Utilities stripTrackingParams should handle URL objects" name="Canonical URL Utilities stripTrackingParams should handle URL objects" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities stripTrackingParams should handle URLs with no parameters" name="Canonical URL Utilities stripTrackingParams should handle URLs with no parameters" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities stripTrackingParams should handle URLs with only tracking parameters" name="Canonical URL Utilities stripTrackingParams should handle URLs with only tracking parameters" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities normalizeUrl should force HTTPS by default" name="Canonical URL Utilities normalizeUrl should force HTTPS by default" time="0.007">
+    </testcase>
+    <testcase classname="Canonical URL Utilities normalizeUrl should lowercase hostname" name="Canonical URL Utilities normalizeUrl should lowercase hostname" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities normalizeUrl should lowercase path when enabled" name="Canonical URL Utilities normalizeUrl should lowercase path when enabled" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities normalizeUrl should preserve path case when disabled" name="Canonical URL Utilities normalizeUrl should preserve path case when disabled" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities normalizeUrl should add trailing slash when enabled" name="Canonical URL Utilities normalizeUrl should add trailing slash when enabled" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities normalizeUrl should remove trailing slash when disabled" name="Canonical URL Utilities normalizeUrl should remove trailing slash when disabled" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities normalizeUrl should preserve root trailing slash" name="Canonical URL Utilities normalizeUrl should preserve root trailing slash" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities normalizeUrl should strip hash by default" name="Canonical URL Utilities normalizeUrl should strip hash by default" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities normalizeUrl should preserve hash when disabled" name="Canonical URL Utilities normalizeUrl should preserve hash when disabled" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities normalizeUrl should sort query parameters" name="Canonical URL Utilities normalizeUrl should sort query parameters" time="0.063">
+    </testcase>
+    <testcase classname="Canonical URL Utilities generateCanonicalUrl should generate basic canonical URL" name="Canonical URL Utilities generateCanonicalUrl should generate basic canonical URL" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities generateCanonicalUrl should handle path without leading slash" name="Canonical URL Utilities generateCanonicalUrl should handle path without leading slash" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities generateCanonicalUrl should handle baseUrl with trailing slash" name="Canonical URL Utilities generateCanonicalUrl should handle baseUrl with trailing slash" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities generateCanonicalUrl should include functional parameters" name="Canonical URL Utilities generateCanonicalUrl should include functional parameters" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities generateCanonicalUrl should exclude tracking parameters" name="Canonical URL Utilities generateCanonicalUrl should exclude tracking parameters" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities generateCanonicalUrl should handle array parameters" name="Canonical URL Utilities generateCanonicalUrl should handle array parameters" time="0.03">
+    </testcase>
+    <testcase classname="Canonical URL Utilities generateCanonicalUrl should skip undefined and null parameters" name="Canonical URL Utilities generateCanonicalUrl should skip undefined and null parameters" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities generateCanonicalUrl should force HTTPS by default" name="Canonical URL Utilities generateCanonicalUrl should force HTTPS by default" time="0.012">
+    </testcase>
+    <testcase classname="Canonical URL Utilities generateCanonicalUrl should lowercase path by default" name="Canonical URL Utilities generateCanonicalUrl should lowercase path by default" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getProductCanonical should generate product canonical URL" name="Canonical URL Utilities getProductCanonical should generate product canonical URL" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getProductCanonical should include variant parameter if provided" name="Canonical URL Utilities getProductCanonical should include variant parameter if provided" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getProductCanonical should not include variant if not provided" name="Canonical URL Utilities getProductCanonical should not include variant if not provided" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getServiceCanonical should generate service canonical URL" name="Canonical URL Utilities getServiceCanonical should generate service canonical URL" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getStoreCanonical should generate store canonical URL" name="Canonical URL Utilities getStoreCanonical should generate store canonical URL" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getStoreCanonical should include tab parameter if provided" name="Canonical URL Utilities getStoreCanonical should include tab parameter if provided" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getStoreCanonical should not include tab if not provided" name="Canonical URL Utilities getStoreCanonical should not include tab if not provided" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getClassifiedCanonical should generate classified canonical URL" name="Canonical URL Utilities getClassifiedCanonical should generate classified canonical URL" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getCategoryCanonical should generate category canonical URL" name="Canonical URL Utilities getCategoryCanonical should generate category canonical URL" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getCategoryCanonical should include page parameter if not first page" name="Canonical URL Utilities getCategoryCanonical should include page parameter if not first page" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getCategoryCanonical should not include page 1" name="Canonical URL Utilities getCategoryCanonical should not include page 1" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getCategoryCanonical should include sort parameter if not default" name="Canonical URL Utilities getCategoryCanonical should include sort parameter if not default" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getCategoryCanonical should not include default sort" name="Canonical URL Utilities getCategoryCanonical should not include default sort" time="0.019">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getCategoryCanonical should include both page and sort" name="Canonical URL Utilities getCategoryCanonical should include both page and sort" time="0.003">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getSearchCanonical should generate search canonical URL" name="Canonical URL Utilities getSearchCanonical should generate search canonical URL" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getSearchCanonical should include query parameter" name="Canonical URL Utilities getSearchCanonical should include query parameter" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getSearchCanonical should include page parameter if not first page" name="Canonical URL Utilities getSearchCanonical should include page parameter if not first page" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getSearchCanonical should include type parameter if not &quot;all&quot;" name="Canonical URL Utilities getSearchCanonical should include type parameter if not &quot;all&quot;" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getSearchCanonical should not include type if &quot;all&quot;" name="Canonical URL Utilities getSearchCanonical should not include type if &quot;all&quot;" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getSearchCanonical should handle all parameters" name="Canonical URL Utilities getSearchCanonical should handle all parameters" time="0.008">
+    </testcase>
+    <testcase classname="Canonical URL Utilities areCanonicalDuplicates should return true for URLs with different tracking params" name="Canonical URL Utilities areCanonicalDuplicates should return true for URLs with different tracking params" time="0.005">
+    </testcase>
+    <testcase classname="Canonical URL Utilities areCanonicalDuplicates should return true for same URL with and without tracking" name="Canonical URL Utilities areCanonicalDuplicates should return true for same URL with and without tracking" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities areCanonicalDuplicates should return false for different paths" name="Canonical URL Utilities areCanonicalDuplicates should return false for different paths" time="0.03">
+    </testcase>
+    <testcase classname="Canonical URL Utilities areCanonicalDuplicates should return false for different functional params" name="Canonical URL Utilities areCanonicalDuplicates should return false for different functional params" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities areCanonicalDuplicates should handle case differences" name="Canonical URL Utilities areCanonicalDuplicates should handle case differences" time="0.006">
+    </testcase>
+    <testcase classname="Canonical URL Utilities areCanonicalDuplicates should handle protocol differences" name="Canonical URL Utilities areCanonicalDuplicates should handle protocol differences" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities areCanonicalDuplicates should return false for invalid URLs" name="Canonical URL Utilities areCanonicalDuplicates should return false for invalid URLs" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getCanonicalPath should extract path from full URL" name="Canonical URL Utilities getCanonicalPath should extract path from full URL" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getCanonicalPath should handle path-only input" name="Canonical URL Utilities getCanonicalPath should handle path-only input" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getCanonicalPath should normalize path" name="Canonical URL Utilities getCanonicalPath should normalize path" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getCanonicalPath should strip tracking params from path" name="Canonical URL Utilities getCanonicalPath should strip tracking params from path" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities getCanonicalPath should add leading slash if missing" name="Canonical URL Utilities getCanonicalPath should add leading slash if missing" time="0.002">
+    </testcase>
+    <testcase classname="Canonical URL Utilities Edge cases and real-world scenarios should handle product URLs from different referrers with same canonical" name="Canonical URL Utilities Edge cases and real-world scenarios should handle product URLs from different referrers with same canonical" time="0.01">
+    </testcase>
+    <testcase classname="Canonical URL Utilities Edge cases and real-world scenarios should preserve important pagination while removing tracking" name="Canonical URL Utilities Edge cases and real-world scenarios should preserve important pagination while removing tracking" time="0.001">
+    </testcase>
+    <testcase classname="Canonical URL Utilities Edge cases and real-world scenarios should handle complex multi-parameter scenarios" name="Canonical URL Utilities Edge cases and real-world scenarios should handle complex multi-parameter scenarios" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="b2bAnalytics Service" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:31:57" time="20.8" tests="7">
+    <testcase classname="b2bAnalytics Service getVendorB2BSummary returns correct summary for mixed bulk/retail orders" name="b2bAnalytics Service getVendorB2BSummary returns correct summary for mixed bulk/retail orders" time="0.036">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BSummary handles no orders" name="b2bAnalytics Service getVendorB2BSummary handles no orders" time="0.004">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getAdminB2BBreakdown returns correct breakdown for regions/industries/types" name="b2bAnalytics Service getAdminB2BBreakdown returns correct breakdown for regions/industries/types" time="0.006">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getAdminB2BBreakdown handles no orders" name="b2bAnalytics Service getAdminB2BBreakdown handles no orders" time="0.003">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport returns correct export data" name="b2bAnalytics Service getVendorB2BExport returns correct export data" time="0.003">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport handles missing optional fields" name="b2bAnalytics Service getVendorB2BExport handles missing optional fields" time="0.002">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport handles no orders" name="b2bAnalytics Service getVendorB2BExport handles no orders" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="SEO helpers" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:13" time="5.836" tests="6">
+    <testcase classname="SEO helpers should format meta title" name="SEO helpers should format meta title" time="0.002">
+    </testcase>
+    <testcase classname="SEO helpers should trim meta description" name="SEO helpers should trim meta description" time="0.001">
+    </testcase>
+    <testcase classname="SEO helpers should clamp long strings" name="SEO helpers should clamp long strings" time="0.001">
+    </testcase>
+    <testcase classname="SEO helpers should sanitize meta strings" name="SEO helpers should sanitize meta strings" time="0.001">
+    </testcase>
+    <testcase classname="SEO helpers should handle empty/undefined" name="SEO helpers should handle empty/undefined" time="0.001">
+    </testcase>
+    <testcase classname="SEO helpers should generate canonical URLs" name="SEO helpers should generate canonical URLs" time="0.003">
+    </testcase>
+  </testsuite>
+  <testsuite name="addClientWatermark" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:14" time="5.628" tests="1">
+    <testcase classname="addClientWatermark should return the original image URL (stub)" name="addClientWatermark should return the original image URL (stub)" time="0.017">
+    </testcase>
+  </testsuite>
+  <testsuite name="JSON-LD Schema Generation" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:14" time="6.132" tests="29">
+    <testcase classname="JSON-LD Schema Generation Validation error branches validateProductSchema returns errors for missing fields" name="JSON-LD Schema Generation Validation error branches validateProductSchema returns errors for missing fields" time="0.03">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation Validation error branches validateServiceSchema returns errors for missing fields" name="JSON-LD Schema Generation Validation error branches validateServiceSchema returns errors for missing fields" time="0.002">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation Validation error branches validateLocalBusinessSchema returns errors for missing fields" name="JSON-LD Schema Generation Validation error branches validateLocalBusinessSchema returns errors for missing fields" time="0.01">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation Edge cases for optional/empty fields generateProductSchema omits aggregateRating if reviewCount is 0" name="JSON-LD Schema Generation Edge cases for optional/empty fields generateProductSchema omits aggregateRating if reviewCount is 0" time="0.002">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation Edge cases for optional/empty fields generateServiceSchema omits aggregateRating if reviewCount is 0" name="JSON-LD Schema Generation Edge cases for optional/empty fields generateServiceSchema omits aggregateRating if reviewCount is 0" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation Edge cases for optional/empty fields generateLocalBusinessSchema omits aggregateRating if reviewCount is 0" name="JSON-LD Schema Generation Edge cases for optional/empty fields generateLocalBusinessSchema omits aggregateRating if reviewCount is 0" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation Edge cases for optional/empty fields generateOrganizationSchema includes sameAs if present and non-empty" name="JSON-LD Schema Generation Edge cases for optional/empty fields generateOrganizationSchema includes sameAs if present and non-empty" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation Edge cases for optional/empty fields generateOrganizationSchema omits sameAs if empty" name="JSON-LD Schema Generation Edge cases for optional/empty fields generateOrganizationSchema omits sameAs if empty" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation Edge cases for optional/empty fields generateLocalBusinessSchema omits openingHoursSpecification if openingHours is empty" name="JSON-LD Schema Generation Edge cases for optional/empty fields generateLocalBusinessSchema omits openingHoursSpecification if openingHours is empty" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation generateProductSchema should generate Product schema with required fields" name="JSON-LD Schema Generation generateProductSchema should generate Product schema with required fields" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation generateProductSchema should include optional fields when provided" name="JSON-LD Schema Generation generateProductSchema should include optional fields when provided" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation generateProductSchema should handle seller information" name="JSON-LD Schema Generation generateProductSchema should handle seller information" time="0">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation generateProductSchema should include aggregateRating" name="JSON-LD Schema Generation generateProductSchema should include aggregateRating" time="0">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation generateServiceSchema should generate Service schema with required fields" name="JSON-LD Schema Generation generateServiceSchema should generate Service schema with required fields" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation generateServiceSchema should include offers when provided" name="JSON-LD Schema Generation generateServiceSchema should include offers when provided" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation generateServiceSchema should include areaServed" name="JSON-LD Schema Generation generateServiceSchema should include areaServed" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation generateLocalBusinessSchema should generate LocalBusiness schema" name="JSON-LD Schema Generation generateLocalBusinessSchema should generate LocalBusiness schema" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation generateLocalBusinessSchema should include address" name="JSON-LD Schema Generation generateLocalBusinessSchema should include address" time="0.011">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation generateLocalBusinessSchema should include geo coordinates" name="JSON-LD Schema Generation generateLocalBusinessSchema should include geo coordinates" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation generateLocalBusinessSchema should include priceRange" name="JSON-LD Schema Generation generateLocalBusinessSchema should include priceRange" time="0">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation generateOrganizationSchema should generate Organization schema" name="JSON-LD Schema Generation generateOrganizationSchema should generate Organization schema" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation generateOrganizationSchema should include social media links" name="JSON-LD Schema Generation generateOrganizationSchema should include social media links" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation Validation Functions validateProductSchema - valid input" name="JSON-LD Schema Generation Validation Functions validateProductSchema - valid input" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation Validation Functions validateProductSchema - missing required fields" name="JSON-LD Schema Generation Validation Functions validateProductSchema - missing required fields" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation Validation Functions validateServiceSchema - valid input" name="JSON-LD Schema Generation Validation Functions validateServiceSchema - valid input" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation Validation Functions validateServiceSchema - missing provider" name="JSON-LD Schema Generation Validation Functions validateServiceSchema - missing provider" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation Validation Functions validateLocalBusinessSchema - valid input" name="JSON-LD Schema Generation Validation Functions validateLocalBusinessSchema - valid input" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation Validation Functions validateLocalBusinessSchema - missing name" name="JSON-LD Schema Generation Validation Functions validateLocalBusinessSchema - missing name" time="0.001">
+    </testcase>
+    <testcase classname="JSON-LD Schema Generation jsonLdToScriptTag should convert to HTML script tag" name="JSON-LD Schema Generation jsonLdToScriptTag should convert to HTML script tag" time="0.013">
+    </testcase>
+  </testsuite>
+  <testsuite name="Pricing functions" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:20" time="0.611" tests="2">
+    <testcase classname="Pricing functions should calculate discounted price" name="Pricing functions should calculate discounted price" time="0.002">
+    </testcase>
+    <testcase classname="Pricing functions should format price" name="Pricing functions should format price" time="0.055">
+    </testcase>
+  </testsuite>
+  <testsuite name="generateSKU" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:20" time="0.649" tests="5">
+    <testcase classname="generateSKU is deterministic for same input" name="generateSKU is deterministic for same input" time="0.007">
+    </testcase>
+    <testcase classname="generateSKU is unique for different names" name="generateSKU is unique for different names" time="0.001">
+    </testcase>
+    <testcase classname="generateSKU is unique for different categories" name="generateSKU is unique for different categories" time="0.005">
+    </testcase>
+    <testcase classname="generateSKU is unique for different dates" name="generateSKU is unique for different dates" time="0.001">
+    </testcase>
+    <testcase classname="generateSKU is unique for different ids" name="generateSKU is unique for different ids" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Feature #182: ProductOffer - Multi-seller Marketplace" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:13" time="9.439" tests="36">
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Uniqueness Constraint should enforce one offer per vendor per product" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Uniqueness Constraint should enforce one offer per vendor per product" time="0.008">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Uniqueness Constraint should allow different vendors to offer same product" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Uniqueness Constraint should allow different vendors to offer same product" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Uniqueness Constraint should allow same vendor to offer different products" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Uniqueness Constraint should allow same vendor to offer different products" time="0.004">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should reject negative price" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should reject negative price" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should reject zero price" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should reject zero price" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should reject negative stock" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should reject negative stock" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should validate compareAtPrice &gt;= price" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should validate compareAtPrice &gt;= price" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should validate SLA within range (0-30 days)" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should validate SLA within range (0-30 days)" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should validate handling time within range (1-7 days)" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should validate handling time within range (1-7 days)" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: CRUD Operations should create a new offer successfully" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: CRUD Operations should create a new offer successfully" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: CRUD Operations should retrieve offer by ID" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: CRUD Operations should retrieve offer by ID" time="0.018">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: CRUD Operations should update offer price" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: CRUD Operations should update offer price" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: CRUD Operations should soft delete offer (mark inactive)" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: CRUD Operations should soft delete offer (mark inactive)" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should update stock atomically" name="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should update stock atomically" time="0.003">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should prevent stock from going negative" name="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should prevent stock from going negative" time="0.053">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should detect low stock correctly" name="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should detect low stock correctly" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should not flag as low stock if stock is sufficient" name="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should not flag as low stock if stock is sufficient" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should auto-pause when stock reaches zero" name="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should auto-pause when stock reaches zero" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should auto-unpause when stock is replenished" name="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should auto-unpause when stock is replenished" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Multi-vendor Scenarios should find all active offers for a product sorted by price" name="Feature #182: ProductOffer - Multi-seller Marketplace Multi-vendor Scenarios should find all active offers for a product sorted by price" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Multi-vendor Scenarios should exclude inactive offers from product listings" name="Feature #182: ProductOffer - Multi-seller Marketplace Multi-vendor Scenarios should exclude inactive offers from product listings" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Multi-vendor Scenarios should exclude paused offers from active listings" name="Feature #182: ProductOffer - Multi-seller Marketplace Multi-vendor Scenarios should exclude paused offers from active listings" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Multi-vendor Scenarios should exclude out-of-stock offers from active listings" name="Feature #182: ProductOffer - Multi-seller Marketplace Multi-vendor Scenarios should exclude out-of-stock offers from active listings" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should return true for available offers" name="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should return true for available offers" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should return false if inactive" name="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should return false if inactive" time="0">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should return false if paused" name="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should return false if paused" time="0">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should return false if out of stock" name="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should return false if out of stock" time="0">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should check if can fulfill requested quantity" name="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should check if can fulfill requested quantity" time="0">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Virtual Properties should calculate savings correctly" name="Feature #182: ProductOffer - Multi-seller Marketplace Virtual Properties should calculate savings correctly" time="0">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Virtual Properties should calculate savings percentage correctly" name="Feature #182: ProductOffer - Multi-seller Marketplace Virtual Properties should calculate savings percentage correctly" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Virtual Properties should return zero savings if no compareAtPrice" name="Feature #182: ProductOffer - Multi-seller Marketplace Virtual Properties should return zero savings if no compareAtPrice" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Virtual Properties should calculate total delivery time" name="Feature #182: ProductOffer - Multi-seller Marketplace Virtual Properties should calculate total delivery time" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Edge Cases should handle offers with different fulfillment methods" name="Feature #182: ProductOffer - Multi-seller Marketplace Edge Cases should handle offers with different fulfillment methods" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Edge Cases should handle offers with different conditions" name="Feature #182: ProductOffer - Multi-seller Marketplace Edge Cases should handle offers with different conditions" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Edge Cases should handle vendor with no offers" name="Feature #182: ProductOffer - Multi-seller Marketplace Edge Cases should handle vendor with no offers" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Edge Cases should handle product with no offers" name="Feature #182: ProductOffer - Multi-seller Marketplace Edge Cases should handle product with no offers" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="sanitize middleware" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:20" time="4.267" tests="2">
+    <testcase classname="sanitize middleware strips scripts from plain text fields" name="sanitize middleware strips scripts from plain text fields" time="0.119">
+    </testcase>
+    <testcase classname="sanitize middleware allows limited tags for richText" name="sanitize middleware allows limited tags for richText" time="0.028">
+    </testcase>
+  </testsuite>
+  <testsuite name="Feature #189: Media Pipeline" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:23" time="4.75" tests="28">
+    <testcase classname="Feature #189: Media Pipeline Virus Scanning should detect EICAR test file and reject upload" name="Feature #189: Media Pipeline Virus Scanning should detect EICAR test file and reject upload" time="0.005">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Virus Scanning should allow clean files when virus scanning enabled" name="Feature #189: Media Pipeline Virus Scanning should allow clean files when virus scanning enabled" time="0.002">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Virus Scanning should skip virus scan when disabled" name="Feature #189: Media Pipeline Virus Scanning should skip virus scan when disabled" time="0.001">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Virus Scanning should fail safe on scan error when enabled" name="Feature #189: Media Pipeline Virus Scanning should fail safe on scan error when enabled" time="0.001">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline EXIF Metadata Stripping should strip EXIF metadata from JPEG images" name="Feature #189: Media Pipeline EXIF Metadata Stripping should strip EXIF metadata from JPEG images" time="0.134">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline EXIF Metadata Stripping should preserve image data" name="Feature #189: Media Pipeline EXIF Metadata Stripping should preserve image data" time="0.002">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline EXIF Metadata Stripping should return original buffer on error" name="Feature #189: Media Pipeline EXIF Metadata Stripping should return original buffer on error" time="0.001">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline File Validation should reject files exceeding size limit" name="Feature #189: Media Pipeline File Validation should reject files exceeding size limit" time="0.002">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline File Validation should allow files within size limit" name="Feature #189: Media Pipeline File Validation should allow files within size limit" time="0.004">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline File Validation should reject unsupported file types" name="Feature #189: Media Pipeline File Validation should reject unsupported file types" time="0.002">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline File Validation should allow supported image types" name="Feature #189: Media Pipeline File Validation should allow supported image types" time="0.009">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline File Validation should allow PDF and video files" name="Feature #189: Media Pipeline File Validation should allow PDF and video files" time="0.001">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline File Validation should respect custom MAX_UPLOAD_SIZE_MB environment variable" name="Feature #189: Media Pipeline File Validation should respect custom MAX_UPLOAD_SIZE_MB environment variable" time="0.008">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Presigned Upload URL Generation should generate presigned upload with required fields" name="Feature #189: Media Pipeline Presigned Upload URL Generation should generate presigned upload with required fields" time="0.006">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Presigned Upload URL Generation should reject files exceeding max size" name="Feature #189: Media Pipeline Presigned Upload URL Generation should reject files exceeding max size" time="0.002">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Presigned Upload URL Generation should reject unsupported content types" name="Feature #189: Media Pipeline Presigned Upload URL Generation should reject unsupported content types" time="0.003">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Presigned Upload URL Generation should include custom folder in upload URL" name="Feature #189: Media Pipeline Presigned Upload URL Generation should include custom folder in upload URL" time="0.003">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Complete Upload Pipeline should process file through full pipeline (integration test)" name="Feature #189: Media Pipeline Complete Upload Pipeline should process file through full pipeline (integration test)" time="0.001">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Complete Upload Pipeline should reject file with virus in scan phase" name="Feature #189: Media Pipeline Complete Upload Pipeline should reject file with virus in scan phase" time="0.002">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline DoS Protection should enforce file size limits to prevent memory exhaustion" name="Feature #189: Media Pipeline DoS Protection should enforce file size limits to prevent memory exhaustion" time="0.006">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline DoS Protection should validate file count in middleware" name="Feature #189: Media Pipeline DoS Protection should validate file count in middleware" time="0.002">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline processUploadedFile should throw if virus is found" name="Feature #189: Media Pipeline processUploadedFile should throw if virus is found" time="0.003">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline processUploadedFile should handle Cloudinary upload error" name="Feature #189: Media Pipeline processUploadedFile should handle Cloudinary upload error" time="0.016">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline processUploadedFile should process non-image file without EXIF stripping" name="Feature #189: Media Pipeline processUploadedFile should process non-image file without EXIF stripping" time="0.002">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline withUploadTimeout should resolve if promise resolves before timeout" name="Feature #189: Media Pipeline withUploadTimeout should resolve if promise resolves before timeout" time="0.001">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline withUploadTimeout should reject if promise takes too long" name="Feature #189: Media Pipeline withUploadTimeout should reject if promise takes too long" time="0.063">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline generateCloudinarySignature should call cloudinary.utils.api_sign_request" name="Feature #189: Media Pipeline generateCloudinarySignature should call cloudinary.utils.api_sign_request" time="0.369">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline streamFileResponse should set headers and send buffer" name="Feature #189: Media Pipeline streamFileResponse should set headers and send buffer" time="0.076">
+    </testcase>
+  </testsuite>
+  <testsuite name="creditLedger.applyForCredit" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:18" time="10.176" tests="3">
+    <testcase classname="creditLedger.applyForCredit throws if already approved" name="creditLedger.applyForCredit throws if already approved" time="0.055">
+    </testcase>
+    <testcase classname="creditLedger.applyForCredit throws if already pending" name="creditLedger.applyForCredit throws if already pending" time="0.002">
+    </testcase>
+    <testcase classname="creditLedger.applyForCredit creates new application if none exists" name="creditLedger.applyForCredit creates new application if none exists" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="validate middleware" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:25" time="4.238" tests="2">
+    <testcase classname="validate middleware returns 400 and issues on invalid body" name="validate middleware returns 400 and issues on invalid body" time="0.055">
+    </testcase>
+    <testcase classname="validate middleware passes through on valid body and coerces types" name="validate middleware passes through on valid body and coerces types" time="0.011">
+    </testcase>
+  </testsuite>
+  <testsuite name="Checkout Domain Models" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:19" time="10.551" tests="22">
+    <testcase classname="Checkout Domain Models Address Model should create a valid address" name="Checkout Domain Models Address Model should create a valid address" time="0.018">
+    </testcase>
+    <testcase classname="Checkout Domain Models Address Model should generate fullAddress virtual" name="Checkout Domain Models Address Model should generate fullAddress virtual" time="0.003">
+    </testcase>
+    <testcase classname="Checkout Domain Models Address Model should validate phone number format" name="Checkout Domain Models Address Model should validate phone number format" time="0.036">
+    </testcase>
+    <testcase classname="Checkout Domain Models Address Model should validate pincode format" name="Checkout Domain Models Address Model should validate pincode format" time="0.003">
+    </testcase>
+    <testcase classname="Checkout Domain Models Cart Model should create an empty cart" name="Checkout Domain Models Cart Model should create an empty cart" time="0.012">
+    </testcase>
+    <testcase classname="Checkout Domain Models Cart Model should calculate totals correctly" name="Checkout Domain Models Cart Model should calculate totals correctly" time="0.01">
+    </testcase>
+    <testcase classname="Checkout Domain Models Cart Model should calculate itemCount virtual" name="Checkout Domain Models Cart Model should calculate itemCount virtual" time="0.002">
+    </testcase>
+    <testcase classname="Checkout Domain Models Cart Model should handle guest cart with sessionId" name="Checkout Domain Models Cart Model should handle guest cart with sessionId" time="0.001">
+    </testcase>
+    <testcase classname="Checkout Domain Models Shipment Model should create a shipment with ULID" name="Checkout Domain Models Shipment Model should create a shipment with ULID" time="0.008">
+    </testcase>
+    <testcase classname="Checkout Domain Models Shipment Model should check isDelivered virtual" name="Checkout Domain Models Shipment Model should check isDelivered virtual" time="0.002">
+    </testcase>
+    <testcase classname="Checkout Domain Models Shipment Model should check isInTransit virtual" name="Checkout Domain Models Shipment Model should check isInTransit virtual" time="0.004">
+    </testcase>
+    <testcase classname="Checkout Domain Models PaymentIntent Model should create a payment intent with ULID" name="Checkout Domain Models PaymentIntent Model should create a payment intent with ULID" time="0.003">
+    </testcase>
+    <testcase classname="Checkout Domain Models PaymentIntent Model should check canCapture method" name="Checkout Domain Models PaymentIntent Model should check canCapture method" time="0.009">
+    </testcase>
+    <testcase classname="Checkout Domain Models PaymentIntent Model should check canRefund method" name="Checkout Domain Models PaymentIntent Model should check canRefund method" time="0.001">
+    </testcase>
+    <testcase classname="Checkout Domain Models PaymentIntent Model should calculate availableRefundAmount virtual" name="Checkout Domain Models PaymentIntent Model should calculate availableRefundAmount virtual" time="0.002">
+    </testcase>
+    <testcase classname="Checkout Domain Models PaymentIntent Model should check isExpired virtual" name="Checkout Domain Models PaymentIntent Model should check isExpired virtual" time="0.003">
+    </testcase>
+    <testcase classname="Checkout Domain Models StockReservation Model should create a reservation with ULID" name="Checkout Domain Models StockReservation Model should create a reservation with ULID" time="0.002">
+    </testcase>
+    <testcase classname="Checkout Domain Models StockReservation Model should check isExpired method" name="Checkout Domain Models StockReservation Model should check isExpired method" time="0.003">
+    </testcase>
+    <testcase classname="Checkout Domain Models StockReservation Model should calculate timeRemaining virtual" name="Checkout Domain Models StockReservation Model should calculate timeRemaining virtual" time="0.003">
+    </testcase>
+    <testcase classname="Checkout Domain Models StockReservation Model should check isActive virtual" name="Checkout Domain Models StockReservation Model should check isActive virtual" time="0.002">
+    </testcase>
+    <testcase classname="Checkout Domain Models StockReservation Model should handle reservation with variant" name="Checkout Domain Models StockReservation Model should handle reservation with variant" time="0.001">
+    </testcase>
+    <testcase classname="Checkout Domain Models Integration Scenarios should represent a complete checkout flow" name="Checkout Domain Models Integration Scenarios should represent a complete checkout flow" time="0.006">
+    </testcase>
+  </testsuite>
+  <testsuite name="Buy Box Service - Price Scoring" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:20" time="9.427" tests="42">
+    <testcase classname="Buy Box Service - Price Scoring should give 100 to cheapest offer" name="Buy Box Service - Price Scoring should give 100 to cheapest offer" time="0.002">
+    </testcase>
+    <testcase classname="Buy Box Service - Price Scoring should give 0 to most expensive offer" name="Buy Box Service - Price Scoring should give 0 to most expensive offer" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Price Scoring should give 50 to mid-priced offer" name="Buy Box Service - Price Scoring should give 50 to mid-priced offer" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Price Scoring should handle all offers same price" name="Buy Box Service - Price Scoring should handle all offers same price" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Price Scoring should clamp scores to 0-100 range" name="Buy Box Service - Price Scoring should clamp scores to 0-100 range" time="0.002">
+    </testcase>
+    <testcase classname="Buy Box Service - Vendor Rating Scoring should convert 5-star rating to 100" name="Buy Box Service - Vendor Rating Scoring should convert 5-star rating to 100" time="0.008">
+    </testcase>
+    <testcase classname="Buy Box Service - Vendor Rating Scoring should convert 0-star rating to 0" name="Buy Box Service - Vendor Rating Scoring should convert 0-star rating to 0" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Vendor Rating Scoring should convert 2.5-star rating to 50" name="Buy Box Service - Vendor Rating Scoring should convert 2.5-star rating to 50" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Vendor Rating Scoring should convert 4.2-star rating correctly" name="Buy Box Service - Vendor Rating Scoring should convert 4.2-star rating correctly" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Vendor Rating Scoring should clamp negative ratings to 0" name="Buy Box Service - Vendor Rating Scoring should clamp negative ratings to 0" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Vendor Rating Scoring should clamp &gt;5 ratings to 100" name="Buy Box Service - Vendor Rating Scoring should clamp &gt;5 ratings to 100" time="0.002">
+    </testcase>
+    <testcase classname="Buy Box Service - Delivery SLA Scoring should give 100 to 1-day delivery" name="Buy Box Service - Delivery SLA Scoring should give 100 to 1-day delivery" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Delivery SLA Scoring should give 0 to 30-day delivery" name="Buy Box Service - Delivery SLA Scoring should give 0 to 30-day delivery" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Delivery SLA Scoring should give ~50 to 15-day delivery (mid-range)" name="Buy Box Service - Delivery SLA Scoring should give ~50 to 15-day delivery (mid-range)" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Delivery SLA Scoring should handle same-day delivery (0 days)" name="Buy Box Service - Delivery SLA Scoring should handle same-day delivery (0 days)" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Delivery SLA Scoring should clamp very long delivery times" name="Buy Box Service - Delivery SLA Scoring should clamp very long delivery times" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Cancellation Rate Scoring should give 100 to 0% cancellation rate" name="Buy Box Service - Cancellation Rate Scoring should give 100 to 0% cancellation rate" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Cancellation Rate Scoring should give 0 to 100% cancellation rate" name="Buy Box Service - Cancellation Rate Scoring should give 0 to 100% cancellation rate" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Cancellation Rate Scoring should give 95 to 5% cancellation rate" name="Buy Box Service - Cancellation Rate Scoring should give 95 to 5% cancellation rate" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Cancellation Rate Scoring should give 90 to 10% cancellation rate" name="Buy Box Service - Cancellation Rate Scoring should give 90 to 10% cancellation rate" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Stock Level Scoring should give 0 to zero stock" name="Buy Box Service - Stock Level Scoring should give 0 to zero stock" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Stock Level Scoring should give higher score to higher stock" name="Buy Box Service - Stock Level Scoring should give higher score to higher stock" time="0.003">
+    </testcase>
+    <testcase classname="Buy Box Service - Stock Level Scoring should use logarithmic scale (prevent huge stock dominating)" name="Buy Box Service - Stock Level Scoring should use logarithmic scale (prevent huge stock dominating)" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Comprehensive Offer Scoring should calculate total score with correct weights" name="Buy Box Service - Comprehensive Offer Scoring should calculate total score with correct weights" time="0.004">
+    </testcase>
+    <testcase classname="Buy Box Service - Comprehensive Offer Scoring should return score between 0-100" name="Buy Box Service - Comprehensive Offer Scoring should return score between 0-100" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Buy Box Calculation should return null when no offers available" name="Buy Box Service - Buy Box Calculation should return null when no offers available" time="0.005">
+    </testcase>
+    <testcase classname="Buy Box Service - Buy Box Calculation should automatically select single offer as winner" name="Buy Box Service - Buy Box Calculation should automatically select single offer as winner" time="0.003">
+    </testcase>
+    <testcase classname="Buy Box Service - Buy Box Calculation CRITICAL: should select cheapest offer with similar vendor ratings" name="Buy Box Service - Buy Box Calculation CRITICAL: should select cheapest offer with similar vendor ratings" time="0.003">
+    </testcase>
+    <testcase classname="Buy Box Service - Buy Box Calculation CRITICAL: should balance price vs vendor rating correctly" name="Buy Box Service - Buy Box Calculation CRITICAL: should balance price vs vendor rating correctly" time="0.005">
+    </testcase>
+    <testcase classname="Buy Box Service - Buy Box Calculation CRITICAL: Extreme scenario - very cheap but terrible rating vs expensive excellent rating" name="Buy Box Service - Buy Box Calculation CRITICAL: Extreme scenario - very cheap but terrible rating vs expensive excellent rating" time="0.002">
+    </testcase>
+    <testcase classname="Buy Box Service - Buy Box Calculation CRITICAL: Tie-breaker - should use vendor with more reviews" name="Buy Box Service - Buy Box Calculation CRITICAL: Tie-breaker - should use vendor with more reviews" time="0.002">
+    </testcase>
+    <testcase classname="Buy Box Service - Buy Box Calculation should handle offers with different fulfillment methods" name="Buy Box Service - Buy Box Calculation should handle offers with different fulfillment methods" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Admin Overrides should set admin override successfully" name="Buy Box Service - Admin Overrides should set admin override successfully" time="0.017">
+    </testcase>
+    <testcase classname="Buy Box Service - Admin Overrides should clear admin override successfully" name="Buy Box Service - Admin Overrides should clear admin override successfully" time="0.004">
+    </testcase>
+    <testcase classname="Buy Box Service - Admin Overrides should respect expiration date on overrides" name="Buy Box Service - Admin Overrides should respect expiration date on overrides" time="0.002">
+    </testcase>
+    <testcase classname="Buy Box Service - Admin Overrides should return override result with source=&quot;admin_override&quot;" name="Buy Box Service - Admin Overrides should return override result with source=&quot;admin_override&quot;" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Edge Cases should handle product with no active offers" name="Buy Box Service - Edge Cases should handle product with no active offers" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Edge Cases should handle all offers with same price and rating" name="Buy Box Service - Edge Cases should handle all offers with same price and rating" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Edge Cases should handle offers with missing vendor metrics gracefully" name="Buy Box Service - Edge Cases should handle offers with missing vendor metrics gracefully" time="0.008">
+    </testcase>
+    <testcase classname="Buy Box Service - Scoring Weights Configuration should have weights that sum to 1.0 (100%)" name="Buy Box Service - Scoring Weights Configuration should have weights that sum to 1.0 (100%)" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Scoring Weights Configuration should have price as highest weight" name="Buy Box Service - Scoring Weights Configuration should have price as highest weight" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Scoring Weights Configuration should have stock as lowest weight" name="Buy Box Service - Scoring Weights Configuration should have stock as lowest weight" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="PhonePe payments" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:29" time="3.347" tests="3">
+    <testcase classname="PhonePe payments computes X-VERIFY for init" name="PhonePe payments computes X-VERIFY for init" time="0.004">
+    </testcase>
+    <testcase classname="PhonePe payments creates payment request (mocked)" name="PhonePe payments creates payment request (mocked)" time="0.004">
+    </testcase>
+    <testcase classname="PhonePe payments verifies callback signature (happy)" name="PhonePe payments verifies callback signature (happy)" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="CommissionService" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:30" time="3" tests="8">
+    <testcase classname="CommissionService calculateCommission should calculate percentage commission" name="CommissionService calculateCommission should calculate percentage commission" time="0.003">
+    </testcase>
+    <testcase classname="CommissionService calculateCommission should calculate fixed commission" name="CommissionService calculateCommission should calculate fixed commission" time="0.004">
+    </testcase>
+    <testcase classname="CommissionService calculateCommission should calculate tiered commission" name="CommissionService calculateCommission should calculate tiered commission" time="0.002">
+    </testcase>
+    <testcase classname="CommissionService calculateCommission should return 0 for unknown rule type" name="CommissionService calculateCommission should return 0 for unknown rule type" time="0.001">
+    </testcase>
+    <testcase classname="CommissionService getApplicableRule should return vendor override if present" name="CommissionService getApplicableRule should return vendor override if present" time="0.001">
+    </testcase>
+    <testcase classname="CommissionService getApplicableRule should return category rule if no vendor override" name="CommissionService getApplicableRule should return category rule if no vendor override" time="0.001">
+    </testcase>
+    <testcase classname="CommissionService getApplicableRule should return default rule if no match" name="CommissionService getApplicableRule should return default rule if no match" time="0">
+    </testcase>
+    <testcase classname="CommissionService getApplicableRule should return null if no rules" name="CommissionService getApplicableRule should return null if no rules" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Rate Limit Middleware" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:28" time="4.763" tests="19">
+    <testcase classname="Rate Limit Middleware Basic functionality should allow requests within limit" name="Rate Limit Middleware Basic functionality should allow requests within limit" time="0.059">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Basic functionality should return 429 when limit exceeded" name="Rate Limit Middleware Basic functionality should return 429 when limit exceeded" time="0.035">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Basic functionality should include rate limit headers in response" name="Rate Limit Middleware Basic functionality should include rate limit headers in response" time="0.014">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Adaptive limits by role should apply higher limit for authenticated users" name="Rate Limit Middleware Adaptive limits by role should apply higher limit for authenticated users" time="0.026">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Adaptive limits by role should apply highest limit for admin users" name="Rate Limit Middleware Adaptive limits by role should apply highest limit for admin users" time="0.017">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Adaptive limits by role should apply vendor limit for vendor users" name="Rate Limit Middleware Adaptive limits by role should apply vendor limit for vendor users" time="0.017">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Preset rate limiters should apply sensitive rate limit (10 req/min)" name="Rate Limit Middleware Preset rate limiters should apply sensitive rate limit (10 req/min)" time="0.031">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Preset rate limiters should apply strict rate limit (5 req/min)" name="Rate Limit Middleware Preset rate limiters should apply strict rate limit (5 req/min)" time="0.01">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Preset rate limiters should apply generous rate limit (500 req/min)" name="Rate Limit Middleware Preset rate limiters should apply generous rate limit (500 req/min)" time="0.014">
+    </testcase>
+    <testcase classname="Rate Limit Middleware User vs IP identification should use user ID for authenticated requests" name="Rate Limit Middleware User vs IP identification should use user ID for authenticated requests" time="0.016">
+    </testcase>
+    <testcase classname="Rate Limit Middleware User vs IP identification should use IP address for anonymous requests" name="Rate Limit Middleware User vs IP identification should use IP address for anonymous requests" time="0.016">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Fail-open behavior should allow requests when Redis is unavailable" name="Rate Limit Middleware Fail-open behavior should allow requests when Redis is unavailable" time="0.011">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Fail-open behavior should allow requests when Redis operation fails" name="Rate Limit Middleware Fail-open behavior should allow requests when Redis operation fails" time="0.09">
+    </testcase>
+    <testcase classname="Rate Limit Middleware getRateLimitStatus utility should return current rate limit status" name="Rate Limit Middleware getRateLimitStatus utility should return current rate limit status" time="0.004">
+    </testcase>
+    <testcase classname="Rate Limit Middleware getRateLimitStatus utility should handle Redis errors gracefully" name="Rate Limit Middleware getRateLimitStatus utility should handle Redis errors gracefully" time="0.002">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Sliding window behavior should remove expired entries before counting" name="Rate Limit Middleware Sliding window behavior should remove expired entries before counting" time="0.01">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Sliding window behavior should set expiry on the key" name="Rate Limit Middleware Sliding window behavior should set expiry on the key" time="0.01">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Multiple concurrent requests should handle burst of requests correctly" name="Rate Limit Middleware Multiple concurrent requests should handle burst of requests correctly" time="0.076">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Multiple concurrent requests should reject requests exceeding burst limit" name="Rate Limit Middleware Multiple concurrent requests should reject requests exceeding burst limit" time="0.074">
+    </testcase>
+  </testsuite>
+  <testsuite name="BuyBox Service" errors="0" failures="0" skipped="3" timestamp="2025-10-22T22:32:33" time="2.661" tests="11">
+    <testcase classname="BuyBox Service should calculate price score" name="BuyBox Service should calculate price score" time="0.002">
+    </testcase>
+    <testcase classname="BuyBox Service should calculate vendor rating score" name="BuyBox Service should calculate vendor rating score" time="0">
+    </testcase>
+    <testcase classname="BuyBox Service should calculate delivery SLA score" name="BuyBox Service should calculate delivery SLA score" time="0">
+    </testcase>
+    <testcase classname="BuyBox Service should calculate cancellation score" name="BuyBox Service should calculate cancellation score" time="0.001">
+    </testcase>
+    <testcase classname="BuyBox Service should calculate stock score" name="BuyBox Service should calculate stock score" time="0.001">
+    </testcase>
+    <testcase classname="BuyBox Service should calculate offer score" name="BuyBox Service should calculate offer score" time="0.003">
+    </testcase>
+    <testcase classname="BuyBox Service should handle admin override logic" name="BuyBox Service should handle admin override logic" time="0.007">
+    </testcase>
+    <testcase classname="BuyBox Service should fetch vendor metrics" name="BuyBox Service should fetch vendor metrics" time="0.001">
+    </testcase>
+    <testcase classname="BuyBox Service should calculate buy box winner (integration)" name="BuyBox Service should calculate buy box winner (integration)" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="BuyBox Service should batch calculate buy box" name="BuyBox Service should batch calculate buy box" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="BuyBox Service should calculate buy box for a product" name="BuyBox Service should calculate buy box for a product" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="CORS Middleware" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:33" time="2.538" tests="10">
+    <testcase classname="CORS Middleware should allow requests with no origin" name="CORS Middleware should allow requests with no origin" time="0.032">
+    </testcase>
+    <testcase classname="CORS Middleware should allow whitelisted origins" name="CORS Middleware should allow whitelisted origins" time="0.014">
+    </testcase>
+    <testcase classname="CORS Middleware should block non-whitelisted origins" name="CORS Middleware should block non-whitelisted origins" time="0.055">
+    </testcase>
+    <testcase classname="CORS Middleware should allow all origins with wildcard" name="CORS Middleware should allow all origins with wildcard" time="0.012">
+    </testcase>
+    <testcase classname="CORS Middleware should expose rate limit headers" name="CORS Middleware should expose rate limit headers" time="0.022">
+    </testcase>
+    <testcase classname="CORS Middleware should allow credentials" name="CORS Middleware should allow credentials" time="0.01">
+    </testcase>
+    <testcase classname="CORS Middleware isOriginAllowed helper should return true for no origin" name="CORS Middleware isOriginAllowed helper should return true for no origin" time="0.001">
+    </testcase>
+    <testcase classname="CORS Middleware isOriginAllowed helper should return true for wildcard" name="CORS Middleware isOriginAllowed helper should return true for wildcard" time="0.001">
+    </testcase>
+    <testcase classname="CORS Middleware isOriginAllowed helper should return true for whitelisted origin" name="CORS Middleware isOriginAllowed helper should return true for whitelisted origin" time="0.003">
+    </testcase>
+    <testcase classname="CORS Middleware isOriginAllowed helper should return false for non-whitelisted origin" name="CORS Middleware isOriginAllowed helper should return false for non-whitelisted origin" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Refunds &amp; partial refunds" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:28" time="9.245" tests="1">
+    <testcase classname="Refunds &amp; partial refunds partially refunds one line and reverses commission proportionally" name="Refunds &amp; partial refunds partially refunds one line and reverses commission proportionally" time="0.01">
+    </testcase>
+  </testsuite>
+  <testsuite name="Checkout controller schemas" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:29" time="8.696" tests="5">
+    <testcase classname="Checkout controller schemas parses AddToCartBody" name="Checkout controller schemas parses AddToCartBody" time="0.002">
+    </testcase>
+    <testcase classname="Checkout controller schemas parses SetAddressBody with inline shippingAddress" name="Checkout controller schemas parses SetAddressBody with inline shippingAddress" time="0.001">
+    </testcase>
+    <testcase classname="Checkout controller schemas parses ShippingBody selection optional" name="Checkout controller schemas parses ShippingBody selection optional" time="0.001">
+    </testcase>
+    <testcase classname="Checkout controller schemas parses PayBody default gateway" name="Checkout controller schemas parses PayBody default gateway" time="0.001">
+    </testcase>
+    <testcase classname="Checkout controller schemas parses ConfirmBody" name="Checkout controller schemas parses ConfirmBody" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="sanitizeString" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:36" time="2.067" tests="3">
+    <testcase classname="sanitizeString removes all HTML tags by default" name="sanitizeString removes all HTML tags by default" time="0.005">
+    </testcase>
+    <testcase classname="sanitizeString allows safe rich text tags with richText options" name="sanitizeString allows safe rich text tags with richText options" time="0.004">
+    </testcase>
+    <testcase classname="sanitizeString removes disallowed attributes" name="sanitizeString removes disallowed attributes" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Shiprocket Adapter" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:35" time="2.469" tests="14">
+    <testcase classname="Shiprocket Adapter should cache auth token" name="Shiprocket Adapter should cache auth token" time="0.003">
+    </testcase>
+    <testcase classname="Shiprocket Adapter should fetch rate quotes" name="Shiprocket Adapter should fetch rate quotes" time="0.002">
+    </testcase>
+    <testcase classname="Shiprocket Adapter should create label with AWB" name="Shiprocket Adapter should create label with AWB" time="0.002">
+    </testcase>
+    <testcase classname="Shiprocket Adapter should track shipment" name="Shiprocket Adapter should track shipment" time="0.002">
+    </testcase>
+    <testcase classname="Shiprocket Adapter should map status correctly" name="Shiprocket Adapter should map status correctly" time="0.001">
+    </testcase>
+    <testcase classname="Delhivery Adapter should fetch rate quotes" name="Delhivery Adapter should fetch rate quotes" time="0.003">
+    </testcase>
+    <testcase classname="Delhivery Adapter should create label with waybill" name="Delhivery Adapter should create label with waybill" time="0.008">
+    </testcase>
+    <testcase classname="Delhivery Adapter should track shipment" name="Delhivery Adapter should track shipment" time="0.002">
+    </testcase>
+    <testcase classname="Delhivery Adapter should handle missing tracking data gracefully" name="Delhivery Adapter should handle missing tracking data gracefully" time="0.003">
+    </testcase>
+    <testcase classname="Shipping Factory should return default shiprocket adapter" name="Shipping Factory should return default shiprocket adapter" time="0.001">
+    </testcase>
+    <testcase classname="Shipping Factory should return adapter by provider name" name="Shipping Factory should return adapter by provider name" time="0.001">
+    </testcase>
+    <testcase classname="Shipping Factory should use env var if set" name="Shipping Factory should use env var if set" time="0.001">
+    </testcase>
+    <testcase classname="Shipping Factory should throw on unsupported provider" name="Shipping Factory should throw on unsupported provider" time="0.033">
+    </testcase>
+    <testcase classname="Shipping Factory should allow custom adapter registration" name="Shipping Factory should allow custom adapter registration" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="addServerWatermark" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:38" time="0.579" tests="1">
+    <testcase classname="addServerWatermark should return the original buffer (stub)" name="addServerWatermark should return the original buffer (stub)" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Feature #181: Pricing Engine" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:33" time="6.558" tests="17">
+    <testcase classname="Feature #181: Pricing Engine CRITICAL: Stacking Rules should apply multiple stackable rules" name="Feature #181: Pricing Engine CRITICAL: Stacking Rules should apply multiple stackable rules" time="0.007">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine CRITICAL: Stacking Rules CRITICAL: should NOT stack non-stackable coupon with promo" name="Feature #181: Pricing Engine CRITICAL: Stacking Rules CRITICAL: should NOT stack non-stackable coupon with promo" time="0.003">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine CRITICAL: Stacking Rules should respect stackableWith whitelist" name="Feature #181: Pricing Engine CRITICAL: Stacking Rules should respect stackableWith whitelist" time="0.002">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine CRITICAL: Tiered Pricing (Bulk Discounts) should apply correct tier based on quantity" name="Feature #181: Pricing Engine CRITICAL: Tiered Pricing (Bulk Discounts) should apply correct tier based on quantity" time="0.003">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine CRITICAL: Tiered Pricing (Bulk Discounts) should apply price override tier" name="Feature #181: Pricing Engine CRITICAL: Tiered Pricing (Bulk Discounts) should apply price override tier" time="0.041">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine CRITICAL: Tiered Pricing (Bulk Discounts) should handle no matching tier (quantity too low)" name="Feature #181: Pricing Engine CRITICAL: Tiered Pricing (Bulk Discounts) should handle no matching tier (quantity too low)" time="0.001">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine CRITICAL: Explanation Breakdown should generate UI-friendly explanation for coupon" name="Feature #181: Pricing Engine CRITICAL: Explanation Breakdown should generate UI-friendly explanation for coupon" time="0.001">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine CRITICAL: Explanation Breakdown should generate formatted breakdown for multiple rules" name="Feature #181: Pricing Engine CRITICAL: Explanation Breakdown should generate formatted breakdown for multiple rules" time="0.008">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Usage Limits should reject coupon that has reached usage limit" name="Feature #181: Pricing Engine Usage Limits should reject coupon that has reached usage limit" time="0.004">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Usage Limits should enforce minimum cart value" name="Feature #181: Pricing Engine Usage Limits should enforce minimum cart value" time="0.002">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Usage Limits should cap discount at maxDiscountAmount" name="Feature #181: Pricing Engine Usage Limits should cap discount at maxDiscountAmount" time="0.001">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Exclusions should exclude already-discounted items" name="Feature #181: Pricing Engine Exclusions should exclude already-discounted items" time="0.001">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Exclusions should exclude sale items when flag is set" name="Feature #181: Pricing Engine Exclusions should exclude sale items when flag is set" time="0.006">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Edge Cases should handle empty cart" name="Feature #181: Pricing Engine Edge Cases should handle empty cart" time="0.001">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Edge Cases should never return negative final total" name="Feature #181: Pricing Engine Edge Cases should never return negative final total" time="0.074">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Edge Cases should handle invalid coupon code gracefully" name="Feature #181: Pricing Engine Edge Cases should handle invalid coupon code gracefully" time="0.001">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Edge Cases should validate coupon without applying it" name="Feature #181: Pricing Engine Edge Cases should validate coupon without applying it" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="RBAC ability rules" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:37" time="2.295" tests="6">
+    <testcase classname="RBAC ability rules admin can do anything" name="RBAC ability rules admin can do anything" time="0.002">
+    </testcase>
+    <testcase classname="RBAC ability rules vendor can manage store" name="RBAC ability rules vendor can manage store" time="0.001">
+    </testcase>
+    <testcase classname="RBAC ability rules vendor can create product only for self" name="RBAC ability rules vendor can create product only for self" time="0">
+    </testcase>
+    <testcase classname="RBAC ability rules vendor can update/delete only own product" name="RBAC ability rules vendor can update/delete only own product" time="0.001">
+    </testcase>
+    <testcase classname="RBAC ability rules user can update only own profile" name="RBAC ability rules user can update only own profile" time="0">
+    </testcase>
+    <testcase classname="RBAC ability rules deny by default for privileged actions" name="RBAC ability rules deny by default for privileged actions" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="crypto utils" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:38" time="1.978" tests="3">
+    <testcase classname="crypto utils encrypts and decrypts a secret" name="crypto utils encrypts and decrypts a secret" time="0.004">
+    </testcase>
+    <testcase classname="crypto utils masks secret except last 4 chars" name="crypto utils masks secret except last 4 chars" time="0.001">
+    </testcase>
+    <testcase classname="crypto utils decryptSecret throws on malformed input" name="crypto utils decryptSecret throws on malformed input" time="0.006">
+    </testcase>
+  </testsuite>
+  <testsuite name="GST engine" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:38" time="2.079" tests="4">
+    <testcase classname="GST engine splits CGST/SGST for intrastate" name="GST engine splits CGST/SGST for intrastate" time="0.002">
+    </testcase>
+    <testcase classname="GST engine applies IGST for interstate" name="GST engine applies IGST for interstate" time="0.002">
+    </testcase>
+    <testcase classname="GST engine handles rounding split small values" name="GST engine handles rounding split small values" time="0.001">
+    </testcase>
+    <testcase classname="GST engine formats INR" name="GST engine formats INR" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="generateSlug" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:39" time="0.589" tests="7">
+    <testcase classname="generateSlug should slugify a string" name="generateSlug should slugify a string" time="0.002">
+    </testcase>
+    <testcase classname="generateSlug should transliterate unicode" name="generateSlug should transliterate unicode" time="0.001">
+    </testcase>
+    <testcase classname="generateSlug should handle locale edge cases (drop non-latin by default)" name="generateSlug should handle locale edge cases (drop non-latin by default)" time="0.001">
+    </testcase>
+    <testcase classname="dedupeSlug should deduplicate slugs" name="dedupeSlug should deduplicate slugs" time="0.001">
+    </testcase>
+    <testcase classname="dedupeSlug should return base if not present" name="dedupeSlug should return base if not present" time="0.001">
+    </testcase>
+    <testcase classname="updateSlugHistory should add old slug to history" name="updateSlugHistory should add old slug to history" time="0.001">
+    </testcase>
+    <testcase classname="updateSlugHistory should not add if unchanged" name="updateSlugHistory should not add if unchanged" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Feature #180: Inventory Race Condition Tests (Unit)" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:39" time="1.894" tests="12">
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) CRITICAL: Atomic Operation Logic should demonstrate atomic findOneAndUpdate prevents race conditions" name="Feature #180: Inventory Race Condition Tests (Unit) CRITICAL: Atomic Operation Logic should demonstrate atomic findOneAndUpdate prevents race conditions" time="0.002">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) CRITICAL: Atomic Operation Logic should document the reservation creation flow" name="Feature #180: Inventory Race Condition Tests (Unit) CRITICAL: Atomic Operation Logic should document the reservation creation flow" time="0.001">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) CRITICAL: Atomic Operation Logic should document race condition prevention mechanism" name="Feature #180: Inventory Race Condition Tests (Unit) CRITICAL: Atomic Operation Logic should document race condition prevention mechanism" time="0.001">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Reservation Lifecycle Logic should document stock state transitions" name="Feature #180: Inventory Race Condition Tests (Unit) Reservation Lifecycle Logic should document stock state transitions" time="0.002">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Reservation Lifecycle Logic should document expiry and cleanup flow" name="Feature #180: Inventory Race Condition Tests (Unit) Reservation Lifecycle Logic should document expiry and cleanup flow" time="0.001">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Multi-warehouse Isolation should document warehouse-level stock isolation" name="Feature #180: Inventory Race Condition Tests (Unit) Multi-warehouse Isolation should document warehouse-level stock isolation" time="0">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Multi-warehouse Isolation should document cross-warehouse aggregation" name="Feature #180: Inventory Race Condition Tests (Unit) Multi-warehouse Isolation should document cross-warehouse aggregation" time="0">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Error Handling &amp; Edge Cases should handle insufficient stock gracefully" name="Feature #180: Inventory Race Condition Tests (Unit) Error Handling &amp; Edge Cases should handle insufficient stock gracefully" time="0.001">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Error Handling &amp; Edge Cases should prevent negative stock values" name="Feature #180: Inventory Race Condition Tests (Unit) Error Handling &amp; Edge Cases should prevent negative stock values" time="0.001">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Error Handling &amp; Edge Cases should handle concurrent reservations for different quantities" name="Feature #180: Inventory Race Condition Tests (Unit) Error Handling &amp; Edge Cases should handle concurrent reservations for different quantities" time="0.001">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Integration Points should document checkout flow integration" name="Feature #180: Inventory Race Condition Tests (Unit) Integration Points should document checkout flow integration" time="0.001">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Integration Points should document cart abandonment handling" name="Feature #180: Inventory Race Condition Tests (Unit) Integration Points should document cart abandonment handling" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="getEnv" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:39" time="1.445" tests="2">
+    <testcase classname="getEnv returns the value if present" name="getEnv returns the value if present" time="0.002">
+    </testcase>
+    <testcase classname="getEnv throws if the key is missing" name="getEnv throws if the key is missing" time="0.008">
+    </testcase>
+  </testsuite>
+  <testsuite name="apiResponse" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:40" time="1.435" tests="3">
+    <testcase classname="apiResponse returns a success envelope" name="apiResponse returns a success envelope" time="0.002">
+    </testcase>
+    <testcase classname="apiResponse returns an error envelope" name="apiResponse returns an error envelope" time="0.001">
+    </testcase>
+    <testcase classname="apiResponse returns error with only message" name="apiResponse returns error with only message" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Poison Pill Queue" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:40" time="1.5" tests="1">
+    <testcase classname="Poison Pill Queue should run a dummy test" name="Poison Pill Queue should run a dummy test" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="errorHandler" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:40" time="1.484" tests="1">
+    <testcase classname="errorHandler logs error and sends 500" name="errorHandler logs error and sends 500" time="0.004">
+    </testcase>
+  </testsuite>
+  <testsuite name="logger" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:40" time="1.328" tests="3">
+    <testcase classname="logger calls console.info for info" name="logger calls console.info for info" time="0.001">
+    </testcase>
+    <testcase classname="logger calls console.warn for warn" name="logger calls console.warn for warn" time="0">
+    </testcase>
+    <testcase classname="logger calls console.error for error" name="logger calls console.error for error" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="mapRolesToScopes" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:32:41" time="1.273" tests="4">
+    <testcase classname="mapRolesToScopes maps admin to all admin scopes" name="mapRolesToScopes maps admin to all admin scopes" time="0.002">
+    </testcase>
+    <testcase classname="mapRolesToScopes maps vendor to vendor scopes" name="mapRolesToScopes maps vendor to vendor scopes" time="0.001">
+    </testcase>
+    <testcase classname="mapRolesToScopes deduplicates scopes for multiple roles" name="mapRolesToScopes deduplicates scopes for multiple roles" time="0.001">
+    </testcase>
+    <testcase classname="mapRolesToScopes returns empty for unknown role" name="mapRolesToScopes returns empty for unknown role" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="Checkout API" errors="0" failures="0" skipped="1" timestamp="2025-10-22T22:31:48" time="55.627" tests="1">
+    <testcase classname="Checkout API runs add-&gt;address-&gt;shipping-&gt;pay-&gt;confirm" name="Checkout API runs add-&gt;address-&gt;shipping-&gt;pay-&gt;confirm" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="Catalog: Category hierarchy and attributes filters" errors="0" failures="0" skipped="0" timestamp="2025-10-22T22:31:48" time="57.258" tests="4">
+    <testcase classname="Catalog: Category hierarchy and attributes filters returns products in parent category including descendants" name="Catalog: Category hierarchy and attributes filters returns products in parent category including descendants" time="0.003">
+    </testcase>
+    <testcase classname="Catalog: Category hierarchy and attributes filters returns only products in child category when filtering by child" name="Catalog: Category hierarchy and attributes filters returns only products in child category when filtering by child" time="0">
+    </testcase>
+    <testcase classname="Catalog: Category hierarchy and attributes filters filters by single attribute" name="Catalog: Category hierarchy and attributes filters filters by single attribute" time="0.001">
+    </testcase>
+    <testcase classname="Catalog: Category hierarchy and attributes filters filters by multiple attributes (AND)" name="Catalog: Category hierarchy and attributes filters filters by multiple attributes (AND)" time="0">
+    </testcase>
+  </testsuite>
+</testsuites>

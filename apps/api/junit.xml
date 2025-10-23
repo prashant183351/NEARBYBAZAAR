@@ -1,0 +1,832 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="367" failures="1" errors="0" time="27.235">
+  <testsuite name="CommissionService Integration" errors="0" failures="0" skipped="1" timestamp="2025-10-22T23:28:30" time="15.027" tests="1">
+    <testcase classname="CommissionService Integration should calculate commission for a real order (integration)" name="CommissionService Integration should calculate commission for a real order (integration)" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="SupplierRateLimiter/RetryQueue singleton and edge cases" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:30" time="15.3" tests="8">
+    <testcase classname="SupplierRateLimiter/RetryQueue singleton and edge cases throws if getRateLimiter called without Redis" name="SupplierRateLimiter/RetryQueue singleton and edge cases throws if getRateLimiter called without Redis" time="0.085">
+    </testcase>
+    <testcase classname="SupplierRateLimiter/RetryQueue singleton and edge cases returns singleton instance if already created" name="SupplierRateLimiter/RetryQueue singleton and edge cases returns singleton instance if already created" time="0.004">
+    </testcase>
+    <testcase classname="SupplierRateLimiter/RetryQueue singleton and edge cases throws if getRetryQueue called without Redis" name="SupplierRateLimiter/RetryQueue singleton and edge cases throws if getRetryQueue called without Redis" time="0.005">
+    </testcase>
+    <testcase classname="SupplierRateLimiter/RetryQueue singleton and edge cases returns singleton retry queue if already created" name="SupplierRateLimiter/RetryQueue singleton and edge cases returns singleton retry queue if already created" time="0.011">
+    </testcase>
+    <testcase classname="SupplierRateLimiter/RetryQueue singleton and edge cases handles malformed JSON in getReadyRequests" name="SupplierRateLimiter/RetryQueue singleton and edge cases handles malformed JSON in getReadyRequests" time="0.012">
+    </testcase>
+    <testcase classname="SupplierRateLimiter/RetryQueue singleton and edge cases handles empty queue in getReadyRequests" name="SupplierRateLimiter/RetryQueue singleton and edge cases handles empty queue in getReadyRequests" time="0.003">
+    </testcase>
+    <testcase classname="SupplierRateLimiter/RetryQueue singleton and edge cases dequeue does not throw if item not present" name="SupplierRateLimiter/RetryQueue singleton and edge cases dequeue does not throw if item not present" time="0.004">
+    </testcase>
+    <testcase classname="SupplierRateLimiter/RetryQueue singleton and edge cases clear does not throw if queue does not exist" name="SupplierRateLimiter/RetryQueue singleton and edge cases clear does not throw if queue does not exist" time="0.003">
+    </testcase>
+  </testsuite>
+  <testsuite name="adAnalytics Service" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:30" time="16.405" tests="5">
+    <testcase classname="adAnalytics Service logImpression increments impressions" name="adAnalytics Service logImpression increments impressions" time="0.016">
+    </testcase>
+    <testcase classname="adAnalytics Service logClick increments clicks" name="adAnalytics Service logClick increments clicks" time="0.003">
+    </testcase>
+    <testcase classname="adAnalytics Service logOrder increments orders and revenue" name="adAnalytics Service logOrder increments orders and revenue" time="0.002">
+    </testcase>
+    <testcase classname="adAnalytics Service getVendorAnalytics returns vendor analytics" name="adAnalytics Service getVendorAnalytics returns vendor analytics" time="0.004">
+    </testcase>
+    <testcase classname="adAnalytics Service getAdminAnalytics returns aggregated analytics" name="adAnalytics Service getAdminAnalytics returns aggregated analytics" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="affiliate.ts service" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:30" time="16.768" tests="8">
+    <testcase classname="affiliate.ts service generateReferralCode creates code and saves affiliate" name="affiliate.ts service generateReferralCode creates code and saves affiliate" time="0.026">
+    </testcase>
+    <testcase classname="affiliate.ts service trackAffiliateClick increments clicks and logs ledger" name="affiliate.ts service trackAffiliateClick increments clicks and logs ledger" time="0.002">
+    </testcase>
+    <testcase classname="affiliate.ts service trackAffiliateClick does not log ledger if affiliate not found" name="affiliate.ts service trackAffiliateClick does not log ledger if affiliate not found" time="0.003">
+    </testcase>
+    <testcase classname="affiliate.ts service trackAffiliateSignup increments signups and logs ledger" name="affiliate.ts service trackAffiliateSignup increments signups and logs ledger" time="0.002">
+    </testcase>
+    <testcase classname="affiliate.ts service trackAffiliateSignup does not log ledger if affiliate not found" name="affiliate.ts service trackAffiliateSignup does not log ledger if affiliate not found" time="0.006">
+    </testcase>
+    <testcase classname="affiliate.ts service trackAffiliateSale increments sales/commission and logs ledger" name="affiliate.ts service trackAffiliateSale increments sales/commission and logs ledger" time="0.002">
+    </testcase>
+    <testcase classname="affiliate.ts service trackAffiliateSale does not log ledger if affiliate not found" name="affiliate.ts service trackAffiliateSale does not log ledger if affiliate not found" time="0.001">
+    </testcase>
+    <testcase classname="affiliate.ts service recordAffiliatePayout updates commissionPaid and logs ledger" name="affiliate.ts service recordAffiliatePayout updates commissionPaid and logs ledger" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Dropship OutboundWebhook Rate Limit &amp; Retry" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:45" time="2.992" tests="5">
+    <testcase classname="Dropship OutboundWebhook Rate Limit &amp; Retry should rate limit and enqueue retry if limit exceeded" name="Dropship OutboundWebhook Rate Limit &amp; Retry should rate limit and enqueue retry if limit exceeded" time="0.079">
+    </testcase>
+    <testcase classname="Dropship OutboundWebhook Rate Limit &amp; Retry should process retry queue and push ready orders" name="Dropship OutboundWebhook Rate Limit &amp; Retry should process retry queue and push ready orders" time="0.007">
+    </testcase>
+    <testcase classname="Dropship OutboundWebhook Rate Limit &amp; Retry should skip processing if Redis not initialized" name="Dropship OutboundWebhook Rate Limit &amp; Retry should skip processing if Redis not initialized" time="0.005">
+    </testcase>
+    <testcase classname="Dropship OutboundWebhook Rate Limit &amp; Retry should keep in queue if still rate limited on retry" name="Dropship OutboundWebhook Rate Limit &amp; Retry should keep in queue if still rate limited on retry" time="0.414">
+    </testcase>
+    <testcase classname="Dropship OutboundWebhook Rate Limit &amp; Retry should handle errors in retry processing gracefully" name="Dropship OutboundWebhook Rate Limit &amp; Retry should handle errors in retry processing gracefully" time="0.485">
+    </testcase>
+  </testsuite>
+  <testsuite name="Rate Limit Middleware" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:47" time="1.705" tests="19">
+    <testcase classname="Rate Limit Middleware Basic functionality should allow requests within limit" name="Rate Limit Middleware Basic functionality should allow requests within limit" time="0.066">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Basic functionality should return 429 when limit exceeded" name="Rate Limit Middleware Basic functionality should return 429 when limit exceeded" time="0.017">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Basic functionality should include rate limit headers in response" name="Rate Limit Middleware Basic functionality should include rate limit headers in response" time="0.014">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Adaptive limits by role should apply higher limit for authenticated users" name="Rate Limit Middleware Adaptive limits by role should apply higher limit for authenticated users" time="0.016">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Adaptive limits by role should apply highest limit for admin users" name="Rate Limit Middleware Adaptive limits by role should apply highest limit for admin users" time="0.013">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Adaptive limits by role should apply vendor limit for vendor users" name="Rate Limit Middleware Adaptive limits by role should apply vendor limit for vendor users" time="0.013">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Preset rate limiters should apply sensitive rate limit (10 req/min)" name="Rate Limit Middleware Preset rate limiters should apply sensitive rate limit (10 req/min)" time="0.018">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Preset rate limiters should apply strict rate limit (5 req/min)" name="Rate Limit Middleware Preset rate limiters should apply strict rate limit (5 req/min)" time="0.01">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Preset rate limiters should apply generous rate limit (500 req/min)" name="Rate Limit Middleware Preset rate limiters should apply generous rate limit (500 req/min)" time="0.027">
+    </testcase>
+    <testcase classname="Rate Limit Middleware User vs IP identification should use user ID for authenticated requests" name="Rate Limit Middleware User vs IP identification should use user ID for authenticated requests" time="0.026">
+    </testcase>
+    <testcase classname="Rate Limit Middleware User vs IP identification should use IP address for anonymous requests" name="Rate Limit Middleware User vs IP identification should use IP address for anonymous requests" time="0.016">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Fail-open behavior should allow requests when Redis is unavailable" name="Rate Limit Middleware Fail-open behavior should allow requests when Redis is unavailable" time="0.009">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Fail-open behavior should allow requests when Redis operation fails" name="Rate Limit Middleware Fail-open behavior should allow requests when Redis operation fails" time="0.075">
+    </testcase>
+    <testcase classname="Rate Limit Middleware getRateLimitStatus utility should return current rate limit status" name="Rate Limit Middleware getRateLimitStatus utility should return current rate limit status" time="0.002">
+    </testcase>
+    <testcase classname="Rate Limit Middleware getRateLimitStatus utility should handle Redis errors gracefully" name="Rate Limit Middleware getRateLimitStatus utility should handle Redis errors gracefully" time="0.004">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Sliding window behavior should remove expired entries before counting" name="Rate Limit Middleware Sliding window behavior should remove expired entries before counting" time="0.027">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Sliding window behavior should set expiry on the key" name="Rate Limit Middleware Sliding window behavior should set expiry on the key" time="0.01">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Multiple concurrent requests should handle burst of requests correctly" name="Rate Limit Middleware Multiple concurrent requests should handle burst of requests correctly" time="0.085">
+    </testcase>
+    <testcase classname="Rate Limit Middleware Multiple concurrent requests should reject requests exceeding burst limit" name="Rate Limit Middleware Multiple concurrent requests should reject requests exceeding burst limit" time="0.099">
+    </testcase>
+  </testsuite>
+  <testsuite name="Buy Box Service - Price Scoring" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:47" time="1.37" tests="42">
+    <testcase classname="Buy Box Service - Price Scoring should give 100 to cheapest offer" name="Buy Box Service - Price Scoring should give 100 to cheapest offer" time="0.002">
+    </testcase>
+    <testcase classname="Buy Box Service - Price Scoring should give 0 to most expensive offer" name="Buy Box Service - Price Scoring should give 0 to most expensive offer" time="0.002">
+    </testcase>
+    <testcase classname="Buy Box Service - Price Scoring should give 50 to mid-priced offer" name="Buy Box Service - Price Scoring should give 50 to mid-priced offer" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Price Scoring should handle all offers same price" name="Buy Box Service - Price Scoring should handle all offers same price" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Price Scoring should clamp scores to 0-100 range" name="Buy Box Service - Price Scoring should clamp scores to 0-100 range" time="0.002">
+    </testcase>
+    <testcase classname="Buy Box Service - Vendor Rating Scoring should convert 5-star rating to 100" name="Buy Box Service - Vendor Rating Scoring should convert 5-star rating to 100" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Vendor Rating Scoring should convert 0-star rating to 0" name="Buy Box Service - Vendor Rating Scoring should convert 0-star rating to 0" time="0.006">
+    </testcase>
+    <testcase classname="Buy Box Service - Vendor Rating Scoring should convert 2.5-star rating to 50" name="Buy Box Service - Vendor Rating Scoring should convert 2.5-star rating to 50" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Vendor Rating Scoring should convert 4.2-star rating correctly" name="Buy Box Service - Vendor Rating Scoring should convert 4.2-star rating correctly" time="0.003">
+    </testcase>
+    <testcase classname="Buy Box Service - Vendor Rating Scoring should clamp negative ratings to 0" name="Buy Box Service - Vendor Rating Scoring should clamp negative ratings to 0" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Vendor Rating Scoring should clamp &gt;5 ratings to 100" name="Buy Box Service - Vendor Rating Scoring should clamp &gt;5 ratings to 100" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Delivery SLA Scoring should give 100 to 1-day delivery" name="Buy Box Service - Delivery SLA Scoring should give 100 to 1-day delivery" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Delivery SLA Scoring should give 0 to 30-day delivery" name="Buy Box Service - Delivery SLA Scoring should give 0 to 30-day delivery" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Delivery SLA Scoring should give ~50 to 15-day delivery (mid-range)" name="Buy Box Service - Delivery SLA Scoring should give ~50 to 15-day delivery (mid-range)" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Delivery SLA Scoring should handle same-day delivery (0 days)" name="Buy Box Service - Delivery SLA Scoring should handle same-day delivery (0 days)" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Delivery SLA Scoring should clamp very long delivery times" name="Buy Box Service - Delivery SLA Scoring should clamp very long delivery times" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Cancellation Rate Scoring should give 100 to 0% cancellation rate" name="Buy Box Service - Cancellation Rate Scoring should give 100 to 0% cancellation rate" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Cancellation Rate Scoring should give 0 to 100% cancellation rate" name="Buy Box Service - Cancellation Rate Scoring should give 0 to 100% cancellation rate" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Cancellation Rate Scoring should give 95 to 5% cancellation rate" name="Buy Box Service - Cancellation Rate Scoring should give 95 to 5% cancellation rate" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Cancellation Rate Scoring should give 90 to 10% cancellation rate" name="Buy Box Service - Cancellation Rate Scoring should give 90 to 10% cancellation rate" time="0.01">
+    </testcase>
+    <testcase classname="Buy Box Service - Stock Level Scoring should give 0 to zero stock" name="Buy Box Service - Stock Level Scoring should give 0 to zero stock" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Stock Level Scoring should give higher score to higher stock" name="Buy Box Service - Stock Level Scoring should give higher score to higher stock" time="0.008">
+    </testcase>
+    <testcase classname="Buy Box Service - Stock Level Scoring should use logarithmic scale (prevent huge stock dominating)" name="Buy Box Service - Stock Level Scoring should use logarithmic scale (prevent huge stock dominating)" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Comprehensive Offer Scoring should calculate total score with correct weights" name="Buy Box Service - Comprehensive Offer Scoring should calculate total score with correct weights" time="0.002">
+    </testcase>
+    <testcase classname="Buy Box Service - Comprehensive Offer Scoring should return score between 0-100" name="Buy Box Service - Comprehensive Offer Scoring should return score between 0-100" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Buy Box Calculation should return null when no offers available" name="Buy Box Service - Buy Box Calculation should return null when no offers available" time="0.003">
+    </testcase>
+    <testcase classname="Buy Box Service - Buy Box Calculation should automatically select single offer as winner" name="Buy Box Service - Buy Box Calculation should automatically select single offer as winner" time="0.025">
+    </testcase>
+    <testcase classname="Buy Box Service - Buy Box Calculation CRITICAL: should select cheapest offer with similar vendor ratings" name="Buy Box Service - Buy Box Calculation CRITICAL: should select cheapest offer with similar vendor ratings" time="0.003">
+    </testcase>
+    <testcase classname="Buy Box Service - Buy Box Calculation CRITICAL: should balance price vs vendor rating correctly" name="Buy Box Service - Buy Box Calculation CRITICAL: should balance price vs vendor rating correctly" time="0.025">
+    </testcase>
+    <testcase classname="Buy Box Service - Buy Box Calculation CRITICAL: Extreme scenario - very cheap but terrible rating vs expensive excellent rating" name="Buy Box Service - Buy Box Calculation CRITICAL: Extreme scenario - very cheap but terrible rating vs expensive excellent rating" time="0.003">
+    </testcase>
+    <testcase classname="Buy Box Service - Buy Box Calculation CRITICAL: Tie-breaker - should use vendor with more reviews" name="Buy Box Service - Buy Box Calculation CRITICAL: Tie-breaker - should use vendor with more reviews" time="0.002">
+    </testcase>
+    <testcase classname="Buy Box Service - Buy Box Calculation should handle offers with different fulfillment methods" name="Buy Box Service - Buy Box Calculation should handle offers with different fulfillment methods" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Admin Overrides should set admin override successfully" name="Buy Box Service - Admin Overrides should set admin override successfully" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Admin Overrides should clear admin override successfully" name="Buy Box Service - Admin Overrides should clear admin override successfully" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Admin Overrides should respect expiration date on overrides" name="Buy Box Service - Admin Overrides should respect expiration date on overrides" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Admin Overrides should return override result with source=&quot;admin_override&quot;" name="Buy Box Service - Admin Overrides should return override result with source=&quot;admin_override&quot;" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Edge Cases should handle product with no active offers" name="Buy Box Service - Edge Cases should handle product with no active offers" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Edge Cases should handle all offers with same price and rating" name="Buy Box Service - Edge Cases should handle all offers with same price and rating" time="0.002">
+    </testcase>
+    <testcase classname="Buy Box Service - Edge Cases should handle offers with missing vendor metrics gracefully" name="Buy Box Service - Edge Cases should handle offers with missing vendor metrics gracefully" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Scoring Weights Configuration should have weights that sum to 1.0 (100%)" name="Buy Box Service - Scoring Weights Configuration should have weights that sum to 1.0 (100%)" time="0.001">
+    </testcase>
+    <testcase classname="Buy Box Service - Scoring Weights Configuration should have price as highest weight" name="Buy Box Service - Scoring Weights Configuration should have price as highest weight" time="0">
+    </testcase>
+    <testcase classname="Buy Box Service - Scoring Weights Configuration should have stock as lowest weight" name="Buy Box Service - Scoring Weights Configuration should have stock as lowest weight" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="undefined" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:46" time="3.017" tests="7">
+    <testcase classname=" getCampaignAnalytics handles no clicks" name=" getCampaignAnalytics handles no clicks" time="0.005">
+    </testcase>
+    <testcase classname=" getVendorAnalytics handles no clicks or campaigns" name=" getVendorAnalytics handles no clicks or campaigns" time="0.006">
+    </testcase>
+    <testcase classname=" getCampaignAnalytics handles clicks with missing fields" name=" getCampaignAnalytics handles clicks with missing fields" time="0.013">
+    </testcase>
+    <testcase classname="adTracking analytics getCampaignAnalytics returns correct aggregates" name="adTracking analytics getCampaignAnalytics returns correct aggregates" time="0.506">
+    </testcase>
+    <testcase classname="adTracking analytics getVendorAnalytics returns correct aggregates" name="adTracking analytics getVendorAnalytics returns correct aggregates" time="0.377">
+    </testcase>
+    <testcase classname="adTracking analytics detectFraudPatterns returns high risk for rapid IP and session" name="adTracking analytics detectFraudPatterns returns high risk for rapid IP and session" time="0.59">
+    </testcase>
+    <testcase classname="adTracking analytics detectFraudPatterns returns low risk for normal pattern" name="adTracking analytics detectFraudPatterns returns low risk for normal pattern" time="0.004">
+    </testcase>
+  </testsuite>
+  <testsuite name="CORS Middleware" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:49" time="0.459" tests="10">
+    <testcase classname="CORS Middleware should allow requests with no origin" name="CORS Middleware should allow requests with no origin" time="0.033">
+    </testcase>
+    <testcase classname="CORS Middleware should allow whitelisted origins" name="CORS Middleware should allow whitelisted origins" time="0.009">
+    </testcase>
+    <testcase classname="CORS Middleware should block non-whitelisted origins" name="CORS Middleware should block non-whitelisted origins" time="0.022">
+    </testcase>
+    <testcase classname="CORS Middleware should allow all origins with wildcard" name="CORS Middleware should allow all origins with wildcard" time="0.012">
+    </testcase>
+    <testcase classname="CORS Middleware should expose rate limit headers" name="CORS Middleware should expose rate limit headers" time="0.007">
+    </testcase>
+    <testcase classname="CORS Middleware should allow credentials" name="CORS Middleware should allow credentials" time="0.008">
+    </testcase>
+    <testcase classname="CORS Middleware isOriginAllowed helper should return true for no origin" name="CORS Middleware isOriginAllowed helper should return true for no origin" time="0.001">
+    </testcase>
+    <testcase classname="CORS Middleware isOriginAllowed helper should return true for wildcard" name="CORS Middleware isOriginAllowed helper should return true for wildcard" time="0.002">
+    </testcase>
+    <testcase classname="CORS Middleware isOriginAllowed helper should return true for whitelisted origin" name="CORS Middleware isOriginAllowed helper should return true for whitelisted origin" time="0.001">
+    </testcase>
+    <testcase classname="CORS Middleware isOriginAllowed helper should return false for non-whitelisted origin" name="CORS Middleware isOriginAllowed helper should return false for non-whitelisted origin" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="Feature #182: ProductOffer - Multi-seller Marketplace" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:49" time="1.31" tests="36">
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Uniqueness Constraint should enforce one offer per vendor per product" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Uniqueness Constraint should enforce one offer per vendor per product" time="0.004">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Uniqueness Constraint should allow different vendors to offer same product" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Uniqueness Constraint should allow different vendors to offer same product" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Uniqueness Constraint should allow same vendor to offer different products" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Uniqueness Constraint should allow same vendor to offer different products" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should reject negative price" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should reject negative price" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should reject zero price" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should reject zero price" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should reject negative stock" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should reject negative stock" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should validate compareAtPrice &gt;= price" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should validate compareAtPrice &gt;= price" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should validate SLA within range (0-30 days)" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should validate SLA within range (0-30 days)" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should validate handling time within range (1-7 days)" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: Validation should validate handling time within range (1-7 days)" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: CRUD Operations should create a new offer successfully" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: CRUD Operations should create a new offer successfully" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: CRUD Operations should retrieve offer by ID" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: CRUD Operations should retrieve offer by ID" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: CRUD Operations should update offer price" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: CRUD Operations should update offer price" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: CRUD Operations should soft delete offer (mark inactive)" name="Feature #182: ProductOffer - Multi-seller Marketplace CRITICAL: CRUD Operations should soft delete offer (mark inactive)" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should update stock atomically" name="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should update stock atomically" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should prevent stock from going negative" name="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should prevent stock from going negative" time="0.036">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should detect low stock correctly" name="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should detect low stock correctly" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should not flag as low stock if stock is sufficient" name="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should not flag as low stock if stock is sufficient" time="0">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should auto-pause when stock reaches zero" name="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should auto-pause when stock reaches zero" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should auto-unpause when stock is replenished" name="Feature #182: ProductOffer - Multi-seller Marketplace Stock Management should auto-unpause when stock is replenished" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Multi-vendor Scenarios should find all active offers for a product sorted by price" name="Feature #182: ProductOffer - Multi-seller Marketplace Multi-vendor Scenarios should find all active offers for a product sorted by price" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Multi-vendor Scenarios should exclude inactive offers from product listings" name="Feature #182: ProductOffer - Multi-seller Marketplace Multi-vendor Scenarios should exclude inactive offers from product listings" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Multi-vendor Scenarios should exclude paused offers from active listings" name="Feature #182: ProductOffer - Multi-seller Marketplace Multi-vendor Scenarios should exclude paused offers from active listings" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Multi-vendor Scenarios should exclude out-of-stock offers from active listings" name="Feature #182: ProductOffer - Multi-seller Marketplace Multi-vendor Scenarios should exclude out-of-stock offers from active listings" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should return true for available offers" name="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should return true for available offers" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should return false if inactive" name="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should return false if inactive" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should return false if paused" name="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should return false if paused" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should return false if out of stock" name="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should return false if out of stock" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should check if can fulfill requested quantity" name="Feature #182: ProductOffer - Multi-seller Marketplace Availability Checks should check if can fulfill requested quantity" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Virtual Properties should calculate savings correctly" name="Feature #182: ProductOffer - Multi-seller Marketplace Virtual Properties should calculate savings correctly" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Virtual Properties should calculate savings percentage correctly" name="Feature #182: ProductOffer - Multi-seller Marketplace Virtual Properties should calculate savings percentage correctly" time="0.001">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Virtual Properties should return zero savings if no compareAtPrice" name="Feature #182: ProductOffer - Multi-seller Marketplace Virtual Properties should return zero savings if no compareAtPrice" time="0">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Virtual Properties should calculate total delivery time" name="Feature #182: ProductOffer - Multi-seller Marketplace Virtual Properties should calculate total delivery time" time="0">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Edge Cases should handle offers with different fulfillment methods" name="Feature #182: ProductOffer - Multi-seller Marketplace Edge Cases should handle offers with different fulfillment methods" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Edge Cases should handle offers with different conditions" name="Feature #182: ProductOffer - Multi-seller Marketplace Edge Cases should handle offers with different conditions" time="0.002">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Edge Cases should handle vendor with no offers" name="Feature #182: ProductOffer - Multi-seller Marketplace Edge Cases should handle vendor with no offers" time="0">
+    </testcase>
+    <testcase classname="Feature #182: ProductOffer - Multi-seller Marketplace Edge Cases should handle product with no offers" name="Feature #182: ProductOffer - Multi-seller Marketplace Edge Cases should handle product with no offers" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="validate middleware" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:49" time="0.97" tests="2">
+    <testcase classname="validate middleware returns 400 and issues on invalid body" name="validate middleware returns 400 and issues on invalid body" time="0.084">
+    </testcase>
+    <testcase classname="validate middleware passes through on valid body and coerces types" name="validate middleware passes through on valid body and coerces types" time="0.018">
+    </testcase>
+  </testsuite>
+  <testsuite name="Feature #189: Media Pipeline" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:49" time="1.018" tests="28">
+    <testcase classname="Feature #189: Media Pipeline Virus Scanning should detect EICAR test file and reject upload" name="Feature #189: Media Pipeline Virus Scanning should detect EICAR test file and reject upload" time="0.005">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Virus Scanning should allow clean files when virus scanning enabled" name="Feature #189: Media Pipeline Virus Scanning should allow clean files when virus scanning enabled" time="0.002">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Virus Scanning should skip virus scan when disabled" name="Feature #189: Media Pipeline Virus Scanning should skip virus scan when disabled" time="0.002">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Virus Scanning should fail safe on scan error when enabled" name="Feature #189: Media Pipeline Virus Scanning should fail safe on scan error when enabled" time="0.001">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline EXIF Metadata Stripping should strip EXIF metadata from JPEG images" name="Feature #189: Media Pipeline EXIF Metadata Stripping should strip EXIF metadata from JPEG images" time="0.034">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline EXIF Metadata Stripping should preserve image data" name="Feature #189: Media Pipeline EXIF Metadata Stripping should preserve image data" time="0.003">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline EXIF Metadata Stripping should return original buffer on error" name="Feature #189: Media Pipeline EXIF Metadata Stripping should return original buffer on error" time="0.002">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline File Validation should reject files exceeding size limit" name="Feature #189: Media Pipeline File Validation should reject files exceeding size limit" time="0.003">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline File Validation should allow files within size limit" name="Feature #189: Media Pipeline File Validation should allow files within size limit" time="0.002">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline File Validation should reject unsupported file types" name="Feature #189: Media Pipeline File Validation should reject unsupported file types" time="0.002">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline File Validation should allow supported image types" name="Feature #189: Media Pipeline File Validation should allow supported image types" time="0.003">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline File Validation should allow PDF and video files" name="Feature #189: Media Pipeline File Validation should allow PDF and video files" time="0.007">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline File Validation should respect custom MAX_UPLOAD_SIZE_MB environment variable" name="Feature #189: Media Pipeline File Validation should respect custom MAX_UPLOAD_SIZE_MB environment variable" time="0.001">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Presigned Upload URL Generation should generate presigned upload with required fields" name="Feature #189: Media Pipeline Presigned Upload URL Generation should generate presigned upload with required fields" time="0.024">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Presigned Upload URL Generation should reject files exceeding max size" name="Feature #189: Media Pipeline Presigned Upload URL Generation should reject files exceeding max size" time="0.002">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Presigned Upload URL Generation should reject unsupported content types" name="Feature #189: Media Pipeline Presigned Upload URL Generation should reject unsupported content types" time="0.002">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Presigned Upload URL Generation should include custom folder in upload URL" name="Feature #189: Media Pipeline Presigned Upload URL Generation should include custom folder in upload URL" time="0.001">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Complete Upload Pipeline should process file through full pipeline (integration test)" name="Feature #189: Media Pipeline Complete Upload Pipeline should process file through full pipeline (integration test)" time="0.001">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline Complete Upload Pipeline should reject file with virus in scan phase" name="Feature #189: Media Pipeline Complete Upload Pipeline should reject file with virus in scan phase" time="0.002">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline DoS Protection should enforce file size limits to prevent memory exhaustion" name="Feature #189: Media Pipeline DoS Protection should enforce file size limits to prevent memory exhaustion" time="0.003">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline DoS Protection should validate file count in middleware" name="Feature #189: Media Pipeline DoS Protection should validate file count in middleware" time="0.001">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline processUploadedFile should throw if virus is found" name="Feature #189: Media Pipeline processUploadedFile should throw if virus is found" time="0.003">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline processUploadedFile should handle Cloudinary upload error" name="Feature #189: Media Pipeline processUploadedFile should handle Cloudinary upload error" time="0.003">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline processUploadedFile should process non-image file without EXIF stripping" name="Feature #189: Media Pipeline processUploadedFile should process non-image file without EXIF stripping" time="0.003">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline withUploadTimeout should resolve if promise resolves before timeout" name="Feature #189: Media Pipeline withUploadTimeout should resolve if promise resolves before timeout" time="0.002">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline withUploadTimeout should reject if promise takes too long" name="Feature #189: Media Pipeline withUploadTimeout should reject if promise takes too long" time="0.018">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline generateCloudinarySignature should call cloudinary.utils.api_sign_request" name="Feature #189: Media Pipeline generateCloudinarySignature should call cloudinary.utils.api_sign_request" time="0.202">
+    </testcase>
+    <testcase classname="Feature #189: Media Pipeline streamFileResponse should set headers and send buffer" name="Feature #189: Media Pipeline streamFileResponse should set headers and send buffer" time="0.003">
+    </testcase>
+  </testsuite>
+  <testsuite name="Refunds &amp; partial refunds" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:49" time="0.826" tests="1">
+    <testcase classname="Refunds &amp; partial refunds partially refunds one line and reverses commission proportionally" name="Refunds &amp; partial refunds partially refunds one line and reverses commission proportionally" time="0.008">
+    </testcase>
+  </testsuite>
+  <testsuite name="PhonePe payments" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:50" time="0.629" tests="3">
+    <testcase classname="PhonePe payments computes X-VERIFY for init" name="PhonePe payments computes X-VERIFY for init" time="0.002">
+    </testcase>
+    <testcase classname="PhonePe payments creates payment request (mocked)" name="PhonePe payments creates payment request (mocked)" time="0.002">
+    </testcase>
+    <testcase classname="PhonePe payments verifies callback signature (happy)" name="PhonePe payments verifies callback signature (happy)" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="b2bAnalytics Service" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:50" time="0.685" tests="10">
+    <testcase classname="b2bAnalytics Service getVendorB2BSummary returns correct summary for mixed bulk/retail orders" name="b2bAnalytics Service getVendorB2BSummary returns correct summary for mixed bulk/retail orders" time="0.003">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BSummary handles no orders" name="b2bAnalytics Service getVendorB2BSummary handles no orders" time="0.002">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getAdminB2BBreakdown returns correct breakdown for regions/industries/types" name="b2bAnalytics Service getAdminB2BBreakdown returns correct breakdown for regions/industries/types" time="0.004">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getAdminB2BBreakdown handles no orders" name="b2bAnalytics Service getAdminB2BBreakdown handles no orders" time="0.002">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport returns correct export data" name="b2bAnalytics Service getVendorB2BExport returns correct export data" time="0.004">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport handles missing optional fields" name="b2bAnalytics Service getVendorB2BExport handles missing optional fields" time="0.002">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport handles no orders" name="b2bAnalytics Service getVendorB2BExport handles no orders" time="0.001">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport exportDataToCSV produces correct CSV for normal data" name="b2bAnalytics Service getVendorB2BExport exportDataToCSV produces correct CSV for normal data" time="0.001">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport exportDataToCSV handles empty data array" name="b2bAnalytics Service getVendorB2BExport exportDataToCSV handles empty data array" time="0">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport exportDataToCSV handles special characters" name="b2bAnalytics Service getVendorB2BExport exportDataToCSV handles special characters" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="Invoice Service" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:50" time="0.823" tests="9">
+    <testcase classname="Invoice Service buildInvoice calculates totals, commission, and tax correctly" name="Invoice Service buildInvoice calculates totals, commission, and tax correctly" time="0.002">
+    </testcase>
+    <testcase classname="Invoice Service buildInvoice handles missing commission and tax breakdown" name="Invoice Service buildInvoice handles missing commission and tax breakdown" time="0.001">
+    </testcase>
+    <testcase classname="Invoice Service formatInvoice formats invoice as string" name="Invoice Service formatInvoice formats invoice as string" time="0.054">
+    </testcase>
+    <testcase classname="Invoice Service getFY returns correct FY for April" name="Invoice Service getFY returns correct FY for April" time="0.001">
+    </testcase>
+    <testcase classname="Invoice Service getFY returns correct FY for March" name="Invoice Service getFY returns correct FY for March" time="0">
+    </testcase>
+    <testcase classname="Invoice Service isEInvoicingRequired returns false if GSTINs missing" name="Invoice Service isEInvoicingRequired returns false if GSTINs missing" time="0.001">
+    </testcase>
+    <testcase classname="Invoice Service isEInvoicingRequired returns true if both GSTINs present" name="Invoice Service isEInvoicingRequired returns true if both GSTINs present" time="0.002">
+    </testcase>
+    <testcase classname="Invoice Service generateEInvoice returns mock IRN in dev" name="Invoice Service generateEInvoice returns mock IRN in dev" time="0.002">
+    </testcase>
+    <testcase classname="Invoice Service cancelEInvoice returns true (stub)" name="Invoice Service cancelEInvoice returns true (stub)" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Checkout controller schemas" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:50" time="0.925" tests="5">
+    <testcase classname="Checkout controller schemas parses AddToCartBody" name="Checkout controller schemas parses AddToCartBody" time="0.007">
+    </testcase>
+    <testcase classname="Checkout controller schemas parses SetAddressBody with inline shippingAddress" name="Checkout controller schemas parses SetAddressBody with inline shippingAddress" time="0.002">
+    </testcase>
+    <testcase classname="Checkout controller schemas parses ShippingBody selection optional" name="Checkout controller schemas parses ShippingBody selection optional" time="0.002">
+    </testcase>
+    <testcase classname="Checkout controller schemas parses PayBody default gateway" name="Checkout controller schemas parses PayBody default gateway" time="0.002">
+    </testcase>
+    <testcase classname="Checkout controller schemas parses ConfirmBody" name="Checkout controller schemas parses ConfirmBody" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="b2bAnalytics Service" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:51" time="0.408" tests="7">
+    <testcase classname="b2bAnalytics Service getVendorB2BSummary returns correct summary for mixed bulk/retail orders" name="b2bAnalytics Service getVendorB2BSummary returns correct summary for mixed bulk/retail orders" time="0.004">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BSummary handles no orders" name="b2bAnalytics Service getVendorB2BSummary handles no orders" time="0.001">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getAdminB2BBreakdown returns correct breakdown for regions/industries/types" name="b2bAnalytics Service getAdminB2BBreakdown returns correct breakdown for regions/industries/types" time="0.002">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getAdminB2BBreakdown handles no orders" name="b2bAnalytics Service getAdminB2BBreakdown handles no orders" time="0.002">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport returns correct export data" name="b2bAnalytics Service getVendorB2BExport returns correct export data" time="0.006">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport handles missing optional fields" name="b2bAnalytics Service getVendorB2BExport handles missing optional fields" time="0.001">
+    </testcase>
+    <testcase classname="b2bAnalytics Service getVendorB2BExport handles no orders" name="b2bAnalytics Service getVendorB2BExport handles no orders" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="BuyBox Service" errors="0" failures="0" skipped="3" timestamp="2025-10-22T23:28:51" time="0.634" tests="11">
+    <testcase classname="BuyBox Service should calculate price score" name="BuyBox Service should calculate price score" time="0.002">
+    </testcase>
+    <testcase classname="BuyBox Service should calculate vendor rating score" name="BuyBox Service should calculate vendor rating score" time="0.001">
+    </testcase>
+    <testcase classname="BuyBox Service should calculate delivery SLA score" name="BuyBox Service should calculate delivery SLA score" time="0.001">
+    </testcase>
+    <testcase classname="BuyBox Service should calculate cancellation score" name="BuyBox Service should calculate cancellation score" time="0">
+    </testcase>
+    <testcase classname="BuyBox Service should calculate stock score" name="BuyBox Service should calculate stock score" time="0.001">
+    </testcase>
+    <testcase classname="BuyBox Service should calculate offer score" name="BuyBox Service should calculate offer score" time="0.001">
+    </testcase>
+    <testcase classname="BuyBox Service should handle admin override logic" name="BuyBox Service should handle admin override logic" time="0.002">
+    </testcase>
+    <testcase classname="BuyBox Service should fetch vendor metrics" name="BuyBox Service should fetch vendor metrics" time="0.001">
+    </testcase>
+    <testcase classname="BuyBox Service should calculate buy box winner (integration)" name="BuyBox Service should calculate buy box winner (integration)" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="BuyBox Service should batch calculate buy box" name="BuyBox Service should batch calculate buy box" time="0">
+      <skipped/>
+    </testcase>
+    <testcase classname="BuyBox Service should calculate buy box for a product" name="BuyBox Service should calculate buy box for a product" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="CommissionService" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:51" time="0.532" tests="8">
+    <testcase classname="CommissionService calculateCommission should calculate percentage commission" name="CommissionService calculateCommission should calculate percentage commission" time="0.003">
+    </testcase>
+    <testcase classname="CommissionService calculateCommission should calculate fixed commission" name="CommissionService calculateCommission should calculate fixed commission" time="0">
+    </testcase>
+    <testcase classname="CommissionService calculateCommission should calculate tiered commission" name="CommissionService calculateCommission should calculate tiered commission" time="0.001">
+    </testcase>
+    <testcase classname="CommissionService calculateCommission should return 0 for unknown rule type" name="CommissionService calculateCommission should return 0 for unknown rule type" time="0">
+    </testcase>
+    <testcase classname="CommissionService getApplicableRule should return vendor override if present" name="CommissionService getApplicableRule should return vendor override if present" time="0">
+    </testcase>
+    <testcase classname="CommissionService getApplicableRule should return category rule if no vendor override" name="CommissionService getApplicableRule should return category rule if no vendor override" time="0.001">
+    </testcase>
+    <testcase classname="CommissionService getApplicableRule should return default rule if no match" name="CommissionService getApplicableRule should return default rule if no match" time="0.001">
+    </testcase>
+    <testcase classname="CommissionService getApplicableRule should return null if no rules" name="CommissionService getApplicableRule should return null if no rules" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Checkout Domain Models" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:51" time="0.74" tests="22">
+    <testcase classname="Checkout Domain Models Address Model should create a valid address" name="Checkout Domain Models Address Model should create a valid address" time="0.011">
+    </testcase>
+    <testcase classname="Checkout Domain Models Address Model should generate fullAddress virtual" name="Checkout Domain Models Address Model should generate fullAddress virtual" time="0.002">
+    </testcase>
+    <testcase classname="Checkout Domain Models Address Model should validate phone number format" name="Checkout Domain Models Address Model should validate phone number format" time="0.006">
+    </testcase>
+    <testcase classname="Checkout Domain Models Address Model should validate pincode format" name="Checkout Domain Models Address Model should validate pincode format" time="0.004">
+    </testcase>
+    <testcase classname="Checkout Domain Models Cart Model should create an empty cart" name="Checkout Domain Models Cart Model should create an empty cart" time="0.004">
+    </testcase>
+    <testcase classname="Checkout Domain Models Cart Model should calculate totals correctly" name="Checkout Domain Models Cart Model should calculate totals correctly" time="0.008">
+    </testcase>
+    <testcase classname="Checkout Domain Models Cart Model should calculate itemCount virtual" name="Checkout Domain Models Cart Model should calculate itemCount virtual" time="0.009">
+    </testcase>
+    <testcase classname="Checkout Domain Models Cart Model should handle guest cart with sessionId" name="Checkout Domain Models Cart Model should handle guest cart with sessionId" time="0.001">
+    </testcase>
+    <testcase classname="Checkout Domain Models Shipment Model should create a shipment with ULID" name="Checkout Domain Models Shipment Model should create a shipment with ULID" time="0.009">
+    </testcase>
+    <testcase classname="Checkout Domain Models Shipment Model should check isDelivered virtual" name="Checkout Domain Models Shipment Model should check isDelivered virtual" time="0.004">
+    </testcase>
+    <testcase classname="Checkout Domain Models Shipment Model should check isInTransit virtual" name="Checkout Domain Models Shipment Model should check isInTransit virtual" time="0.002">
+    </testcase>
+    <testcase classname="Checkout Domain Models PaymentIntent Model should create a payment intent with ULID" name="Checkout Domain Models PaymentIntent Model should create a payment intent with ULID" time="0.002">
+    </testcase>
+    <testcase classname="Checkout Domain Models PaymentIntent Model should check canCapture method" name="Checkout Domain Models PaymentIntent Model should check canCapture method" time="0.002">
+    </testcase>
+    <testcase classname="Checkout Domain Models PaymentIntent Model should check canRefund method" name="Checkout Domain Models PaymentIntent Model should check canRefund method" time="0.001">
+    </testcase>
+    <testcase classname="Checkout Domain Models PaymentIntent Model should calculate availableRefundAmount virtual" name="Checkout Domain Models PaymentIntent Model should calculate availableRefundAmount virtual" time="0.003">
+    </testcase>
+    <testcase classname="Checkout Domain Models PaymentIntent Model should check isExpired virtual" name="Checkout Domain Models PaymentIntent Model should check isExpired virtual" time="0.001">
+    </testcase>
+    <testcase classname="Checkout Domain Models StockReservation Model should create a reservation with ULID" name="Checkout Domain Models StockReservation Model should create a reservation with ULID" time="0.001">
+    </testcase>
+    <testcase classname="Checkout Domain Models StockReservation Model should check isExpired method" name="Checkout Domain Models StockReservation Model should check isExpired method" time="0.002">
+    </testcase>
+    <testcase classname="Checkout Domain Models StockReservation Model should calculate timeRemaining virtual" name="Checkout Domain Models StockReservation Model should calculate timeRemaining virtual" time="0.002">
+    </testcase>
+    <testcase classname="Checkout Domain Models StockReservation Model should check isActive virtual" name="Checkout Domain Models StockReservation Model should check isActive virtual" time="0.002">
+    </testcase>
+    <testcase classname="Checkout Domain Models StockReservation Model should handle reservation with variant" name="Checkout Domain Models StockReservation Model should handle reservation with variant" time="0.001">
+    </testcase>
+    <testcase classname="Checkout Domain Models Integration Scenarios should represent a complete checkout flow" name="Checkout Domain Models Integration Scenarios should represent a complete checkout flow" time="0.006">
+    </testcase>
+  </testsuite>
+  <testsuite name="creditLedger.applyForCredit" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:51" time="0.559" tests="3">
+    <testcase classname="creditLedger.applyForCredit throws if already approved" name="creditLedger.applyForCredit throws if already approved" time="0.025">
+    </testcase>
+    <testcase classname="creditLedger.applyForCredit throws if already pending" name="creditLedger.applyForCredit throws if already pending" time="0.001">
+    </testcase>
+    <testcase classname="creditLedger.applyForCredit creates new application if none exists" name="creditLedger.applyForCredit creates new application if none exists" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="adTracking service" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:51" time="0.614" tests="16">
+    <testcase classname="adTracking service recordImpression returns error if campaign not found" name="adTracking service recordImpression returns error if campaign not found" time="0.004">
+    </testcase>
+    <testcase classname="adTracking service recordImpression returns error if duplicate click" name="adTracking service recordImpression returns error if duplicate click" time="0.001">
+    </testcase>
+    <testcase classname="adTracking service recordClick returns error if campaign not found" name="adTracking service recordClick returns error if campaign not found" time="0.001">
+    </testcase>
+    <testcase classname="adTracking service recordClick returns error if duplicate click" name="adTracking service recordClick returns error if duplicate click" time="0.002">
+    </testcase>
+    <testcase classname="adTracking service recordClick creates AdClick, updates vendor, returns success" name="adTracking service recordClick creates AdClick, updates vendor, returns success" time="0.002">
+    </testcase>
+    <testcase classname="adTracking service recordClick returns error if exception thrown" name="adTracking service recordClick returns error if exception thrown" time="0.073">
+    </testcase>
+    <testcase classname="adTracking service recordClick skips duplicate detection if no userId/sessionId" name="adTracking service recordClick skips duplicate detection if no userId/sessionId" time="0.007">
+    </testcase>
+    <testcase classname="adTracking service recordClick returns error if campaign budget exhausted" name="adTracking service recordClick returns error if campaign budget exhausted" time="0.002">
+    </testcase>
+    <testcase classname="adTracking service recordClick returns error if vendor wallet charge fails" name="adTracking service recordClick returns error if vendor wallet charge fails" time="0.002">
+    </testcase>
+    <testcase classname="adTracking service recordClick creates click with sessionId (no userId)" name="adTracking service recordClick creates click with sessionId (no userId)" time="0.001">
+    </testcase>
+    <testcase classname="adTracking service recordClick recordImpression returns false if campaign not found" name="adTracking service recordClick recordImpression returns false if campaign not found" time="0.001">
+    </testcase>
+    <testcase classname="adTracking service recordClick recordImpression returns false if error thrown" name="adTracking service recordClick recordImpression returns false if error thrown" time="0.009">
+    </testcase>
+    <testcase classname="adTracking service recordClick recordImpression returns true if impression recorded" name="adTracking service recordClick recordImpression returns true if impression recorded" time="0.001">
+    </testcase>
+    <testcase classname="adTracking service recordClick recordConversion returns false if click not found" name="adTracking service recordClick recordConversion returns false if click not found" time="0.001">
+    </testcase>
+    <testcase classname="adTracking service recordClick recordConversion returns false if error thrown" name="adTracking service recordClick recordConversion returns false if error thrown" time="0.003">
+    </testcase>
+    <testcase classname="adTracking service recordClick recordConversion returns true if conversion recorded" name="adTracking service recordClick recordConversion returns true if conversion recorded" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Feature #181: Pricing Engine" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:52" time="0.501" tests="17">
+    <testcase classname="Feature #181: Pricing Engine CRITICAL: Stacking Rules should apply multiple stackable rules" name="Feature #181: Pricing Engine CRITICAL: Stacking Rules should apply multiple stackable rules" time="0.007">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine CRITICAL: Stacking Rules CRITICAL: should NOT stack non-stackable coupon with promo" name="Feature #181: Pricing Engine CRITICAL: Stacking Rules CRITICAL: should NOT stack non-stackable coupon with promo" time="0.001">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine CRITICAL: Stacking Rules should respect stackableWith whitelist" name="Feature #181: Pricing Engine CRITICAL: Stacking Rules should respect stackableWith whitelist" time="0.002">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine CRITICAL: Tiered Pricing (Bulk Discounts) should apply correct tier based on quantity" name="Feature #181: Pricing Engine CRITICAL: Tiered Pricing (Bulk Discounts) should apply correct tier based on quantity" time="0.002">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine CRITICAL: Tiered Pricing (Bulk Discounts) should apply price override tier" name="Feature #181: Pricing Engine CRITICAL: Tiered Pricing (Bulk Discounts) should apply price override tier" time="0.001">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine CRITICAL: Tiered Pricing (Bulk Discounts) should handle no matching tier (quantity too low)" name="Feature #181: Pricing Engine CRITICAL: Tiered Pricing (Bulk Discounts) should handle no matching tier (quantity too low)" time="0.001">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine CRITICAL: Explanation Breakdown should generate UI-friendly explanation for coupon" name="Feature #181: Pricing Engine CRITICAL: Explanation Breakdown should generate UI-friendly explanation for coupon" time="0.002">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine CRITICAL: Explanation Breakdown should generate formatted breakdown for multiple rules" name="Feature #181: Pricing Engine CRITICAL: Explanation Breakdown should generate formatted breakdown for multiple rules" time="0.003">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Usage Limits should reject coupon that has reached usage limit" name="Feature #181: Pricing Engine Usage Limits should reject coupon that has reached usage limit" time="0.001">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Usage Limits should enforce minimum cart value" name="Feature #181: Pricing Engine Usage Limits should enforce minimum cart value" time="0.001">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Usage Limits should cap discount at maxDiscountAmount" name="Feature #181: Pricing Engine Usage Limits should cap discount at maxDiscountAmount" time="0.001">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Exclusions should exclude already-discounted items" name="Feature #181: Pricing Engine Exclusions should exclude already-discounted items" time="0.001">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Exclusions should exclude sale items when flag is set" name="Feature #181: Pricing Engine Exclusions should exclude sale items when flag is set" time="0.001">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Edge Cases should handle empty cart" name="Feature #181: Pricing Engine Edge Cases should handle empty cart" time="0.006">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Edge Cases should never return negative final total" name="Feature #181: Pricing Engine Edge Cases should never return negative final total" time="0.002">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Edge Cases should handle invalid coupon code gracefully" name="Feature #181: Pricing Engine Edge Cases should handle invalid coupon code gracefully" time="0.001">
+    </testcase>
+    <testcase classname="Feature #181: Pricing Engine Edge Cases should validate coupon without applying it" name="Feature #181: Pricing Engine Edge Cases should validate coupon without applying it" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="sanitize middleware" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:51" time="1.081" tests="2">
+    <testcase classname="sanitize middleware strips scripts from plain text fields" name="sanitize middleware strips scripts from plain text fields" time="0.068">
+    </testcase>
+    <testcase classname="sanitize middleware allows limited tags for richText" name="sanitize middleware allows limited tags for richText" time="0.011">
+    </testcase>
+  </testsuite>
+  <testsuite name="sanitizeString" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:52" time="0.3" tests="3">
+    <testcase classname="sanitizeString removes all HTML tags by default" name="sanitizeString removes all HTML tags by default" time="0.005">
+    </testcase>
+    <testcase classname="sanitizeString allows safe rich text tags with richText options" name="sanitizeString allows safe rich text tags with richText options" time="0.009">
+    </testcase>
+    <testcase classname="sanitizeString removes disallowed attributes" name="sanitizeString removes disallowed attributes" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Shiprocket Adapter" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:52" time="0.237" tests="14">
+    <testcase classname="Shiprocket Adapter should cache auth token" name="Shiprocket Adapter should cache auth token" time="0.004">
+    </testcase>
+    <testcase classname="Shiprocket Adapter should fetch rate quotes" name="Shiprocket Adapter should fetch rate quotes" time="0.002">
+    </testcase>
+    <testcase classname="Shiprocket Adapter should create label with AWB" name="Shiprocket Adapter should create label with AWB" time="0.002">
+    </testcase>
+    <testcase classname="Shiprocket Adapter should track shipment" name="Shiprocket Adapter should track shipment" time="0.002">
+    </testcase>
+    <testcase classname="Shiprocket Adapter should map status correctly" name="Shiprocket Adapter should map status correctly" time="0.002">
+    </testcase>
+    <testcase classname="Delhivery Adapter should fetch rate quotes" name="Delhivery Adapter should fetch rate quotes" time="0.005">
+    </testcase>
+    <testcase classname="Delhivery Adapter should create label with waybill" name="Delhivery Adapter should create label with waybill" time="0.003">
+    </testcase>
+    <testcase classname="Delhivery Adapter should track shipment" name="Delhivery Adapter should track shipment" time="0.001">
+    </testcase>
+    <testcase classname="Delhivery Adapter should handle missing tracking data gracefully" name="Delhivery Adapter should handle missing tracking data gracefully" time="0">
+    </testcase>
+    <testcase classname="Shipping Factory should return default shiprocket adapter" name="Shipping Factory should return default shiprocket adapter" time="0.001">
+    </testcase>
+    <testcase classname="Shipping Factory should return adapter by provider name" name="Shipping Factory should return adapter by provider name" time="0.001">
+    </testcase>
+    <testcase classname="Shipping Factory should use env var if set" name="Shipping Factory should use env var if set" time="0.001">
+    </testcase>
+    <testcase classname="Shipping Factory should throw on unsupported provider" name="Shipping Factory should throw on unsupported provider" time="0.033">
+    </testcase>
+    <testcase classname="Shipping Factory should allow custom adapter registration" name="Shipping Factory should allow custom adapter registration" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="apiResponse" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:52" time="0.109" tests="3">
+    <testcase classname="apiResponse returns a success envelope" name="apiResponse returns a success envelope" time="0.001">
+    </testcase>
+    <testcase classname="apiResponse returns an error envelope" name="apiResponse returns an error envelope" time="0.001">
+    </testcase>
+    <testcase classname="apiResponse returns error with only message" name="apiResponse returns error with only message" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Feature #180: Inventory Race Condition Tests (Unit)" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:52" time="0.133" tests="12">
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) CRITICAL: Atomic Operation Logic should demonstrate atomic findOneAndUpdate prevents race conditions" name="Feature #180: Inventory Race Condition Tests (Unit) CRITICAL: Atomic Operation Logic should demonstrate atomic findOneAndUpdate prevents race conditions" time="0.002">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) CRITICAL: Atomic Operation Logic should document the reservation creation flow" name="Feature #180: Inventory Race Condition Tests (Unit) CRITICAL: Atomic Operation Logic should document the reservation creation flow" time="0.001">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) CRITICAL: Atomic Operation Logic should document race condition prevention mechanism" name="Feature #180: Inventory Race Condition Tests (Unit) CRITICAL: Atomic Operation Logic should document race condition prevention mechanism" time="0.001">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Reservation Lifecycle Logic should document stock state transitions" name="Feature #180: Inventory Race Condition Tests (Unit) Reservation Lifecycle Logic should document stock state transitions" time="0.001">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Reservation Lifecycle Logic should document expiry and cleanup flow" name="Feature #180: Inventory Race Condition Tests (Unit) Reservation Lifecycle Logic should document expiry and cleanup flow" time="0">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Multi-warehouse Isolation should document warehouse-level stock isolation" name="Feature #180: Inventory Race Condition Tests (Unit) Multi-warehouse Isolation should document warehouse-level stock isolation" time="0">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Multi-warehouse Isolation should document cross-warehouse aggregation" name="Feature #180: Inventory Race Condition Tests (Unit) Multi-warehouse Isolation should document cross-warehouse aggregation" time="0.002">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Error Handling &amp; Edge Cases should handle insufficient stock gracefully" name="Feature #180: Inventory Race Condition Tests (Unit) Error Handling &amp; Edge Cases should handle insufficient stock gracefully" time="0">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Error Handling &amp; Edge Cases should prevent negative stock values" name="Feature #180: Inventory Race Condition Tests (Unit) Error Handling &amp; Edge Cases should prevent negative stock values" time="0.001">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Error Handling &amp; Edge Cases should handle concurrent reservations for different quantities" name="Feature #180: Inventory Race Condition Tests (Unit) Error Handling &amp; Edge Cases should handle concurrent reservations for different quantities" time="0.001">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Integration Points should document checkout flow integration" name="Feature #180: Inventory Race Condition Tests (Unit) Integration Points should document checkout flow integration" time="0.001">
+    </testcase>
+    <testcase classname="Feature #180: Inventory Race Condition Tests (Unit) Integration Points should document cart abandonment handling" name="Feature #180: Inventory Race Condition Tests (Unit) Integration Points should document cart abandonment handling" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Checkout API" errors="0" failures="0" skipped="1" timestamp="2025-10-22T23:28:30" time="21.644" tests="1">
+    <testcase classname="Checkout API runs add-&gt;address-&gt;shipping-&gt;pay-&gt;confirm" name="Checkout API runs add-&gt;address-&gt;shipping-&gt;pay-&gt;confirm" time="0">
+      <skipped/>
+    </testcase>
+  </testsuite>
+  <testsuite name="GST engine" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:52" time="0.17" tests="4">
+    <testcase classname="GST engine splits CGST/SGST for intrastate" name="GST engine splits CGST/SGST for intrastate" time="0.002">
+    </testcase>
+    <testcase classname="GST engine applies IGST for interstate" name="GST engine applies IGST for interstate" time="0.001">
+    </testcase>
+    <testcase classname="GST engine handles rounding split small values" name="GST engine handles rounding split small values" time="0.001">
+    </testcase>
+    <testcase classname="GST engine formats INR" name="GST engine formats INR" time="0.045">
+    </testcase>
+  </testsuite>
+  <testsuite name="getEnv" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:52" time="0.119" tests="2">
+    <testcase classname="getEnv returns the value if present" name="getEnv returns the value if present" time="0.004">
+    </testcase>
+    <testcase classname="getEnv throws if the key is missing" name="getEnv throws if the key is missing" time="0.007">
+    </testcase>
+  </testsuite>
+  <testsuite name="crypto utils" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:52" time="0.132" tests="3">
+    <testcase classname="crypto utils encrypts and decrypts a secret" name="crypto utils encrypts and decrypts a secret" time="0.003">
+    </testcase>
+    <testcase classname="crypto utils masks secret except last 4 chars" name="crypto utils masks secret except last 4 chars" time="0">
+    </testcase>
+    <testcase classname="crypto utils decryptSecret throws on malformed input" name="crypto utils decryptSecret throws on malformed input" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="SupplierRateLimiter edge/error cases" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:52" time="0.485" tests="11">
+    <testcase classname="SupplierRateLimiter edge/error cases should fail open if Redis pipeline fails" name="SupplierRateLimiter edge/error cases should fail open if Redis pipeline fails" time="0.098">
+    </testcase>
+    <testcase classname="SupplierRateLimiter edge/error cases should handle zrange error in retryAfter calculation" name="SupplierRateLimiter edge/error cases should handle zrange error in retryAfter calculation" time="0.015">
+    </testcase>
+    <testcase classname="SupplierRateLimiter edge/error cases should handle getStatus Redis error" name="SupplierRateLimiter edge/error cases should handle getStatus Redis error" time="0.004">
+    </testcase>
+    <testcase classname="SupplierRateLimiter edge/error cases should handle reset Redis error gracefully" name="SupplierRateLimiter edge/error cases should handle reset Redis error gracefully" time="0.004">
+    </testcase>
+    <testcase classname="SupplierRateLimiter edge/error cases should return default config if unknown tier" name="SupplierRateLimiter edge/error cases should return default config if unknown tier" time="0.002">
+    </testcase>
+    <testcase classname="RateLimitRetryQueue edge/error cases should handle enqueue Redis error" name="RateLimitRetryQueue edge/error cases should handle enqueue Redis error" time="0.003">
+    </testcase>
+    <testcase classname="RateLimitRetryQueue edge/error cases should handle getReadyRequests Redis error" name="RateLimitRetryQueue edge/error cases should handle getReadyRequests Redis error" time="0.004">
+    </testcase>
+    <testcase classname="RateLimitRetryQueue edge/error cases should handle dequeue Redis error" name="RateLimitRetryQueue edge/error cases should handle dequeue Redis error" time="0.003">
+    </testcase>
+    <testcase classname="RateLimitRetryQueue edge/error cases should handle getQueueLength Redis error" name="RateLimitRetryQueue edge/error cases should handle getQueueLength Redis error" time="0.003">
+    </testcase>
+    <testcase classname="RateLimitRetryQueue edge/error cases should handle clear Redis error" name="RateLimitRetryQueue edge/error cases should handle clear Redis error" time="0.007">
+    </testcase>
+    <testcase classname="rateLimiter singleton exports should throw if getRateLimiter/getRetryQueue called without Redis" name="rateLimiter singleton exports should throw if getRateLimiter/getRetryQueue called without Redis" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="mapRolesToScopes" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:53" time="0.1" tests="4">
+    <testcase classname="mapRolesToScopes maps admin to all admin scopes" name="mapRolesToScopes maps admin to all admin scopes" time="0.002">
+    </testcase>
+    <testcase classname="mapRolesToScopes maps vendor to vendor scopes" name="mapRolesToScopes maps vendor to vendor scopes" time="0">
+    </testcase>
+    <testcase classname="mapRolesToScopes deduplicates scopes for multiple roles" name="mapRolesToScopes deduplicates scopes for multiple roles" time="0">
+    </testcase>
+    <testcase classname="mapRolesToScopes returns empty for unknown role" name="mapRolesToScopes returns empty for unknown role" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="RBAC ability rules" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:53" time="0.103" tests="6">
+    <testcase classname="RBAC ability rules admin can do anything" name="RBAC ability rules admin can do anything" time="0.003">
+    </testcase>
+    <testcase classname="RBAC ability rules vendor can manage store" name="RBAC ability rules vendor can manage store" time="0">
+    </testcase>
+    <testcase classname="RBAC ability rules vendor can create product only for self" name="RBAC ability rules vendor can create product only for self" time="0">
+    </testcase>
+    <testcase classname="RBAC ability rules vendor can update/delete only own product" name="RBAC ability rules vendor can update/delete only own product" time="0.001">
+    </testcase>
+    <testcase classname="RBAC ability rules user can update only own profile" name="RBAC ability rules user can update only own profile" time="0.001">
+    </testcase>
+    <testcase classname="RBAC ability rules deny by default for privileged actions" name="RBAC ability rules deny by default for privileged actions" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="adExchange.evaluateBids" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:53" time="0.118" tests="3">
+    <testcase classname="adExchange.evaluateBids selects the highest bid and returns CPM as cost per impression" name="adExchange.evaluateBids selects the highest bid and returns CPM as cost per impression" time="0.002">
+    </testcase>
+    <testcase classname="adExchange.evaluateBids throws if no bids are provided" name="adExchange.evaluateBids throws if no bids are provided" time="0.011">
+    </testcase>
+    <testcase classname="adExchange.evaluateBids returns the first highest bid if there is a tie" name="adExchange.evaluateBids returns the first highest bid if there is a tie" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="errorHandler" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:53" time="0.139" tests="1">
+    <testcase classname="errorHandler logs error and sends 500" name="errorHandler logs error and sends 500" time="0.022">
+    </testcase>
+  </testsuite>
+  <testsuite name="logger" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:53" time="0.117" tests="3">
+    <testcase classname="logger calls console.info for info" name="logger calls console.info for info" time="0.003">
+    </testcase>
+    <testcase classname="logger calls console.warn for warn" name="logger calls console.warn for warn" time="0.002">
+    </testcase>
+    <testcase classname="logger calls console.error for error" name="logger calls console.error for error" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="Poison Pill Queue" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:53" time="0.088" tests="1">
+    <testcase classname="Poison Pill Queue should run a dummy test" name="Poison Pill Queue should run a dummy test" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Catalog: Category hierarchy and attributes filters" errors="0" failures="0" skipped="0" timestamp="2025-10-22T23:28:30" time="22.705" tests="4">
+    <testcase classname="Catalog: Category hierarchy and attributes filters returns products in parent category including descendants" name="Catalog: Category hierarchy and attributes filters returns products in parent category including descendants" time="0.008">
+    </testcase>
+    <testcase classname="Catalog: Category hierarchy and attributes filters returns only products in child category when filtering by child" name="Catalog: Category hierarchy and attributes filters returns only products in child category when filtering by child" time="0">
+    </testcase>
+    <testcase classname="Catalog: Category hierarchy and attributes filters filters by single attribute" name="Catalog: Category hierarchy and attributes filters filters by single attribute" time="0.001">
+    </testcase>
+    <testcase classname="Catalog: Category hierarchy and attributes filters filters by multiple attributes (AND)" name="Catalog: Category hierarchy and attributes filters filters by multiple attributes (AND)" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="Dropship Outbound Webhook edge/error cases" errors="0" failures="1" skipped="0" timestamp="2025-10-22T23:28:30" time="26.332" tests="7">
+    <testcase classname="Dropship Outbound Webhook edge/error cases returns duplicate if idempotency key already present" name="Dropship Outbound Webhook edge/error cases returns duplicate if idempotency key already present" time="0.03">
+    </testcase>
+    <testcase classname="Dropship Outbound Webhook edge/error cases handles missing redisInstance (no rate limit check)" name="Dropship Outbound Webhook edge/error cases handles missing redisInstance (no rate limit check)" time="0.013">
+    </testcase>
+    <testcase classname="Dropship Outbound Webhook edge/error cases handles axios failure and logs SyncJob" name="Dropship Outbound Webhook edge/error cases handles axios failure and logs SyncJob" time="0.006">
+    </testcase>
+    <testcase classname="Dropship Outbound Webhook edge/error cases handles rate limit exceeded and queues for retry" name="Dropship Outbound Webhook edge/error cases handles rate limit exceeded and queues for retry" time="0.004">
+    </testcase>
+    <testcase classname="Dropship Outbound Webhook edge/error cases processRetryQueue handles all result statuses" name="Dropship Outbound Webhook edge/error cases processRetryQueue handles all result statuses" time="2.918">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 1
+Received: 0
+    at Object.&lt;anonymous&gt; (C:\nearbybazaar\apps\api\tests\outboundWebhook.edge.spec.ts:93:19)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="Dropship Outbound Webhook edge/error cases processRetryQueue handles still rate limited" name="Dropship Outbound Webhook edge/error cases processRetryQueue handles still rate limited" time="2.286">
+    </testcase>
+    <testcase classname="Dropship Outbound Webhook edge/error cases processRetryQueue handles retry failure" name="Dropship Outbound Webhook edge/error cases processRetryQueue handles retry failure" time="2.288">
+    </testcase>
+  </testsuite>
+</testsuites>

@@ -437,27 +437,22 @@ export async function getVendorB2BTrends(
   vendorId: string,
   days: number = 30,
 ): Promise<TrendData[]> {
-  const trends: TrendData[] = [];
-
+  const trendPromises: Promise<TrendData>[] = [];
   for (let i = days - 1; i >= 0; i--) {
     const dayStart = startOfDay(subDays(new Date(), i));
     const dayEnd = endOfDay(subDays(new Date(), i));
-
-    const orders = await Order.find({
-      // Filter by vendor
+    const p = Order.find({
       isBulkOrder: true,
       createdAt: { $gte: dayStart, $lte: dayEnd },
       deleted: false,
       status: { $ne: 'cancelled' },
       vendor: vendorId,
-    });
-
-    trends.push({
+    }).then((orders: any[]) => ({
       date: dayStart.toISOString().split('T')[0],
       orderCount: orders.length,
       revenue: orders.reduce((sum, o) => sum + o.total, 0),
-    });
+    }));
+    trendPromises.push(p);
   }
-
-  return trends;
+  return Promise.all(trendPromises);
 }

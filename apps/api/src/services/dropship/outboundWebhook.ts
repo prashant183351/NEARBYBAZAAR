@@ -4,7 +4,7 @@ import { getRateLimiter, getRetryQueue } from './rateLimiter';
 import Redis from 'ioredis';
 
 // import global idempotency system (stub)
-const idempotencyCache = new Set<string>();
+export const idempotencyCache = new Set<string>();
 
 // Redis instance for rate limiting (in production, use shared instance)
 let redisInstance: Redis | null = null;
