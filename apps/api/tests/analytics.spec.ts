@@ -37,7 +37,8 @@ jest.mock('../src/models/Order', () => ({
           return this;
         },
         exec: function () {
-          return Promise.resolve(data);
+          // If data is undefined, return [] to match expected array
+          return Promise.resolve(Array.isArray(data) ? data : data == null ? [] : [data]);
         },
         // Add more chainable methods if needed
       };
