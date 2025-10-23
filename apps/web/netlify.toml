@@ -1,0 +1,20 @@
+# netlify.toml - Web App Deployment for NearbyBazaar
+
+[build]
+  base = "apps/web"
+  publish = ".next"
+  command = "pnpm install --shamefully-hoist && pnpm run build"
+  environment = { NODE_VERSION = "18", PNPM_VERSION = "8", NEXT_TELEMETRY_DISABLED = "1" }
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://api.nearbybazaar.com/api/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

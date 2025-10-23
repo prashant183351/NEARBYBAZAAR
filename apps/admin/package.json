@@ -4,9 +4,10 @@
   "version": "0.1.0",
   "main": "index.js",
   "scripts": {
-    "build": "echo 'build admin'",
-    "dev": "echo 'dev admin'",
-    "clean": "echo 'clean admin'"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "clean": "rimraf .next"
   },
   "dependencies": {
     "@nearbybazaar/ui": "workspace:*",

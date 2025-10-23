@@ -1,0 +1,23 @@
+# netlify.toml - Admin App Deployment for NearbyBazaar
+
+[build]
+  base = "apps/admin"
+  publish = ".next"
+  command = "pnpm install --shamefully-hoist && pnpm run build"
+  environment = { NODE_VERSION = "18", PNPM_VERSION = "8", NEXT_TELEMETRY_DISABLED = "1" }
+
+# Optional: Redirect all API requests to your backend API
+[[redirects]]
+  from = "/api/*"
+  to = "https://api.nearbybazaar.com/api/:splat"
+  status = 200
+
+# Optional: SPA fallback for client-side routing (if needed)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Use Netlify's Next.js plugin for SSR/ISR support
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

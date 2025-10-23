@@ -1,0 +1,29 @@
+# Netlify configuration for API (Express backend)
+# Note: Netlify is not designed for persistent Node.js servers (like Express APIs).
+# For production, use a service like Render, Railway, Fly.io, or AWS/GCP/Azure for the API.
+# This config is for preview/staging or serverless function conversion only.
+
+[build]
+  command = "pnpm --filter api... build"
+  publish = "dist"
+  base = "apps/api"
+
+[build.environment]
+  NODE_VERSION = "18"
+  # Add all required env vars here or in Netlify dashboard
+  MONGODB_URI = "${MONGODB_URI}"
+  JWT_SECRET = "${JWT_SECRET}"
+  # ...other API env vars
+
+# Netlify Functions (if you convert Express routes to serverless)
+#[[edge_functions]]
+#  path = "/v1/*"
+#  function = "api"
+
+# Redirect all API traffic to Netlify function (if using serverless)
+#[[redirects]]
+#  from = "/v1/*"
+#  to = "/.netlify/functions/api/:splat"
+#  status = 200
+
+# For static preview only (not for production API hosting)
