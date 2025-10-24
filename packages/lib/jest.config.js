@@ -15,6 +15,7 @@ module.exports = {
     ],
   },
   moduleNameMapper: {
+    '^@nearbybazaar/lib(.*)$': '<rootDir>/src$1',
     '^sharp$': '<rootDir>/__tests__/__mocks__/sharp.ts',
   },
   collectCoverageFrom: ['src/**/*.ts', '!src/**/*.d.ts', '!src/index.ts'],
