@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "nodemon src/index.ts",
+    "start": "node dist/index.js",
     "migrate": "ts-node src/migrations/runner.ts",
     "seed": "ts-node src/seed/index.ts",
     "seed:dev": "ts-node src/seed/index.ts dev",
