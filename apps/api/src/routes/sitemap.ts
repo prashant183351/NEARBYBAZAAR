@@ -37,7 +37,9 @@ router.get('/index', async (_req: Request, res: Response) => {
  * @param type - Sitemap type (static, products, services, stores, classifieds)
  * @param chunk - Chunk number (1-based)
  */
-router.get('/:type/:chunk?', async (req: Request, res: Response) => {
+
+// Handler for both /:type and /:type/:chunk
+const sitemapChunkHandler = async (req: Request, res: Response) => {
   try {
     const { type, chunk } = req.params;
     const chunkNumber = chunk ? parseInt(chunk, 10) : 1;
@@ -64,14 +66,14 @@ router.get('/:type/:chunk?', async (req: Request, res: Response) => {
       urls = result;
     } else {
       // Chunked sitemaps return SitemapChunk
-      const chunk = result as SitemapChunk;
+      const chunkObj = result as SitemapChunk;
 
       // Check if chunk number is valid
-      if (chunkNumber > chunk.totalChunks) {
+      if (chunkNumber > chunkObj.totalChunks) {
         return res.status(404).json({ error: 'Chunk not found' });
       }
 
-      urls = chunk.urls;
+      urls = chunkObj.urls;
     }
 
     const xml = formatSitemapXml(urls);
@@ -84,7 +86,10 @@ router.get('/:type/:chunk?', async (req: Request, res: Response) => {
     console.error('Error generating sitemap:', error);
     return res.status(500).json({ error: 'Failed to generate sitemap' });
   }
-});
+};
+
+router.get('/:type', sitemapChunkHandler);
+router.get('/:type/:chunk', sitemapChunkHandler);
 
 /**
  * GET /v1/sitemap/stats

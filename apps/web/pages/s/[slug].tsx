@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import Link from 'next/link';
 import { SeoHead } from '../../components/SeoHead';
 import { generateServiceSchema } from '@nearbybazaar/lib/jsonld';
@@ -119,11 +119,17 @@ export default function ServiceDetail({ service }: Props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { slug } = context.params as { slug: string };
+export const getStaticPaths: GetStaticPaths = async () => {
+  // In a real app, fetch all service slugs from API
+  return {
+    paths: [], // fallback: 'blocking' for on-demand generation
+    fallback: 'blocking',
+  };
+};
 
-  // TODO: Fetch actual service data from API
-  // For now, return stub data
+export const getStaticProps: GetStaticProps = async (context) => {
+  const { slug } = context.params as { slug: string };
+  // In a real app, fetch service data by slug
   const service: Service = {
     _id: 'stub-service-id',
     name: slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
@@ -139,6 +145,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     reviewCount: 12,
     areaServed: ['Mumbai', 'Navi Mumbai'],
   };
-
   return { props: { service } };
 };

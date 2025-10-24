@@ -27,7 +27,7 @@ export async function createWarrantyClaim(req: Request, res: Response) {
   if (!user?.id) return res.status(401).json({ error: 'Unauthorized' });
 
   const parsed = CreateWarrantyClaimSchema.safeParse(req.body);
-  if (!parsed.success) return res.status(400).json({ error: parsed.error.errors });
+  if (!parsed.success) return res.status(400).json({ error: parsed.error.issues });
 
   const { orderId, lineItemId, issueDescription, preferredContact, attachments } = parsed.data;
 

@@ -1,5 +1,4 @@
 // ...existing code...
-import './theme.css';
 
 type ThemeProviderProps = {
   children: React.ReactNode;

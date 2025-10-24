@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import { useCart } from '../../context/CartContext';
 import { SeoHead } from '../../components/SeoHead';
 import dynamic from 'next/dynamic';
@@ -69,7 +69,17 @@ export default function ProductPage({ slug }: ProductPageProps) {
     </>
   );
 }
-export const getServerSideProps: GetServerSideProps<ProductPageProps> = async (context) => {
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  // In a real app, fetch all product slugs from API
+  return {
+    paths: [], // fallback: 'blocking' for on-demand generation
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps<ProductPageProps> = async (context) => {
   const { slug } = context.params as { slug: string };
+  // In a real app, fetch product data by slug
   return { props: { slug } };
 };

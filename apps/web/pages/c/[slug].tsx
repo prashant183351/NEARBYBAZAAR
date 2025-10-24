@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import Link from 'next/link';
 import { SeoHead } from '../../components/SeoHead';
 
@@ -22,7 +22,16 @@ export default function ClassifiedDetail({ slug }: Props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  // In a real app, fetch all classified slugs from API
+  return {
+    paths: [], // fallback: 'blocking' for on-demand generation
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const { slug } = context.params as { slug: string };
+  // In a real app, fetch classified data by slug
   return { props: { slug } };
 };

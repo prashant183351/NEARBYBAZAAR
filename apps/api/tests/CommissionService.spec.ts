@@ -4,13 +4,13 @@ import type { CommissionRule } from '../src/services/commission/rules';
 describe('CommissionService', () => {
   describe('calculateCommission', () => {
     it('should calculate percentage commission', () => {
-  const rule = { type: 'percentage', value: 10 } as CommissionRule;
+      const rule = { type: 'percentage', value: 10 } as CommissionRule;
       const amount = 1000;
       const result = CommissionService.calculateCommission(rule, amount);
       expect(result).toBe(100);
     });
     it('should calculate fixed commission', () => {
-  const rule = { type: 'fixed', value: 50 } as CommissionRule;
+      const rule = { type: 'fixed', value: 50 } as CommissionRule;
       const amount = 1000;
       const result = CommissionService.calculateCommission(rule, amount);
       expect(result).toBe(50);
@@ -29,7 +29,7 @@ describe('CommissionService', () => {
       expect(CommissionService.calculateCommission(rule, 1500)).toBe(225); // 15%
     });
     it('should return 0 for unknown rule type', () => {
-  const rule = { type: 'unknown', value: 10 } as any;
+      const rule = { type: 'unknown', value: 10 } as any;
       const amount = 1000;
       const result = CommissionService.calculateCommission(rule, amount);
       expect(result).toBe(0);
@@ -59,11 +59,11 @@ describe('CommissionService', () => {
         { type: 'percentage', value: 5 },
       ];
       const result = CommissionService.getApplicableRule(rules as any, 'v2', 'cat2');
-      expect(result.value).toBe(5);
+      expect(result?.value).toBe(5);
     });
     it('should return null if no rules', () => {
-  const result = CommissionService.getApplicableRule([], 'v2', 'cat2');
-  expect(result).toBeNull();
+      const result = CommissionService.getApplicableRule([], 'v2', 'cat2');
+      expect(result).toBeNull();
     });
   });
 });

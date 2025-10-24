@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { AnyZodObject, ZodError, ZodIssue } from 'zod';
+import { ZodError, ZodIssue, ZodObject } from 'zod';
 
 function formatIssues(issues: ZodIssue[]) {
   return issues.map((i) => ({
@@ -10,7 +10,7 @@ function formatIssues(issues: ZodIssue[]) {
 }
 
 // Adjust validate middleware to accept ZodObject schemas directly
-export function validate(schema: AnyZodObject) {
+export function validate(schema: ZodObject<any>) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
       const parsed = schema.parse(req.body);

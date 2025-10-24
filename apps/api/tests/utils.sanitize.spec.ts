@@ -11,15 +11,17 @@ describe('sanitizeString', () => {
       allowedTags: ['b', 'i', 'a'],
       allowedAttributes: { a: ['href', 'target', 'rel'] },
       transformTags: {
-        a: (_tagName, attribs) => ({
+        a: (_tagName: string, attribs: Record<string, any>) => ({
           tagName: 'a',
           attribs: { ...attribs, rel: 'noopener noreferrer' },
         }),
       },
       disallowedTagsMode: 'discard',
     };
-    expect(sanitizeString(input, options)).toContain('<b>bold</b>');
-    expect(sanitizeString(input, options)).toContain('<a href="http://x.com" target="_blank" rel="noopener noreferrer">link</a>');
+    expect(sanitizeString(input, options as any)).toContain('<b>bold</b>');
+    expect(sanitizeString(input, options as any)).toContain(
+      '<a href="http://x.com" target="_blank" rel="noopener noreferrer">link</a>',
+    );
   });
 
   it('removes disallowed attributes', () => {

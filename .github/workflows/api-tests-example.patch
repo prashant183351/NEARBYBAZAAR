@@ -1,0 +1,3 @@
+# PATCH: Remove invalid 'coverage-file' input from jacoco-badge-generator step
+# Only 'badges-directory' is supported for this action.
+# This patch removes the unsupported input to resolve the workflow error.

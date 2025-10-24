@@ -1,4 +1,3 @@
-
 // Mock getRetryQueue from rateLimiter so all uses in outboundWebhook use the same mock
 jest.mock('../src/services/dropship/rateLimiter', () => {
   const actual = jest.requireActual('../src/services/dropship/rateLimiter');
@@ -17,26 +16,30 @@ describe('Dropship Outbound Webhook edge/error cases', () => {
   let redis: any;
   let supplier: any;
   let order: any;
-  let syncJobCreateMock: jest.SpyInstance;
 
   beforeEach(() => {
     redis = new Redis();
     outboundWebhook.initializeRedis(redis);
-    supplier = { id: 'sup1', orderApiUrl: 'http://fake', companyName: 'Test', rateLimitTier: 'default' };
+    supplier = {
+      id: 'sup1',
+      orderApiUrl: 'http://fake',
+      companyName: 'Test',
+      rateLimitTier: 'default',
+    };
     order = { id: 'ord1', items: [], customer: {}, total: 100 };
     // Robustly clear idempotency cache
     // @ts-ignore
     if (outboundWebhook.idempotencyCache && outboundWebhook.idempotencyCache.clear) {
       outboundWebhook.idempotencyCache.clear();
     } else {
-  // Mock getRetryQueue from rateLimiter so all uses in outboundWebhook use the same mock
-  jest.mock('../src/services/dropship/rateLimiter', () => {
-    const actual = jest.requireActual('../src/services/dropship/rateLimiter');
-    return {
-      ...actual,
-      getRetryQueue: jest.fn(),
-    };
-  });
+      // Mock getRetryQueue from rateLimiter so all uses in outboundWebhook use the same mock
+      jest.mock('../src/services/dropship/rateLimiter', () => {
+        const actual = jest.requireActual('../src/services/dropship/rateLimiter');
+        return {
+          ...actual,
+          getRetryQueue: jest.fn(),
+        };
+      });
 
       // fallback for re-assignment
       // @ts-ignore
@@ -44,7 +47,7 @@ describe('Dropship Outbound Webhook edge/error cases', () => {
     }
     // Mock SyncJob.create to avoid DB calls
     const SyncJobModule = require('../src/models/SyncJob');
-    syncJobCreateMock = jest.spyOn(SyncJobModule.SyncJob, 'create').mockResolvedValue({});
+    jest.spyOn(SyncJobModule.SyncJob, 'create').mockResolvedValue({});
   });
 
   afterEach(() => {
@@ -83,26 +86,44 @@ describe('Dropship Outbound Webhook edge/error cases', () => {
   });
 
   it('handles rate limit exceeded and queues for retry', async () => {
-  // Patch rateLimiter to always deny
-  const rateLimiter = getRateLimiter(redis);
-  jest.spyOn(rateLimiter, 'checkAndRecord').mockResolvedValueOnce({ allowed: false, remaining: 0, retryAfter: 123, resetAt: new Date() });
-  // Use the real retryQueue for this test
-  const actualGetRetryQueue = jest.requireActual('../src/services/dropship/rateLimiter').getRetryQueue;
-  const getRetryQueueMock = getRetryQueue as jest.Mock;
-  getRetryQueueMock.mockImplementation(() => actualGetRetryQueue(redis));
-  const retryQueue = getRetryQueue(redis);
-  jest.spyOn(retryQueue, 'enqueue').mockResolvedValueOnce(undefined);
-  const res = await outboundWebhook.pushOrderToSupplier(order, supplier);
-  expect(res.status).toBe('rate_limited');
-  (rateLimiter.checkAndRecord as any).mockRestore();
-  (retryQueue.enqueue as any).mockRestore();
+    // Patch rateLimiter to always deny
+    const rateLimiter = getRateLimiter(redis);
+    jest
+      .spyOn(rateLimiter, 'checkAndRecord')
+      .mockResolvedValueOnce({
+        allowed: false,
+        remaining: 0,
+        retryAfter: 123,
+        resetAt: new Date(),
+      });
+    // Use the real retryQueue for this test
+    const actualGetRetryQueue = jest.requireActual(
+      '../src/services/dropship/rateLimiter',
+    ).getRetryQueue;
+    const getRetryQueueMock = getRetryQueue as jest.Mock;
+    getRetryQueueMock.mockImplementation(() => actualGetRetryQueue(redis));
+    const retryQueue = getRetryQueue(redis);
+    jest.spyOn(retryQueue, 'enqueue').mockResolvedValueOnce(undefined);
+    const res = await outboundWebhook.pushOrderToSupplier(order, supplier);
+    expect(res.status).toBe('rate_limited');
+    (rateLimiter.checkAndRecord as any).mockRestore();
+    (retryQueue.enqueue as any).mockRestore();
   });
 
   it('processRetryQueue handles all result statuses', async () => {
     // Use fresh objects for order and supplier to avoid reference issues
-    const testSupplier = { id: 'sup1', orderApiUrl: 'http://fake', companyName: 'Test', rateLimitTier: 'default' };
+    const testSupplier = {
+      id: 'sup1',
+      orderApiUrl: 'http://fake',
+      companyName: 'Test',
+      rateLimitTier: 'default',
+    };
     const testOrder = { id: 'ord1', items: [], customer: {}, total: 100 };
-    const item = { data: { order: testOrder, supplier: testSupplier }, enqueuedAt: Date.now(), retryAt: Date.now() };
+    const item = {
+      data: { order: testOrder, supplier: testSupplier },
+      enqueuedAt: Date.now(),
+      retryAt: Date.now(),
+    };
     // Create a single mock retryQueue instance
     const retryQueue = {
       getReadyRequests: jest.fn(async () => [item]),
@@ -112,12 +133,14 @@ describe('Dropship Outbound Webhook edge/error cases', () => {
     const getRetryQueueMock = getRetryQueue as jest.Mock;
     getRetryQueueMock.mockReturnValue(retryQueue);
     // Patch pushOrderToSupplier to return success and log arguments
-    const pushOrderMock = jest.spyOn(outboundWebhook, 'pushOrderToSupplier').mockImplementation(async (...args) => {
-      // Log for debug
-      // eslint-disable-next-line no-console
-      console.log('pushOrderToSupplier called with:', args);
-      return { status: 'success' };
-    });
+    const pushOrderMock = jest
+      .spyOn(outboundWebhook, 'pushOrderToSupplier')
+      .mockImplementation(async (...args) => {
+        // Log for debug
+
+        console.log('pushOrderToSupplier called with:', args);
+        return { status: 'success' };
+      });
     // Clear idempotencyCache before retrying so it's not seen as duplicate
     outboundWebhook.idempotencyCache.clear();
     // Now call processRetryQueue
@@ -127,64 +150,67 @@ describe('Dropship Outbound Webhook edge/error cases', () => {
     const pushCalled = pushOrderMock.mock.calls.length > 0;
     const dequeueCalled = retryQueue.dequeue.mock.calls.length > 0;
     if (pushCalled) {
-      // eslint-disable-next-line no-console
       console.log('pushOrderToSupplier call args:', pushOrderMock.mock.calls[0]);
       expect(pushOrderMock.mock.calls[0][0]).toEqual(testOrder);
       expect(pushOrderMock.mock.calls[0][1]).toEqual(testSupplier);
     } else {
-      // eslint-disable-next-line no-console
       console.log('pushOrderToSupplier was NOT called');
     }
     if (dequeueCalled) {
-      // eslint-disable-next-line no-console
       console.log('dequeue call args:', retryQueue.dequeue.mock.calls[0]);
-      expect(retryQueue.dequeue.mock.calls[0][0]).toEqual(testSupplier.id);
-      expect(JSON.parse(retryQueue.dequeue.mock.calls[0][1])).toEqual(item);
+      if (retryQueue.dequeue.mock.calls.length > 0) {
+        expect(retryQueue.dequeue.mock.calls[0][0]).toEqual(testSupplier.id);
+        expect(JSON.parse(retryQueue.dequeue.mock.calls[0][1] || '{}')).toEqual(item);
+      }
     } else {
-      // eslint-disable-next-line no-console
       console.log('dequeue was NOT called');
     }
     // Log the value of count for debug
-    // eslint-disable-next-line no-console
+
     console.log('processRetryQueue returned count:', count);
     if (pushCalled && dequeueCalled) {
       expect(count).toBe(1);
     } else {
-      // eslint-disable-next-line no-console
       console.log('Skipping count assertion because pushOrderToSupplier or dequeue was not called');
     }
     pushOrderMock.mockRestore();
   });
 
   it('processRetryQueue handles still rate limited', async () => {
-  // Use the real retryQueue for this test
-  const actualGetRetryQueue = jest.requireActual('../src/services/dropship/rateLimiter').getRetryQueue;
-  const getRetryQueueMock = getRetryQueue as jest.Mock;
-  getRetryQueueMock.mockImplementation(() => actualGetRetryQueue(redis));
-  const retryQueue = getRetryQueue(redis);
-  const item = { data: { order, supplier }, enqueuedAt: Date.now(), retryAt: Date.now() };
-  await retryQueue.enqueue(supplier.id, { order, supplier }, 0);
-  jest.spyOn(retryQueue, 'getReadyRequests').mockResolvedValueOnce([item]);
-  jest.spyOn(outboundWebhook, 'pushOrderToSupplier').mockResolvedValueOnce({ status: 'rate_limited' });
-  const count = await outboundWebhook.processRetryQueue(supplier.id);
-  expect(count).toBe(0);
-  (retryQueue.getReadyRequests as any).mockRestore();
-  (outboundWebhook.pushOrderToSupplier as any).mockRestore();
+    // Use the real retryQueue for this test
+    const actualGetRetryQueue = jest.requireActual(
+      '../src/services/dropship/rateLimiter',
+    ).getRetryQueue;
+    const getRetryQueueMock = getRetryQueue as jest.Mock;
+    getRetryQueueMock.mockImplementation(() => actualGetRetryQueue(redis));
+    const retryQueue = getRetryQueue(redis);
+    const item = { data: { order, supplier }, enqueuedAt: Date.now(), retryAt: Date.now() };
+    await retryQueue.enqueue(supplier.id, { order, supplier }, 0);
+    jest.spyOn(retryQueue, 'getReadyRequests').mockResolvedValueOnce([item]);
+    jest
+      .spyOn(outboundWebhook, 'pushOrderToSupplier')
+      .mockResolvedValueOnce({ status: 'rate_limited' });
+    const count = await outboundWebhook.processRetryQueue(supplier.id);
+    expect(count).toBe(0);
+    (retryQueue.getReadyRequests as any).mockRestore();
+    (outboundWebhook.pushOrderToSupplier as any).mockRestore();
   });
 
   it('processRetryQueue handles retry failure', async () => {
-  // Use the real retryQueue for this test
-  const actualGetRetryQueue = jest.requireActual('../src/services/dropship/rateLimiter').getRetryQueue;
-  const getRetryQueueMock = getRetryQueue as jest.Mock;
-  getRetryQueueMock.mockImplementation(() => actualGetRetryQueue(redis));
-  const retryQueue = getRetryQueue(redis);
-  const item = { data: { order, supplier }, enqueuedAt: Date.now(), retryAt: Date.now() };
-  await retryQueue.enqueue(supplier.id, { order, supplier }, 0);
-  jest.spyOn(retryQueue, 'getReadyRequests').mockResolvedValueOnce([item]);
-  jest.spyOn(outboundWebhook, 'pushOrderToSupplier').mockRejectedValueOnce(new Error('fail'));
-  const count = await outboundWebhook.processRetryQueue(supplier.id);
-  expect(count).toBe(0);
-  (retryQueue.getReadyRequests as any).mockRestore();
-  (outboundWebhook.pushOrderToSupplier as any).mockRestore();
+    // Use the real retryQueue for this test
+    const actualGetRetryQueue = jest.requireActual(
+      '../src/services/dropship/rateLimiter',
+    ).getRetryQueue;
+    const getRetryQueueMock = getRetryQueue as jest.Mock;
+    getRetryQueueMock.mockImplementation(() => actualGetRetryQueue(redis));
+    const retryQueue = getRetryQueue(redis);
+    const item = { data: { order, supplier }, enqueuedAt: Date.now(), retryAt: Date.now() };
+    await retryQueue.enqueue(supplier.id, { order, supplier }, 0);
+    jest.spyOn(retryQueue, 'getReadyRequests').mockResolvedValueOnce([item]);
+    jest.spyOn(outboundWebhook, 'pushOrderToSupplier').mockRejectedValueOnce(new Error('fail'));
+    const count = await outboundWebhook.processRetryQueue(supplier.id);
+    expect(count).toBe(0);
+    (retryQueue.getReadyRequests as any).mockRestore();
+    (outboundWebhook.pushOrderToSupplier as any).mockRestore();
   });
 });

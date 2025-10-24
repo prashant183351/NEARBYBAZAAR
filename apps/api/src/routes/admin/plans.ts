@@ -11,7 +11,7 @@ router.use(rbacGuard());
 // Create plan
 router.post('/', async (req, res) => {
   const parse = ClassifiedPlanZ.safeParse(req.body);
-  if (!parse.success) return res.status(400).json({ error: parse.error.errors });
+  if (!parse.success) return res.status(400).json({ error: parse.error.issues });
   const plan = await ClassifiedPlan.create(parse.data);
   await AuditLog.create({
     user: req.user?.id,
@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
 // Update plan
 router.put('/:id', async (req, res) => {
   const parse = ClassifiedPlanZ.safeParse(req.body);
-  if (!parse.success) return res.status(400).json({ error: parse.error.errors });
+  if (!parse.success) return res.status(400).json({ error: parse.error.issues });
   const plan = await ClassifiedPlan.findByIdAndUpdate(req.params.id, parse.data, { new: true });
   if (!plan) return res.status(404).json({ error: 'Not found' });
   await AuditLog.create({

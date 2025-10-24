@@ -6,9 +6,15 @@ import { Classified } from '../models/Classified';
 import { AuditLog } from '../models/AuditLog';
 import { Readable } from 'stream';
 
+// Define a type for importable row (could be improved per model)
+type ImportRow = Record<string, unknown> & { id?: string };
+
 // Simulate queue job (stub)
-async function enqueueImportJob(type: string, rows: any[], userId: string) {
-  // TODO: Use real queue/job system
+async function enqueueImportJob(
+  type: 'product' | 'service' | 'classified',
+  rows: ImportRow[],
+  userId: string,
+) {
   for (const row of rows) {
     try {
       if (type === 'product') await Product.create(row);
@@ -22,31 +28,50 @@ async function enqueueImportJob(type: string, rows: any[], userId: string) {
         details: row,
       });
     } catch (err) {
-      // Log or collect errors
+      // TODO: Log error to a persistent store or error queue
+      console.error(`Import error for ${type}:`, err);
     }
   }
 }
 
-export async function importCsv(req: Request, res: Response) {
-  const { type } = req.body;
-  if (!['product', 'service', 'classified'].includes(type))
-    return res.status(400).json({ error: 'Invalid type' });
-  if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+// Extend Express Request type for user and file (if not already globally extended)
+interface ImportRequestUser {
+  id: string;
+  email: string;
+  role: 'vendor' | 'user' | 'admin';
+  scopes?: string[];
+}
 
-  const rows: any[] = [];
+interface ImportRequest extends Request {
+  user?: ImportRequestUser;
+  file?: Express.Multer.File & { buffer: Buffer };
+}
+
+export async function importCsv(req: ImportRequest, res: Response) {
+  const { type } = req.body as { type: 'product' | 'service' | 'classified' };
+  if (!['product', 'service', 'classified'].includes(type)) {
+    return res.status(400).json({ error: 'Invalid type' });
+  }
+  if (!req.file || !req.file.buffer) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+
+  const rows: ImportRow[] = [];
   const stream = Readable.from(req.file.buffer);
 
   parseCsvStream(
     stream,
-    async (row) => {
+    async (row: ImportRow) => {
       rows.push(row);
     },
     async () => {
       // Enqueue job for async processing
-      await enqueueImportJob(type, rows, (req as any).user?.id);
+      await enqueueImportJob(type, rows, req.user?.id || 'unknown');
     },
-    () => {
-      /* handle parse error */
+    (err?: Error) => {
+      // handle parse error
+      console.error('CSV parse error:', err);
+      res.status(500).json({ error: 'CSV parse error', details: err?.message });
     },
   );
 

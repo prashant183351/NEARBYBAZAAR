@@ -1,22 +1,26 @@
-1551
+1551;
 
 import Redis from 'ioredis-mock';
 import { initializeRedis } from '../src/services/dropship/outboundWebhook';
-import { getRateLimiter, getRetryQueue } from '../src/services/dropship/rateLimiter';
 import axios from 'axios';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const mockOrder = { id: 'ORD-REDIS-1', items: [], customer: {}, total: 10 };
-const mockSupplier = { id: 'SUP-REDIS-1', orderApiUrl: 'https://api.supplier.com/orders', rateLimitTier: 'default', companyName: 'Test Supplier' };
+const mockSupplier = {
+  id: 'SUP-REDIS-1',
+  orderApiUrl: 'https://api.supplier.com/orders',
+  rateLimitTier: 'default',
+  companyName: 'Test Supplier',
+};
 
 describe('Dropship OutboundWebhook Rate Limit & Retry', () => {
   let redis: any;
   let rateLimiter: any;
   let retryQueue: any;
   let syncJobCreateSpy: jest.SpyInstance;
-  
+
   beforeEach(() => {
     redis = new Redis();
     initializeRedis(redis);
@@ -29,22 +33,30 @@ describe('Dropship OutboundWebhook Rate Limit & Retry', () => {
       getReadyRequests: jest.fn(),
       dequeue: jest.fn(),
     };
-    jest.spyOn(require('../src/services/dropship/rateLimiter'), 'getRateLimiter').mockReturnValue(rateLimiter);
-    jest.spyOn(require('../src/services/dropship/rateLimiter'), 'getRetryQueue').mockReturnValue(retryQueue);
+    jest
+      .spyOn(require('../src/services/dropship/rateLimiter'), 'getRateLimiter')
+      .mockReturnValue(rateLimiter);
+    jest
+      .spyOn(require('../src/services/dropship/rateLimiter'), 'getRetryQueue')
+      .mockReturnValue(retryQueue);
     mockedAxios.post.mockClear();
-      // Mock SyncJob.create to avoid real MongoDB calls
-      const { SyncJob } = require('../src/models/SyncJob');
-      syncJobCreateSpy = jest.spyOn(SyncJob, 'create').mockResolvedValue({});
-    });
+    // Mock SyncJob.create to avoid real MongoDB calls
+    const { SyncJob } = require('../src/models/SyncJob');
+    syncJobCreateSpy = jest.spyOn(SyncJob, 'create').mockResolvedValue({});
+  });
 
-    afterEach(() => {
-      jest.clearAllMocks();
-      if (syncJobCreateSpy) syncJobCreateSpy.mockRestore();
-    });
+  afterEach(() => {
+    jest.clearAllMocks();
+    if (syncJobCreateSpy) syncJobCreateSpy.mockRestore();
+  });
 
   it('should rate limit and enqueue retry if limit exceeded', async () => {
     const { pushOrderToSupplier } = require('../src/services/dropship/outboundWebhook');
-    rateLimiter.checkAndRecord.mockResolvedValueOnce({ allowed: false, remaining: 0, retryAfter: 500 });
+    rateLimiter.checkAndRecord.mockResolvedValueOnce({
+      allowed: false,
+      remaining: 0,
+      retryAfter: 500,
+    });
     const result = await pushOrderToSupplier(mockOrder, mockSupplier);
     expect(result.status).toBe('rate_limited');
     expect(result.queuedForRetry).toBe(true);
@@ -83,7 +95,7 @@ describe('Dropship OutboundWebhook Rate Limit & Retry', () => {
     jest.resetModules();
     jest.doMock('../src/services/dropship/outboundWebhook', () => ({
       ...jest.requireActual('../src/services/dropship/outboundWebhook'),
-      pushOrderToSupplier: jest.fn().mockResolvedValue({ status: 'rate_limited' })
+      pushOrderToSupplier: jest.fn().mockResolvedValue({ status: 'rate_limited' }),
     }));
     const { processRetryQueue } = require('../src/services/dropship/outboundWebhook');
     const processed = await processRetryQueue(mockSupplier.id);
@@ -99,7 +111,7 @@ describe('Dropship OutboundWebhook Rate Limit & Retry', () => {
     jest.resetModules();
     jest.doMock('../src/services/dropship/outboundWebhook', () => ({
       ...jest.requireActual('../src/services/dropship/outboundWebhook'),
-      pushOrderToSupplier: jest.fn().mockRejectedValue(new Error('Push failed'))
+      pushOrderToSupplier: jest.fn().mockRejectedValue(new Error('Push failed')),
     }));
     const { processRetryQueue } = require('../src/services/dropship/outboundWebhook');
     const processed = await processRetryQueue(mockSupplier.id);

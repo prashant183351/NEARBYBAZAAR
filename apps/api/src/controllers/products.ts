@@ -59,14 +59,14 @@ export async function getProduct(req: Request, res: Response) {
 
 export async function createProduct(req: Request, res: Response) {
   const parse = ProductZ.safeParse(req.body);
-  if (!parse.success) return res.status(400).json({ error: parse.error.errors });
+  if (!parse.success) return res.status(400).json({ error: parse.error.issues });
   const product = await Product.create(parse.data);
   res.status(201).json({ product });
 }
 
 export async function updateProduct(req: Request, res: Response) {
   const parse = ProductZ.safeParse(req.body);
-  if (!parse.success) return res.status(400).json({ error: parse.error.errors });
+  if (!parse.success) return res.status(400).json({ error: parse.error.issues });
   const product = await Product.findOneAndUpdate({ slug: req.params.slug }, parse.data, {
     new: true,
   });

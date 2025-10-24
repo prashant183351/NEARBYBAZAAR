@@ -14,14 +14,14 @@ export async function getKaizen(req: Request, res: Response) {
 
 export async function createKaizen(req: Request, res: Response) {
   const parse = KaizenZ.safeParse(req.body);
-  if (!parse.success) return res.status(400).json({ error: parse.error.errors });
+  if (!parse.success) return res.status(400).json({ error: parse.error.issues });
   const entry = await Kaizen.create(parse.data);
   res.status(201).json({ entry });
 }
 
 export async function updateKaizen(req: Request, res: Response) {
   const parse = KaizenZ.safeParse(req.body);
-  if (!parse.success) return res.status(400).json({ error: parse.error.errors });
+  if (!parse.success) return res.status(400).json({ error: parse.error.issues });
   const entry = await Kaizen.findByIdAndUpdate(req.params.id, parse.data, { new: true });
   if (!entry) return res.status(404).json({ error: 'Not found' });
   res.json({ entry });

@@ -15,7 +15,7 @@ export async function submitFormEntry(req: Request, res: Response) {
 
   // Determine recipients (owner, admin, or custom)
   let recipients: string[] = [];
-  if (form.metadata?.notifyRecipients) {
+  if (Array.isArray(form.metadata?.notifyRecipients)) {
     recipients = form.metadata.notifyRecipients;
   } else if (form.ownerType === 'vendor') {
     // Lookup vendor email

@@ -1,5 +1,4 @@
 // ...existing code...
-import './theme.css';
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: 'primary' | 'secondary';

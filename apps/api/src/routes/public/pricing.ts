@@ -14,7 +14,7 @@ const QuoteInputZ = z.object({
 
 router.post('/quote', async (req, res) => {
   const parse = QuoteInputZ.safeParse(req.body);
-  if (!parse.success) return res.status(400).json({ error: parse.error.errors });
+  if (!parse.success) return res.status(400).json({ error: parse.error.issues });
   const { productId, quantity } = parse.data;
   const cacheKey = `${productId}:${quantity}`;
   const cached = cache.get(cacheKey);

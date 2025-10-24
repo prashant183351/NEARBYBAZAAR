@@ -16,6 +16,7 @@
     "outDir": "dist",
     "baseUrl": ".",
     "jsx": "react-jsx",
+    "types": ["jest", "node", "react", "react-dom"],
     "paths": {
       "@nearbybazaar/lib": ["packages/lib/src/index.ts"],
       "@nearbybazaar/lib/*": ["packages/lib/src/*"],

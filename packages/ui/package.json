@@ -22,8 +22,11 @@
     "react-dom": ">=18.0.0"
   },
   "dependencies": {
-    "qrcode.react": "^4.2.0",
+    "qrcode.react": "latest",
     "@nearbybazaar/lib": "workspace:*",
-    "react-dropzone": "^14.2.3"
+    "react-dropzone": "latest"
+  },
+  "engines": {
+    "node": ">=22.0.0"
   }
 }

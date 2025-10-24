@@ -4,7 +4,6 @@ import {
   RateLimitRetryQueue,
   getRateLimiter,
   getRetryQueue,
-  DEFAULT_RATE_LIMITS,
 } from '../src/services/dropship/rateLimiter';
 
 describe('SupplierRateLimiter edge/error cases', () => {
@@ -17,7 +16,7 @@ describe('SupplierRateLimiter edge/error cases', () => {
       expire: jest.fn().mockReturnThis(),
       exec: jest.fn().mockResolvedValue([
         [null, null], // zremrangebyscore
-        [null, 2],   // zcard (simulate at limit)
+        [null, 2], // zcard (simulate at limit)
         [null, null],
         [null, null],
         [null, null],

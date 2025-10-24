@@ -88,7 +88,7 @@ router.post('/', async (req, res) => {
     if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
       return res
         .status(400)
-        .json({ error: 'Validation failed', details: (error as z.ZodError).errors });
+        .json({ error: 'Validation failed', details: (error as z.ZodError).issues });
     }
     const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
@@ -158,7 +158,7 @@ router.post('/bulk', async (req, res) => {
     if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
       return res
         .status(400)
-        .json({ error: 'Validation failed', details: (error as z.ZodError).errors });
+        .json({ error: 'Validation failed', details: (error as z.ZodError).issues });
     }
     const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });
@@ -285,7 +285,7 @@ router.put('/:id', async (req, res) => {
     if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
       return res
         .status(400)
-        .json({ error: 'Validation failed', details: (error as z.ZodError).errors });
+        .json({ error: 'Validation failed', details: (error as z.ZodError).issues });
     }
     const message = error instanceof Error ? error.message : String(error);
     res.status(500).json({ error: message });

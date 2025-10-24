@@ -1,10 +1,6 @@
 # netlify.toml - Vendor App Deployment for NearbyBazaar
 
-[build]
-  base = "apps/vendor"
-  publish = ".next"
-  command = "pnpm install --shamefully-hoist && pnpm run build"
-  environment = { NODE_VERSION = "18", PNPM_VERSION = "8", NEXT_TELEMETRY_DISABLED = "1" }
+  environment = { NODE_VERSION = "22", PNPM_VERSION = "8", NEXT_TELEMETRY_DISABLED = "1" }
 
 [[redirects]]
   from = "/api/*"

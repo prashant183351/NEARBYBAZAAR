@@ -28,14 +28,14 @@ export async function getServiceBySlug(req: Request, res: Response) {
 
 export async function createService(req: Request, res: Response) {
   const parse = ServiceZ.safeParse(req.body);
-  if (!parse.success) return res.status(400).json({ error: parse.error.errors });
+  if (!parse.success) return res.status(400).json({ error: parse.error.issues });
   const service = await Service.create(parse.data);
   res.status(201).json({ service });
 }
 
 export async function updateService(req: Request, res: Response) {
   const parse = ServiceZ.safeParse(req.body);
-  if (!parse.success) return res.status(400).json({ error: parse.error.errors });
+  if (!parse.success) return res.status(400).json({ error: parse.error.issues });
   const service = await Service.findByIdAndUpdate(req.params.id, parse.data, { new: true });
   if (!service) return res.status(404).json({ error: 'Not found' });
   res.json({ service });

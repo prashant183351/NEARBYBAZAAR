@@ -1,4 +1,5 @@
 import type { AppProps } from 'next/app';
+import '../styles/theme.css';
 import { useEffect } from 'react';
 // ...existing code...
 import { CartProvider } from '../context/CartContext';

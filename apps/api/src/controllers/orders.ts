@@ -11,7 +11,7 @@ import { calculateCommission } from '../services/commission/calc';
 
 export async function createOrder(req: Request, res: Response) {
   const parse = OrderZ.safeParse(req.body);
-  if (!parse.success) return res.status(400).json({ error: parse.error.errors });
+  if (!parse.success) return res.status(400).json({ error: parse.error.issues });
   const orderData: any = parse.data;
 
   const productIds = Array.from(

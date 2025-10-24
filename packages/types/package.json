@@ -8,5 +8,11 @@
     "build": "tsc",
     "dev": "echo 'dev types'",
     "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "typescript": "latest"
+  },
+  "engines": {
+    "node": ">=22.0.0"
   }
 }

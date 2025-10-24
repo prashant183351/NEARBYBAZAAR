@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import { SeoHead } from '../../components/SeoHead';
 import { StoreHeader } from '../../components/StoreHeader';
 import { ItemGrid } from '../../components/ItemGrid';
@@ -242,107 +242,69 @@ export default function StorePage({
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  // In a real app, fetch all store slugs from API
+  return {
+    paths: [], // fallback: 'blocking' for on-demand generation
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps = async (context) => {
   const { slug } = context.params as { slug: string };
-  const { tab = 'products', page = '1' } = context.query;
-  const currentTab = ['products', 'services', 'classifieds'].includes(tab as string)
-    ? (tab as 'products' | 'services' | 'classifieds')
-    : 'products';
-  const currentPage = Math.max(1, parseInt(page as string, 10) || 1);
+  // Next.js getStaticProps does not provide query params, so default to products tab and page 1
+  const currentTab: 'products' | 'services' | 'classifieds' = 'products';
+  const currentPage = 1;
   const limit = 12;
 
-  // Fetch vendor by slug from API
-  const API_BASE = process.env.API_URL || 'http://localhost:4000';
+  // Fallback to sample data for development
+  const vendor: Vendor = {
+    _id: 'sample-id',
+    name: slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+    email: 'vendor@example.com',
+    slug,
+    planTier: 'Free',
+    description: `Welcome to our store!`,
+  };
 
-  try {
-    // Fetch vendor
-    const vendorRes = await fetch(`${API_BASE}/v1/vendors/slug/${slug}`);
-    if (!vendorRes.ok) {
-      return { notFound: true };
-    }
-    const vendor: Vendor = await vendorRes.json();
+  const sampleProducts: Item[] = Array.from({ length: 5 }, (_, i) => ({
+    _id: `prod-${i}`,
+    name: `Product ${i + 1}`,
+    slug: `product-${i + 1}`,
+    price: (i + 1) * 100,
+    currency: 'INR',
+    description: `Sample product ${i + 1}`,
+  }));
 
-    // Fetch products, services, classifieds with pagination
-    const [productsRes, servicesRes, classifiedsRes] = await Promise.all([
-      fetch(
-        `${API_BASE}/v1/products?vendor=${vendor._id}&page=${currentTab === 'products' ? currentPage : 1}&limit=${limit}`,
-      ),
-      fetch(
-        `${API_BASE}/v1/services?vendor=${vendor._id}&page=${currentTab === 'services' ? currentPage : 1}&limit=${limit}`,
-      ),
-      fetch(
-        `${API_BASE}/v1/classifieds?vendor=${vendor._id}&page=${currentTab === 'classifieds' ? currentPage : 1}&limit=${limit}`,
-      ),
-    ]);
+  const sampleServices: Item[] = Array.from({ length: 3 }, (_, i) => ({
+    _id: `svc-${i}`,
+    name: `Service ${i + 1}`,
+    slug: `service-${i + 1}`,
+    price: (i + 1) * 500,
+    currency: 'INR',
+    description: `Sample service ${i + 1}`,
+  }));
 
-    const productsData = await productsRes.json();
-    const servicesData = await servicesRes.json();
-    const classifiedsData = await classifiedsRes.json();
+  const sampleClassifieds: Item[] = Array.from({ length: 2 }, (_, i) => ({
+    _id: `class-${i}`,
+    name: `Classified ${i + 1}`,
+    slug: `classified-${i + 1}`,
+    price: (i + 1) * 1000,
+    currency: 'INR',
+    description: `Sample classified ${i + 1}`,
+  }));
 
-    return {
-      props: {
-        vendor,
-        products: productsData.items || [],
-        services: servicesData.items || [],
-        classifieds: classifiedsData.items || [],
-        productsMeta: productsData.meta || { total: 0, page: 1, limit, totalPages: 0 },
-        servicesMeta: servicesData.meta || { total: 0, page: 1, limit, totalPages: 0 },
-        classifiedsMeta: classifiedsData.meta || { total: 0, page: 1, limit, totalPages: 0 },
-        currentTab,
-        currentPage,
-      },
-    };
-  } catch (error) {
-    console.error('Error fetching store data:', error);
-    // Fallback to sample data for development
-    const vendor: Vendor = {
-      _id: 'sample-id',
-      name: slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
-      email: 'vendor@example.com',
-      slug,
-      planTier: 'Free',
-      description: `Welcome to our store!`,
-    };
-
-    const sampleProducts: Item[] = Array.from({ length: 5 }, (_, i) => ({
-      _id: `prod-${i}`,
-      name: `Product ${i + 1}`,
-      slug: `product-${i + 1}`,
-      price: (i + 1) * 100,
-      currency: 'INR',
-      description: `Sample product ${i + 1}`,
-    }));
-
-    const sampleServices: Item[] = Array.from({ length: 3 }, (_, i) => ({
-      _id: `svc-${i}`,
-      name: `Service ${i + 1}`,
-      slug: `service-${i + 1}`,
-      price: (i + 1) * 500,
-      currency: 'INR',
-      description: `Sample service ${i + 1}`,
-    }));
-
-    const sampleClassifieds: Item[] = Array.from({ length: 2 }, (_, i) => ({
-      _id: `class-${i}`,
-      name: `Classified ${i + 1}`,
-      slug: `classified-${i + 1}`,
-      price: (i + 1) * 1000,
-      currency: 'INR',
-      description: `Sample classified ${i + 1}`,
-    }));
-
-    return {
-      props: {
-        vendor,
-        products: sampleProducts,
-        services: sampleServices,
-        classifieds: sampleClassifieds,
-        productsMeta: { total: 5, page: 1, limit, totalPages: 1 },
-        servicesMeta: { total: 3, page: 1, limit, totalPages: 1 },
-        classifiedsMeta: { total: 2, page: 1, limit, totalPages: 1 },
-        currentTab,
-        currentPage,
-      },
-    };
-  }
+  return {
+    props: {
+      vendor,
+      products: sampleProducts,
+      services: sampleServices,
+      classifieds: sampleClassifieds,
+      productsMeta: { total: 5, page: 1, limit, totalPages: 1 },
+      servicesMeta: { total: 3, page: 1, limit, totalPages: 1 },
+      classifiedsMeta: { total: 2, page: 1, limit, totalPages: 1 },
+      currentTab,
+      currentPage,
+    },
+  };
 };

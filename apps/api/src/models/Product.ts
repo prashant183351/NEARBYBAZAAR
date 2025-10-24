@@ -42,7 +42,7 @@ export const ProductZ = z.object({
   media: z.array(z.string()).optional(),
   model3d: z.string().url().optional(), // URL to GLTF/GLB file
   arEnabled: z.boolean().optional(),
-  arMeta: z.record(z.any()).optional(),
+  arMeta: z.record(z.string(), z.any()).optional(),
   variants: z
     .array(
       z.object({

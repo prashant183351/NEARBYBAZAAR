@@ -28,7 +28,7 @@ export async function createMedia(req: Request, res: Response) {
   for (const item of items) {
     const parse = MediaZ.safeParse(item);
     if (!parse.success) {
-      errors.push({ index: valid.length + errors.length, errors: parse.error.errors });
+      errors.push({ index: valid.length + errors.length, errors: parse.error.issues });
       continue;
     }
     // Enforce alt text presence (and prepare for i18n alt text)

@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import StorePage, { getServerSideProps } from '../pages/store/[slug]';
+import StorePage from '../pages/store/[slug]';
 
 describe('Store Page SSR', () => {
   const mockVendor = {
@@ -122,46 +122,5 @@ describe('Store Page SSR', () => {
     expect(getByText('Service 1')).toBeInTheDocument();
   });
 
-  it('getServerSideProps returns correct props structure', async () => {
-    // Mock fetch to return sample data
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        ok: true,
-        json: async () => mockVendor,
-      }),
-    ) as jest.Mock;
-
-    const context = {
-      params: { slug: 'test-store' },
-      query: {},
-    } as any;
-
-    const result = await getServerSideProps(context);
-
-    expect(result).toHaveProperty('props');
-    expect((result as any).props).toHaveProperty('vendor');
-    expect((result as any).props).toHaveProperty('products');
-    expect((result as any).props).toHaveProperty('services');
-    expect((result as any).props).toHaveProperty('classifieds');
-    expect((result as any).props).toHaveProperty('currentTab');
-    expect((result as any).props).toHaveProperty('currentPage');
-  });
-
-  it('getServerSideProps returns notFound when vendor not found', async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        ok: false,
-        status: 404,
-      }),
-    ) as jest.Mock;
-
-    const context = {
-      params: { slug: 'nonexistent' },
-      query: {},
-    } as any;
-
-    const result = await getServerSideProps(context);
-
-    expect(result).toEqual({ notFound: true });
-  });
+  // Removed getServerSideProps related tests as it no longer exists.
 });

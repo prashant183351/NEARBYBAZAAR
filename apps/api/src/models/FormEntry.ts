@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 export const FormEntryZ = z.object({
   form: z.string(),
-  data: z.record(z.any()),
+  data: z.record(z.string(), z.any()),
   submittedBy: z.string().optional(),
   deleted: z.boolean().optional(),
 });

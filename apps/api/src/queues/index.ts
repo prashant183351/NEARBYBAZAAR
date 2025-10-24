@@ -42,6 +42,9 @@ if (shouldInitQueues) {
   }
 
   function setupWorker(queueName: string, processor: any) {
+    if (!connection) {
+      throw new Error('Redis connection is undefined. Cannot start worker.');
+    }
     const worker = new Worker(queueName, processor, { connection });
     worker.on('failed', async (job: any, err) => {
       if (!job) {

@@ -5,7 +5,7 @@ export const FormZ = z.object({
   name: z.string().min(1),
   description: z.string().optional(),
   fields: z.array(z.any()), // Could be Zod or JSON schema
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
   deleted: z.boolean().optional(),
 });
 

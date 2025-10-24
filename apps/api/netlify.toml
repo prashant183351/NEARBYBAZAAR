@@ -3,16 +3,6 @@
 # For production, use a service like Render, Railway, Fly.io, or AWS/GCP/Azure for the API.
 # This config is for preview/staging or serverless function conversion only.
 
-[build]
-  command = "pnpm --filter api... build"
-  publish = "dist"
-  base = "apps/api"
-
-[build.environment]
-  NODE_VERSION = "18"
-  # Add all required env vars here or in Netlify dashboard
-  MONGODB_URI = "${MONGODB_URI}"
-  JWT_SECRET = "${JWT_SECRET}"
   # ...other API env vars
 
 # Netlify Functions (if you convert Express routes to serverless)

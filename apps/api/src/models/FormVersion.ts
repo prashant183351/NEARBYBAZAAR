@@ -5,7 +5,7 @@ export const FormVersionZ = z.object({
   form: z.string(),
   version: z.number(),
   fields: z.array(z.any()),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
   publishedAt: z.date(),
   state: z.enum(['draft', 'published']).default('draft'),
 });

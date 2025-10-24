@@ -6,7 +6,7 @@ export const AuditLogZ = z.object({
   action: z.string(),
   resource: z.string(),
   resourceId: z.string().optional(),
-  details: z.record(z.any()).optional(),
+  details: z.record(z.string(), z.any()).optional(),
   createdAt: z.date().optional(),
 });
 

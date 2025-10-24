@@ -6,15 +6,9 @@ const withPWA = require('next-pwa')({
 module.exports = withPWA({
   output: 'export',
   reactStrictMode: true,
-  swcMinify: true,
   transpilePackages: ['@nearbybazaar/ui', '@nearbybazaar/lib'],
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   images: {
     unoptimized: true,
   },
-  experimental: {
-    outputFileTracing: false,
-  },
+  turbopack: {}, // Silence Turbopack error for Next.js 16+
 });

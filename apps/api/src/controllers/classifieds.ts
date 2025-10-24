@@ -34,7 +34,7 @@ export async function getClassifiedBySlug(req: Request, res: Response) {
 export async function createClassified(req: Request, res: Response) {
   // TODO: Enforce plan quota for listings via middleware layer earlier in route
   const parse = ClassifiedZ.safeParse(req.body);
-  if (!parse.success) return res.status(400).json({ error: parse.error.errors });
+  if (!parse.success) return res.status(400).json({ error: parse.error.issues });
 
   // Enforce plan-based image limits and watermark verification
   const images = req.body.images || [];
@@ -71,7 +71,7 @@ export async function createClassified(req: Request, res: Response) {
 export async function updateClassified(req: Request, res: Response) {
   // TODO: Enforce plan feature for featured listings via middleware earlier in route
   const parse = ClassifiedZ.safeParse(req.body);
-  if (!parse.success) return res.status(400).json({ error: parse.error.errors });
+  if (!parse.success) return res.status(400).json({ error: parse.error.issues });
   const classified = await Classified.findByIdAndUpdate(req.params.id, parse.data, { new: true });
   if (!classified) return res.status(404).json({ error: 'Not found' });
   res.json({ classified });
