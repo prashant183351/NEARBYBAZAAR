@@ -4,7 +4,16 @@
     "jsx": "preserve",
     "outDir": "dist",
     "allowJs": true,
-    "incremental": true
+    "incremental": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "paths": {
+      "@nearbybazaar/types": ["../../packages/types/src/index.ts"],
+      "@nearbybazaar/lib": ["../../packages/lib/src/index.ts"],
+      "@nearbybazaar/ui": ["../../packages/ui/src/index.ts"],
+      "@components/*": ["components/*"]
+    }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "dist"]

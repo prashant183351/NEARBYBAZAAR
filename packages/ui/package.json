@@ -15,7 +15,7 @@
   "scripts": {
     "build": "echo 'build ui'",
     "dev": "echo 'dev ui'",
-    "clean": "echo 'clean ui'"
+    "clean": "rimraf dist"
   },
   "peerDependencies": {
     "react": ">=18.0.0",

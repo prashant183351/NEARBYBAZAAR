@@ -7,6 +7,6 @@
   "scripts": {
     "build": "tsc",
     "dev": "echo 'dev types'",
-    "clean": "echo 'clean types'"
+    "clean": "rimraf dist"
   }
 }

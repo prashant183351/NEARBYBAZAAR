@@ -8,7 +8,7 @@
   "scripts": {
     "build": "echo 'build lib'",
     "dev": "echo 'dev lib'",
-    "clean": "echo 'clean lib'",
+    "clean": "rimraf dist",
     "test": "jest",
     "test:canonical": "jest canonical.test.ts"
   },
